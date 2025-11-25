@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using NumCalc.UI.Shared.Layouts
+
+<Router AppAssembly="typeof(Program).Assembly"
+        AdditionalAssemblies="new[] { typeof(MainLayout).Assembly }">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)"/>
+        <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+    </Found>
+    
+    <NotFound>
+        <p>Page is not found</p>
+        @* TODO: setup page error. Decorate it *@
+    </NotFound>
+</Router>
