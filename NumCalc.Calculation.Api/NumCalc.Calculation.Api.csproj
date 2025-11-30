@@ -16,12 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="requirements.txt">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
-    <ItemGroup>
         <AdditionalFiles Include="Scripts\**\*.py" SourceItemType="Python" />
 
         <None Update="Scripts\**\*.py">
