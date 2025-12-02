@@ -17,7 +17,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         }
         else
         {
-            logger.LogError(exception, "Unhandled exception occurred");
+            logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
             FillServerProblemDetails(problemDetails, exception);
         }
         
