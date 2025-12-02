@@ -3,7 +3,7 @@ using NumCalc.Shared.Calculation.Responses;
 
 namespace NumCalc.Calculation.Api.Services.Interfaces;
 
-public interface IRootFinding
+public interface IRootFindingService
 {
     RootFindingResponse CalculateDichotomy(RootFindingRequest request);
 }

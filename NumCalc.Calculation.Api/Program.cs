@@ -2,7 +2,6 @@ using CSnakes.Runtime;
 using NumCalc.Calculation.Api.Middlewares;
 using NumCalc.Calculation.Api.Services.Implementations;
 using NumCalc.Calculation.Api.Services.Interfaces;
-using IRootFinding = NumCalc.Calculation.Api.Services.Interfaces.IRootFinding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,19 +21,7 @@ builder.Services
     .FromRedistributable()
     .WithPipInstaller();
 
-builder.Services.AddScoped<CSnakes.Runtime.IRootFinding>(sp => 
-{
-    var env = sp.GetRequiredService<IPythonEnvironment>();
-    return env.RootFinding(); 
-});
-
-builder.Services.AddScoped<IFunctionBuilding>(sp => 
-{
-    var env = sp.GetRequiredService<IPythonEnvironment>();
-    return env.FunctionBuilding(); 
-});
-
-builder.Services.AddScoped<IRootFinding, RootFinding>();
+builder.Services.AddScoped<IRootFindingService, RootFindingService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

@@ -1,34 +1,45 @@
-﻿from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Tuple
+﻿from dataclasses import dataclass, asdict
+import json
+import logging
 import sympy
 import numpy as np
 
 @dataclass
-class RootFindingResult:
-    method: str
+class SuccessData:
     root: float
     iterations: int
-    is_success: bool
-    error_message: Optional[str] = None
-    chart_points: List[Tuple[float, float]] = field(default_factory=list)
 
-def solve_dichotomy(expression: str, a: float, b: float, tolerance: float = 0.001) -> RootFindingResult:
+@dataclass
+class FailureData:
+    code: str
+    message: str
+
+@dataclass
+class ResponseEnvelope:
+    success: SuccessData | None
+    failure: FailureData | None
+
+def solve_dichotomy(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
     try:
         x = sympy.symbols('x')
-        expr = sympy.sympify(expression)
+        try:
+            expr = sympy.sympify(expression)
+        except (Exception,):
+            logging.exception("Unexpected error while parsing formula")
+            envelope = ResponseEnvelope(failure=FailureData("SYNTAX_ERROR", "Invalid formula syntax"), success=None)
+            return json.dumps(asdict(envelope))
+
         f = sympy.lambdify(x, expr, modules="numpy")
-
-        fa = float(f(a))
-        fb = float(f(b))
-
+        
+        try:
+            fa, fb = float(f(a)), float(f(b))
+        except Exception as e:
+            envelope = ResponseEnvelope(failure=FailureData("EVALUATION_ERROR", str(e)), success=None)
+            return json.dumps(asdict(envelope))
+        
         if fa * fb > 0:
-            return RootFindingResult(
-                method="dichotomy",
-                root=0.0,
-                iterations=0,
-                is_success=False,
-                error_message=f"Function has same signs at ends: f({a})={fa}, f({b})={fb}"
-            )
+            envelope = ResponseEnvelope(failure=FailureData("RANGE_INVALID", f"Signs are same: f({a})={fa}, f({b})={fb}"), success=None)
+            return json.dumps(asdict(envelope))
 
         iterations = 0
         root = 0.0
@@ -52,34 +63,12 @@ def solve_dichotomy(expression: str, a: float, b: float, tolerance: float = 0.00
             iterations += 1
             root = c
 
-        padding = (b - a) * 0.1
-        x_vals = np.linspace(a - padding, b + padding, 100)
-        y_vals = f(x_vals)
-
-        points = list(zip(x_vals, y_vals))
-
-        return RootFindingResult(
-            method="dichotomy",
-            root=float(root),
-            iterations=iterations,
-            is_success=True,
-            chart_points=points
+        envelope = ResponseEnvelope(
+            success=SuccessData(root, iterations),
+            failure=None
         )
+        return json.dumps(asdict(envelope))
 
     except Exception as e:
-        return RootFindingResult(
-            method="dichotomy",
-            root=0.0,
-            iterations=0,
-            is_success=False,
-            error_message=str(e)
-        )
-
-def solve_newton(expression: str, a: float, b: float, tolerance: float = 0.001) -> RootFindingResult:
-    return RootFindingResult(
-        method="newton",
-        root=1.23,
-        iterations=5,
-        is_success=True,
-        error_message=None
-    )
+        envelope = ResponseEnvelope(failure=FailureData("UNKNOWN_ERROR", str(e)), success=None)
+        return json.dumps(asdict(envelope))
