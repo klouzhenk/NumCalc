@@ -1,65 +1,27 @@
-using System.Collections;
-using CSnakes.Runtime;
-using CSnakes.Runtime.Python;
 using Microsoft.AspNetCore.Mvc;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
-using NumCalc.Shared.Common;
+using IRootFinding = NumCalc.Calculation.Api.Services.Interfaces.IRootFinding;
 
 namespace NumCalc.Calculation.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RootFindingController(IRootFinding rootFindingService, IFunctionBuilding functionBuilding) : ControllerBase
+public class RootFindingController(IRootFinding rootFinding) : ControllerBase
 {
     [HttpPost("dichotomy")]
+    [ProducesResponseType(typeof(RootFindingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult CalculateDichotomy([FromBody] RootFindingRequest request)
     {
-        using var rawResult = rootFindingService.SolveDichotomy(
-            request.FunctionExpression ?? string.Empty, 
-            request.StartRange, 
-            request.EndRange, 
-            request.Error
-        );
-        var errorMsgAttr = rawResult.GetAttr("error_message");
-
-        var pyPointsList = functionBuilding.RootFindingPoints(request.FunctionExpression ?? "", request.StartRange,
-            request.EndRange, 100);
-        
-        var response = new RootFindingResponse
-        {
-            Method = rawResult.GetAttr("method").As<string>(),
-            Root = rawResult.GetAttr("root").As<double>(),
-            Iterations = rawResult.GetAttr("iterations").As<int>(),
-            IsSuccess = rawResult.GetAttr("is_success").As<bool>(),
-            ErrorMessage = errorMsgAttr.IsNone() ? null : errorMsgAttr.As<string>(),
-            ChartData = pyPointsList.Select(p => new Point(p.Item1, p.Item2)).ToList()
-        };
-    
+        var response = rootFinding.CalculateDichotomy(request);
         return Ok(response);
     }
     
     [HttpPost("newton")]
     public IActionResult CalculateNewton([FromBody] RootFindingRequest request)
     {
-        using var rawResult = rootFindingService.SolveDichotomy(
-            request.FunctionExpression ?? string.Empty, 
-            request.StartRange, 
-            request.EndRange, 
-            request.Error
-        );
-        
-        var errorMsgAttr = rawResult.GetAttr("error_message");
-        
-        var response = new RootFindingResponse
-        {
-            Method = rawResult.GetAttr("method").As<string>(),
-            Root = rawResult.GetAttr("root").As<double>(),
-            Iterations = rawResult.GetAttr("iterations").As<int>(),
-            IsSuccess = rawResult.GetAttr("is_success").As<bool>(),
-            ErrorMessage = errorMsgAttr.IsNone() ? null : errorMsgAttr.As<string>()
-        };
-    
-        return Ok(response);
+        // TODO: add newton method
+        return Ok();
     }
 }
