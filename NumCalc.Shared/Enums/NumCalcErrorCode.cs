@@ -18,5 +18,11 @@ public enum NumCalcErrorCode
     Timeout,
     
     [JsonStringEnumMemberName("UNKNOWN_ERROR")]
-    UnknownError
+    UnknownError,
+    
+    [JsonStringEnumMemberName("INVALID_JSON")]
+    InvalidJson,
+    
+    [JsonStringEnumMemberName("EMPTY_RESPONSE")]
+    EmptyResponse
 }

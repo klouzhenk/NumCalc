@@ -3,21 +3,8 @@ import json
 import logging
 import sympy
 import numpy as np
-
-@dataclass
-class SuccessData:
-    root: float
-    iterations: int
-
-@dataclass
-class FailureData:
-    code: str
-    message: str
-
-@dataclass
-class ResponseEnvelope:
-    success: SuccessData | None
-    failure: FailureData | None
+from Shared.structures import ResponseEnvelope, SuccessData, FailureData, Point
+from plotting import generate_points
 
 def solve_dichotomy(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
     try:
@@ -61,10 +48,13 @@ def solve_dichotomy(expression: str, a: float, b: float, tolerance: float = 0.00
                 curr_a = c
 
             iterations += 1
-            root = c
-
+            root = c\
+            
+        points = generate_points(f, a, b)
+        points_objects = [Point(x=p[0], y=p[1]) for p in points]
+        
         envelope = ResponseEnvelope(
-            success=SuccessData(root, iterations),
+            success=SuccessData(root, iterations, points_objects),
             failure=None
         )
         return json.dumps(asdict(envelope))

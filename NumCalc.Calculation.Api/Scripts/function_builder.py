@@ -1,6 +1,7 @@
 ﻿from typing import List, Tuple
 import numpy as np
 import sympy as sp
+from plotting import generate_points
 
 def root_finding_points(
         func_expr: str,
@@ -12,6 +13,4 @@ def root_finding_points(
     x = sp.symbols("x")
     f = sp.lambdify(x, sp.sympify(func_expr), "numpy")
 
-    xs = np.linspace(a, b, steps)
-    points = [(float(xv), float(f(xv))) for xv in xs]
-    return points
+    return generate_points(f, a, b, steps)
