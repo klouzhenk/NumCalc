@@ -31,6 +31,30 @@ public class RootFindingService(IPythonEnvironment env) : IRootFindingService
             Root = rootData?.Root,
             Iterations = rootData?.Iterations ?? 0,
             ChartData = rootData?.ChartPoints
-        };;
+        };
+    }
+
+    public RootFindingResponse CalculateNewton(RootFindingRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        
+        var rootSolver = env.RootFinding();
+        
+        var jsonEnvelope = rootSolver.SolveNewton(
+            request.FunctionExpression, 
+            request.StartRange, 
+            request.Error
+        );
+        
+        var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
+        
+        return new RootFindingResponse
+        {
+            Root = rootData?.Root,
+            Iterations = rootData?.Iterations ?? 0,
+            ChartData = rootData?.ChartPoints,
+            SolutionSteps = rootData?.SolutionSteps
+        };
     }
 }

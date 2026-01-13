@@ -19,9 +19,11 @@ public class RootFindingController(IRootFindingService rootFindingService) : Con
     }
     
     [HttpPost("newton")]
+    [ProducesResponseType(typeof(RootFindingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult CalculateNewton([FromBody] RootFindingRequest request)
     {
-        // TODO: add newton method
-        return Ok();
+        var response = rootFindingService.CalculateNewton(request);
+        return Ok(response);
     }
 }

@@ -6,4 +6,5 @@ namespace NumCalc.Calculation.Api.Services.Interfaces;
 public interface IRootFindingService
 {
     RootFindingResponse CalculateDichotomy(RootFindingRequest request);
+    RootFindingResponse CalculateNewton(RootFindingRequest request);
 }
