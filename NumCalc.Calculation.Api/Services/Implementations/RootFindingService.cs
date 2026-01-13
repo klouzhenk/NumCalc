@@ -30,7 +30,8 @@ public class RootFindingService(IPythonEnvironment env) : IRootFindingService
         {
             Root = rootData?.Root,
             Iterations = rootData?.Iterations ?? 0,
-            ChartData = rootData?.ChartPoints
+            ChartData = rootData?.ChartPoints,
+            SolutionSteps = rootData?.SolutionSteps
         };
     }
 
