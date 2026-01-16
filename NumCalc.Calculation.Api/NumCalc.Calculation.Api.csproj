@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CSnakes.Runtime" Version="1.2.1" />
+        <PackageReference Include="CSnakes.Runtime" Version="2.0.0-beta.319" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
     </ItemGroup>
 
@@ -15,11 +15,16 @@
       <ProjectReference Include="..\NumCalc.Shared\NumCalc.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <AdditionalFiles Include="Scripts\**\*.py" SourceItemType="Python" />
+    <PropertyGroup>
+        <DefaultPythonItems>true</DefaultPythonItems>
+    </PropertyGroup>
 
+    <ItemGroup>
         <None Update="Scripts\**\*.py">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Scripts\shared\__init__.py">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 </Project>
