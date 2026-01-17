@@ -7,8 +7,23 @@ using NumCalc.Calculation.Api.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+    {
+        Title = "NumCalc API",
+        Version = "v1",
+        Description = "API for numerical calculation",
+        Contact = new Microsoft.OpenApi.OpenApiContact
+        {
+            Name = "Yuliia",
+            Email = "yuliavydryk@gmail.com"
+        }
+    });
+
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 var binPath = AppDomain.CurrentDomain.BaseDirectory;
 var projectRoot = Path.GetFullPath(Path.Combine(binPath, "../../../../")); 
