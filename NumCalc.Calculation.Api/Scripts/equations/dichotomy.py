@@ -4,12 +4,13 @@ import logging
 import sympy
 from shared.structures import ResponseEnvelope, SuccessData, FailureData, Point, SolutionStep
 from shared.functions import generate_points
+from shared.parsing import parse_expression
 
 def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
     try:
         x = sympy.symbols('x')
         try:
-            expr = sympy.sympify(expression)
+            expr = parse_expression(expression)
         except (Exception,):
             logging.exception("Unexpected error while parsing formula")
             envelope = ResponseEnvelope(failure=FailureData("SYNTAX_ERROR", "Invalid formula syntax"), success=None)

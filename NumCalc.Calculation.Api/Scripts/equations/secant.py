@@ -10,7 +10,7 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
     try:
         x_sym = sympy.symbols('x')
         try:
-            expr = sympy.sympify(expression)
+            expr = parse_expression(expression)
         except (Exception,):
             logging.exception("Error parsing formula")
             envelope = ResponseEnvelope(failure=FailureData("SYNTAX_ERROR", "Invalid formula syntax"), success=None)

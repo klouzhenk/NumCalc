@@ -9,7 +9,7 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
     try:
         x = sympy.symbols('x')
         try:
-            expr = sympy.sympify(expression)
+            expr = parse_expression(expression)
         except (Exception,):
             envelope = ResponseEnvelope(failure=FailureData("SYNTAX_ERROR", "Invalid formula syntax"), success=None)
             return json.dumps(asdict(envelope))
