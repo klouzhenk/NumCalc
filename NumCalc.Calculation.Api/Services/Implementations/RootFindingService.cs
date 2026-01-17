@@ -59,4 +59,79 @@ public class RootFindingService(IPythonEnvironment env) : IRootFindingService
             SolutionSteps = rootData?.SolutionSteps
         };
     }
+
+    public RootFindingResponse CalculateSimpleIterations(RootFindingRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        
+        var rootSolver = env.RootFinding();
+        
+        var jsonEnvelope = rootSolver.SolveSimpleIterations(
+            request.FunctionExpression, 
+            request.StartRange, 
+            request.EndRange, 
+            request.Error
+        );
+        
+        var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
+
+        return new RootFindingResponse
+        {
+            Root = rootData?.Root,
+            Iterations = rootData?.Iterations ?? 0,
+            ChartData = rootData?.ChartPoints,
+            SolutionSteps = rootData?.SolutionSteps
+        };
+    }
+
+    public RootFindingResponse CalculateSecant(RootFindingRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        
+        var rootSolver = env.RootFinding();
+        
+        var jsonEnvelope = rootSolver.SolveSecant(
+            request.FunctionExpression, 
+            request.StartRange, 
+            request.EndRange, 
+            request.Error
+        );
+        
+        var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
+
+        return new RootFindingResponse
+        {
+            Root = rootData?.Root,
+            Iterations = rootData?.Iterations ?? 0,
+            ChartData = rootData?.ChartPoints,
+            SolutionSteps = rootData?.SolutionSteps
+        };
+    }
+    
+    public RootFindingResponse CalculateCombined(RootFindingRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        
+        var rootSolver = env.RootFinding();
+        
+        var jsonEnvelope = rootSolver.SolveCombined(
+            request.FunctionExpression, 
+            request.StartRange, 
+            request.EndRange, 
+            request.Error
+        );
+        
+        var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
+
+        return new RootFindingResponse
+        {
+            Root = rootData?.Root,
+            Iterations = rootData?.Iterations ?? 0,
+            ChartData = rootData?.ChartPoints,
+            SolutionSteps = rootData?.SolutionSteps
+        };
+    }
 }
