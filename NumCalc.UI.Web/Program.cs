@@ -1,3 +1,5 @@
+using NumCalc.UI.Shared.HttpServices.Implementations;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Layouts;
 using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
@@ -14,6 +16,8 @@ builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(cl
 {
     client.BaseAddress = new Uri(baseApiUrl);
 });
+
+builder.Services.AddScoped<IUiStateService, UiStateService>();
 
 var app = builder.Build();
 

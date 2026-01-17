@@ -1,7 +1,7 @@
 ﻿using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
 
-namespace NumCalc.UI.Shared.Services.Interfaces;
+namespace NumCalc.UI.Shared.HttpServices.Interfaces;
 
 public interface ICalculationApiService
 {

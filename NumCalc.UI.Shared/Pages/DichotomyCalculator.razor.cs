@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -10,6 +11,7 @@ public partial class DichotomyCalculator
 {
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] public IUiStateService UiStateService { get; set; } = null!;
     
     private RootFindingRequest RequestModel { get; set; } = new();
     
@@ -25,8 +27,7 @@ public partial class DichotomyCalculator
     
     private async Task HandleCalculate()
     {
-        IsLoading = true;
-        ErrorMessage = null;
+        UiStateService.ShowLoader();
         Result = null;
 
         try
@@ -46,7 +47,7 @@ public partial class DichotomyCalculator
         }
         finally
         {
-            IsLoading = false;
+            UiStateService.HideLoader();
         }
     }
 

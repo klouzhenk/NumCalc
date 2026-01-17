@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using NumCalc.UI.Shared.HttpServices.Implementations;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 

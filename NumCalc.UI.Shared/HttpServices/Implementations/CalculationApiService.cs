@@ -2,9 +2,10 @@
 using System.Text.Json;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Services.Interfaces;
 
-namespace NumCalc.UI.Shared.Services.Implementations;
+namespace NumCalc.UI.Shared.HttpServices.Implementations;
 
 public class CalculationApiService(HttpClient httpClient) : ICalculationApiService
 {
