@@ -1,0 +1,114 @@
+﻿<div class="toast-container">
+    @foreach (var toast in _toasts)
+    {
+        <div class="toast-message @GetToastClass(toast)" @onclick="() => RemoveToast(toast)">
+            
+            <div class="toast-icon">
+                @GetIcon(toast)
+            </div>
+
+            <div class="toast-content">
+                <div class="toast-title">@toast.Title</div>
+                <div class="toast-body">@toast.Message</div>
+            </div>
+
+            <div class="toast-close">×</div>
+        </div>
+    }
+</div>
+
+<style>
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10000; /* Поверх усього */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none; /* Щоб прозорий контейнер не блокував кліки по сторінці */
+    }
+
+    /* Сама картка тоста */
+    .toast-message {
+        pointer-events: auto; /* Повертаємо клікабельність самим карткам */
+        display: flex;
+        align-items: flex-start;
+        min-width: 300px;
+        max-width: 400px;
+        padding: 16px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: #333;
+        font-family: 'Segoe UI', sans-serif;
+        cursor: pointer;
+
+        /* Анімація появи */
+        animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition: transform 0.2s, opacity 0.2s;
+    }
+
+    /* Ефект при наведенні та натисканні */
+    .toast-message:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-message:active {
+        transform: scale(0.98);
+    }
+
+    /* Кольорові індикатори зліва */
+    .toast-success { border-left: 5px solid #2ecc71; }
+    .toast-error   { border-left: 5px solid #e74c3c; }
+    .toast-warning { border-left: 5px solid #f1c40f; }
+    .toast-info    { border-left: 5px solid #3498db; }
+
+    /* Іконка */
+    .toast-icon {
+        font-size: 1.2rem;
+        margin-right: 12px;
+    }
+
+    /* Текст */
+    .toast-content {
+        flex-grow: 1;
+    }
+
+    .toast-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-size: 0.95rem;
+    }
+
+    .toast-body {
+        font-size: 0.85rem;
+        color: #555;
+        line-height: 1.4;
+    }
+
+    /* Хрестик закриття */
+    .toast-close {
+        margin-left: 10px;
+        font-size: 1.2rem;
+        color: #999;
+        line-height: 1;
+    }
+
+    .toast-close:hover {
+        color: #333;
+    }
+
+    /* Анімація виїзду справа */
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>

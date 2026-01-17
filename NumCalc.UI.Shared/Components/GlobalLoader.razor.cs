@@ -3,7 +3,7 @@ using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Components;
 
-public partial class GlobalLoader : ComponentBase
+public partial class GlobalLoader : ComponentBase, IDisposable
 {
     [Inject] protected IUiStateService UiStateService { get; set; } = null!;
     

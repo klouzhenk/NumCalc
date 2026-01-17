@@ -36,6 +36,8 @@ public partial class DichotomyCalculator
 
             if (Result?.ChartData != null && Result.ChartData.Any())
                 await RenderChartAsync();
+            
+            UiStateService.ShowSuccess("Корінь знайдено: 1.234");
         }
         catch (ApplicationException ex)
         {
@@ -47,6 +49,7 @@ public partial class DichotomyCalculator
         }
         finally
         {
+            if(ErrorMessage != null) UiStateService.ShowError(ErrorMessage);
             UiStateService.HideLoader();
         }
     }
