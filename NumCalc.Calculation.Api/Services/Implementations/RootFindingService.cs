@@ -2,6 +2,7 @@
 using NumCalc.Calculation.Api.Entities;
 using NumCalc.Calculation.Api.Exceptions;
 using NumCalc.Calculation.Api.Services.Interfaces;
+using NumCalc.Calculation.Api.Utils;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
 using NumCalc.Shared.Enums;

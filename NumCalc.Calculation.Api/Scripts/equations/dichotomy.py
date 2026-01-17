@@ -2,7 +2,6 @@
 import json
 import logging
 import sympy
-import numpy as np
 from shared.structures import ResponseEnvelope, SuccessData, FailureData, Point, SolutionStep
 from shared.functions import generate_points
 

@@ -1,4 +1,5 @@
 using CSnakes.Runtime;
+using NumCalc.Calculation.Api.HostedServices;
 using NumCalc.Calculation.Api.Middlewares;
 using NumCalc.Calculation.Api.Services.Implementations;
 using NumCalc.Calculation.Api.Services.Interfaces;
@@ -19,9 +20,10 @@ builder.Services
     .WithHome(scriptsPath)
     .WithVirtualEnvironment(venvPath)
     .FromRedistributable()
-    .WithPipInstaller();
+    .WithPipInstaller(Path.Combine(scriptsPath, "requirements.txt"));
 
 builder.Services.AddScoped<IRootFindingService, RootFindingService>();
+builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

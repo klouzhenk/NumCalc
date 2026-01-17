@@ -3,7 +3,7 @@ using NumCalc.Calculation.Api.Entities;
 using NumCalc.Calculation.Api.Exceptions;
 using NumCalc.Shared.Enums;
 
-namespace NumCalc.Calculation.Api;
+namespace NumCalc.Calculation.Api.Utils;
 
 public static class PythonResponseUtils
 {
