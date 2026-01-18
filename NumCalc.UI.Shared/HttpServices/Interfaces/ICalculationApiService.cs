@@ -6,4 +6,5 @@ namespace NumCalc.UI.Shared.HttpServices.Interfaces;
 public interface ICalculationApiService
 {
     Task<RootFindingResponse?> GetDichotomyResultAsync(RootFindingRequest request);
+    Task<RootFindingResponse?> GetNewtonResultAsync(RootFindingRequest request);
 }

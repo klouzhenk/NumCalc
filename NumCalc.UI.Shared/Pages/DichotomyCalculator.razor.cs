@@ -7,19 +7,15 @@ using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public partial class DichotomyCalculator
+public partial class DichotomyCalculator : BasePage
 {
+    [Inject] protected IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IJSRuntime JSRuntime { get; set; } = null!;
-    [Inject] public IUiStateService UiStateService { get; set; } = null!;
     
     private RootFindingRequest RequestModel { get; set; } = new();
     
     private RootFindingResponse? Result { get; set; }
     
-    private bool IsLoading { get; set; }
-    private string? ErrorMessage { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
         await HandleCalculate();
@@ -27,31 +23,12 @@ public partial class DichotomyCalculator
     
     private async Task HandleCalculate()
     {
-        UiStateService.ShowLoader();
         Result = null;
 
-        try
-        {
-            Result = await CalculationApiService.GetDichotomyResultAsync(RequestModel);
-
-            if (Result?.ChartData != null && Result.ChartData.Any())
-                await RenderChartAsync();
-            
-            UiStateService.ShowSuccess("Корінь знайдено: 1.234");
-        }
-        catch (ApplicationException ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = "Critical client error: " + ex.Message;
-        }
-        finally
-        {
-            if(ErrorMessage != null) UiStateService.ShowError(ErrorMessage);
-            UiStateService.HideLoader();
-        }
+        Result = await SafeExecuteAsync<RootFindingResponse?>(() => CalculationApiService.GetDichotomyResultAsync(RequestModel));
+        
+        if (Result?.ChartData != null && Result.ChartData.Any())
+            await RenderChartAsync();
     }
 
     private async Task RenderChartAsync()
@@ -66,7 +43,7 @@ public partial class DichotomyCalculator
         {
             title = new { text = $"Графік функції: {RequestModel.FunctionExpression}" },
             xAxis = new { title = new { text = "X" } },
-            yAxis = new { title = new { text = "Y" }, plotLines = new[] { new { value = 0, width = 2, color = "black" } } }, // Лінія Y=0
+            yAxis = new { title = new { text = "Y" }, plotLines = new[] { new { value = 0, width = 2, color = "black" } } },
             series = new object[]
             {
                 new 
@@ -79,12 +56,12 @@ public partial class DichotomyCalculator
                 {
                     type = "scatter",
                     name = "Root",
-                    data = new[] { new { x = Result.Root, y = 0 } },
+                    data = new[] { (x: Result.Root, y: 0) },
                     marker = new { radius = 6, fillColor = "red" }
                 }
             }
         };
 
-        await JSRuntime.InvokeVoidAsync("renderHighchart", "dichotomy-chart", chartOptions);
+        await JsRuntime.InvokeVoidAsync("renderHighchart", "dichotomy-chart", chartOptions);
     }
 }
