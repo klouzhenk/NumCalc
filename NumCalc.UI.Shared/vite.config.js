@@ -17,7 +17,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname, 'src/js/app.js'),
-                styles: path.resolve(__dirname, 'src/scss/main.scss')
+                styles: path.resolve(__dirname, 'src/css/main.css')
             },
             output: {
                 entryFileNames: 'js/[name].js',

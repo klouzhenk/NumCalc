@@ -1,0 +1,26 @@
+﻿:root {
+  --primary-color: #3498db;
+}
+
+.navbar {
+  background: var(--primary-color);
+
+  &__link {
+    color: white;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+body {
+  background-color: #f0f0f0;
+
+  .top{
+    
+    &-bar {
+      background-color: #ff9100; /* Тест */
+    }
+  }
+}
