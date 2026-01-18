@@ -3,7 +3,6 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
-using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
 

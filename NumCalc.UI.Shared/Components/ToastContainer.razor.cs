@@ -9,7 +9,7 @@ public partial class ToastContainer : ComponentBase, IDisposable
 {
     [Inject] protected IUiStateService UiStateService { get; set; }
 
-    public List<ToastMessage> _toasts = new();
+    public List<ToastMessage> _toasts = [];
 
     protected override void OnInitialized()
     {
