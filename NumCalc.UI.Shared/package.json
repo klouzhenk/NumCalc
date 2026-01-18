@@ -1,0 +1,22 @@
+{
+  "name": "numcalc.ui.shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "postcss": "^8.5.6",
+    "postcss-nested": "^7.0.2",
+    "postcss-preset-env": "^11.1.1",
+    "sass": "^1.97.2",
+    "vite": "^7.3.1",
+    "vite-plugin-image-optimizer": "^2.0.3"
+  }
+}

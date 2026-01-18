@@ -20,4 +20,8 @@
       <ProjectReference Include="..\NumCalc.Shared\NumCalc.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="src\images\" />
+    </ItemGroup>
+
 </Project>
