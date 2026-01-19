@@ -3,6 +3,8 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using Microsoft.Extensions.Localization;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Pages;
 
@@ -10,6 +12,7 @@ public partial class DichotomyCalculator : BasePage
 {
     [Inject] protected IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] public IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
     private RootFindingRequest RequestModel { get; set; } = new();
     

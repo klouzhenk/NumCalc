@@ -4,14 +4,17 @@ using NumCalc.UI.Shared.Layouts;
 using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 using WebUI.Components;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
-const string baseApiUrl = "http://localhost:5229";
+
+builder.Services.AddLocalization();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+const string baseApiUrl = "http://localhost:5229";
 builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
 {
     client.BaseAddress = new Uri(baseApiUrl);
@@ -20,6 +23,13 @@ builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(cl
 builder.Services.AddScoped<IUiStateService, UiStateService>();
 
 var app = builder.Build();
+
+var supportedCultures = new[] { "en", "uk" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("uk")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
