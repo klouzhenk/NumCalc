@@ -1,0 +1,73 @@
+﻿:root{
+    --primary-rgb: 140, 33, 85;
+    --secondary-rgb: 63, 130, 109;
+    --black-rgb: 13, 19, 33;
+    --white-rgb: 244, 243, 238;
+
+    --success-rgb: 142, 166, 4;
+    --danger-rgb: 231, 29, 54;
+    --warning-rgb: 254, 198, 1;
+
+    --black-color: rgb(var(--black-rgb));
+    --white-color: rgb(var(--white-rgb));
+    
+    --primary-color: rgb(var(--primary-rgb));
+    --primary-dark-color: color-mix(in srgb, var(--primary-color), var(--black-color) 20%);
+    --primary-light-color: color-mix(in srgb, var(--primary-color), var(--white-color) 60%);
+    
+    --secondary-color: rgb(var(--secondary-rgb));
+    --secondary-dark-color: color-mix(in srgb, var(--secondary-color), var(--black-color) 20%);
+    --secondary-light-color: color-mix(in srgb, var(--secondary-color), var(--white-color) 60%);
+    
+    --success-color: rgb(var(--success-rgb));
+    --success-dark-color: color-mix(in srgb, var(--success-color), var(--black-color) 20%);
+    --success-light-color: color-mix(in srgb, var(--success-color), var(--white-color) 60%);
+    
+    --danger-color: rgb(var(--danger-rgb));
+    --danger-dark-color: color-mix(in srgb, var(--danger-color), var(--black-color) 20%);
+    --danger-light-color: color-mix(in srgb, var(--danger-color), var(--white-color) 60%);
+    
+    --warning-color: rgb(var(--warning-rgb));
+    --warning-dark-color: color-mix(in srgb, var(--warning-color), var(--black-color) 20%);
+    --warning-light-color: color-mix(in srgb, var(--warning-color), var(--white-color) 60%);
+    
+    /* background */
+    --success-background: rgba(var(--success-rgb), 0.16);
+    --primary-background: rgba(var(--primary-rgb), 0.16);
+    --danger-background: rgba(var(--danger-rgb), 0.16);
+    --warning-background: rgba(var(--warning-rgb), 0.16);
+    --layout-background: var(--white-color);
+
+    /* border */
+    --border-m: 1px solid;
+    --border-l: 2px solid;
+    --border-radius-m: 10px;
+    --default-border-color: var(--black-color);
+    --border-radius-xs: calc(var(--border-radius-m) * 0.6);
+    --border-radius-s: calc(var(--border-radius-m) * 0.8);
+    --border-radius-l: calc(var(--border-radius-m) * 1.2);
+    --border-radius-xl: calc(var(--border-radius-m) * 1.6);
+    --default-border: var(--border-m) var(--default-border-color);
+
+    /* dimensions (margins, paddings, gaps, etc)*/
+    --dimension-xs: 0.25rem;
+    --dimension-s: 0.5rem;
+    --dimension-m: 0.75rem;
+    --dimension-l: 1rem;
+    --dimension-xl: 1.5rem;
+    --dimension-xxl: 2rem;
+
+    /* button styles */
+    --button-primary-color: rgba(var(--primary-rgb), 1);
+    --button-secondary-color: rgba(var(--secondary-rgb), 1);
+    --button-danger-color: color-mix(in srgb, var(--danger-color), var(--white-color) 80%);
+    --button-warning-color: color-mix(in srgb, var(--warning-color), var(--white-color) 80%);
+    --button-success-color: color-mix(in srgb, var(--success-color), var(--white-color) 80%);
+
+    /* animation*/
+    --default-transition: all 1.6s cubic-bezier(0.95, 0.00, 0.70, 1.00);
+
+    /* shadow*/
+    --text-shadow: 0 2px 6px rgba(var(--white-color), 0.3);
+    --seconday-shadow: 0 2px 6px rgba(var(--black-color), 0.3);
+}
