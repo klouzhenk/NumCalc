@@ -19,6 +19,10 @@
     --secondary-dark-color: color-mix(in srgb, var(--secondary-color), var(--black-color) 20%);
     --secondary-light-color: color-mix(in srgb, var(--secondary-color), var(--white-color) 60%);
     
+    --gray-color: color-mix(in srgb, var(--black-color), var(--white-color) 20%);
+    --gray-light-color: color-mix(in srgb, var(--black-color), var(--white-color) 40%);
+    --gray-ultra-light-color: color-mix(in srgb, var(--black-color), var(--white-color) 85%);
+    
     --success-color: rgb(var(--success-rgb));
     --success-dark-color: color-mix(in srgb, var(--success-color), var(--black-color) 20%);
     --success-light-color: color-mix(in srgb, var(--success-color), var(--white-color) 60%);
@@ -34,6 +38,7 @@
     /* background */
     --success-background: rgba(var(--success-rgb), 0.16);
     --primary-background: rgba(var(--primary-rgb), 0.16);
+    --secondary-background: rgba(var(--secondary-rgb), 0.16);
     --danger-background: rgba(var(--danger-rgb), 0.16);
     --warning-background: rgba(var(--warning-rgb), 0.16);
     --layout-background: var(--white-color);
@@ -47,7 +52,7 @@
     --border-radius-s: calc(var(--border-radius-m) * 0.8);
     --border-radius-l: calc(var(--border-radius-m) * 1.2);
     --border-radius-xl: calc(var(--border-radius-m) * 1.6);
-    --default-border: var(--border-m) var(--default-border-color);
+    --default-border: var(--border-m) var(--gray-ultra-light-color);
 
     /* dimensions (margins, paddings, gaps, etc)*/
     --dimension-xs: 0.25rem;
@@ -65,9 +70,10 @@
     --button-success-color: color-mix(in srgb, var(--success-color), var(--white-color) 80%);
 
     /* animation*/
-    --default-transition: all 1.6s cubic-bezier(0.95, 0.00, 0.70, 1.00);
+    --default-transition: all 0.3s ease-in;
 
     /* shadow*/
-    --text-shadow: 0 2px 6px rgba(var(--white-color), 0.3);
-    --seconday-shadow: 0 2px 6px rgba(var(--black-color), 0.3);
+    --text-shadow: 0 2px 6px var(--gray-ultra-light-color);
+    --secondary-shadow: 0 2px 6px var(--gray-ultra-light-color);
+    --component-shadow: 0 0 12px var(--gray-ultra-light-color);
 }

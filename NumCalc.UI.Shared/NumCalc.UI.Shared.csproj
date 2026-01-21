@@ -22,6 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="src\css\components\" />
+      <Folder Include="src\css\pages\" />
       <Folder Include="src\images\" />
     </ItemGroup>
 </Project>

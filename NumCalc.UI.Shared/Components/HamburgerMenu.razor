@@ -1,0 +1,18 @@
+﻿<button class="hamburger @(_isMenuOpen ? "hamburger--active" : "")" @onclick="ToggleMenu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+</button>
+
+<div class="hamburger-menu__overlay @(_isMenuOpen ? "visible" : "")" @onclick="CloseMenu"></div>
+
+<aside class="hamburger-menu @(_isMenuOpen ? "open" : "")">
+    <ul class="hamburger-menu__list">
+        @foreach (var item in NavigationItems)
+        {
+            <li @onclick="() => OnListItemClick(item.Key)">
+                @Localizer[item.Key.ToString()]
+            </li>
+        }
+    </ul>
+</aside>

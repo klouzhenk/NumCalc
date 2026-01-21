@@ -1,0 +1,30 @@
+﻿header {
+    --header-height: 75px;
+    
+    background-color: var(--layout-background);
+    padding: var(--dimension-m) var(--dimension-xl);
+    height: var(--header-height);
+    width: calc(100% - 80px - 100px);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    margin: 30px 40px;
+    z-index: 90;
+    border-radius: calc(var(--header-height) / 2);
+    box-shadow: var(--component-shadow);
+
+    & .header__icon {
+        font-size: var(--dimension-xl);
+        font-weight: 700;
+        color: var(--gray-light-color);
+        display: flex;
+        align-items: center;
+        gap: var(--dimension-s);
+        user-select: none;
+
+        & .brand-icon {
+            color: var(--primary-color);
+            font-size: var(--dimension-xxl);
+        }
+    }
+}

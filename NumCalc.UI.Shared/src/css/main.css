@@ -1,26 +1,10 @@
-﻿:root {
-  --primary-color: #3498db;
-}
+﻿@import "utils/variables.css";
+@import "utils/reset.css";
 
-.navbar {
-  background: var(--primary-color);
+@import "layout/hamburger-menu.css";
+@import "layout/header.css";
+@import "layout/main-layout.css";
 
-  &__link {
-    color: white;
+/* components */
 
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-body {
-  background-color: #f0f0f0;
-
-  .top{
-    
-    &-bar {
-      background-color: #ff9100; /* Тест */
-    }
-  }
-}
+/* pages */
