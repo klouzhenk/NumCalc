@@ -42,6 +42,7 @@
     --danger-background: rgba(var(--danger-rgb), 0.16);
     --warning-background: rgba(var(--warning-rgb), 0.16);
     --layout-background: var(--white-color);
+    --layout-transparent-background: rgba(var(--white-rgb), 0.16);
 
     /* border */
     --border-m: 1px solid;

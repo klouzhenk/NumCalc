@@ -6,5 +6,7 @@
 @import "layout/main-layout.css";
 
 /* components */
+@import "components/loader.css";
+@import "components/notifications.css";
 
 /* pages */
