@@ -1,0 +1,44 @@
+﻿@typeparam TItem
+
+<div class="dropdown__container @(_isOpen ? "open" : "")">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="dropdown__label">@Label</label>
+    }
+
+    <div class="dropdown__trigger-button trigger-button" @onclick="ToggleDropdown">
+        <span class="selected-text">@GetSelectedText()</span>
+        <span class="chevron">▼</span>
+    </div>
+
+    @if (_isOpen)
+    {
+        <div class="dropdown__backdrop" @onclick="Close"></div>
+        
+        <div class="dropdown__menu">
+            @if (MultiSelect)
+            {
+                <div class="dropdown__menu-item @(IsAllSelected ? "selected" : "")" @onclick="ToggleSelectAll">
+                    <input type="checkbox" checked="@IsAllSelected" readonly />
+                    <span>Select All</span>
+                </div>
+                <div class="divider"></div>
+            }
+
+            @foreach (var item in Data)
+            {
+                var isSelected = IsSelected(item);
+                <div class="dropdown__menu-item @(isSelected ? "selected" : "")" 
+                     @onclick="() => OnItemClick(item)">
+                    
+                    @if (MultiSelect)
+                    {
+                        <input type="checkbox" checked="@isSelected" readonly />
+                    }
+                    
+                    <span>@TextField(item)</span>
+                </div>
+            }
+        </div>
+    }
+</div>

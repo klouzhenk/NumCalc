@@ -1,0 +1,108 @@
+﻿.dropdown{
+    &__container {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xs);
+    }
+
+    &__label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--black-color);
+    }
+    
+    &__trigger-button {
+        width: 100%;
+        padding: var(--dimension-s) var(--dimension-m);
+        border: var(--default-border);
+        border-radius: var(--border-radius-m);
+        background-color: var(--white-color);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: var(--default-transition);
+        user-select: none;
+        min-height: 42px;
+    }
+
+    &__menu {
+        position: absolute;
+        top: calc(100% + var(--dimension-xs));
+        left: 0;
+        width: 100%;
+        max-height: 250px;
+        overflow-y: auto;
+        background-color: var(--white-color);
+        border: var(--default-border);
+        border-radius: var(--border-radius-m);
+        box-shadow: var(--component-shadow, 0 4px 12px rgba(0,0,0,0.1));
+        z-index: 1000;
+        padding: var(--dimension-xs);
+        display: flex;
+        flex-direction: column;
+
+        &__item {
+            padding: var(--dimension-s) var(--dimension-m);
+            border-radius: var(--border-radius-s);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--dimension-s);
+            transition: background-color 0.2s;
+            color: var(--black-color);
+
+            &:hover {
+                background-color: var(--primary-background);
+            }
+
+            &.selected {
+                background-color: var(--secondary-light-color);
+                font-weight: 600;
+            }
+
+            & input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                accent-color: var(--primary-color);
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.dropdown__trigger-button.trigger-button{
+    &:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .open & {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px var(--primary-background);
+    }
+
+    .selected-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--black-color);
+    }
+
+    .chevron {
+        font-size: 0.8rem;
+        color: color-mix(in srgb, var(--black-color), transparent 50%);
+        transition: transform 0.3s;
+
+        .open & {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.dropdown__menu .divider {
+    height: 1px;
+    background-color: rgba(var(--black-rgb), 0.1);
+    margin: var(--dimension-xs) 0;
+}
