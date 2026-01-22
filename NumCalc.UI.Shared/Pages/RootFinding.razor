@@ -1,0 +1,41 @@
+﻿@using NumCalc.UI.Shared.Enums.Roots
+@using NumCalc.UI.Shared.Components
+
+@page "/root-finding"
+
+<div class="config-form">
+    <div class="config-form__row">
+        <div class="form-group">
+            <label class="form-group__label">
+                @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
+            </label>
+            <input type="number" @bind="Model.StartPoint" class="form-group__input" step="any" />
+        </div>
+
+        @if (Model.Method != RootFindingMethod.Newton)
+        {
+            <div class="form-group">
+                <label class="form-group__label">End Point (b)</label>
+                <input type="number" @bind="Model.EndPoint" class="form-group__input" step="any" />
+            </div>
+        }
+    </div>
+    
+    <div class="form-group">
+        <label class="form-group__label">Tolerance</label>
+        <input type="number" @bind="Model.Tolerance" class="form-group__input" step="0.00001" />
+    </div>
+</div>
+
+<Dropdown TItem="RootFindingMethod"
+          Label="Method"
+          Data="@(Enum.GetValues<RootFindingMethod>())"
+          @bind-Value="Model.Method"
+          TextField="@(item => item.ToString())" />
+          
+<Dropdown TItem="RootFindingMethod"
+          Label="Compare Methods"
+          Data="@(Enum.GetValues<RootFindingMethod>())"
+          MultiSelect="true"
+          @bind-SelectedItems="ComparisonModel.SelectedMethods"
+          TextField="@(item => item.ToString())" />

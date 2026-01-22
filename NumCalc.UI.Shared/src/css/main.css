@@ -8,5 +8,8 @@
 /* components */
 @import "components/loader.css";
 @import "components/notifications.css";
+@import "components/dropdown.css";
+@import "components/switch.css";
 
 /* pages */
+@import "pages/root-finding.css";
