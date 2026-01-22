@@ -1,0 +1,37 @@
+﻿.multi-switch {
+    display: flex;
+    background-color: rgba(var(--black-rgb), 0.05);
+    padding: 4px; 
+    border-radius: var(--border-radius-m);
+    border: 1px solid rgba(var(--black-rgb), 0.1);
+    width: 100%;
+    gap: 4px;
+
+    &__option {
+        flex: 1;
+        padding: var(--dimension-s) var(--dimension-m);
+        border: none;
+        border-radius: var(--border-radius-s);
+        background: transparent;
+        color: var(--black-color);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:hover:not(&--selected) {
+            background-color: rgba(var(--black-rgb), 0.05);
+        }
+
+        &--selected {
+            background-color: var(--white-color);
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+    }
+}

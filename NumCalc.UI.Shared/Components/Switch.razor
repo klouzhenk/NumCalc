@@ -1,0 +1,14 @@
+﻿@typeparam TItem
+
+<div class="multi-switch">
+    @foreach (var item in Data)
+    {
+        var isSelected = IsSelected(item);
+        
+        <button type="button" 
+                class="multi-switch__option @(isSelected ? "multi-switch__option--selected" : "")"
+                @onclick="() => SelectItem(item)">
+            @TextField(item)
+        </button>
+    }
+</div>
