@@ -1,4 +1,7 @@
-﻿@import "utils/variables.css";
+﻿@import "fonts/ibm-plex-mono.css";
+@import "fonts/mulish.css";
+
+@import "utils/variables.css";
 @import "utils/reset.css";
 
 @import "layout/hamburger-menu.css";
@@ -6,6 +9,8 @@
 @import "layout/main-layout.css";
 
 /* components */
+@import "components/input.css";
+@import "components/list.css";
 @import "components/loader.css";
 @import "components/notifications.css";
 @import "components/dropdown.css";

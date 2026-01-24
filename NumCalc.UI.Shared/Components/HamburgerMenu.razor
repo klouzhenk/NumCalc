@@ -7,7 +7,7 @@
 <div class="hamburger-menu__overlay @(_isMenuOpen ? "visible" : "")" @onclick="CloseMenu"></div>
 
 <aside class="hamburger-menu @(_isMenuOpen ? "open" : "")">
-    <ul class="hamburger-menu__list">
+    <ul class="hamburger-menu__list hoverable">
         @foreach (var item in NavigationItems)
         {
             <li @onclick="() => OnListItemClick(item.Key)">

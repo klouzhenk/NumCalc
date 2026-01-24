@@ -14,6 +14,7 @@
     box-shadow: var(--component-shadow);
 
     & .header__icon {
+        font-family: var(--font-heading), monospace;
         font-size: var(--dimension-xl);
         font-weight: 700;
         color: var(--gray-light-color);

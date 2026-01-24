@@ -1,0 +1,50 @@
+﻿input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+    width: 100%;
+    padding: var(--dimension-s) var(--dimension-m);
+    border: var(--default-border);
+    border-radius: var(--border-radius-m);
+    background-color: var(--white-color);
+    transition: var(--default-transition);
+    outline: none;
+
+    &::placeholder {
+        color: color-mix(in srgb, var(--black-color), transparent 50%);
+    }
+
+    &:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px var(--primary-background);
+    }
+
+    &:disabled {
+        background-color: rgba(var(--black-rgb), 0.05);
+        cursor: not-allowed;
+    }
+}
+
+.input-section__wrapper{
+    display: flex;
+    flex-direction: row;
+    gap: var(--dimension-m);
+}
+
+.input-section__wrapper >  * {
+    flex-grow: 1;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-xs);
+    padding:  var(--dimension-xs);
+    
+    &__label{
+        margin: 0 var(--dimension-xs);
+    }
+}

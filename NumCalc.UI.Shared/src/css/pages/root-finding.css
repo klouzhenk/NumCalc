@@ -1,27 +1,27 @@
-﻿.config-form {
+﻿.page__root-finding{
     display: flex;
-    flex-direction: column;
-    gap: var(--dimension-m);
-
-    &__row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--dimension-m);
+    flex-direction: row;
+    gap:  var(--dimension-xl);
+    flex-wrap: nowrap;
+    
+    & > * {
+        flex-grow: 1;
     }
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--dimension-xs);
-
-    &__label {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--black-color);
+.root-finding{
+    
+    &__form-wrapper{
+        display: flex;
+        flex-direction: column;
+        gap:  var(--dimension-l);
     }
-
-    &__input {
-        width: 100%;
+    
+    &__filters-container{
+        display: flex;
+        flex-direction: row;
+        gap:  var(--dimension-l);
+        align-items: center;
     }
 }
+

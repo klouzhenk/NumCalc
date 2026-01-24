@@ -15,14 +15,12 @@
             {
                 case AnalysisMode.Single:
                     <Dropdown TItem="RootFindingMethod"
-                              Label="Method"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               @bind-Value="Model.Method"
                               TextField="@(item => item.ToString())"/>
                     break;
                 case AnalysisMode.Benchmark:
                     <Dropdown TItem="RootFindingMethod"
-                              Label="Compare Methods"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               MultiSelect="true"
                               @bind-SelectedItems="ComparisonModel.SelectedMethods"
@@ -48,18 +46,18 @@
                             <label class="input-group__label">
                                 @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
                             </label>
-                            <input type="number" @bind="Model.StartPoint" class="input-group__label" step="any"/>
+                            <input type="number" @bind="Model.StartPoint" class="input-group__input" step="any"/>
                         </div>
                         @if (Model.Method != RootFindingMethod.Newton)
                         {
                             <div class="input-group">
                                 <label class="input-group__label">@Localizer["EndPoint"]</label>
-                                <input type="number" @bind="Model.EndPoint" class="input-group__label" step="any"/>
+                                <input type="number" @bind="Model.EndPoint" class="input-group__group" step="any"/>
                             </div>
                         }
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" @bind="Model.Tolerance" class="input-group__label" step="0.00001"/>
+                            <input type="number" @bind="Model.Tolerance" class="input-group__group" step="0.00001"/>
                         </div>
                     </div>
 
@@ -70,15 +68,15 @@
                     <div class="input-section__wrapper">
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["StartPoint"]</label>
-                            <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__label" step="any"/>
+                            <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__group" step="any"/>
                         </div>
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["EndPoint"]</label>
-                            <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__label" step="any"/>
+                            <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__group" step="any"/>
                         </div>
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__label" step="0.00001"/>
+                            <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__group" step="0.00001"/>
                         </div>
                     </div>
                     break;

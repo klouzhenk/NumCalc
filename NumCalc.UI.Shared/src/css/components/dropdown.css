@@ -33,21 +33,11 @@
         top: calc(100% + var(--dimension-xs));
         left: 0;
         width: 100%;
-        max-height: 250px;
-        overflow-y: auto;
-        background-color: var(--white-color);
-        border: var(--default-border);
-        border-radius: var(--border-radius-m);
-        box-shadow: var(--component-shadow, 0 4px 12px rgba(0,0,0,0.1));
         z-index: 1000;
-        padding: var(--dimension-xs);
-        display: flex;
-        flex-direction: column;
 
         &__item {
             padding: var(--dimension-s) var(--dimension-m);
             border-radius: var(--border-radius-s);
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: var(--dimension-s);
@@ -99,10 +89,4 @@
             transform: rotate(180deg);
         }
     }
-}
-
-.dropdown__menu .divider {
-    height: 1px;
-    background-color: rgba(var(--black-rgb), 0.1);
-    margin: var(--dimension-xs) 0;
 }

@@ -15,20 +15,19 @@
     {
         <div class="dropdown__backdrop" @onclick="Close"></div>
         
-        <div class="dropdown__menu">
+        <ul class="dropdown__menu hoverable">
             @if (MultiSelect)
             {
-                <div class="dropdown__menu-item @(IsAllSelected ? "selected" : "")" @onclick="ToggleSelectAll">
+                <li class="dropdown__menu-item @(IsAllSelected ? "selected" : "")" @onclick="ToggleSelectAll">
                     <input type="checkbox" checked="@IsAllSelected" readonly />
                     <span>Select All</span>
-                </div>
-                <div class="divider"></div>
+                </li>
             }
 
             @foreach (var item in Data)
             {
                 var isSelected = IsSelected(item);
-                <div class="dropdown__menu-item @(isSelected ? "selected" : "")" 
+                <li class="dropdown__menu-item @(isSelected ? "selected" : "")" 
                      @onclick="() => OnItemClick(item)">
                     
                     @if (MultiSelect)
@@ -37,8 +36,8 @@
                     }
                     
                     <span>@TextField(item)</span>
-                </div>
+                </li>
             }
-        </div>
+        </ul>
     }
 </div>

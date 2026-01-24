@@ -56,6 +56,7 @@
     --default-border: var(--border-m) var(--gray-ultra-light-color);
 
     /* dimensions (margins, paddings, gaps, etc)*/
+    --dimension-xxs: 0.125rem;
     --dimension-xs: 0.25rem;
     --dimension-s: 0.5rem;
     --dimension-m: 0.75rem;
@@ -77,4 +78,8 @@
     --text-shadow: 0 2px 6px var(--gray-ultra-light-color);
     --secondary-shadow: 0 2px 6px var(--gray-ultra-light-color);
     --component-shadow: 0 0 12px var(--gray-ultra-light-color);
+
+    /* fonts */
+    --font-heading: 'IBM Plex Mono', monospace;
+    --font-body: 'Mulish', sans-serif;
 }
