@@ -3,39 +3,90 @@
 
 @page "/root-finding"
 
-<div class="config-form">
-    <div class="config-form__row">
-        <div class="form-group">
-            <label class="form-group__label">
-                @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
-            </label>
-            <input type="number" @bind="Model.StartPoint" class="form-group__input" step="any" />
+<div class="page-wrapper page__root-finding">
+    <div class="root-finding__form-wrapper">
+        <div class="root-finding__filters-container">
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="Mode"
+                    TextField="@(item => item.ToString())"/>
+
+            @switch (Mode)
+            {
+                case AnalysisMode.Single:
+                    <Dropdown TItem="RootFindingMethod"
+                              Label="Method"
+                              Data="@(Enum.GetValues<RootFindingMethod>())"
+                              @bind-Value="Model.Method"
+                              TextField="@(item => item.ToString())"/>
+                    break;
+                case AnalysisMode.Benchmark:
+                    <Dropdown TItem="RootFindingMethod"
+                              Label="Compare Methods"
+                              Data="@(Enum.GetValues<RootFindingMethod>())"
+                              MultiSelect="true"
+                              @bind-SelectedItems="ComparisonModel.SelectedMethods"
+                              TextField="@(item => item.ToString())"/>
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         </div>
 
-        @if (Model.Method != RootFindingMethod.Newton)
-        {
-            <div class="form-group">
-                <label class="form-group__label">End Point (b)</label>
-                <input type="number" @bind="Model.EndPoint" class="form-group__input" step="any" />
-            </div>
-        }
-    </div>
-    
-    <div class="form-group">
-        <label class="form-group__label">Tolerance</label>
-        <input type="number" @bind="Model.Tolerance" class="form-group__input" step="0.00001" />
-    </div>
-</div>
+        <div class="root-finding__form">
+            <MathInput Label="@Localizer["Equation"]" 
+                       @bind-Value="Model.FunctionExpression" 
+                       ErrorMessage="Equation cannot be empty" />
+            
+            @switch (Mode)
+            {
+                case AnalysisMode.Single:
+                {
+                    /* TODO : use EditForm */
+                    <div class="input-section__wrapper">
+                        <div class="input-group">
+                            <label class="input-group__label">
+                                @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
+                            </label>
+                            <input type="number" @bind="Model.StartPoint" class="input-group__label" step="any"/>
+                        </div>
+                        @if (Model.Method != RootFindingMethod.Newton)
+                        {
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["EndPoint"]</label>
+                                <input type="number" @bind="Model.EndPoint" class="input-group__label" step="any"/>
+                            </div>
+                        }
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["Tolerance"]</label>
+                            <input type="number" @bind="Model.Tolerance" class="input-group__label" step="0.00001"/>
+                        </div>
+                    </div>
 
-<Dropdown TItem="RootFindingMethod"
-          Label="Method"
-          Data="@(Enum.GetValues<RootFindingMethod>())"
-          @bind-Value="Model.Method"
-          TextField="@(item => item.ToString())" />
-          
-<Dropdown TItem="RootFindingMethod"
-          Label="Compare Methods"
-          Data="@(Enum.GetValues<RootFindingMethod>())"
-          MultiSelect="true"
-          @bind-SelectedItems="ComparisonModel.SelectedMethods"
-          TextField="@(item => item.ToString())" />
+                    break;
+                }
+                case AnalysisMode.Benchmark:
+                    /* TODO : use EditForm */
+                    <div class="input-section__wrapper">
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["StartPoint"]</label>
+                            <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__label" step="any"/>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["EndPoint"]</label>
+                            <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__label" step="any"/>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["Tolerance"]</label>
+                            <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__label" step="0.00001"/>
+                        </div>
+                    </div>
+                    break;
+            }
+            <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+        </div>        
+    </div>
+    @* TODO : build chart *@
+    <div class="chart chart--root-finding"></div>
+    @* TODO : build gotten formula *@
+</div>

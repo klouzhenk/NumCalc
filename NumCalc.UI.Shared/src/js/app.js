@@ -1,1 +1,7 @@
-﻿console.log("Hello from Vite inside Blazor!");
+﻿import 'mathlive';
+
+import { MathHelper } from './math-input.js';
+
+window.NumCalc = {
+    ...MathHelper,
+};

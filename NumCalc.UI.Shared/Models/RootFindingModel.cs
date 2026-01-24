@@ -4,6 +4,7 @@ namespace NumCalc.UI.Shared.Models;
 
 public class RootFindingModel
 {
+    public string? FunctionExpression { get; set; }
     public RootFindingMethod Method { get; set; }
     public double StartPoint { get; set; }
     public double EndPoint { get; set; }

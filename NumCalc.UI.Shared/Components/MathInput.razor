@@ -1,0 +1,19 @@
+﻿@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div class="math-input @(IsInvalid ? "math-input--invalid" : "")">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="math-input__label">@Label</label>
+    }
+
+    <div class="math-input__wrapper">
+        <math-field @ref="_mathFieldRef" class="math-input__field"></math-field>
+    </div>
+    
+    @if (IsInvalid && !string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="math-input__error">@ErrorMessage</div>
+    }
+</div>

@@ -10,6 +10,7 @@
 @import "components/notifications.css";
 @import "components/dropdown.css";
 @import "components/switch.css";
+@import "components/math-input.css";
 
 /* pages */
 @import "pages/root-finding.css";
