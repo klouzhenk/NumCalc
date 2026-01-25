@@ -5,16 +5,22 @@
     flex-wrap: nowrap;
     
     & > * {
-        flex-grow: 1;
+        flex: 1;
     }
 }
 
 .root-finding{
-    
     &__form-wrapper{
+        height: 100%;
         display: flex;
         flex-direction: column;
-        gap:  var(--dimension-l);
+        gap:  var(--dimension-xl);
+    }
+    
+    &__form{
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-l);
     }
     
     &__filters-container{
@@ -25,3 +31,19 @@
     }
 }
 
+.solution-steps{
+    &__container, &__container--empty{
+        flex: 1;        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--dimension-m);
+        box-shadow:  var(--component-shadow);
+        border-radius: var(--border-radius-xl);
+    }
+    
+    &__list{
+        flex: 1;
+        overflow: auto;
+    }
+}

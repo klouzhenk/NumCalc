@@ -45,6 +45,13 @@ select {
     padding:  var(--dimension-xs);
     
     &__label{
+        font-weight: 700;
+        font-size: 0.75rem;
+        opacity: 0.75;
         margin: 0 var(--dimension-xs);
+    }
+    
+    input{
+        height: 100%;
     }
 }

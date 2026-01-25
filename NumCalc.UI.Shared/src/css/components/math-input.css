@@ -2,13 +2,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--dimension-xs);
+    padding: var(--dimension-xs);
     width: 100%;
-
-    &__label {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--black-color);
-    }
 
     &__wrapper {
         border-radius: var(--border-radius-m);
@@ -29,24 +24,16 @@
         padding: var(--dimension-s) var(--dimension-m);
         font-size: 1.1rem;
         outline: none;
-
+        border:  none;
+        border-right: var(--default-border) ;
         --caret-color: var(--primary-color);
         --selection-background: var(--primary-background);
         --selection-color: var(--black-color);
         background: transparent;
         --keyboard-zindex: 10000;
     }
-
-    &--invalid {
-        & .math-input__wrapper {
-            border-color: var(--danger-color);
-            box-shadow: 0 0 0 4px var(--danger-background);
-        }
-    }
-
-    &__error {
-        font-size: 0.8rem;
-        color: var(--danger-color);
-        margin-top: 2px;
+    
+    &__copy-btn {
+        flex: unset;
     }
 }

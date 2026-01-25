@@ -1,0 +1,17 @@
+﻿.remark{
+    --remark-size: 1.25rem;
+    
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dimension-s);
+    letter-spacing: 0.5px;
+    font-weight: 200;
+    font-size: var(--remark-size);
+    font-style: italic;
+
+    &::before {
+        content: "\1F6C8";
+        font-style: normal;
+        font-size: calc(var(--remark-size) * 1.25);
+    }
+}

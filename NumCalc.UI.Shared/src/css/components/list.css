@@ -20,7 +20,7 @@
             border-bottom: none;
         }
 
-        &:active {
+        &.active {
             background-color: var(--secondary-background);
             border-color: var(--secondary-color);
             font-weight: 700;

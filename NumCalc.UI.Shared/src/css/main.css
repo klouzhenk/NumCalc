@@ -9,7 +9,10 @@
 @import "layout/main-layout.css";
 
 /* components */
+@import "components/chart.css";
+@import "components/remark.css";
 @import "components/input.css";
+@import "components/button.css";
 @import "components/list.css";
 @import "components/loader.css";
 @import "components/notifications.css";

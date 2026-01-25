@@ -78,6 +78,7 @@
     --text-shadow: 0 2px 6px var(--gray-ultra-light-color);
     --secondary-shadow: 0 2px 6px var(--gray-ultra-light-color);
     --component-shadow: 0 0 12px var(--gray-ultra-light-color);
+    --component-shadow--inner: inner 0 0 12px var(--gray-ultra-light-color);
 
     /* fonts */
     --font-heading: 'IBM Plex Mono', monospace;

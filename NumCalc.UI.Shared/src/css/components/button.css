@@ -1,0 +1,50 @@
+﻿.button{
+    transition: var(--default-transition);
+    padding: var(--dimension-m) var(--dimension-xl);
+    border-radius: var(--border-radius-l);
+    border:  var(--border-m) solid var(--gray-ultra-light-color);
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    flex: 1;
+    
+    &:hover{
+        box-shadow: var(--component-shadow);
+    }
+    
+    &--primary{
+        color: var(--white-color);
+        background-color: var(--primary-color);
+
+        &:hover{
+            background-color: var(--primary-dark-color);
+        }
+    }
+
+    &--secondary{
+        color: var(--white-color);
+        background-color: var(--secondary-color);
+
+        &:hover{
+            background-color: var(--secondary-dark-color);
+        }
+    }
+    
+    &--danger{
+        color: var(--white-color);
+        background-color: var(--danger-color);
+
+        &:hover{
+            background-color: var(--danger-dark-color);
+        }
+    }
+    
+    &--success{
+        color: var(--white-color);
+        background-color: var(--success-color);
+        
+        &:hover{
+            background-color: var(--success-dark-color);
+        }
+    }
+}
+
