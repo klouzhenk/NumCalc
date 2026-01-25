@@ -13,71 +13,103 @@ export const MathHelper = {
         });
     },
 
-    drawPlot: (containerId, expressionAscii, min, max) => {
-        if (!expressionAscii) return;
+    drawPlot: (config) => {
+        const { containerId, title, xAxis, yAxis, series, showLegend, tooltipSuffix } = config;
 
-        try {
-            if (typeof min !== 'number' || isNaN(min)) min = -10;
-            if (typeof max !== 'number' || isNaN(max)) max = 10;
-            if (min >= max) {
-                const center = min;
-                min = center - 10;
-                max = center + 10;
-            }
+        if (!document.getElementById(containerId)) return;
 
-            const expr = math.compile(expressionAscii);
-            const data = [];
+        const highchartsSeries = [];
 
-            const pointsCount = 200;
-            const step = (max - min) / pointsCount;
+        const xMin = xAxis.min ?? -10;
+        const xMax = xAxis.max ?? 10;
 
-            for (let i = 0; i <= pointsCount; i++) {
-                const x = min + (i * step);
+        const pointsCount = 200;
+        const step = (xMax - xMin) / pointsCount;
+        
+        console.log("pass consts");
 
-                try {
-                    let y = expr.evaluate({ x: x });
+        series.forEach(item => {
+            if (!item.expression || !item.isVisible) return;
 
-                    if (typeof y === 'number' && isFinite(y)) {
-                        data.push([x, y]);
-                    }
-                } catch (calcError) {
-                    // skip the points where function is not defined
+            console.log("pass serieeeeeeeeee");
+
+            try {
+                const expr = math.compile(item.expression);
+                const data = [];
+
+                for (let i = 0; i <= pointsCount; i++) {
+                    const x = xMin + (i * step);
+                    try {
+                        let y = expr.evaluate({ x: x });
+                        if (typeof y === 'number' && isFinite(y)) {
+                            data.push([x, y]);
+                        }
+                    } catch (e) {}
                 }
-            }
 
-            const chartOptions = {
-                title: { text: null },
-                chart: {
-                    backgroundColor: 'transparent',
-                    style: { fontFamily: 'IBM Plex Mono' }
-                },
-                xAxis: {
-                    min: min,
-                    max: max,
-                    gridLineWidth: 1
-                },
-                yAxis: { title: { text: null } },
-                series: [{
-                    name: 'f(x)',
+                highchartsSeries.push({
+                    name: item.name || 'Series',
                     data: data,
-                    lineWidth: 2,
+                    color: item.color,
+                    type: (item.type || 'line').toLowerCase(),
+                    dashStyle: item.dashStyle || 'solid',
+                    lineWidth: item.lineWidth,
                     marker: { enabled: false }
-                }],
-                legend: { enabled: false },
-                credits: { enabled: false }
-            };
+                });
 
-            const existingChart = Highcharts.charts.find(c => c && c.renderTo.id === containerId);
-
-            if (existingChart) {
-                existingChart.series[0].setData(data, true);
-                existingChart.xAxis[0].setExtremes(min, max);
-            } else {
-                Highcharts.chart(containerId, chartOptions);
+            } catch (err) {
+                console.warn(`Failed to plot series: ${item.name}`, err);
             }
+        });
 
-        } catch (e) {
-            // ignore
+        console.log("pass series");
+
+        const chartOptions = {
+            chart: {
+                backgroundColor: 'transparent',
+                style: { fontFamily: 'IBM Plex Mono' }
+            },
+            title: { text: title || null },
+
+            xAxis: {
+                title: { text: xAxis.title || null },
+                min: xAxis.min,
+                max: xAxis.max,
+                gridLineWidth: xAxis.showGrid ? 1 : 0,
+                plotLines: xAxis.plotLines || []
+            },
+
+            yAxis: {
+                title: { text: yAxis.title || null },
+                gridLineWidth: yAxis.showGrid ? 1 : 0,
+                plotLines: yAxis.plotLines || []
+            },
+
+            tooltip: {
+                valueSuffix: tooltipSuffix || '',
+                shared: true
+            },
+
+            legend: { enabled: showLegend },
+            credits: { enabled: false },
+
+            series: highchartsSeries
+        };
+
+        console.log("pass chart creation");
+
+        const existingChart = Highcharts.charts.find(c => c && c.renderTo.id === containerId);
+
+        console.log("chart creation", existingChart);
+        
+        if (existingChart) {
+            while (existingChart.series.length > 0) {
+                existingChart.series[0].remove(false);
+            }
+            highchartsSeries.forEach(s => existingChart.addSeries(s, false));
+            existingChart.update(chartOptions);
+        } else {
+            Highcharts.chart(containerId, chartOptions);
         }
     },
 

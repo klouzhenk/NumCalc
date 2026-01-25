@@ -3,9 +3,13 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
 using NumCalc.UI.Shared.Components;
+using NumCalc.UI.Shared.Enums;
+using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models;
+using NumCalc.UI.Shared.Models.Charts;
+using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
 
@@ -121,12 +125,66 @@ public partial class RootFinding : BasePage
         ChangeChartAppearing();
         var asciiEquation = await _mathInputComponent.GetAsciiValue();
         if (string.IsNullOrWhiteSpace(asciiEquation)) return;
+        
+        var min = Model.StartPoint;
+        var max = Model.EndPoint;
+        
+        if (min >= max)
+        {
+            var center = min;
+            min = center - 10;
+            max = center + 10;
+        }
+        
+        var config = new Chart()
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
 
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", 
-            ChartContainerId,
-            asciiEquation,
-            Model.StartPoint,
-            Model.EndPoint
-        );
+            XAxis = new ChartAxis 
+            { 
+                Min = min, 
+                Max = max, 
+                Title = Localizer["ArgumentX"],
+                PlotLines = 
+                [
+                    new PlotLine
+                    {
+                        Value = 0,
+                        Color = ColorUtils.GetColor(Color.GrayUltraLight),
+                        Width = 2,
+                        DashStyle = LineStyle.LongDash
+                    }
+                ]
+            },
+        
+            YAxis = new ChartAxis 
+            { 
+                Title = Localizer["FunctionValue"],
+                PlotLines =
+                [
+                    new PlotLine
+                    {
+                        Value = 0,
+                        Color = ColorUtils.GetColor(Color.GrayUltraLight),
+                        Width = 2,
+                        DashStyle = LineStyle.LongDash
+                    }
+                ]
+            },
+
+            Series =
+            [
+                new ChartSeries
+                {
+                    Name = "f(x)",
+                    Expression = asciiEquation,
+                    Color = ColorUtils.GetColor(Color.Primary),
+                    LineWidth = 3
+                }
+            ]
+        };
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
 }
