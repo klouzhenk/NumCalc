@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using NumCalc.Shared.Calculation.Requests;
 using NumCalc.Shared.Calculation.Responses;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models;
@@ -17,15 +18,20 @@ public partial class RootFinding : BasePage
     private RootFindingModel Model = new();
     private RootFindingComparisonModel ComparisonModel = new();
     
+    private MathInput _mathInputComponent;
+    private ElementReference _startPointInput;
+    private ElementReference _endPointInput;
+    private const string ChartContainerId = "chart--root-finding";
+    
     private RootFindingResponse? Result { get; set; }
     private bool _shouldRerend;
+    private bool _isChartBuilt;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_shouldRerend)
+        if (firstRender)
         {
-            _shouldRerend = false;
-            await RenderChartAsync();
+            await _mathInputComponent.InitializeGraphLinks(ChartContainerId, _startPointInput, _endPointInput);
         }
     }
 
@@ -108,5 +114,13 @@ public partial class RootFinding : BasePage
         };
         
         await JsRuntime.InvokeVoidAsync("renderHighchart", "chart--root-finding", chartOptions);
+    }
+
+    private void ShowChart()
+    {
+        if (!_isChartBuilt)
+            _isChartBuilt = true;
+        
+        if (string.IsNullOrEmpty(Model.FunctionExpression)) _isChartBuilt = false;
     }
 }

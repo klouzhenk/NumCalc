@@ -34,55 +34,26 @@
         </div>
         <div class="root-finding__form">
             <div class="input-section__wrapper">
-                <MathInput Label="@Localizer["Equation"]"
-                           @bind-Value="Model.FunctionExpression"/>
+                <MathInput @ref="_mathInputComponent" Label="@Localizer["Equation"]"
+                           @bind-Value="Model.FunctionExpression"
+                           OnInput="ShowChart"/>
 
-                @switch (Mode)
-                {
-                    case AnalysisMode.Single:
-                    {
-                        /* TODO : use EditForm */
-                        <div class="input-group">
-                            <label class="input-group__label">
-                                @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
-                            </label>
-                            <input type="number" @bind="Model.StartPoint" class="input-group__input" step="any"/>
-                        </div>
-                        if (Model.Method != RootFindingMethod.Newton)
-                        {
-                            <div class="input-group">
-                                <label class="input-group__label">@Localizer["EndPoint"]</label>
-                                <input type="number" @bind="Model.EndPoint" class="input-group__group" step="any"/>
-                            </div>
-                        }
+                <div class="input-group">
+                    <label class="input-group__label">
+                        @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
+                    </label>
+                    <input type="number" @bind="Model.StartPoint" class="input-group__input" step="any" @ref="_startPointInput"/>
+                </div>
 
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" @bind="Model.Tolerance" class="input-group__group" step="0.00001"/>
-                        </div>
+                <div class="input-group">
+                    <label class="input-group__label">@Localizer["EndPoint"]</label>
+                    <input type="number" @bind="Model.EndPoint" class="input-group__group" step="any" @ref="_endPointInput"/>
+                </div>
 
-                        break;
-                    }
-                    case AnalysisMode.Benchmark:
-                        /* TODO : use EditForm */
-                        <div class="input-section__wrapper">
-                            <div class="input-group">
-                                <label class="input-group__label">@Localizer["StartPoint"]</label>
-                                <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__group" step="any"/>
-                            </div>
-                            <div class="input-group">
-                                <label class="input-group__label">@Localizer["EndPoint"]</label>
-                                <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__group" step="any"/>
-                            </div>
-                            <div class="input-group">
-                                <label class="input-group__label">@Localizer["Tolerance"]</label>
-                                <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__group" step="0.00001"/>
-                            </div>
-                        </div>
-                        break;
-                    default:
-                        break;
-                }
+                <div class="input-group">
+                    <label class="input-group__label">@Localizer["Tolerance"]</label>
+                    <input type="number" @bind="Model.Tolerance" class="input-group__group" step="0.00001"/>
+                </div>
             </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
         </div>        
@@ -129,13 +100,7 @@
     </div>
     
     <div class="chart__container">
-        @if (Result?.ChartData is not null)
-        {
-            <div class="chart" id="chart--root-finding"></div>    
-        }
-        else
-        {
-            <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
-        }
+        <div class="chart" id="@ChartContainerId" style="display: @(_isChartBuilt ? "block" : "none");"></div>
+        <span class="remark" style="display: @(_isChartBuilt ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
     </div>
 </div>
