@@ -27,14 +27,6 @@ public partial class RootFinding : BasePage
     private bool _shouldRerend;
     private bool _isChartBuilt;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await _mathInputComponent.InitializeGraphLinks(ChartContainerId, _startPointInput, _endPointInput);
-        }
-    }
-
     private async Task Calculate()
     {
         Result = null;
@@ -116,11 +108,25 @@ public partial class RootFinding : BasePage
         await JsRuntime.InvokeVoidAsync("renderHighchart", "chart--root-finding", chartOptions);
     }
 
-    private void ShowChart()
+    private void ChangeChartAppearing()
     {
         if (!_isChartBuilt)
             _isChartBuilt = true;
         
         if (string.IsNullOrEmpty(Model.FunctionExpression)) _isChartBuilt = false;
+    }
+
+    private async Task UpdateChart()
+    {
+        ChangeChartAppearing();
+        var asciiEquation = await _mathInputComponent.GetAsciiValue();
+        if (string.IsNullOrWhiteSpace(asciiEquation)) return;
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", 
+            ChartContainerId,
+            asciiEquation,
+            Model.StartPoint,
+            Model.EndPoint
+        );
     }
 }

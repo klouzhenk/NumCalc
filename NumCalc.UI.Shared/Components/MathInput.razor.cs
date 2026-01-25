@@ -12,49 +12,45 @@ public partial class MathInput : ComponentBase, IDisposable
     [Parameter] public string? Label { get; set; }
     [Parameter] public string? Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    [Parameter] public EventCallback OnInput { get; set; }
+    [Parameter] public EventCallback<string> OnInput { get; set; }
     [Inject] public IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] protected IUiStateService UiStateService { get; set; } = null!;
     [Inject] public IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
     private ElementReference _mathFieldRef;
     private DotNetObjectReference<MathInput>? _dotNetRef;
-    private bool _isInitialized;
-
-    protected override async Task OnParametersSetAsync()
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_isInitialized)
+        if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JsRuntime.InvokeVoidAsync("NumCalc.initMathField", _mathFieldRef, _dotNetRef);
+            
+            if (!string.IsNullOrEmpty(Value)) {
+                await JsRuntime.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
+            }
         }
     }
     
-    public async Task InitializeGraphLinks(string chartId, ElementReference startInput, ElementReference endInput)
-    {
-        _dotNetRef = DotNetObjectReference.Create(this);
-        
-        await JsRuntime.InvokeVoidAsync("NumCalc.initMathField", 
-            _mathFieldRef, 
-            _dotNetRef, 
-            chartId,
-            startInput,
-            endInput
-        );
-    }
-
     [JSInvokable]
     public async Task UpdateValue(string newValue)
     {
-        if (Value != newValue)
-        {
-            Value = newValue;
-            await ValueChanged.InvokeAsync(newValue);
-            
-            if (OnInput.HasDelegate)
-                await OnInput.InvokeAsync();
-        }
+        if (Value == newValue)
+            return;
+
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+
+        if (OnInput.HasDelegate)
+            await OnInput.InvokeAsync(newValue);
     }
     
+    public async Task<string> GetAsciiValue()
+    {
+        return await JsRuntime.InvokeAsync<string>("NumCalc.getAsciiFromMathField", _mathFieldRef);
+    }
+
     private async Task CopyToClipboard()
     {
         if (!string.IsNullOrEmpty(Value))

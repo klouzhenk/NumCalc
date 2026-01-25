@@ -34,20 +34,27 @@
         </div>
         <div class="root-finding__form">
             <div class="input-section__wrapper">
-                <MathInput @ref="_mathInputComponent" Label="@Localizer["Equation"]"
+                <MathInput Label="@Localizer["Equation"]"
                            @bind-Value="Model.FunctionExpression"
-                           OnInput="ShowChart"/>
+                           @ref="_mathInputComponent"
+                           OnInput="UpdateChart"/>
 
                 <div class="input-group">
                     <label class="input-group__label">
                         @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
                     </label>
-                    <input type="number" @bind="Model.StartPoint" class="input-group__input" step="any" @ref="_startPointInput"/>
+                    <input type="number" class="input-group__input" step="any"
+                           @bind="Model.StartPoint"
+                           @bind:event="oninput" 
+                           @bind:after="UpdateChart" />
                 </div>
 
                 <div class="input-group">
                     <label class="input-group__label">@Localizer["EndPoint"]</label>
-                    <input type="number" @bind="Model.EndPoint" class="input-group__group" step="any" @ref="_endPointInput"/>
+                    <input type="number" class="input-group__input" step="any"
+                           @bind="Model.EndPoint"
+                           @bind:event="oninput" 
+                           @bind:after="UpdateChart" />
                 </div>
 
                 <div class="input-group">

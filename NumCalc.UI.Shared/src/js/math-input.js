@@ -2,87 +2,86 @@
 import Highcharts from 'highcharts';
 
 export const MathHelper = {
-    initMathField: (mathFieldElement, dotNetRef, chartContainerId, startElem, endElem) => {
+    initMathField: (mathFieldElement, dotNetRef) => {
         if (!mathFieldElement) return;
 
         mathFieldElement.smartMode = true;
         mathFieldElement.mathVirtualKeyboardPolicy = "manual";
 
-        MathHelper.initChart(chartContainerId);
-
-        const updateGraph = () => {
-            const asciiMath = mathFieldElement.getValue("ascii-math");
-            if (!asciiMath) return;
-            
-            let min = -10;
-            let max = 10;
-
-            if (startElem && startElem.value) min = parseFloat(startElem.value);
-            if (endElem && endElem.value) max = parseFloat(endElem.value);
-
-            if (min >= max) max = min + 1;
-
-            window.NumCalc.drawPlot(chartContainerId, asciiMath, min, max);
-        };
-
         mathFieldElement.addEventListener('input', (evt) => {
             dotNetRef.invokeMethodAsync('UpdateValue', mathFieldElement.value);
-            updateGraph();
-        });
-
-        if (startElem) startElem.addEventListener('input', updateGraph);
-        if (endElem) endElem.addEventListener('input', updateGraph);
-    },
-
-    initChart: (containerId) => {
-        Highcharts.chart(containerId, {
-            title: { text: null },
-            chart: {
-                style: { fontFamily: 'IBM Plex Mono' }
-            },
-            xAxis: {
-                title: { text: 'x' },
-                gridLineWidth: 1
-            },
-            yAxis: {
-                title: { text: 'f(x)' }
-            },
-            series: [{
-                name: 'Function',
-                data: [],
-                lineWidth: 2,
-                marker: { enabled: false }
-            }],
-            credits: { enabled: false },
-            legend: { enabled: false }
         });
     },
 
-    drawPlot: (chartContainerId, expression, min, max) => {
+    drawPlot: (containerId, expressionAscii, min, max) => {
+        if (!expressionAscii) return;
+
         try {
-            const step = (max - min) / 100;
-            const expr = math.compile(expression);
-            const xValues = math.range(min, max, step).toArray();
-            
-            const data = xValues.map(x => {
-                try {
-                    return [x, expr.evaluate({ x: x })];
-                } catch (e) {
-                    return null;
-                }
-            }).filter(p => p !== null);
-            
-            const chart = Highcharts.charts.find(c => c.renderTo.id === chartContainerId);
-            if (chart) {
-                chart.series[0].setData(data);
-                chart.xAxis[0].setExtremes(min, max);
+            if (typeof min !== 'number' || isNaN(min)) min = -10;
+            if (typeof max !== 'number' || isNaN(max)) max = 10;
+            if (min >= max) {
+                const center = min;
+                min = center - 10;
+                max = center + 10;
             }
-        } catch (e) { console.log(e); }
+
+            const expr = math.compile(expressionAscii);
+            const data = [];
+
+            const pointsCount = 200;
+            const step = (max - min) / pointsCount;
+
+            for (let i = 0; i <= pointsCount; i++) {
+                const x = min + (i * step);
+
+                try {
+                    let y = expr.evaluate({ x: x });
+
+                    if (typeof y === 'number' && isFinite(y)) {
+                        data.push([x, y]);
+                    }
+                } catch (calcError) {
+                    // skip the points where function is not defined
+                }
+            }
+
+            const chartOptions = {
+                title: { text: null },
+                chart: {
+                    backgroundColor: 'transparent',
+                    style: { fontFamily: 'IBM Plex Mono' }
+                },
+                xAxis: {
+                    min: min,
+                    max: max,
+                    gridLineWidth: 1
+                },
+                yAxis: { title: { text: null } },
+                series: [{
+                    name: 'f(x)',
+                    data: data,
+                    lineWidth: 2,
+                    marker: { enabled: false }
+                }],
+                legend: { enabled: false },
+                credits: { enabled: false }
+            };
+
+            const existingChart = Highcharts.charts.find(c => c && c.renderTo.id === containerId);
+
+            if (existingChart) {
+                existingChart.series[0].setData(data, true);
+                existingChart.xAxis[0].setExtremes(min, max);
+            } else {
+                Highcharts.chart(containerId, chartOptions);
+            }
+
+        } catch (e) {
+            // ignore
+        }
     },
 
-    setMathFieldValue: (element, value) => {
-        if (element && element.value !== value) {
-            element.value = value;
-        }
+    getAsciiFromMathField: (element) => {
+        return element ? element.getValue("ascii-math") : "";
     }
 };
