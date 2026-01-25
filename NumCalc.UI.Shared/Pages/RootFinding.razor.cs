@@ -1,22 +1,112 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
+using NumCalc.Shared.Calculation.Requests;
+using NumCalc.Shared.Calculation.Responses;
 using NumCalc.UI.Shared.Enums.Roots;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models;
-using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public partial class RootFinding : ComponentBase
+public partial class RootFinding : BasePage
 {
-    [Inject] protected IStringLocalizer<Localization> Localizer { get; set; } = null!;
+    [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
     
     private AnalysisMode Mode { get; set; }
     
     private RootFindingModel Model = new();
     private RootFindingComparisonModel ComparisonModel = new();
+    
+    private RootFindingResponse? Result { get; set; }
+    private bool _shouldRerend;
 
-    private Task Calculate()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        throw new NotImplementedException();
+        if (_shouldRerend)
+        {
+            _shouldRerend = false;
+            await RenderChartAsync();
+        }
+    }
+
+    private async Task Calculate()
+    {
+        Result = null;
+
+        if (Mode == AnalysisMode.Single) await DoSingleMethodCalculation();
+        else await DoMultipleMethodCalculations();
+        
+        if (Result?.ChartData != null && Result.ChartData.Any())
+            _shouldRerend = true;
+    }
+
+    private async Task DoSingleMethodCalculation()
+    {
+        var requestModel = new RootFindingRequest()
+        {
+            FunctionExpression = Model.FunctionExpression ?? string.Empty,
+            StartRange = Model.StartPoint,
+            EndRange = Model.EndPoint,
+            Error = Model.Tolerance
+        };
+
+        Result = Model.Method switch
+        {
+            RootFindingMethod.Dichotomy =>
+                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                    CalculationApiService.GetDichotomyResultAsync(requestModel)),
+            RootFindingMethod.Newton =>
+                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                    CalculationApiService.GetNewtonResultAsync(requestModel)),
+            RootFindingMethod.SimpleIterations =>
+                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                    CalculationApiService.GetSimpleIterationsResultAsync(requestModel)),
+            RootFindingMethod.Secant =>
+                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                    CalculationApiService.GetSecantResultAsync(requestModel)),
+            RootFindingMethod.Combined =>
+                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                    CalculationApiService.GetCombinedResultAsync(requestModel)),
+            _ => null
+            // UiService.ShowError(Localizer["ThereIsNoProperMethod"]);
+        };
+    }
+
+    private async Task DoMultipleMethodCalculations()
+    {
+        
+    }
+    
+    private async Task RenderChartAsync()
+    {
+        var seriesData = Result!.ChartData!
+            .Where(p => p is { X: not null, Y: not null })
+            .Select(p => new { x = p.X!.Value, y = p.Y!.Value })
+            .OrderBy(p => p.x)
+            .ToArray();
+
+        var chartOptions = new
+        {
+            xAxis = new { title = new { text = "X" } },
+            yAxis = new { title = new { text = "Y" }, plotLines = new[] { new { value = 0, width = 2, color = "black" } } },
+            series = new object[]
+            {
+                new 
+                { 
+                    name = "Function", 
+                    data = seriesData,
+                    color = "#007bff"
+                },
+                new 
+                {
+                    type = "scatter",
+                    name = "Root",
+                    data = new[] { (x: Result.Root, y: 0) },
+                    marker = new { radius = 6, fillColor = "red" }
+                }
+            }
+        };
+        
+        await JsRuntime.InvokeVoidAsync("renderHighchart", "chart--root-finding", chartOptions);
     }
 }

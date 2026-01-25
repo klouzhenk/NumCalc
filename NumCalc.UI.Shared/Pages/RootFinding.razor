@@ -1,6 +1,8 @@
 ﻿@using NumCalc.UI.Shared.Enums.Roots
 @using NumCalc.UI.Shared.Components
 
+@inherits BasePage
+
 @page "/root-finding"
 
 <div class="page-wrapper page__root-finding">
@@ -30,61 +32,110 @@
                     throw new ArgumentOutOfRangeException();
             }
         </div>
-
         <div class="root-finding__form">
-            <MathInput Label="@Localizer["Equation"]" 
-                       @bind-Value="Model.FunctionExpression" 
-                       ErrorMessage="Equation cannot be empty" />
-            
-            @switch (Mode)
-            {
-                case AnalysisMode.Single:
+            <div class="input-section__wrapper">
+                <MathInput Label="@Localizer["Equation"]"
+                           @bind-Value="Model.FunctionExpression"/>
+
+                @switch (Mode)
                 {
-                    /* TODO : use EditForm */
-                    <div class="input-section__wrapper">
+                    case AnalysisMode.Single:
+                    {
+                        /* TODO : use EditForm */
                         <div class="input-group">
                             <label class="input-group__label">
                                 @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
                             </label>
                             <input type="number" @bind="Model.StartPoint" class="input-group__input" step="any"/>
                         </div>
-                        @if (Model.Method != RootFindingMethod.Newton)
+                        if (Model.Method != RootFindingMethod.Newton)
                         {
                             <div class="input-group">
                                 <label class="input-group__label">@Localizer["EndPoint"]</label>
                                 <input type="number" @bind="Model.EndPoint" class="input-group__group" step="any"/>
                             </div>
                         }
+
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["Tolerance"]</label>
                             <input type="number" @bind="Model.Tolerance" class="input-group__group" step="0.00001"/>
                         </div>
-                    </div>
 
-                    break;
+                        break;
+                    }
+                    case AnalysisMode.Benchmark:
+                        /* TODO : use EditForm */
+                        <div class="input-section__wrapper">
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["StartPoint"]</label>
+                                <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__group" step="any"/>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["EndPoint"]</label>
+                                <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__group" step="any"/>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["Tolerance"]</label>
+                                <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__group" step="0.00001"/>
+                            </div>
+                        </div>
+                        break;
+                    default:
+                        break;
                 }
-                case AnalysisMode.Benchmark:
-                    /* TODO : use EditForm */
-                    <div class="input-section__wrapper">
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["StartPoint"]</label>
-                            <input type="number" @bind="ComparisonModel.StartPoint" class="input-group__group" step="any"/>
-                        </div>
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["EndPoint"]</label>
-                            <input type="number" @bind="ComparisonModel.EndPoint" class="input-group__group" step="any"/>
-                        </div>
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" @bind="ComparisonModel.Tolerance" class="input-group__group" step="0.00001"/>
-                        </div>
-                    </div>
-                    break;
-            }
+            </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
         </div>        
+        @if (Result?.SolutionSteps is { Count: > 0 })
+        {
+            <ul class="solution-steps__list">
+                @foreach (var step in Result.SolutionSteps)
+                {
+                    <li class="solution-steps__item">
+                        <span class="solution-steps__item-title">
+                            @step.StepIndex 
+                            @if (!string.IsNullOrWhiteSpace(step.Description))
+                            { 
+                                <span class="solution-steps__item-desc">&nbsp;&mdash;&nbsp;@Localizer[step.Description]</span>
+                            }
+                        </span>
+                        <div class="solution-steps__item-text">
+                            @if (step.IsThereTextContent)
+                            {
+                                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                                {
+                                    <span class="solution-steps__item-formula">@($"{Localizer["LaTeXRecord"]}: {step.LatexFormula}").&nbsp;</span>
+                                }
+                                if (!string.IsNullOrWhiteSpace(step.Value))
+                                {
+                                    <span class="solution-steps__item-value">@($"{Localizer["GottenValue"]}: {step.Value}").</span>
+                                }
+                            }
+                            else
+                            {
+                                @Localizer["ThereIsNoDescriptionToStep"]
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div class="solution-steps__container--empty">
+                <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
+            </div>
+        }
     </div>
-    @* TODO : build chart *@
-    <div class="chart chart--root-finding"></div>
-    @* TODO : build gotten formula *@
+    
+    <div class="chart__container">
+        @if (Result?.ChartData is not null)
+        {
+            <div class="chart" id="chart--root-finding"></div>    
+        }
+        else
+        {
+            <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
+        }
+    </div>
 </div>

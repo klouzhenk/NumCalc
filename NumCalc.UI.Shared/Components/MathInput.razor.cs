@@ -1,15 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
+using NumCalc.UI.Shared.Resources;
+using NumCalc.UI.Shared.Services.Implementations;
+using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Components;
 
-public partial class MathInput : ComponentBase
+public partial class MathInput : ComponentBase, IDisposable
 {
     [Parameter] public string? Label { get; set; }
     [Parameter] public string? Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    [Parameter] public bool IsInvalid { get; set; }
-    [Parameter] public string? ErrorMessage { get; set; }
+    [Inject] public IJSRuntime JsRuntime { get; set; } = null!;
+    [Inject] protected IUiStateService UiStateService { get; set; } = null!;
+    [Inject] public IStringLocalizer<Localization> Localizer { get; set; } = null!;
+    
     private ElementReference _mathFieldRef;
     private DotNetObjectReference<MathInput>? _dotNetRef;
     private bool _isInitialized;
@@ -19,14 +25,10 @@ public partial class MathInput : ComponentBase
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            
-            // Ініціалізуємо компонент через наш глобальний хелпер
-            await JS.InvokeVoidAsync("NumCalc.initMathField", _mathFieldRef, _dotNetRef);
-            
-            // Встановлюємо початкове значення
+            await JsRuntime.InvokeVoidAsync("NumCalc.initMathField", _mathFieldRef, _dotNetRef);
             if (!string.IsNullOrEmpty(Value))
             {
-                await JS.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
+                await JsRuntime.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
             }
 
             _isInitialized = true;
@@ -35,26 +37,32 @@ public partial class MathInput : ComponentBase
 
     protected override async Task OnParametersSetAsync()
     {
-        // Якщо компонент вже ініціалізований і значення змінилося ззовні (не юзером),
-        // оновлюємо його в полі
         if (_isInitialized)
         {
-            await JS.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
+            await JsRuntime.InvokeVoidAsync("NumCalc.setMathFieldValue", _mathFieldRef, Value);
         }
     }
 
     [JSInvokable]
     public async Task UpdateValue(string newValue)
     {
-        // Цей метод викликається з JS, коли юзер друкує
         if (Value != newValue)
         {
             Value = newValue;
             await ValueChanged.InvokeAsync(newValue);
         }
     }
+    
+    private async Task CopyToClipboard()
+    {
+        if (!string.IsNullOrEmpty(Value))
+        {
+            await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Value);
+            UiStateService.ShowSuccess(Localizer["Copied"]); 
+        }
+    }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
         _dotNetRef?.Dispose();
     }

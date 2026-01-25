@@ -14,4 +14,8 @@ public class SolutionStep
 
     [JsonPropertyName("value")]
     public string? Value { get; set; }
+
+    public bool IsThereTextContent => 
+            !string.IsNullOrWhiteSpace(LatexFormula)
+            || !string.IsNullOrWhiteSpace(Value);
 }
