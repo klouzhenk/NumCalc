@@ -5,6 +5,7 @@ import sympy
 import numpy as np
 from shared.structures import ResponseEnvelope, SuccessData, FailureData, Point, SolutionStep
 from shared.functions import generate_points
+from shared.parsing import parse_expression
 
 def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
     try:

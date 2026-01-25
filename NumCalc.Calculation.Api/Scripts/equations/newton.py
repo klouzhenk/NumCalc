@@ -3,7 +3,8 @@ import json
 import sympy
 import numpy as np
 from shared.structures import ResponseEnvelope, SuccessData, FailureData, Point, SolutionStep
-from shared.functions import generate_points, prepare_functions
+from shared.functions import generate_points
+from shared.parsing import parse_expression
 
 def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
     try:
@@ -26,7 +27,7 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
         ))
 
         f = sympy.lambdify(x, expr, modules="numpy")
-        df = sympy.lambdify(x, deriv, modules="numpy")
+        f_prime = sympy.lambdify(x, deriv, modules="numpy")
 
         iterations = 0
         root = 0.0
@@ -40,8 +41,6 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
             latex_formula=f"x_0 = {curr_x}",
             value=f"f(x_0) = {float(f(curr_x)):.5f}"
         ))
-
-        f, f_prime = prepare_functions(expression)
 
         for iteration in range(1, max_iterations + 1):
             f_val = f(curr_x)
@@ -70,7 +69,7 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
         root = curr_x
 
         if not converged:
-            envelope = ResponseEnvelope(failure=FailureData(("NO_CONVERGENCE", "Newton method did not converge")), success=None)
+            envelope = ResponseEnvelope(failure=FailureData("NO_CONVERGENCE", "Newton method did not converge"), success=None)
             return json.dumps(asdict(envelope))
 
         plot_range = abs(root - x0) * 2 if abs(root - x0) > 1 else 5.0
