@@ -2,6 +2,6 @@
 
 namespace NumCalc.UI.Shared.Models.Message;
 
-public class ErrorToastMessage(string message, string title = "Error") : ToastMessage(ToastType.Success, title, message)
+public class ErrorToastMessage(string message, string title = "Error") : ToastMessage(ToastType.Error, title, message)
 {
 }
