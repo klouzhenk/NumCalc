@@ -11,4 +11,18 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<RootFindingResponse?> GetNewtonResultAsync(RootFindingRequest request)
         => await SendPostRequestAsync<RootFindingResponse>("api/rootfinding/newton", request);
+    
+    public async Task<RootFindingResponse?> GetSimpleIterationsResultAsync(RootFindingRequest request)
+        => await SendPostRequestAsync<RootFindingResponse>("api/rootfinding/simple-iterations", request);
+    
+    public async Task<RootFindingResponse?> GetSecantResultAsync(RootFindingRequest request)
+        => await SendPostRequestAsync<RootFindingResponse>("api/rootfinding/secant", request);
+    
+    public async Task<RootFindingResponse?> GetCombinedResultAsync(RootFindingRequest request)
+        => await SendPostRequestAsync<RootFindingResponse>("api/rootfinding/combined", request);
+
+    public Task<RootFindingResponse?> GetSelectedMethodResultAsync(RootFindingRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }
