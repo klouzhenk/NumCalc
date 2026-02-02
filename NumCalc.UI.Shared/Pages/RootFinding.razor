@@ -18,14 +18,14 @@
                 case AnalysisMode.Single:
                     <Dropdown TItem="RootFindingMethod"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
-                              @bind-Value="Model.Method"
+                              @bind-Value="_singleMethod"
                               TextField="@(item => item.ToString())"/>
                     break;
                 case AnalysisMode.Benchmark:
                     <Dropdown TItem="RootFindingMethod"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               MultiSelect="true"
-                              @bind-SelectedItems="ComparisonModel.SelectedMethods"
+                              @bind-SelectedItems="_benchmarkMethods"
                               TextField="@(item => item.ToString())"/>
                     break;
                 default:
@@ -34,36 +34,38 @@
         </div>
         <div class="root-finding__form">
             <div class="input-section__wrapper">
-                <MathInput Label="@Localizer["Equation"]"
-                           @bind-Value="Model.FunctionExpression"
+                <MathInput Label="@Localizer["Expression"]"
+                           @bind-Value="_formData.FunctionExpression"
                            @ref="_mathInputComponent"
                            OnInput="UpdateChart"/>
 
                 <div class="input-group">
                     <label class="input-group__label">
-                        @(Model.Method == RootFindingMethod.Newton ? Localizer["InitialGuess"] : Localizer["StartPoint"])
+                        @(Mode is AnalysisMode.Single && _singleMethod is RootFindingMethod.Newton
+                            ? Localizer["InitialGuess"]
+                            : Localizer["StartPoint"])
                     </label>
                     <input type="number" class="input-group__input" step="any"
-                           @bind="Model.StartPoint"
-                           @bind:event="oninput" 
+                           @bind="_formData.StartPoint"
+                           @bind:event="oninput"
                            @bind:after="UpdateChart" />
                 </div>
 
                 <div class="input-group">
                     <label class="input-group__label">@Localizer["EndPoint"]</label>
                     <input type="number" class="input-group__input" step="any"
-                           @bind="Model.EndPoint"
-                           @bind:event="oninput" 
+                           @bind="_formData.EndPoint"
+                           @bind:event="oninput"
                            @bind:after="UpdateChart" />
                 </div>
 
                 <div class="input-group">
                     <label class="input-group__label">@Localizer["Tolerance"]</label>
-                    <input type="number" @bind="Model.Tolerance" class="input-group__group" step="0.00001"/>
+                    <input type="number" @bind="_formData.Tolerance" class="input-group__group" step="0.00001"/>
                 </div>
             </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
-        </div>        
+        </div>
         @if (Result?.SolutionSteps is { Count: > 0 })
         {
             <ul class="solution-steps__list">
@@ -71,9 +73,9 @@
                 {
                     <li class="solution-steps__item">
                         <span class="solution-steps__item-title">
-                            @step.StepIndex 
+                            @step.StepIndex
                             @if (!string.IsNullOrWhiteSpace(step.Description))
-                            { 
+                            {
                                 <span class="solution-steps__item-desc">&nbsp;&mdash;&nbsp;@Localizer[step.Description]</span>
                             }
                         </span>
@@ -105,7 +107,7 @@
             </div>
         }
     </div>
-    
+
     <div class="chart__container">
         <div class="chart" id="@ChartContainerId" style="display: @(_isChartBuilt ? "block" : "none");"></div>
         <span class="remark" style="display: @(_isChartBuilt ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>

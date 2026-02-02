@@ -9,26 +9,25 @@ using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models;
 using NumCalc.UI.Shared.Models.Charts;
+using NumCalc.UI.Shared.Models.RootFinding;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
 
 public partial class RootFinding : BasePage
 {
+    private const string ChartContainerId = "chart--root-finding";
+    
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
     
     private AnalysisMode Mode { get; set; }
+    private RootFindingMethod _singleMethod = RootFindingMethod.Newton;
+    private List<RootFindingMethod> _benchmarkMethods = [];
     
-    private RootFindingModel Model = new();
-    private RootFindingComparisonModel ComparisonModel = new();
-    
-    private MathInput _mathInputComponent;
-    private ElementReference _startPointInput;
-    private ElementReference _endPointInput;
-    private const string ChartContainerId = "chart--root-finding";
+    private readonly RootFindingFormData _formData = new();
     
     private RootFindingResponse? Result { get; set; }
-    private bool _shouldRerend;
+    private MathInput? _mathInputComponent;
     private bool _isChartBuilt;
 
     private async Task Calculate()
@@ -37,37 +36,34 @@ public partial class RootFinding : BasePage
 
         if (Mode == AnalysisMode.Single) await DoSingleMethodCalculation();
         else await DoMultipleMethodCalculations();
-        
-        if (Result?.ChartData != null && Result.ChartData.Any())
-            _shouldRerend = true;
     }
 
     private async Task DoSingleMethodCalculation()
     {
         var requestModel = new RootFindingRequest()
         {
-            FunctionExpression = Model.FunctionExpression ?? string.Empty,
-            StartRange = Model.StartPoint,
-            EndRange = Model.EndPoint,
-            Error = Model.Tolerance
+            FunctionExpression = _formData.FunctionExpression ?? string.Empty,
+            StartRange = _formData.StartPoint,
+            EndRange = _formData.EndPoint,
+            Error = _formData.Tolerance
         };
 
-        Result = Model.Method switch
+        Result = _formData.Method switch
         {
             RootFindingMethod.Dichotomy =>
-                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                await SafeExecuteAsync(() =>
                     CalculationApiService.GetDichotomyResultAsync(requestModel)),
             RootFindingMethod.Newton =>
-                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                await SafeExecuteAsync(() =>
                     CalculationApiService.GetNewtonResultAsync(requestModel)),
             RootFindingMethod.SimpleIterations =>
-                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                await SafeExecuteAsync(() =>
                     CalculationApiService.GetSimpleIterationsResultAsync(requestModel)),
             RootFindingMethod.Secant =>
-                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                await SafeExecuteAsync(() =>
                     CalculationApiService.GetSecantResultAsync(requestModel)),
             RootFindingMethod.Combined =>
-                await SafeExecuteAsync<RootFindingResponse?>(() =>
+                await SafeExecuteAsync(() =>
                     CalculationApiService.GetCombinedResultAsync(requestModel)),
             _ => null
             // UiService.ShowError(Localizer["ThereIsNoProperMethod"]);
@@ -76,7 +72,15 @@ public partial class RootFinding : BasePage
 
     private async Task DoMultipleMethodCalculations()
     {
-        
+        var request = new RootFindingRequest
+        {
+            FunctionExpression = _formData.FunctionExpression ?? string.Empty,
+            StartRange = _formData.StartPoint,
+            EndRange = _formData.EndPoint,
+            Error = _formData.Tolerance
+        };
+
+        await SafeExecuteAsync(() => CalculationApiService.GetBenchmarkResultAsync(request, _benchmarkMethods));
     }
     
     private async Task RenderChartAsync()
@@ -117,17 +121,17 @@ public partial class RootFinding : BasePage
         if (!_isChartBuilt)
             _isChartBuilt = true;
         
-        if (string.IsNullOrEmpty(Model.FunctionExpression)) _isChartBuilt = false;
+        if (string.IsNullOrEmpty(_formData.FunctionExpression)) _isChartBuilt = false;
     }
 
     private async Task UpdateChart()
     {
         ChangeChartAppearing();
-        var asciiEquation = await _mathInputComponent.GetAsciiValue();
+        var asciiEquation = await _mathInputComponent?.GetAsciiValue();
         if (string.IsNullOrWhiteSpace(asciiEquation)) return;
         
-        var min = Model.StartPoint;
-        var max = Model.EndPoint;
+        var min = _formData.StartPoint;
+        var max = _formData.EndPoint;
         
         if (min >= max)
         {
