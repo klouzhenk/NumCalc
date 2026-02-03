@@ -1,5 +1,5 @@
-﻿using NumCalc.Shared.Calculation.Requests;
-using NumCalc.Shared.Calculation.Responses;
+﻿using NumCalc.Shared.RootFinding.Requests;
+using NumCalc.Shared.RootFinding.Responses;
 
 namespace NumCalc.Calculation.Api.Services.Interfaces;
 

@@ -15,54 +15,13 @@ export const MathHelper = {
 
     drawPlot: (config) => {
         const { containerId, title, xAxis, yAxis, series, showLegend, tooltipSuffix } = config;
+        const container = document.getElementById(containerId);
+        if (!container) return;
 
-        if (!document.getElementById(containerId)) return;
-
-        const highchartsSeries = [];
-
-        const xMin = xAxis.min ?? -10;
-        const xMax = xAxis.max ?? 10;
-
-        const pointsCount = 200;
-        const step = (xMax - xMin) / pointsCount;
-        
-        console.log("pass consts");
-
-        series.forEach(item => {
-            if (!item.expression || !item.isVisible) return;
-
-            console.log("pass serieeeeeeeeee");
-
-            try {
-                const expr = math.compile(item.expression);
-                const data = [];
-
-                for (let i = 0; i <= pointsCount; i++) {
-                    const x = xMin + (i * step);
-                    try {
-                        let y = expr.evaluate({ x: x });
-                        if (typeof y === 'number' && isFinite(y)) {
-                            data.push([x, y]);
-                        }
-                    } catch (e) {}
-                }
-
-                highchartsSeries.push({
-                    name: item.name || 'Series',
-                    data: data,
-                    color: item.color,
-                    type: (item.type || 'line').toLowerCase(),
-                    dashStyle: item.dashStyle || 'solid',
-                    lineWidth: item.lineWidth,
-                    marker: { enabled: false }
-                });
-
-            } catch (err) {
-                console.warn(`Failed to plot series: ${item.name}`, err);
-            }
-        });
-
-        console.log("pass series");
+        const generatedSeries = series
+            .filter(s => s.isVisible)
+            .map(s => processSeries(s, xAxis))
+            .filter(s => s !== null);
 
         const chartOptions = {
             chart: {
@@ -93,7 +52,7 @@ export const MathHelper = {
             legend: { enabled: showLegend },
             credits: { enabled: false },
 
-            series: highchartsSeries
+            series: generatedSeries
         };
 
         console.log("pass chart creation");
@@ -117,3 +76,50 @@ export const MathHelper = {
         return element ? element.getValue("ascii-math") : "";
     }
 };
+
+function processSeries(seriesItem, xAxis){
+    try {
+        if (seriesItem.type === 'scatter' || (seriesItem.data && seriesItem.data.length > 0)) {
+            return {
+                name: seriesItem.name,
+                data: seriesItem.data,
+                color: seriesItem.color,
+                type: seriesItem.type ? seriesItem.type.toLowerCase() : 'line',
+                marker: { enabled: true, radius: 4 }
+            };
+        }
+
+        if (!seriesItem.expression) return null;
+
+        const data = [];
+        const xMin = xAxis.min ?? -10;
+        const xMax = xAxis.max ?? 10;
+        const pointsCount = 250;
+        const step = (xMax - xMin) / pointsCount;
+
+        for(let i = 0; i < pointsCount; i++) {
+            const x = xMin + (i * step);
+            try {
+                const y = expr.evaluate({ x: x });
+                if (typeof y === 'number' && isFinite(y)) {
+                    data.push([x, y]);
+                }
+            }
+            catch {
+            }
+        }
+
+        return {
+            name: seriesItem.name,
+            data: data,
+            color: seriesItem.color,
+            type: seriesItem.type ? seriesItem.type.toLowerCase() : 'line',
+            dashStyle: seriesItem.dashStyle || 'solid',
+            lineWidth: seriesItem.lineWidth || 2,
+            marker: { enabled: false }
+        };
+    }
+    catch (err) {
+        return null;
+    }
+}

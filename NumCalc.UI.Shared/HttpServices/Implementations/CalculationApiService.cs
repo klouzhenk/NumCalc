@@ -1,5 +1,6 @@
-﻿using NumCalc.Shared.Calculation.Requests;
-using NumCalc.Shared.Calculation.Responses;
+﻿using NumCalc.Shared.Enums.RootFinding;
+using NumCalc.Shared.RootFinding.Requests;
+using NumCalc.Shared.RootFinding.Responses;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 
@@ -22,8 +23,6 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<RootFindingResponse?> GetCombinedResultAsync(RootFindingRequest request)
         => await SendPostRequestAsync<RootFindingResponse>("api/rootfinding/combined", request);
 
-    public Task<RootFindingResponse?> GetBenchmarkResultAsync(RootFindingRequest request, IEnumerable<RootFindingMethod> selectedMethods)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<RootFindingComparisonResponse?> GetBenchmarkResultAsync(RootFindingComparisonRequest request)
+        => await SendPostRequestAsync<RootFindingComparisonResponse>("api/rootfinding/comparison", request);
 }

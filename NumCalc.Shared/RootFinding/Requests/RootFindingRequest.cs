@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace NumCalc.Shared.Calculation.Requests;
+namespace NumCalc.Shared.RootFinding.Requests;
 
 /// <summary>
 /// Data transfer object for root-finding calculation requests.

@@ -1,4 +1,4 @@
-﻿namespace NumCalc.UI.Shared.Enums.Roots;
+﻿namespace NumCalc.Shared.Enums.RootFinding;
 
 public enum RootFindingMethod
 {

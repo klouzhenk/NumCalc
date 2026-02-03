@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumCalc.Shared.Calculation.Requests;
-using NumCalc.Shared.Calculation.Responses;
+using NumCalc.Shared.Enums.RootFinding;
+using NumCalc.Shared.RootFinding.Requests;
+using NumCalc.Shared.RootFinding.Responses;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
@@ -27,6 +28,7 @@ public partial class RootFinding : BasePage
     private readonly RootFindingFormData _formData = new();
     
     private RootFindingResponse? Result { get; set; }
+    private RootFindingComparisonResponse? ComparisonResult { get; set; }
     private MathInput? _mathInputComponent;
     private bool _isChartBuilt;
 
@@ -68,52 +70,24 @@ public partial class RootFinding : BasePage
             _ => null
             // UiService.ShowError(Localizer["ThereIsNoProperMethod"]);
         };
+        
+        await UpdateChart();
     }
 
     private async Task DoMultipleMethodCalculations()
     {
-        var request = new RootFindingRequest
+        var request = new RootFindingComparisonRequest()
         {
             FunctionExpression = _formData.FunctionExpression ?? string.Empty,
             StartRange = _formData.StartPoint,
             EndRange = _formData.EndPoint,
-            Error = _formData.Tolerance
+            Tolerance = _formData.Tolerance,
+            Methods = _benchmarkMethods
         };
 
-        await SafeExecuteAsync(() => CalculationApiService.GetBenchmarkResultAsync(request, _benchmarkMethods));
-    }
-    
-    private async Task RenderChartAsync()
-    {
-        var seriesData = Result!.ChartData!
-            .Where(p => p is { X: not null, Y: not null })
-            .Select(p => new { x = p.X!.Value, y = p.Y!.Value })
-            .OrderBy(p => p.x)
-            .ToArray();
+        ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetBenchmarkResultAsync(request));
 
-        var chartOptions = new
-        {
-            xAxis = new { title = new { text = "X" } },
-            yAxis = new { title = new { text = "Y" }, plotLines = new[] { new { value = 0, width = 2, color = "black" } } },
-            series = new object[]
-            {
-                new 
-                { 
-                    name = "Function", 
-                    data = seriesData,
-                    color = "#007bff"
-                },
-                new 
-                {
-                    type = "scatter",
-                    name = "Root",
-                    data = new[] { (x: Result.Root, y: 0) },
-                    marker = new { radius = 6, fillColor = "red" }
-                }
-            }
-        };
-        
-        await JsRuntime.InvokeVoidAsync("renderHighchart", "chart--root-finding", chartOptions);
+        await UpdateChart();
     }
 
     private void ChangeChartAppearing()
@@ -139,42 +113,62 @@ public partial class RootFinding : BasePage
             min = center - 10;
             max = center + 10;
         }
+
+        var config = CreateChartConfig(asciiEquation, min, max);
         
-        var config = new Chart()
+        if (Mode is AnalysisMode.Single && Result?.Root.HasValue == true)
+        {
+            config.Series.Add(new ChartSeries
+            {
+                Name = $"{Localizer["Root"]} ({_formData.Method})",
+                Type = ChartType.Scatter,
+                Data = [[Result.Root.Value, 0]],
+                Color = ColorUtils.GetColor(Color.SuccessLight),
+                IsVisible = true
+            });
+        }
+        else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
+        {
+            foreach (var result in ComparisonResult.Results)
+            {
+                config.Series.Add(new ChartSeries
+                {
+                    Name = Localizer[result.Method.ToString()],
+                    Type = ChartType.Scatter,
+                    Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
+                    Color = ColorUtils.GetSeriesColor((int)result.Method), 
+                    IsVisible = true,
+                    Marker = new ChartMarker()
+                    {
+                        Radius = 5,
+                        Symbol = ChartSymbolType.Circle
+                    },
+                    Opacity = 0.8
+                });
+            }
+        }
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+    
+    private Chart CreateChartConfig(string expression, double min, double max)
+    {
+        return new Chart
         {
             ContainerId = ChartContainerId,
             Title = null,
-
             XAxis = new ChartAxis 
             { 
                 Min = min, 
                 Max = max, 
                 Title = Localizer["ArgumentX"],
-                PlotLines = 
-                [
-                    new PlotLine
-                    {
-                        Value = 0,
-                        Color = ColorUtils.GetColor(Color.GrayUltraLight),
-                        Width = 2,
-                        DashStyle = LineStyle.LongDash
-                    }
-                ]
+                PlotLines = [ CreateZeroLine() ]
             },
-        
+
             YAxis = new ChartAxis 
             { 
                 Title = Localizer["FunctionValue"],
-                PlotLines =
-                [
-                    new PlotLine
-                    {
-                        Value = 0,
-                        Color = ColorUtils.GetColor(Color.GrayUltraLight),
-                        Width = 2,
-                        DashStyle = LineStyle.LongDash
-                    }
-                ]
+                PlotLines = [ CreateZeroLine() ]
             },
 
             Series =
@@ -182,13 +176,20 @@ public partial class RootFinding : BasePage
                 new ChartSeries
                 {
                     Name = "f(x)",
-                    Expression = asciiEquation,
+                    Expression = expression,
                     Color = ColorUtils.GetColor(Color.Primary),
-                    LineWidth = 3
+                    LineWidth = 2,
+                    IsVisible = true
                 }
             ]
         };
-
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
+    
+    private static PlotLine CreateZeroLine() => new()
+    {
+        Value = 0,
+        Color = ColorUtils.GetColor(Color.GrayUltraLight),
+        Width = 1,
+        DashStyle = LineStyle.LongDash
+    };
 }

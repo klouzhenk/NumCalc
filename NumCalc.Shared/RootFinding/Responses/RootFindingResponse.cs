@@ -1,6 +1,6 @@
 ﻿using NumCalc.Shared.Common;
 
-namespace NumCalc.Shared.Calculation.Responses;
+namespace NumCalc.Shared.RootFinding.Responses;
 
 public class RootFindingResponse
 {
@@ -8,4 +8,5 @@ public class RootFindingResponse
     public int Iterations { get; set; }
     public IEnumerable<Point>? ChartData { get; set; }
     public List<SolutionStep>? SolutionSteps { get; set; }
+    public double ExecutionTimeMs { get; set; }
 }

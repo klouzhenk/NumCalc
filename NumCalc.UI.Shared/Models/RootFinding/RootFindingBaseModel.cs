@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Models.RootFinding;
 
@@ -6,7 +7,7 @@ namespace NumCalc.UI.Shared.Models.RootFinding;
 
 public abstract class RootFindingBaseModel
 {
-    [Required(ErrorMessage = "Equation is required")]
+    [Required(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "EquationIsRequired")]
     public string? FunctionExpression { get; set; }
     
     [Required]
@@ -15,6 +16,6 @@ public abstract class RootFindingBaseModel
     [Required]
     public double EndPoint { get; set; }
     
-    [Range(1e-10, 0.1, ErrorMessage = "Tolerance must be reasonable")]
+    [Range(1e-10, 0.1, ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "ToleranceMustBeReasonable")]
     public double Tolerance { get; set; } = 1e-4;
 }

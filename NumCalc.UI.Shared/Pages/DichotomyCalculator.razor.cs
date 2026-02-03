@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumCalc.Shared.Calculation.Requests;
-using NumCalc.Shared.Calculation.Responses;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using Microsoft.Extensions.Localization;
+using NumCalc.Shared.RootFinding.Requests;
+using NumCalc.Shared.RootFinding.Responses;
 using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Pages;

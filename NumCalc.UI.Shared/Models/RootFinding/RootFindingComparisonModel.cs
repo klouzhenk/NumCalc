@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NumCalc.Shared.Enums.RootFinding;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.Resources;
 

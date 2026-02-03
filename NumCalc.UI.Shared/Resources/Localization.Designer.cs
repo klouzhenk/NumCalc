@@ -69,11 +69,11 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to sdsd.
+        ///   Looks up a localized string similar to EquationIsRequired.
         /// </summary>
-        public static string kjdfvbjfdv {
+        public static string EquationIsRequired {
             get {
-                return ResourceManager.GetString("kjdfvbjfdv", resourceCulture);
+                return ResourceManager.GetString("EquationIsRequired", resourceCulture);
             }
         }
         
@@ -83,6 +83,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string PleaseSelectAtLeastOneMethodForBenchmarking {
             get {
                 return ResourceManager.GetString("PleaseSelectAtLeastOneMethodForBenchmarking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ToleranceMustBeReasonable.
+        /// </summary>
+        public static string ToleranceMustBeReasonable {
+            get {
+                return ResourceManager.GetString("ToleranceMustBeReasonable", resourceCulture);
             }
         }
     }
