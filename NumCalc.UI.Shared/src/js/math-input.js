@@ -65,7 +65,7 @@ export const MathHelper = {
             while (existingChart.series.length > 0) {
                 existingChart.series[0].remove(false);
             }
-            highchartsSeries.forEach(s => existingChart.addSeries(s, false));
+            generatedSeries.forEach(s => existingChart.addSeries(s, false));
             existingChart.update(chartOptions);
         } else {
             Highcharts.chart(containerId, chartOptions);
@@ -91,6 +91,7 @@ function processSeries(seriesItem, xAxis){
 
         if (!seriesItem.expression) return null;
 
+        const expr = math.compile(seriesItem.expression);
         const data = [];
         const xMin = xAxis.min ?? -10;
         const xMax = xAxis.max ?? 10;

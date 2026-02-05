@@ -98,6 +98,13 @@ public partial class RootFinding : BasePage
         if (string.IsNullOrEmpty(_formData.FunctionExpression)) _isChartBuilt = false;
     }
 
+    private async Task OnParametersChanged()
+    {
+        Result = null;
+        ComparisonResult = null;
+        await UpdateChart();
+    }
+
     private async Task UpdateChart()
     {
         ChangeChartAppearing();
@@ -114,7 +121,7 @@ public partial class RootFinding : BasePage
             max = center + 10;
         }
 
-        var config = CreateChartConfig(asciiEquation, min, max);
+        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), min, max);
         
         if (Mode is AnalysisMode.Single && Result?.Root.HasValue == true)
         {
@@ -189,7 +196,7 @@ public partial class RootFinding : BasePage
     {
         Value = 0,
         Color = ColorUtils.GetColor(Color.GrayUltraLight),
-        Width = 1,
+        Width = 2,
         DashStyle = LineStyle.LongDash
     };
 }

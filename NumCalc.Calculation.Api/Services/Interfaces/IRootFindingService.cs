@@ -10,4 +10,5 @@ public interface IRootFindingService
     RootFindingResponse CalculateSimpleIterations(RootFindingRequest request);
     RootFindingResponse CalculateSecant(RootFindingRequest request);
     RootFindingResponse CalculateCombined(RootFindingRequest request);
+    RootFindingComparisonResponse Compare(RootFindingComparisonRequest request);
 }

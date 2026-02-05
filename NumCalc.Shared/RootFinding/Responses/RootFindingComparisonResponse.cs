@@ -7,5 +7,5 @@ public class RootFindingComparisonResponse
 {
     public List<BenchmarkResultDto> Results { get; set; } = [];
     
-    public RootFindingMethod BestMethod { get; set; }
+    public RootFindingMethod? BestMethod { get; set; }
 }

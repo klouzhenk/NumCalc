@@ -24,5 +24,8 @@ public enum NumCalcErrorCode
     InvalidJson,
     
     [JsonStringEnumMemberName("EMPTY_RESPONSE")]
-    EmptyResponse
+    EmptyResponse,
+    
+    [JsonStringEnumMemberName("NOT_IMPLEMENTED")]
+    NotImplemented
 }

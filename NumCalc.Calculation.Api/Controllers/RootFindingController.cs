@@ -96,4 +96,20 @@ public class RootFindingController(IRootFindingService rootFindingService) : Con
         var response = rootFindingService.CalculateCombined(request);
         return Ok(response);
     }
+    
+    /// <summary>
+    /// Computes the root using the Combined method (Brent's or Hybrid approach).
+    /// </summary>
+    /// <remarks>
+    /// <b>Methodology:</b> Combines Bisection, Secant, and Inverse Quadratic Interpolation.<br/>
+    /// <b>Performance:</b> The most robust and generally fastest method. Guaranteed convergence.
+    /// </remarks>
+    [HttpPost("comparison")]
+    [ProducesResponseType(typeof(RootFindingComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult Compare([FromBody] RootFindingComparisonRequest request)
+    {
+        var response = rootFindingService.Compare(request);
+        return Ok(response);
+    }
 }
