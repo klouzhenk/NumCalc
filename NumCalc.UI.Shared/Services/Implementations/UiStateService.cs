@@ -9,7 +9,8 @@ public class UiStateService : IUiStateService
     
     public event Action<bool>? OnLoaderChanged;
     public event Action<ToastMessage>? OnShowToast;
-    
+    public event Action? OnCloseDropdownRequested;
+
     public void ShowLoader()
     {
         _busyCount++;
@@ -36,4 +37,6 @@ public class UiStateService : IUiStateService
 
     public void ShowSuccess(string message, string title = "Success")
         => OnShowToast?.Invoke(new SuccessToastMessage(message, title));
+
+    public void RequestCloseDropdown() => OnCloseDropdownRequested?.Invoke();
 }

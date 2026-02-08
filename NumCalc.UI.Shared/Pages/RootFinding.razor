@@ -1,6 +1,7 @@
 ﻿@using NumCalc.Shared.Enums.RootFinding
 @using NumCalc.UI.Shared.Enums.Roots
 @using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Utils
 
 @inherits BasePage
 
@@ -106,11 +107,13 @@
             <ul class="root-finding-result__list">
                 @foreach (var benchmarkResult in ComparisonResult.Results)
                 {
-                    // TODO : emphasize the best method
-                    <li class="root-finding-result__item">
+                    <li class="root-finding-result__item comparison-result__item @(benchmarkResult.Method == ComparisonResult.BestMethod ? "marked" : "")">
                         <span class="root-finding-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
                         <div class="root-finding-result__item-text">
-                            <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @benchmarkResult.Root &nbsp;|&nbsp;
+                            @{
+                                var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
+                            }
+                            <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
                             <span class="root-finding-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
                             <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
                         </div>

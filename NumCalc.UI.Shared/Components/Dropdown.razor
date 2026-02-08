@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<div class="dropdown__container @(_isOpen ? "open" : "")">
+<div class="dropdown__container @(_isOpen ? "open" : "")" @onmousedown:stopPropagation>
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="dropdown__label">@Label</label>
@@ -18,24 +18,36 @@
         <ul class="dropdown__menu hoverable">
             @if (MultiSelect)
             {
-                <li class="dropdown__menu-item @(IsAllSelected ? "selected" : "")" @onclick="ToggleSelectAll">
-                    <input type="checkbox" checked="@IsAllSelected" readonly />
-                    <span>Select All</span>
+                <li class="dropdown__menu-item dropdown-item @(IsAllSelected ? "selected" : "")">
+                    <label for="@($"{_dropdownId}_all")">
+                        <input type="checkbox"
+                               class="dropdown-item__checkbox"
+                               id="@($"{_dropdownId}_all")"
+                               @bind-Checked="@IsAllSelected"
+                               @bind-Checked:event="onchange" />
+                        <span class="dropdown-item__checkmark"></span>
+                        <span class="dropdown-item__text">Select All</span>
+                    </label>
                 </li>
             }
 
-            @foreach (var item in Data)
+            @foreach (var (item, index) in Data.Select((item, i) => (item, i)))
             {
                 var isSelected = IsSelected(item);
-                <li class="dropdown__menu-item @(isSelected ? "selected" : "")" 
-                     @onclick="() => OnItemClick(item)">
-                    
-                    @if (MultiSelect)
-                    {
-                        <input type="checkbox" checked="@isSelected" readonly />
-                    }
-                    
-                    <span>@TextField(item)</span>
+                var checkboxId = $"{_dropdownId}_item_{index}";
+                <li class="dropdown__menu-item dropdown-item @(isSelected ? "selected" : "")">
+                    <label for="@checkboxId">
+                        <input type="checkbox"
+                               class="dropdown-item__checkbox"
+                               id="@checkboxId"
+                               checked="@isSelected"
+                               @onchange="() => OnItemClick(item)" />
+                        @if (MultiSelect)
+                        {
+                            <span class="dropdown-item__checkmark"></span>                        
+                        }
+                        <span class="dropdown-item__text">@TextField(item)</span>
+                    </label>
                 </li>
             }
         </ul>

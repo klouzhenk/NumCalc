@@ -1,12 +1,14 @@
 ﻿@using NumCalc.UI.Shared.Components
 @inherits LayoutComponentBase
 
-<Header></Header>
-<HamburgerMenu/>
+<div class="main-container" @onmousedown="@OnGlobalMouseDown">
+    <Header></Header>
+    <HamburgerMenu/>
 
-<main>
-    @Body
-</main>
+    <main>
+        @Body
+    </main>
+</div>
     
 <GlobalLoader />
 <ToastContainer />

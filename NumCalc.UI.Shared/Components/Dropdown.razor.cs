@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using NumCalc.UI.Shared.Resources;
+using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Components;
 
-public partial class Dropdown<TItem> : ComponentBase
+public partial class Dropdown<TItem> : ComponentBase, IDisposable
 {
     [Parameter] public required string Label { get; set; }
     [Parameter] public IEnumerable<TItem> Data { get; set; } = [];
@@ -14,15 +15,28 @@ public partial class Dropdown<TItem> : ComponentBase
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public List<TItem> SelectedItems { get; set; } = [];
     [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
-
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
-    
-    private bool IsAllSelected => Data.Any() && SelectedItems.Count == Data.Count();
+    [Inject] private IUiStateService UiStateService { get; set; } = null!;
+
+    private readonly string _dropdownId = $"dropdown_{Guid.NewGuid()}";
+    private bool IsAllSelected
+    {
+        get => Data.Any() && SelectedItems.Count == Data.Count();
+        set
+        {
+            if (value) SelectedItems = Data.ToList();
+            else SelectedItems.Clear();
+        }
+    }
     
     private bool _isOpen;
 
     private void ToggleDropdown() => _isOpen = !_isOpen;
-    private void Close() => _isOpen = false;
+
+    protected override void OnInitialized()
+    {
+        UiStateService.OnCloseDropdownRequested += Close;
+    }
 
     private bool IsSelected(TItem item)
     {
@@ -65,18 +79,15 @@ public partial class Dropdown<TItem> : ComponentBase
         await SelectedItemsChanged.InvokeAsync(SelectedItems);
     }
 
-    private async Task ToggleSelectAll()
+    private void Close()
     {
-        if (IsAllSelected)
-        {
-            SelectedItems.Clear();
-        }
-        else
-        {
-            SelectedItems.Clear();
-            SelectedItems.AddRange(Data);
-        }
-
-        await SelectedItemsChanged.InvokeAsync(SelectedItems);
+        if (!_isOpen) return;
+        _isOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void Dispose()
+    {
+        UiStateService.OnCloseDropdownRequested -= Close;
     }
 }

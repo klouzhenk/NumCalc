@@ -48,3 +48,19 @@
         overflow: auto;
     }
 }
+
+.comparison-result__item.marked {
+    position: relative;
+    
+    &::after{
+        position: absolute;
+        content: '\1F3C6';
+        right: var(--dimension-l);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.25rem;
+        color: transparent;
+        text-shadow: 0 0 0 var(--primary-color);
+    }
+}
+
