@@ -187,9 +187,8 @@ public class RootFindingService(IPythonEnvironment env) : IRootFindingService
             .OrderBy(r => r.ExecutionTimeMs)
             .ThenBy(r => r.Iterations)
             .FirstOrDefault();
-        
         response.BestMethod = bestMethod?.Method ?? request?.Methods?.FirstOrDefault();
 
-        return new RootFindingComparisonResponse();
+        return response;
     }
 }

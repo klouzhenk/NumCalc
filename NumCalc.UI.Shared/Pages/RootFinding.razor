@@ -67,9 +67,9 @@
             </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
         </div>
-        @if (Result?.SolutionSteps is { Count: > 0 })
+        @if (Mode is AnalysisMode.Single && Result?.SolutionSteps is { Count: > 0 })
         {
-            <ul class="solution-steps__list">
+            <ul class="root-finding-result__list solution-steps__list">
                 @foreach (var step in Result.SolutionSteps)
                 {
                     <li class="solution-steps__item">
@@ -101,9 +101,26 @@
                 }
             </ul>
         }
+        else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
+        {
+            <ul class="root-finding-result__list">
+                @foreach (var benchmarkResult in ComparisonResult.Results)
+                {
+                    // TODO : emphasize the best method
+                    <li class="root-finding-result__item">
+                        <span class="root-finding-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @benchmarkResult.Root &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
         else
         {
-            <div class="solution-steps__container--empty">
+            <div class="root-finding-result__container--empty">
                 <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
         }

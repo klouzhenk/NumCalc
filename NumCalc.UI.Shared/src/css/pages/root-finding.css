@@ -31,7 +31,8 @@
     }
 }
 
-.solution-steps{
+.solution-steps,
+.root-finding-result {
     &__container, &__container--empty{
         flex: 1;        
         display: flex;
