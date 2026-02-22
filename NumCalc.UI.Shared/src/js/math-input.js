@@ -74,6 +74,13 @@ export const MathHelper = {
 
     getAsciiFromMathField: (element) => {
         return element ? element.getValue("ascii-math") : "";
+    },
+
+    setLatexInMathField: (element, latex) => {
+        if (element) {
+            element.value = latex;
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 };
 

@@ -45,10 +45,15 @@ public partial class MathInput : ComponentBase, IDisposable
         if (OnInput.HasDelegate)
             await OnInput.InvokeAsync(newValue);
     }
-    
+
     public async Task<string> GetAsciiValue()
     {
         return await JsRuntime.InvokeAsync<string>("NumCalc.getAsciiFromMathField", _mathFieldRef);
+    }
+    
+    public async Task SetLatexValue(string latex)
+    {
+        await JsRuntime.InvokeVoidAsync("NumCalc.setLatexInMathField", _mathFieldRef, latex);
     }
 
     private async Task CopyToClipboard()

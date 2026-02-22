@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>WebUI</RootNamespace>
+        <UserSecretsId>c3bd169e-756b-4fa8-b4ca-7a9c550cff93</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

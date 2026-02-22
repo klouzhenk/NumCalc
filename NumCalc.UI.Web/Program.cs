@@ -19,6 +19,10 @@ builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(cl
 {
     client.BaseAddress = new Uri(baseApiUrl);
 });
+builder.Services.AddHttpClient<IOcrService, OcrService>(client =>
+{
+    client.BaseAddress = new Uri(baseApiUrl);
+});
 
 builder.Services.AddScoped<IUiStateService, UiStateService>();
 
