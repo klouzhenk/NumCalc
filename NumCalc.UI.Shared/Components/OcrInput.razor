@@ -1,5 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 
 <div class="ocr-container">
-    <InputFile OnChange="UploadImage" accept=".jpg,.png,.jpeg"></InputFile>
+    @{
+        var inputId = $"input-file__{InputId}"; 
+    }
+    <label class="input-label--file" for="@inputId">
+        <SvgIcon Name="image" CssClass="icon-image"/>
+        <InputFile OnChange="UploadImage" accept=".jpg,.png,.jpeg" id="@inputId"></InputFile>
+    </label>
 </div>

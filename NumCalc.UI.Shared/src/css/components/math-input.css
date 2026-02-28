@@ -12,10 +12,16 @@
         transition: var(--default-transition);
         overflow: hidden;
         display: flex;
+        flex-shrink: 0;
 
         &:focus-within {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 4px var(--primary-background);
+        }
+        
+        :not(:first-child) {
+            border-left: var(--default-border);
+            border-radius: 0;
         }
     }
 
@@ -24,8 +30,7 @@
         padding: var(--dimension-s) var(--dimension-m);
         font-size: 1.1rem;
         outline: none;
-        border:  none;
-        border-right: var(--default-border) ;
+        border: none;
         --caret-color: var(--primary-color);
         --selection-background: var(--primary-background);
         --selection-color: var(--black-color);
@@ -33,7 +38,13 @@
         --keyboard-zindex: 10000;
     }
     
-    &__copy-btn {
+    &__copy-btn, .ocr-container {
         flex: unset;
+        padding: 0 var(--dimension-l);
+        flex-shrink: 0;
+    }
+    
+    .ocr-container{
+        padding: 0;
     }
 }

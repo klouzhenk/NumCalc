@@ -77,6 +77,7 @@ public partial class Dropdown<TItem> : ComponentBase, IDisposable
             SelectedItems.Add(item);
 
         await SelectedItemsChanged.InvokeAsync(SelectedItems);
+        StateHasChanged();
     }
 
     private void Close()

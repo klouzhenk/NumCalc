@@ -80,3 +80,8 @@ table {
         background-color: var(--primary-color);
     }
 }
+
+svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}

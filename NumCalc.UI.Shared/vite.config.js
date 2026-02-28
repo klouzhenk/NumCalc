@@ -1,9 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig, normalizePath } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import path from 'path';
 
 export default defineConfig({
     plugins: [
+        createSvgIconsPlugin({
+            iconDirs: [normalizePath(path.resolve(process.cwd(), 'src/icons'))],
+            symbolId: 'icon-[name]',
+        }),
         ViteImageOptimizer({
             png: { quality: 80 },
             jpeg: { quality: 75 },
@@ -16,8 +21,8 @@ export default defineConfig({
         sourcemap: true,
         rollupOptions: {
             input: {
-                main: path.resolve(__dirname, 'src/js/app.js'),
-                styles: path.resolve(__dirname, 'src/css/main.css')
+                main: normalizePath(path.resolve(process.cwd(), 'src/js/app.js')),
+                styles: normalizePath(path.resolve(process.cwd(), 'src/css/main.css'))
             },
             output: {
                 entryFileNames: 'js/[name].js',
@@ -32,7 +37,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src')
+            '@': normalizePath(path.resolve(process.cwd(), './src'))
         }
     }
-})
+});

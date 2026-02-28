@@ -1,0 +1,15 @@
+﻿.ocr-container {
+    input[type="file"] {
+        display: none;
+    }
+    
+    label{
+        width: fit-content;
+        padding: 0 var(--dimension-l);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        cursor: pointer;
+    }
+}
