@@ -10,9 +10,11 @@ namespace NumCalc.UI.Shared.Components;
 public partial class OcrInput : ComponentBase
 {
     [Parameter] public EventCallback<string> OnInputContentRecognize { get; set; }
-    [Inject] private OcrService OcrService { get; set; } = null!;
+    [Inject] private IOcrService OcrService { get; set; } = null!;
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
+    
+    private readonly Guid _inputId = Guid.NewGuid();
     
     private async Task UploadImage(InputFileChangeEventArgs e)
     {
