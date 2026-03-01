@@ -17,6 +17,8 @@ namespace NumCalc.UI.Shared.Pages;
 
 public partial class RootFinding : BasePage
 {
+    // TODO : add opportunity to paste image from buffer
+    
     private const string ChartContainerId = "chart--root-finding";
     
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
