@@ -6,7 +6,8 @@ input[type="search"],
 input[type="tel"],
 input[type="file"],
 textarea,
-select {
+select,
+.input-label--file {
     width: 100%;
     padding: var(--dimension-s) var(--dimension-m);
     border: var(--default-border);
@@ -19,7 +20,7 @@ select {
         color: color-mix(in srgb, var(--black-color), transparent 50%);
     }
 
-    &:focus {
+    &:focus, &:hover {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 4px var(--primary-background);
     }
@@ -55,5 +56,28 @@ select {
     
     input{
         height: 100%;
+    }
+}
+
+.input-label--file {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    gap: var(--dimension-m);
+    flex: 1;
+    color: var(--gray-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 1px;
+    line-height: 0;
+    
+    input[type="file"] {
+        width: 0;
+        height: 0;
+        visibility: hidden;
+        opacity: 0;
     }
 }

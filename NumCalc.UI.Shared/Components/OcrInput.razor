@@ -1,11 +1,20 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
+﻿<button class="button button--ocr" @onclick="ShowImageUploadModal">
+    <SvgIcon Name="image"/>
+</button>
 
-<div class="ocr-container">
-    @{
-        var inputId = $"input-file__{_inputId}"; 
-    }
-    <label class="input-label--file" for="@inputId">
-        <SvgIcon Name="image" CssClass="icon-image"/>
-        <InputFile OnChange="UploadImage" accept=".jpg,.png,.jpeg" id="@inputId"></InputFile>
-    </label>
-</div>
+<BaseModal @ref="_uploadImageModal" @bind-IsVisible="_isImageUploading"
+           Subtitle="UploadImageWithYourEquation"
+           CssClass="modal--image-upload">
+    <BodyContent>
+        <CustomInputFile IconName="image"
+                         OnFileUpload="UploadImage"
+                         Text="UploadImage"/>
+        
+        <strong>@Localizer["Or"]</strong>
+        
+        <CustomInputFile IconName="camera"
+                         OnFileUpload="UploadImage"
+                         Text="TakePhoto"
+                         CanTakePhoto="true"/>
+    </BodyContent>
+</BaseModal>

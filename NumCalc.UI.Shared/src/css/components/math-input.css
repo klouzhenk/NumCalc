@@ -18,8 +18,8 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 4px var(--primary-background);
         }
-        
-        :not(:first-child) {
+
+        button:not(:first-child) {
             border-left: var(--default-border);
             border-radius: 0;
         }
@@ -38,13 +38,9 @@
         --keyboard-zindex: 10000;
     }
     
-    &__copy-btn, .ocr-container {
+    &__copy-btn, .button--ocr {
         flex: unset;
         padding: 0 var(--dimension-l);
         flex-shrink: 0;
-    }
-    
-    .ocr-container{
-        padding: 0;
     }
 }

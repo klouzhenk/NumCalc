@@ -20,6 +20,7 @@
 @import "components/switch.css";
 @import "components/math-input.css";
 @import "components/ocr-input.css";
+@import "components/modal.css";
 
 /* pages */
 @import "pages/root-finding.css";

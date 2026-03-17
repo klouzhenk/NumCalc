@@ -20,6 +20,7 @@
     --secondary-light-color: color-mix(in srgb, var(--secondary-color), var(--white-color) 60%);
     
     --gray-color: color-mix(in srgb, var(--black-color), var(--white-color) 20%);
+    --gray-dark-color: color-mix(in srgb, var(--black-color), var(--white-color) 10%);
     --gray-light-color: color-mix(in srgb, var(--black-color), var(--white-color) 40%);
     --gray-ultra-light-color: color-mix(in srgb, var(--black-color), var(--white-color) 85%);
     

@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<label class="input-label input-label--file @CssClass" for="@InputId">
+    @if(!string.IsNullOrWhiteSpace(IconName))
+    {
+        var iconCssClass = $"icon-{IconName}";
+        <SvgIcon Name="@IconName" CssClass="@iconCssClass"/>
+    }
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        <span class="input__text">@Localizer[Text]</span>
+    }
+    
+    @if (CanTakePhoto)
+    {
+        <InputFile OnChange="OnFileUploaded" accept="image/*" id="@InputId" capture="environment" />
+    }
+    else
+    {
+        <InputFile OnChange="OnFileUploaded" accept=".jpg,.png,.jpeg" id="@InputId" />
+    }
+</label>

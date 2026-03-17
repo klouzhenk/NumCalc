@@ -14,22 +14,25 @@ public partial class OcrInput : ComponentBase
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
-    private readonly Guid _inputId = Guid.NewGuid();
+    private bool _isImageUploading;
+    private BaseModal? _uploadImageModal;
     
-    private async Task UploadImage(InputFileChangeEventArgs e)
+    private async Task UploadImage(IBrowserFile file)
     {
         try
         {
             UiStateService.ShowLoader();
-            var latexText = await OcrService.RecognizeExpression(e.File);
+            var latexText = await OcrService.RecognizeExpression(file);
             if (string.IsNullOrWhiteSpace(latexText))
             {
                 UiStateService.ShowError(Localizer["TEXT_NOT_RECOGNIZED"]);
                 return;
             }
             
-            if(OnInputContentRecognize.HasDelegate)
+            if (OnInputContentRecognize.HasDelegate)
                 await OnInputContentRecognize.InvokeAsync(latexText);
+
+            await CloseImageUploadModal();
         }
         catch (Exception ex)
         {
@@ -39,5 +42,17 @@ public partial class OcrInput : ComponentBase
         {
             UiStateService.HideLoader();
         }
+    }
+
+    private async Task ShowImageUploadModal()
+    {
+        if (_uploadImageModal is null) return;
+        await _uploadImageModal.Show();
+    }
+    
+    private async Task CloseImageUploadModal()
+    {
+        if (_uploadImageModal is null) return;
+        await _uploadImageModal.Close();
     }
 }
