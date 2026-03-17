@@ -1,0 +1,18 @@
+﻿.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: var(--dimension-m);
+    width: 100%;
+    text-transform: lowercase;
+    line-height: 1;
+    color: var(--gray-light-color);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    
+    &::before, &::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid var(--gray-ultra-light-color);        
+    }
+}
