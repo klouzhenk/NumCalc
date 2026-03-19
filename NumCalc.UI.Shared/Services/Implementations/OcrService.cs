@@ -42,6 +42,32 @@ public class OcrService : IOcrService
 
         return "RECOGNIZING_ERROR";
     }
+    
+    public async Task<string> RecognizeExpression(string? imageBase64DataUrl)
+    {
+        try 
+        {
+            if (string.IsNullOrEmpty(_apiKey) || string.IsNullOrEmpty(imageBase64DataUrl))
+                return "RECOGNIZING_ERROR";
+
+            var parts = imageBase64DataUrl.Split(',');
+            if (parts.Length != 2)
+            {
+                return "RECOGNIZING_ERROR";
+            }
+
+            var header = parts[0];
+            var base64Image = parts[1];
+            var mimeType = header.Replace("data:", "").Replace(";base64", "");
+
+            return await CallGeminiApi(base64Image, mimeType);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Gemini failed: {ex.Message}. Trying fallback...");
+            return "RECOGNIZING_ERROR";
+        }
+    }
 
     private async Task<string> CallGeminiApi(string base64Image, string mimeType)
     {

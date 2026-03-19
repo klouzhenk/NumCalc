@@ -1,0 +1,22 @@
+﻿<BaseModal @ref="_modal"
+           Subtitle="@Localizer["RedesignYourImage"]"
+           CssClass="modal--crop-image"
+           CloseOnOutsideClick="false">
+    <BodyContent>
+        <button class="button button--icon" @onclick="RotateLeft">
+            <SvgIcon Name="rotate-left" />
+        </button>
+        <div class="cropper__container">
+            <CropperComponent @ref="_cropperComponent"
+                              Src="@ImageBase64"
+                              Options="@_cropperOptions"/>
+        </div>
+        <button class="button button--icon" @onclick="RotateRight">
+            <SvgIcon Name="rotate-right"/>
+        </button>
+    </BodyContent>
+    <FooterContent>
+        <button class="button button--secondary" @onclick="Close">Cancel</button>
+        <button class="button button--primary" @onclick="ApplyAndRecognize">Apply & Recognize</button>
+    </FooterContent>
+</BaseModal>

@@ -3,3 +3,39 @@
         align-items: center;
     }
 }
+
+.modal__content.modal--crop-image {
+    height: 80dvh;
+    width: 60dvw;
+    
+    .modal__body {
+        flex-direction: row;
+
+        button {
+            flex: 0;
+            border-radius: var(--border-radius-l);
+            border: var(--border-m) solid var(--gray-ultra-light-color);
+            padding: 0;
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    
+    .cropper__container {
+        flex: 1;
+        border-radius: var(--border-radius-xl);
+        display: flex;
+        
+        .cropper-container{
+            flex: 1;
+        }
+    }
+    
+    .modal__footer{
+        button {
+            border-radius: var(--border-radius-l);
+        }
+    }
+}

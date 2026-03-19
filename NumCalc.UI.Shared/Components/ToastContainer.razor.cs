@@ -7,7 +7,7 @@ namespace NumCalc.UI.Shared.Components;
 
 public partial class ToastContainer : ComponentBase, IDisposable
 {
-    [Inject] protected IUiStateService UiStateService { get; set; }
+    [Inject] protected IUiStateService UiStateService { get; set; } = null!;
 
     private List<ToastMessage> _toasts = [];
 

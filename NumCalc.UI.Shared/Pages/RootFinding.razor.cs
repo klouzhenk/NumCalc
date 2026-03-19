@@ -8,7 +8,6 @@ using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
-using NumCalc.UI.Shared.Models;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.RootFinding;
 using NumCalc.UI.Shared.Utils;
@@ -110,7 +109,9 @@ public partial class RootFinding : BasePage
     private async Task UpdateChart()
     {
         ChangeChartAppearing();
-        var asciiEquation = await _mathInputComponent?.GetAsciiValue();
+        string? asciiEquation = null;
+        if (_mathInputComponent is not null)
+            asciiEquation = await _mathInputComponent.GetAsciiValue();
         if (string.IsNullOrWhiteSpace(asciiEquation)) return;
         
         var min = _formData.StartPoint;

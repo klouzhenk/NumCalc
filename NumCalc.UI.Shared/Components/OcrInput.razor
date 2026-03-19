@@ -1,8 +1,9 @@
-﻿<button class="button button--ocr" @onclick="ShowImageUploadModal">
+﻿@using NumCalc.UI.Shared.Components.Modals
+<button class="button button--ocr" @onclick="ShowImageUploadModal">
     <SvgIcon Name="image"/>
 </button>
 
-<BaseModal @ref="_uploadImageModal" @bind-IsVisible="_isImageUploading"
+<BaseModal @ref="_uploadImageModal"
            Subtitle="UploadImageWithYourEquation"
            CssClass="modal--image-upload">
     <BodyContent>
@@ -18,3 +19,7 @@
                          CanTakePhoto="true"/>
     </BodyContent>
 </BaseModal>
+
+<CropImageModal @ref="_cropImageModal"
+                ImageBase64="@_uploadedImageBase64"
+                OnSubmit="HandleImageSubmit"/>

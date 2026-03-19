@@ -4,7 +4,7 @@ using NumCalc.UI.Shared.Layouts;
 using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 using WebUI.Components;
-using Microsoft.AspNetCore.Localization;
+using NumCalc.UI.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +25,8 @@ builder.Services.AddHttpClient<IOcrService, OcrService>(client =>
 });
 
 builder.Services.AddScoped<IUiStateService, UiStateService>();
+
+builder.Services.AddNumCalcUiShared();
 
 var app = builder.Build();
 
