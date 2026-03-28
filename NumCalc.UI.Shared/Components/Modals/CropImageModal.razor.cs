@@ -29,6 +29,19 @@ public partial class CropImageModal : ComponentBase
         DragMode = DragMode.Crop.ToEnumString() ?? string.Empty,
         AutoCropArea = 1
     };
+    private DragMode _currentDragMode = DragMode.Crop;
+
+    private void SetDragMode(DragMode mode)
+    {
+        _currentDragMode = mode;
+        _cropperComponent?.SetDragMode(mode);
+    }
+
+    private string DragBtnClass(DragMode mode)
+    {
+        const string baseClass = "button button--icon";
+        return mode == _currentDragMode ? $"{baseClass} button--active" : baseClass;
+    }
     
     private void RotateLeft()
     {
@@ -57,8 +70,17 @@ public partial class CropImageModal : ComponentBase
         }
         catch (Exception ex)
         {
-            
+            UiStateService.ShowError(Localizer["ErrorOccurredWhileApplyingAndRecognizing"]);
         }
+    }
+    
+    private void ResetCropper()
+    {
+        if (_cropperComponent is null) return;
+
+        _cropperComponent.Reset();
+        _currentDragMode = DragMode.Crop;
+        _cropperComponent.SetDragMode(_currentDragMode);
     }
     
     public void Show() => _modal?.Show();
