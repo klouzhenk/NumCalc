@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using NumCalc.UI.Shared.Extensions;
 using NumCalc.UI.Shared.HttpServices.Implementations;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Services.Implementations;
@@ -34,6 +35,8 @@ public static class MauiProgram
 #endif
         });
 
+        var logPath = Path.Combine(FileSystem.AppDataDirectory, "Logs", "maui-log-.txt");
+        builder.Services.AddSharedLogging(logPath);
         return builder.Build();
     }
 }

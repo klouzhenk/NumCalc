@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using NumCalc.UI.Shared.Exceptions;
 
 namespace NumCalc.UI.Shared.HttpServices;
 
@@ -12,7 +13,7 @@ public abstract class BaseApiService(HttpClient httpClient)
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<TResponse>() 
-                   ?? throw new ApplicationException("EMPTY_SERVER_RESPONSE");
+                   ?? throw new ApiException("EMPTY_SERVER_RESPONSE");
         }
         
         var errorMessage = "UNKNOWN_SERVER_ERROR";
@@ -20,7 +21,8 @@ public abstract class BaseApiService(HttpClient httpClient)
 
         try
         {
-            var problemDetails = JsonSerializer.Deserialize<JsonElement>(errorContent);
+            using var document = JsonDocument.Parse(errorContent);
+            var problemDetails = document.RootElement;
             
             if (problemDetails.TryGetProperty("detail", out var detail))
             {
@@ -40,6 +42,6 @@ public abstract class BaseApiService(HttpClient httpClient)
             errorMessage = $"HTTP_ERROR_{response.StatusCode}";
         }
         
-        throw new ApplicationException(errorMessage);
+        throw new ApiException(errorMessage);
     }
 }

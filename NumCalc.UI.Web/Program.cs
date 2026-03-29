@@ -26,7 +26,8 @@ builder.Services.AddHttpClient<IOcrService, OcrService>(client =>
 
 builder.Services.AddScoped<IUiStateService, UiStateService>();
 
-builder.Services.AddNumCalcUiShared();
+builder.Services.AddNumCalcUiShared()
+    .AddSharedLogging("Logs/web-log-.txt");
 
 var app = builder.Build();
 

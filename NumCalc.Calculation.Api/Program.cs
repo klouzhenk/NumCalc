@@ -3,8 +3,16 @@ using NumCalc.Calculation.Api.HostedServices;
 using NumCalc.Calculation.Api.Middlewares;
 using NumCalc.Calculation.Api.Services.Implementations;
 using NumCalc.Calculation.Api.Services.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/api-log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14)
+    .CreateLogger();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();builder.Services.AddSwaggerGen(options =>
@@ -45,6 +53,7 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler(_ => { });
 
 if (app.Environment.IsDevelopment())

@@ -14,10 +14,8 @@ using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public partial class RootFinding : BasePage
+public partial class RootFinding : BasePage<RootFinding>
 {
-    // TODO : add opportunity to paste image from buffer
-    
     private const string ChartContainerId = "chart--root-finding";
     
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
@@ -68,8 +66,7 @@ public partial class RootFinding : BasePage
             RootFindingMethod.Combined =>
                 await SafeExecuteAsync(() =>
                     CalculationApiService.GetCombinedResultAsync(requestModel)),
-            _ => null
-            // UiService.ShowError(Localizer["ThereIsNoProperMethod"]);
+            _ => throw new ArgumentOutOfRangeException($"There is no implemented calculation method for this root finding method")
         };
         
         await UpdateChart();
