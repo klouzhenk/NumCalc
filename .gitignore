@@ -191,3 +191,8 @@ FodyWeavers.xsd
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Continue setup
+.continue/sessions/
+.continue/config.json
+.continue/index/
