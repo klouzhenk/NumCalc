@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using CSnakes.Runtime;
-using NumCalc.Calculation.Api.Entities;
+using NumCalc.Calculation.Api.Entities.RootFinding;
 using NumCalc.Calculation.Api.Exceptions;
 using NumCalc.Calculation.Api.Services.Interfaces;
 using NumCalc.Calculation.Api.Utils;

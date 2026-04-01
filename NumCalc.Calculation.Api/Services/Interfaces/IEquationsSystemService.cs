@@ -1,0 +1,9 @@
+﻿using NumCalc.Shared.EquationsSystems.Requests;
+using NumCalc.Shared.EquationsSystems.Responses;
+
+namespace NumCalc.Calculation.Api.Services.Interfaces;
+
+public interface IEquationsSystemService
+{
+    SystemSolvingResponse SolveCramer(SystemSolvingRequest model);
+}

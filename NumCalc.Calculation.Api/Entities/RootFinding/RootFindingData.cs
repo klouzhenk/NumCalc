@@ -1,8 +1,8 @@
-﻿using NumCalc.Shared.Common;
+﻿using System.Text.Json.Serialization;
+using NumCalc.Shared.Common;
 using Point = NumCalc.Shared.Common.Point;
-using System.Text.Json.Serialization;
 
-namespace NumCalc.Calculation.Api.Entities;
+namespace NumCalc.Calculation.Api.Entities.RootFinding;
 
 public class RootFindingData
 {

@@ -29,3 +29,14 @@ class FailureData:
 class ResponseEnvelope:
     success: SuccessData | None
     failure: FailureData | None
+
+# Equation system result
+@dataclass
+class SystemSuccessData:
+    roots: List[float]
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class SystemResponseEnvelope:
+    success: SystemSuccessData | None
+    failure: FailureData | None
