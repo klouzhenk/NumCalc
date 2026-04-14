@@ -31,4 +31,10 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request)
         => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/gaussian", request);
+
+    public async Task<SystemSolvingResponse?> SolveFixedPointAsync(NonLinearSystemRequest request)
+        => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/fixed-point", request);
+    
+    public async Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request)
+        => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/seidel", request);
 }

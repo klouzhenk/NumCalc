@@ -36,4 +36,13 @@ public class EquationsSystemsController(IEquationsSystemService equationsSystemS
         var response = equationsSystemService.SolveFixedPoint(request);
         return Ok(response);
     }
+
+    [HttpPost("seidel")]
+    [ProducesResponseType(typeof(SystemSolvingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult SolveSeidel([FromBody] NonLinearSystemRequest request)
+    {
+        var response = equationsSystemService.SolveSeidel(request);
+        return Ok(response);
+    }
 }

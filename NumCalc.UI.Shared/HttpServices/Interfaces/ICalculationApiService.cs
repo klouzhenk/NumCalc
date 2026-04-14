@@ -15,4 +15,6 @@ public interface ICalculationApiService
     Task<RootFindingComparisonResponse?> GetBenchmarkResultAsync(RootFindingComparisonRequest request);
     Task<SystemSolvingResponse?> SolveCramerAsync(SystemSolvingRequest request);
     Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request);
+    Task<SystemSolvingResponse?> SolveFixedPointAsync(NonLinearSystemRequest request);
+    Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request);
 }

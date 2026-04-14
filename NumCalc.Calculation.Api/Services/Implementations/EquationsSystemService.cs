@@ -71,4 +71,28 @@ public class EquationsSystemService(IPythonEnvironment env) : IEquationsSystemSe
             SolutionSteps = result.SolutionSteps
         };
     }
+
+    public SystemSolvingResponse SolveSeidel(NonLinearSystemRequest request)
+    {
+        if (request.IterationFunctions == null || request.IterationFunctions.Count == 0)
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The iteration functions list is empty");
+
+        var equationSystemSolver = env.EquationSystems();
+
+        var jsonEnvelope = equationSystemSolver.SolveSeidel(
+            request.IterationFunctions,
+            request.Variables,
+            request.InitialGuess,
+            request.Tolerance,
+            request.MaxIterations
+        );
+
+        var result = jsonEnvelope.UnwrapOrThrow<SystemSolvingData>();
+
+        return new SystemSolvingResponse
+        {
+            Roots = result.Roots,
+            SolutionSteps = result.SolutionSteps
+        };
+    }
 }
