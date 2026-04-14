@@ -41,7 +41,7 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer's rule)
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel)
 - **Services:** `IRootFindingService` / `IEquationsSystemService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
@@ -61,6 +61,9 @@ Scripts/
     combined.py       — Brent's hybrid method
   equation_systems/
     cramer.py         — Cramer's rule for linear systems
+    gaussian.py       — Gaussian elimination with partial pivoting
+    fixed_point.py    — Fixed-point (Jacobi-style) iteration for non-linear systems
+    seidel.py         — Gauss-Seidel iteration for non-linear systems
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
@@ -73,6 +76,9 @@ Scripts/
 - `Point` (x, y), `SolutionStep` (iteration step with LaTeX formula)
 - Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.)
 - `ResponseEnvelope<T>` — wraps success/failure from Python → C# boundary
+- `SystemSolvingRequest` — for linear methods (Cramer, Gaussian): `Equations`, `Variables`
+- `NonLinearSystemRequest` — for iterative methods (Fixed-point, Seidel): `IterationFunctions`, `Variables`, `InitialGuess`, `Tolerance`, `MaxIterations`
+- `LinearIterativeSystemRequest` — reserved for future linear iterative methods
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -100,12 +106,16 @@ The system is partially implemented.
 
 Currently working:
 - Root finding methods (Python + API + UI)
-- Basic equation systems solving (Cramer's rule)
+- Equation systems — full API layer (Python + API + HTTP client):
+  - Cramer's rule
+  - Gaussian elimination (with partial pivoting)
+  - Fixed-point iteration
+  - Gauss-Seidel iteration
 - Python integration via CSnakes
-- Blazor UI for input and result display
+- Blazor UI for root finding input and result display
 
 Not implemented yet:
-- Advanced equation systems methods
+- Equation systems UI page (Blazor)
 - Numerical integration
 - Differential equations (ODE)
 - Full-featured backend for users/history
@@ -140,13 +150,13 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ### Systems of Equations (Системи рівнянь)
 
-#### Linear Systems — PARTIALLY IMPLEMENTED
+#### Linear Systems — API COMPLETE, UI TODO
 - Cramer's rule (Крамер) — implemented
-- Gaussian elimination (Метод Гаусса) — TODO
+- Gaussian elimination (Метод Гаусса) — implemented
 
-#### Non-linear Systems — TODO
-- Fixed-point iteration method
-- Seidel method (Gauss-Seidel)
+#### Non-linear Systems — API COMPLETE, UI TODO
+- Fixed-point iteration method — implemented
+- Seidel method (Gauss-Seidel) — implemented
 
 ---
 
