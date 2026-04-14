@@ -1,4 +1,6 @@
-﻿using NumCalc.Shared.EquationsSystems.Requests;
+﻿using NumCalc.Shared.Differentiation.Requests;
+using NumCalc.Shared.Differentiation.Responses;
+using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
@@ -48,4 +50,10 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request)
         => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/spline", request);
+
+    public async Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request)
+        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/finite-diff", request);
+
+    public async Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request)
+        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/lagrange", request);
 }

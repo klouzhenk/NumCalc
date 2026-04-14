@@ -1,4 +1,6 @@
-﻿using NumCalc.Shared.EquationsSystems.Requests;
+﻿using NumCalc.Shared.Differentiation.Requests;
+using NumCalc.Shared.Differentiation.Responses;
+using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
@@ -22,4 +24,6 @@ public interface ICalculationApiService
     Task<InterpolationResponse?> InterpolateNewtonAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);
+    Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request);
+    Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request);
 }
