@@ -1,2 +1,108 @@
-﻿@page "/equation-systems"
+@page "/equation-systems"
+@using NumCalc.UI.Shared.Enums.EquationSystems
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Components.EquationSystems
 
+@inherits BasePage<EquationSystems>
+
+<div class="page-wrapper page__equation-systems">
+    <div class="equation-systems__form-wrapper">
+        <div class="equation-systems__filters-container">
+            <Switch TItem="EquationSystemCategory"
+                    Data="@(Enum.GetValues<EquationSystemCategory>())"
+                    @bind-Value="Category"
+                    TextField="@(item => item.ToString())" />
+
+            @if (Category is EquationSystemCategory.Linear)
+            {
+                <Dropdown TItem="LinearSystemMethod"
+                          Label="Method"
+                          Data="@(Enum.GetValues<LinearSystemMethod>())"
+                          @bind-Value="LinearMethod"
+                          TextField="@(item => item.ToString())" />
+            }
+            else
+            {
+                <Dropdown TItem="NonLinearSystemMethod"
+                          Label="Method"
+                          Data="@(Enum.GetValues<NonLinearSystemMethod>())"
+                          @bind-Value="NonLinearMethod"
+                          TextField="@(item => item.ToString())" />
+            }
+
+            <Dropdown TItem="int"
+                      Label="Size"
+                      Data="@_sizes"
+                      @bind-Value="Size"
+                      TextField="@(item => $"{item}×{item}")" />
+        </div>
+
+        <div class="equation-systems__form">
+            @if (Category is EquationSystemCategory.Linear)
+            {
+                <LinearSystemInput Size="Size" @ref="_linearInput" />
+            }
+            else
+            {
+                <EquationList Size="Size" @ref="_equationList" />
+            }
+
+            <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+        </div>
+
+        @if (Result?.Roots is { Count: > 0 })
+        {
+            <div class="equation-systems-result">
+                <div class="equation-systems-result__roots">
+                    @for (var i = 0; i < Result.Roots.Count; i++)
+                    {
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i]</span>
+                    }
+                </div>
+
+                @if (Result.SolutionSteps is { Count: > 0 })
+                {
+                    <ul class="root-finding-result__list solution-steps__list">
+                        @foreach (var step in Result.SolutionSteps)
+                        {
+                            <li class="solution-steps__item">
+                                <span class="solution-steps__item-title">
+                                    @step.StepIndex
+                                    @if (!string.IsNullOrWhiteSpace(step.Description))
+                                    {
+                                        <span class="solution-steps__item-desc">&nbsp;&mdash;&nbsp;@Localizer[step.Description]</span>
+                                    }
+                                </span>
+                                <div class="solution-steps__item-text">
+                                    @if (step.IsThereTextContent)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                                        {
+                                            <span class="solution-steps__item-formula">@($"{Localizer["LaTeXRecord"]}: {step.LatexFormula}").&nbsp;</span>
+                                        }
+                                        if (!string.IsNullOrWhiteSpace(step.Value))
+                                        {
+                                            <span class="solution-steps__item-value">@($"{Localizer["GottenValue"]}: {step.Value}").</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Localizer["ThereIsNoDescriptionToStep"]
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        else
+        {
+            // TODO : extract base class for the solution result display. Do not use root finding class.
+            // TODO : display user entered functions
+            <div class="root-finding-result__container--empty">
+                <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
+            </div>
+        }
+    </div>
+</div>
