@@ -1,0 +1,78 @@
+@page "/differentiation"
+@using NumCalc.Shared.Enums.Differentiation
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Components.Differentiation
+@using NumCalc.UI.Shared.Enums.Differentiation
+
+@inherits BasePage<Differentiation>
+
+<div class="page-wrapper page__differentiation">
+    <div class="differentiation__form-wrapper">
+
+        <div class="differentiation__filters-container">
+            <Dropdown TItem="DifferentiationMethod"
+                      Label="Method"
+                      Data="@(Enum.GetValues<DifferentiationMethod>())"
+                      @bind-Value="_method"
+                      TextField="@(item => item.ToString())" />
+
+            @if (_method is DifferentiationMethod.FiniteDifferences)
+            {
+                <Dropdown TItem="FiniteDiffVariant"
+                          Label="Variant"
+                          Data="@(Enum.GetValues<FiniteDiffVariant>())"
+                          @bind-Value="_variant"
+                          TextField="@(item => item.ToString())" />
+            }
+            else
+            {
+                <Switch TItem="DifferentiationInputMode"
+                        Data="@(Enum.GetValues<DifferentiationInputMode>())"
+                        @bind-Value="_mode"
+                        TextField="@(item => item.ToString())" />
+            }
+        </div>
+
+        <div class="differentiation__form">
+            <DifferentiationInput Method="_method" Mode="_mode" @ref="_input" />
+            <button class="button button--primary" @onclick="Calculate">Calculate</button>
+        </div>
+
+        @if (Result is not null)
+        {
+            <div class="differentiation-result">
+                <div class="differentiation-result__answer">
+                    @if (_method is DifferentiationMethod.FiniteDifferences)
+                    {
+                        <span>@SelectedStep?.Value</span>
+                    }
+                    else
+                    {
+                        <span>f'(x*) = @Result.DerivativeValue.ToString("F8")</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Result.PolynomialLatex))
+                {
+                    <div class="differentiation-result__polynomial">
+                        <span class="solution-steps__item-formula">@Result.PolynomialLatex</span>
+                    </div>
+                }
+
+                <SolutionStepsList Steps="@FilteredSteps" />
+            </div>
+        }
+        else
+        {
+            <div class="root-finding-result__container--empty">
+                <span class="remark">Click Calculate to view result</span>
+            </div>
+        }
+
+    </div>
+
+    <div class="chart__container">
+        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+    </div>
+</div>

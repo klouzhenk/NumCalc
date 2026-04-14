@@ -1,0 +1,93 @@
+@using NumCalc.Shared.Enums.Differentiation
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Enums.Differentiation
+
+@if (Method is DifferentiationMethod.FiniteDifferences)
+{
+    <div class="differentiation-input__function">
+        <MathInput Label="f(x)" @ref="_mathInput" />
+    </div>
+
+    <div class="differentiation-input__query">
+        <div class="input-group">
+            <label class="input-group__label">x*</label>
+            <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+        </div>
+    </div>
+
+    <div class="differentiation-input__order">
+        <div class="input-group">
+            <label class="input-group__label">Derivative order</label>
+            <select class="input-group__input" @bind="_derivativeOrder">
+                <option value="1">1st</option>
+                <option value="2">2nd</option>
+            </select>
+        </div>
+    </div>
+
+    <details class="differentiation-input__advanced">
+        <summary>Advanced (h = @_stepSize)</summary>
+        <div class="input-group">
+            <label class="input-group__label">Step size (h)</label>
+            <input type="number" step="any" class="input-group__input" @bind="_stepSize" />
+        </div>
+    </details>
+}
+else
+{
+    @if (Mode is DifferentiationInputMode.Function)
+    {
+        <div class="differentiation-input__function">
+            <MathInput Label="f(x)" @ref="_mathInput" />
+        </div>
+    }
+
+    <div class="differentiation-input__table">
+        <table class="differentiation-input__nodes">
+            <thead>
+                <tr>
+                    <th>i</th>
+                    <th>x<sub>i</sub></th>
+                    @if (Mode is DifferentiationInputMode.RawData)
+                    {
+                        <th>y<sub>i</sub></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < _nodeCount; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>@(index + 1)</td>
+                        <td>
+                            <input type="number" step="any" class="input-group__input"
+                                   value="@_xNodes[index]"
+                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _xNodes[index] = v; }" />
+                        </td>
+                        @if (Mode is DifferentiationInputMode.RawData)
+                        {
+                            <td>
+                                <input type="number" step="any" class="input-group__input"
+                                       value="@_yValues[index]"
+                                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _yValues[index] = v; }" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="differentiation-input__row-controls">
+            <button class="button button--secondary" type="button" @onclick="AddNode">+ Add node</button>
+            <button class="button button--secondary" type="button" @onclick="RemoveNode" disabled="@(_nodeCount <= 2)">- Remove</button>
+        </div>
+    </div>
+
+    <div class="differentiation-input__query">
+        <div class="input-group">
+            <label class="input-group__label">x*</label>
+            <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+        </div>
+    </div>
+}

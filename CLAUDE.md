@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -65,28 +65,35 @@ Scripts/
     fixed_point.py    — Fixed-point (Jacobi-style) iteration for non-linear systems
     seidel.py         — Gauss-Seidel iteration for non-linear systems
   interpolation/
-    newton_interpolation.py — Newton divided differences polynomial
+    newton_interp.py        — Newton divided differences polynomial
     lagrange.py             — Lagrange basis polynomial
     spline.py               — Cubic spline (SciPy)
+  differentiation/
+    finite_diff.py    — Forward, backward, central finite differences (1st and 2nd order)
+    diff_lagrange.py  — Derivative via Lagrange interpolation polynomial (symbolic diff)
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
     structures.py     — Shared data structures
 ```
 
+Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `warming_up.py`.
+
 **CSnakes naming rule:** Sub-module filenames must be unique across the entire `Scripts/` tree (CSnakes generates proxy hint names from filename only, ignoring folder path). A duplicate filename anywhere causes the entire generator to fail. Also, a top-level `foo.py` and a `foo/` subfolder must not coexist — the `foo/__init__.py` collides with `foo.py`. Sub-folders do not need `__init__.py` (Python 3 namespace packages).
 
 ### Shared DTOs (`NumCalc.Shared`)
 
-- Request/response classes for root finding, equation systems, and interpolation
+- Request/response classes for root finding, equation systems, interpolation, and differentiation
 - `Point` (x, y), `SolutionStep` (iteration step with LaTeX formula)
-- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData)
+- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData), `DifferentiationInputMode` (Function | RawData)
 - `ResponseEnvelope<T>` — wraps success/failure from Python → C# boundary
 - `SystemSolvingRequest` — for linear methods (Cramer, Gaussian): `Equations`, `Variables`
 - `NonLinearSystemRequest` — for iterative methods (Fixed-point, Seidel): `IterationFunctions`, `Variables`, `InitialGuess`, `Tolerance`, `MaxIterations`
 - `LinearIterativeSystemRequest` — reserved for future linear iterative methods
 - `InterpolationRequest` — `Mode`, `FunctionExpression?`, `XNodes`, `YValues?`, `QueryPoint`
 - `InterpolationResponse` — `InterpolatedValue`, `PolynomialLatex?` (null for Spline), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
+- `DifferentiationRequest` — `Mode`, `FunctionExpression?`, `XNodes?`, `YValues?`, `QueryPoint`, `StepSize` (default 0.001), `DerivativeOrder` (1 or 2)
+- `DifferentiationResponse` — `DerivativeValue`, `PolynomialLatex?` (Lagrange only), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -124,11 +131,15 @@ Currently working:
   - Lagrange interpolation polynomial
   - Cubic spline (SciPy)
   - Supports both Function mode (f(x) + x-nodes) and Raw Data mode (x[], y[])
+- Numerical differentiation — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
+  - Finite differences: forward, backward, central (1st and 2nd order)
+  - Lagrange derivative (symbolic differentiation of the interpolation polynomial)
+  - Chart renders f(x) curve + tangent line at x*
+  - Variant dropdown (Forward/Backward/Central) filters which step is displayed
 - Python integration via CSnakes
-- Blazor UI for root finding, equation systems, and interpolation
+- Blazor UI for root finding, equation systems, interpolation, and differentiation
 
 Not implemented yet:
-- Numerical differentiation
 - Numerical integration
 - Optimization
 - Differential equations (ODE)
@@ -181,9 +192,9 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-### Numerical Differentiation (Чисельне диференціювання) — TODO
-- Finite differences (forward / backward / central)
-- Derivative via Lagrange interpolation
+### Numerical Differentiation (Чисельне диференціювання) — COMPLETED
+- Finite differences: forward, backward, central (1st and 2nd order) — implemented
+- Derivative via Lagrange interpolation — implemented
 
 ---
 
