@@ -1,5 +1,7 @@
 ﻿using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
+using NumCalc.Shared.Interpolation.Requests;
+using NumCalc.Shared.Interpolation.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
@@ -37,4 +39,13 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     
     public async Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request)
         => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/seidel", request);
+
+    public async Task<InterpolationResponse?> InterpolateNewtonAsync(InterpolationRequest request)
+        => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/newton", request);
+
+    public async Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request)
+        => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/lagrange", request);
+
+    public async Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request)
+        => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/spline", request);
 }

@@ -1,5 +1,7 @@
 ﻿using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
+using NumCalc.Shared.Interpolation.Requests;
+using NumCalc.Shared.Interpolation.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
 
@@ -17,4 +19,7 @@ public interface ICalculationApiService
     Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request);
     Task<SystemSolvingResponse?> SolveFixedPointAsync(NonLinearSystemRequest request);
     Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request);
+    Task<InterpolationResponse?> InterpolateNewtonAsync(InterpolationRequest request);
+    Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request);
+    Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);
 }

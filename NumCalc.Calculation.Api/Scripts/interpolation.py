@@ -1,5 +1,5 @@
 from typing import List, Optional
-from interpolation import newton_interp, lagrange, spline
+from interpolation import newton_interpolation, lagrange, spline
 
 
 def solve_newton(
@@ -8,7 +8,7 @@ def solve_newton(
     query_point: float,
     expression: Optional[str] = None
 ) -> str:
-    return newton_interp.solve(x_nodes, y_values, query_point, expression)
+    return newton_interpolation.solve(x_nodes, y_values, query_point, expression)
 
 
 def solve_lagrange(
