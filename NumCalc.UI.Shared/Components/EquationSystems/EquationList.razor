@@ -1,0 +1,39 @@
+@using NumCalc.UI.Shared.Components
+
+@if (Size > 1)
+{
+    <div class="equation-list">
+        @for (var i = 0; i < Size; i++)
+        {
+            var index = i;
+            <div class="equation-list__row">
+                <span class="equation-list__label">g<sub>@(index + 1)</sub>(x)</span>
+
+                <div class="equation-list__math-input">
+                    <MathInput @ref="MathInputs[index]" />
+                </div>
+
+                <div class="equation-list__guess">
+                    <span>x<sub>@(index + 1)</sub><sup>0</sup> =</span>
+                    <input type="number" step="any"
+                           value="@InitialGuess[index]"
+                           @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) InitialGuess[index] = v; }" />
+                </div>
+            </div>
+        }
+
+        <div class="equation-list__params">
+            <div class="input-group">
+                <label class="input-group__label">Tolerance</label>
+                <input type="number" step="any" class="input-group__input"
+                       @bind="Tolerance" />
+            </div>
+
+            <div class="input-group">
+                <label class="input-group__label">Max iterations</label>
+                <input type="number" class="input-group__input"
+                       @bind="MaxIterations" />
+            </div>
+        </div>
+    </div>
+}
