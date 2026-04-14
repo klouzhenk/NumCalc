@@ -1,0 +1,23 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace NumCalc.Shared.EquationsSystems.Requests;
+
+public class NonLinearSystemRequest
+{
+    [Required]
+    [MinLength(2)]
+    public required List<string> IterationFunctions { get; set; }
+
+    [Required]
+    [MinLength(2)]
+    public required List<string> Variables { get; set; }
+
+    [Required]
+    public required List<double> InitialGuess { get; set; }
+
+    [Range(1e-15, 1.0)]
+    public double Tolerance { get; set; } = 1e-6;
+
+    [Range(1, 10000)]
+    public int MaxIterations { get; set; } = 500;
+}

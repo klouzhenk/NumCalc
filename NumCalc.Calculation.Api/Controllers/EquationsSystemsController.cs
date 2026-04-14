@@ -27,4 +27,13 @@ public class EquationsSystemsController(IEquationsSystemService equationsSystemS
         var response = equationsSystemService.SolveGaussian(request);
         return Ok(response);
     }
+    
+    [HttpPost("fixed-point")]
+    [ProducesResponseType(typeof(SystemSolvingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult SolveFixedPoint([FromBody] NonLinearSystemRequest request)
+    {
+        var response = equationsSystemService.SolveFixedPoint(request);
+        return Ok(response);
+    }
 }

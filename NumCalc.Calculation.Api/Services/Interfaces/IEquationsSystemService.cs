@@ -7,4 +7,5 @@ public interface IEquationsSystemService
 {
     SystemSolvingResponse SolveCramer(SystemSolvingRequest model);
     SystemSolvingResponse SolveGaussian(SystemSolvingRequest model);
+    SystemSolvingResponse SolveFixedPoint(NonLinearSystemRequest model);
 }
