@@ -40,3 +40,16 @@ class SystemSuccessData:
 class SystemResponseEnvelope:
     success: SystemSuccessData | None
     failure: FailureData | None
+
+# Interpolation result
+@dataclass
+class InterpolationSuccessData:
+    interpolated_value: float
+    polynomial_latex: str | None
+    chart_points: List[Point]
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class InterpolationResponseEnvelope:
+    success: InterpolationSuccessData | None
+    failure: FailureData | None
