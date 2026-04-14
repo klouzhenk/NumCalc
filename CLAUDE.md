@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -64,21 +64,29 @@ Scripts/
     gaussian.py       — Gaussian elimination with partial pivoting
     fixed_point.py    — Fixed-point (Jacobi-style) iteration for non-linear systems
     seidel.py         — Gauss-Seidel iteration for non-linear systems
+  interpolation/
+    newton_interpolation.py — Newton divided differences polynomial
+    lagrange.py             — Lagrange basis polynomial
+    spline.py               — Cubic spline (SciPy)
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
     structures.py     — Shared data structures
 ```
 
+**CSnakes naming rule:** Sub-module filenames must be unique across the entire `Scripts/` tree (CSnakes generates proxy hint names from filename only, ignoring folder path). A duplicate filename anywhere causes the entire generator to fail. Also, a top-level `foo.py` and a `foo/` subfolder must not coexist — the `foo/__init__.py` collides with `foo.py`. Sub-folders do not need `__init__.py` (Python 3 namespace packages).
+
 ### Shared DTOs (`NumCalc.Shared`)
 
-- Request/response classes for root finding and equation systems
+- Request/response classes for root finding, equation systems, and interpolation
 - `Point` (x, y), `SolutionStep` (iteration step with LaTeX formula)
-- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.)
+- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData)
 - `ResponseEnvelope<T>` — wraps success/failure from Python → C# boundary
 - `SystemSolvingRequest` — for linear methods (Cramer, Gaussian): `Equations`, `Variables`
 - `NonLinearSystemRequest` — for iterative methods (Fixed-point, Seidel): `IterationFunctions`, `Variables`, `InitialGuess`, `Tolerance`, `MaxIterations`
 - `LinearIterativeSystemRequest` — reserved for future linear iterative methods
+- `InterpolationRequest` — `Mode`, `FunctionExpression?`, `XNodes`, `YValues?`, `QueryPoint`
+- `InterpolationResponse` — `InterpolatedValue`, `PolynomialLatex?` (null for Spline), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -111,11 +119,18 @@ Currently working:
   - Gaussian elimination (with partial pivoting)
   - Fixed-point iteration
   - Gauss-Seidel iteration
+- Interpolation — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
+  - Newton interpolation polynomial
+  - Lagrange interpolation polynomial
+  - Cubic spline (SciPy)
+  - Supports both Function mode (f(x) + x-nodes) and Raw Data mode (x[], y[])
 - Python integration via CSnakes
-- Blazor UI for root finding and equation systems
+- Blazor UI for root finding, equation systems, and interpolation
 
 Not implemented yet:
+- Numerical differentiation
 - Numerical integration
+- Optimization
 - Differential equations (ODE)
 - Full-featured backend for users/history
 - Complete MAUI UI
@@ -159,10 +174,10 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-### Interpolation (Інтерполяція) — TODO
-- Newton interpolation polynomial
-- Lagrange interpolation polynomial
-- Spline interpolation (cubic splines preferred)
+### Interpolation (Інтерполяція) — COMPLETED
+- Newton interpolation polynomial — implemented
+- Lagrange interpolation polynomial — implemented
+- Spline interpolation (cubic splines, SciPy) — implemented
 
 ---
 
