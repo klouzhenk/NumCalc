@@ -53,3 +53,16 @@ class InterpolationSuccessData:
 class InterpolationResponseEnvelope:
     success: InterpolationSuccessData | None
     failure: FailureData | None
+
+# Differentiation result
+@dataclass
+class DifferentiationSuccessData:
+    derivative_value: float
+    polynomial_latex: str | None
+    chart_points: List[Point]
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class DifferentiationResponseEnvelope:
+    success: DifferentiationSuccessData | None
+    failure: FailureData | None
