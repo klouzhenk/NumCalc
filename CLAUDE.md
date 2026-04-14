@@ -106,16 +106,15 @@ The system is partially implemented.
 
 Currently working:
 - Root finding methods (Python + API + UI)
-- Equation systems — full API layer (Python + API + HTTP client):
+- Equation systems — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
   - Cramer's rule
   - Gaussian elimination (with partial pivoting)
   - Fixed-point iteration
   - Gauss-Seidel iteration
 - Python integration via CSnakes
-- Blazor UI for root finding input and result display
+- Blazor UI for root finding and equation systems
 
 Not implemented yet:
-- Equation systems UI page (Blazor)
 - Numerical integration
 - Differential equations (ODE)
 - Full-featured backend for users/history
@@ -150,11 +149,11 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ### Systems of Equations (Системи рівнянь)
 
-#### Linear Systems — API COMPLETE, UI TODO
+#### Linear Systems — COMPLETED
 - Cramer's rule (Крамер) — implemented
 - Gaussian elimination (Метод Гаусса) — implemented
 
-#### Non-linear Systems — API COMPLETE, UI TODO
+#### Non-linear Systems — COMPLETED
 - Fixed-point iteration method — implemented
 - Seidel method (Gauss-Seidel) — implemented
 
