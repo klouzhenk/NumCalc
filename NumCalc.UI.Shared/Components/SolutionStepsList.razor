@@ -1,0 +1,39 @@
+@using Microsoft.Extensions.Localization
+@using NumCalc.UI.Shared.Resources
+
+@inject IStringLocalizer<Localization> Localizer
+
+@if (Steps is { Count: > 0 })
+{
+    <ul class="solution-steps__list">
+        @foreach (var step in Steps)
+        {
+            <li class="solution-steps__item">
+                <span class="solution-steps__item-title">
+                    @step.StepIndex
+                    @if (!string.IsNullOrWhiteSpace(step.Description))
+                    {
+                        <span class="solution-steps__item-desc">&nbsp;&mdash;&nbsp;@step.Description</span>
+                    }
+                </span>
+                <div class="solution-steps__item-text">
+                    @if (step.IsThereTextContent)
+                    {
+                        if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                        {
+                            <span class="solution-steps__item-formula">@($"{Localizer["LaTeXRecord"]}: {step.LatexFormula}").&nbsp;</span>
+                        }
+                        if (!string.IsNullOrWhiteSpace(step.Value))
+                        {
+                            <span class="solution-steps__item-value">@($"{Localizer["GottenValue"]}: {step.Value}").</span>
+                        }
+                    }
+                    else
+                    {
+                        @Localizer["ThereIsNoDescriptionToStep"]
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
