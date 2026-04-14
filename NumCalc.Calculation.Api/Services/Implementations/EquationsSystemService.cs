@@ -29,4 +29,22 @@ public class EquationsSystemService(IPythonEnvironment env) : IEquationsSystemSe
             SolutionSteps = result.SolutionSteps
         };
     }
+
+    public SystemSolvingResponse SolveGaussian(SystemSolvingRequest request)
+    {
+        if (request.Equations == null || request.Equations.Count == 0)
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered equations list is empty");
+
+        var equationSystemSolver = env.EquationSystems();
+
+        var jsonEnvelope = equationSystemSolver.SolveGaussian(request.Equations, request.Variables);
+
+        var result = jsonEnvelope.UnwrapOrThrow<SystemSolvingData>();
+
+        return new SystemSolvingResponse
+        {
+            Roots = result.Roots,
+            SolutionSteps = result.SolutionSteps
+        };
+    }
 }

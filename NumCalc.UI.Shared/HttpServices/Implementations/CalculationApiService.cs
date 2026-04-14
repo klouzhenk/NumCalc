@@ -1,7 +1,7 @@
-﻿using NumCalc.Shared.Enums.RootFinding;
+﻿using NumCalc.Shared.EquationsSystems.Requests;
+using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
-using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 
 namespace NumCalc.UI.Shared.HttpServices.Implementations;
@@ -25,4 +25,10 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<RootFindingComparisonResponse?> GetBenchmarkResultAsync(RootFindingComparisonRequest request)
         => await SendPostRequestAsync<RootFindingComparisonResponse>("api/rootfinding/comparison", request);
+
+    public async Task<SystemSolvingResponse?> SolveCramerAsync(SystemSolvingRequest request)
+        => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/cramer", request);
+
+    public async Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request)
+        => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/gaussian", request);
 }

@@ -13,9 +13,18 @@ public class EquationsSystemsController(IEquationsSystemService equationsSystemS
     [HttpPost("cramer")]
     [ProducesResponseType(typeof(SystemSolvingResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public IActionResult CalculateDichotomy([FromBody] SystemSolvingRequest request)
+    public IActionResult SolveCramer([FromBody] SystemSolvingRequest request)
     {
         var response = equationsSystemService.SolveCramer(request);
+        return Ok(response);
+    }
+
+    [HttpPost("gaussian")]
+    [ProducesResponseType(typeof(SystemSolvingResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult SolveGaussian([FromBody] SystemSolvingRequest request)
+    {
+        var response = equationsSystemService.SolveGaussian(request);
         return Ok(response);
     }
 }

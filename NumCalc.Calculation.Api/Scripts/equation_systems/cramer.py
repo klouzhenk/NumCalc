@@ -7,12 +7,19 @@ from shared.parsing import parse_expression
 
 def solve(equations: List[str], variables: List[str]) -> str:
     try:
+        if len(equations) != len(variables):
+            failure = FailureData(
+                code="INVALID_SYSTEM",
+                message=f"Expected {len(variables)} equations, got {len(equations)}."
+            )
+            return json.dumps(asdict(SystemResponseEnvelope(success=None, failure=failure)))
+        
         symbols = sympy.symbols(variables)
         parsed_eqs = []
-
+        
         for eq in equations:
             if "=" in eq:
-                left, right = eq.split("=")
+                left, right = eq.split("=", 1)
                 parsed_eqs.append(parse_expression(f"{left} - ({right})"))
             else:
                 parsed_eqs.append(parse_expression(eq))

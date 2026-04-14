@@ -46,6 +46,7 @@ builder.Services
     .WithPipInstaller(Path.Combine(scriptsPath, "requirements.txt"));
 
 builder.Services.AddScoped<IRootFindingService, RootFindingService>();
+builder.Services.AddScoped<IEquationsSystemService, EquationsSystemService>();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

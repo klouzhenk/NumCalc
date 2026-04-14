@@ -1,7 +1,7 @@
-﻿using NumCalc.Shared.Enums.RootFinding;
+﻿using NumCalc.Shared.EquationsSystems.Requests;
+using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
-using NumCalc.UI.Shared.Enums.Roots;
 
 namespace NumCalc.UI.Shared.HttpServices.Interfaces;
 
@@ -13,4 +13,6 @@ public interface ICalculationApiService
     Task<RootFindingResponse?> GetSecantResultAsync(RootFindingRequest request);
     Task<RootFindingResponse?> GetCombinedResultAsync(RootFindingRequest request);
     Task<RootFindingComparisonResponse?> GetBenchmarkResultAsync(RootFindingComparisonRequest request);
+    Task<SystemSolvingResponse?> SolveCramerAsync(SystemSolvingRequest request);
+    Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request);
 }
