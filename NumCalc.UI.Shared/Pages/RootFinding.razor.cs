@@ -21,7 +21,6 @@ public partial class RootFinding : BasePage<RootFinding>
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
     
     private AnalysisMode Mode { get; set; }
-    private RootFindingMethod _singleMethod = RootFindingMethod.Newton;
     private List<RootFindingMethod> _benchmarkMethods = [];
     
     private readonly RootFindingFormData _formData = new();
@@ -29,11 +28,12 @@ public partial class RootFinding : BasePage<RootFinding>
     private RootFindingResponse? Result { get; set; }
     private RootFindingComparisonResponse? ComparisonResult { get; set; }
     private MathInput? _mathInputComponent;
-    private bool _isChartBuilt;
+    private bool IsChartVisible => !string.IsNullOrWhiteSpace(_formData.FunctionExpression);
 
     private async Task Calculate()
     {
         Result = null;
+        ComparisonResult = null;
 
         if (Mode == AnalysisMode.Single) await DoSingleMethodCalculation();
         else await DoMultipleMethodCalculations();
@@ -49,25 +49,17 @@ public partial class RootFinding : BasePage<RootFinding>
             Error = _formData.Tolerance
         };
 
-        Result = _formData.Method switch
+        Func<Task<RootFindingResponse?>> apiCall = _formData.Method switch                                                                                                                                                                
         {
-            RootFindingMethod.Dichotomy =>
-                await SafeExecuteAsync(() =>
-                    CalculationApiService.GetDichotomyResultAsync(requestModel)),
-            RootFindingMethod.Newton =>
-                await SafeExecuteAsync(() =>
-                    CalculationApiService.GetNewtonResultAsync(requestModel)),
-            RootFindingMethod.SimpleIterations =>
-                await SafeExecuteAsync(() =>
-                    CalculationApiService.GetSimpleIterationsResultAsync(requestModel)),
-            RootFindingMethod.Secant =>
-                await SafeExecuteAsync(() =>
-                    CalculationApiService.GetSecantResultAsync(requestModel)),
-            RootFindingMethod.Combined =>
-                await SafeExecuteAsync(() =>
-                    CalculationApiService.GetCombinedResultAsync(requestModel)),
-            _ => throw new ArgumentOutOfRangeException($"There is no implemented calculation method for this root finding method")
+            RootFindingMethod.Dichotomy        => () => CalculationApiService.GetDichotomyResultAsync(requestModel),
+            RootFindingMethod.Newton           => () => CalculationApiService.GetNewtonResultAsync(requestModel),
+            RootFindingMethod.SimpleIterations => () => CalculationApiService.GetSimpleIterationsResultAsync(requestModel),
+            RootFindingMethod.Secant           => () => CalculationApiService.GetSecantResultAsync(requestModel),
+            RootFindingMethod.Combined         => () => CalculationApiService.GetCombinedResultAsync(requestModel),
+            _ => throw new ArgumentOutOfRangeException(nameof(_formData.Method))
         };
+
+        Result = await SafeExecuteAsync(apiCall);
         
         await UpdateChart();
     }
@@ -88,14 +80,6 @@ public partial class RootFinding : BasePage<RootFinding>
         await UpdateChart();
     }
 
-    private void ChangeChartAppearing()
-    {
-        if (!_isChartBuilt)
-            _isChartBuilt = true;
-        
-        if (string.IsNullOrEmpty(_formData.FunctionExpression)) _isChartBuilt = false;
-    }
-
     private async Task OnParametersChanged()
     {
         Result = null;
@@ -105,24 +89,33 @@ public partial class RootFinding : BasePage<RootFinding>
 
     private async Task UpdateChart()
     {
-        ChangeChartAppearing();
-        string? asciiEquation = null;
-        if (_mathInputComponent is not null)
-            asciiEquation = await _mathInputComponent.GetAsciiValue();
+        var asciiEquation = _mathInputComponent is not null
+            ? await _mathInputComponent.GetAsciiValue()
+            : null;
         if (string.IsNullOrWhiteSpace(asciiEquation)) return;
-        
+
+        var (min, max) = GetChartRange();
+        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), min, max);
+        AppendResultSeries(config);
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private (double min, double max) GetChartRange()
+    {
         var min = _formData.StartPoint;
         var max = _formData.EndPoint;
-        
-        if (min >= max)
-        {
-            var center = min;
-            min = center - 10;
-            max = center + 10;
-        }
 
-        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), min, max);
-        
+        if (!(min >= max)) return (min, max);
+
+        max = min + 10;
+        min -= 10;
+
+        return (min, max);
+    }
+
+    private void AppendResultSeries(Chart config)
+    {
         if (Mode is AnalysisMode.Single && Result?.Root.HasValue == true)
         {
             config.Series.Add(new ChartSeries
@@ -143,19 +136,13 @@ public partial class RootFinding : BasePage<RootFinding>
                     Name = Localizer[result.Method.ToString()],
                     Type = ChartType.Scatter,
                     Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
-                    Color = ColorUtils.GetSeriesColor((int)result.Method), 
+                    Color = ColorUtils.GetSeriesColor((int)result.Method),
                     IsVisible = true,
-                    Marker = new ChartMarker()
-                    {
-                        Radius = 5,
-                        Symbol = ChartSymbolType.Circle
-                    },
+                    Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle },
                     Opacity = 0.8
                 });
             }
         }
-
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
     
     private Chart CreateChartConfig(string expression, double min, double max)
@@ -169,13 +156,13 @@ public partial class RootFinding : BasePage<RootFinding>
                 Min = min, 
                 Max = max, 
                 Title = Localizer["ArgumentX"],
-                PlotLines = [ CreateZeroLine() ]
+                PlotLines = [ ChartUtils.CreateZeroLine() ]
             },
 
             YAxis = new ChartAxis 
             { 
                 Title = Localizer["FunctionValue"],
-                PlotLines = [ CreateZeroLine() ]
+                PlotLines = [ ChartUtils.CreateZeroLine() ]
             },
 
             Series =
@@ -191,12 +178,4 @@ public partial class RootFinding : BasePage<RootFinding>
             ]
         };
     }
-    
-    private static PlotLine CreateZeroLine() => new()
-    {
-        Value = 0,
-        Color = ColorUtils.GetColor(Color.GrayUltraLight),
-        Width = 2,
-        DashStyle = LineStyle.LongDash
-    };
 }

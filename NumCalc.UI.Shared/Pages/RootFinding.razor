@@ -20,7 +20,7 @@
                 case AnalysisMode.Single:
                     <Dropdown TItem="RootFindingMethod"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
-                              @bind-Value="_singleMethod"
+                              @bind-Value="_formData.Method"
                               TextField="@(item => item.ToString())"/>
                     break;
                 case AnalysisMode.Benchmark:
@@ -31,7 +31,8 @@
                               TextField="@(item => item.ToString())"/>
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    <span>ThereIsNoDropdownForThisMode</span>
+                    break;
             }
         </div>
         <div class="root-finding__form">
@@ -43,7 +44,7 @@
 
                 <div class="input-group">
                     <label class="input-group__label">
-                        @(Mode is AnalysisMode.Single && _singleMethod is RootFindingMethod.Newton
+                        @(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton
                             ? Localizer["InitialGuess"]
                             : Localizer["StartPoint"])
                     </label>
@@ -130,7 +131,7 @@
     </div>
 
     <div class="chart__container">
-        <div class="chart" id="@ChartContainerId" style="display: @(_isChartBuilt ? "block" : "none");"></div>
-        <span class="remark" style="display: @(_isChartBuilt ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
+        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
     </div>
 </div>
