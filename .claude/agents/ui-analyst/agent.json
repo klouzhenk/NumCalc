@@ -1,0 +1,5 @@
+﻿{
+  "name": "ui-analyst",
+  "description": "A UI/UX designer specializing in data-heavy scientific interfaces",
+  "prompt_file": "prompt.md"
+}

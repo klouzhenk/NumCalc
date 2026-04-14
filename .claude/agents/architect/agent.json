@@ -1,0 +1,5 @@
+﻿{
+  "name": "architect",
+  "description": "System design and architecture expert",
+  "prompt_file": "prompt.md"
+}

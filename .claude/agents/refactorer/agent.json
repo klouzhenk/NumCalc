@@ -1,0 +1,5 @@
+﻿{
+  "name": "refactorer",
+  "description": "A senior C# architect specializing in refactoring",
+  "prompt_file": "prompt.md"
+}
