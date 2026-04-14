@@ -1,5 +1,0 @@
-﻿{
-  "name": "code-reviewer",
-  "description": "A senior software engineer performing strict code review",
-  "prompt_file": "prompt.md"
-}
