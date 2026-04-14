@@ -3,6 +3,5 @@
 public enum LinearSystemMethod
 {
     Cramer,
-    Gauss,
-    Seidel
+    Gauss
 }

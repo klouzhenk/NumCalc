@@ -2,6 +2,6 @@
 
 public enum NonLinearSystemMethod
 {
-    SimpleIteration,
-    NewtonSystem
+    FixedPoint,
+    Seidel
 }

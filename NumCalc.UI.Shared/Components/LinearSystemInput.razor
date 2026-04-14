@@ -1,0 +1,35 @@
+﻿@if (Size > 1)
+{
+    <div class="matrix-input__wrapper">
+        <div class="matrix-input">
+            @for (var equationIndex = 0; equationIndex < Size; equationIndex++)
+            {
+                <div class="matrix-input__row">
+                    <div class="matrix-input__row-label">@(equationIndex + 1)</div>
+                
+                    @for (var variableIndex = 0; variableIndex < Size; variableIndex++)
+                    {
+                        <div class="matrix-input__cell">
+                            <input type="number" step="any"
+                                   value="@Coefficients[equationIndex, variableIndex]"
+                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) Coefficients[equationIndex, variableIndex] = v; }" />
+
+                            <span>x<sub>@(variableIndex + 1)</sub></span>
+                        </div>                    
+                    
+                        @if (variableIndex != Size - 1)
+                        {
+                            <div class="matrix-input__operator">+</div>                        
+                        }
+                    }
+                
+                    <div class="matrix-input__operator">=</div>
+
+                    <input type="number" step="any"
+                           value="@Rhs[equationIndex]"
+                           @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) Rhs[equationIndex] = v; }" />
+                </div>
+            }
+        </div>
+    </div>
+}
