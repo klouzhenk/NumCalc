@@ -2,6 +2,7 @@
 
 public enum OptimizationMethod
 {
+    UniformSearch,
     GoldenSection,
     GradientDescent
 }

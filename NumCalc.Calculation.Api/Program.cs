@@ -50,6 +50,7 @@ builder.Services.AddScoped<IEquationsSystemService, EquationsSystemService>();
 builder.Services.AddScoped<IInterpolationService, InterpolationService>();
 builder.Services.AddScoped<IDifferentiationService, DifferentiationService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
+builder.Services.AddScoped<IOptimizationService, OptimizationService>();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

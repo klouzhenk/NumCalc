@@ -4,6 +4,8 @@ using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.Integration.Requests;
 using NumCalc.Shared.Integration.Responses;
+using NumCalc.Shared.Optimization.Requests;
+using NumCalc.Shared.Optimization.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
 using NumCalc.Shared.RootFinding.Requests;
@@ -67,4 +69,13 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request)
         => await SendPostRequestAsync<IntegrationResponse>("api/integration/simpson", request);
+
+    public async Task<OptimizationResponse?> OptimizeUniformSearchAsync(OptimizationRequest request)
+        => await SendPostRequestAsync<OptimizationResponse>("api/optimization/uniform-search", request);
+
+    public async Task<OptimizationResponse?> OptimizeGoldenSectionAsync(OptimizationRequest request)
+        => await SendPostRequestAsync<OptimizationResponse>("api/optimization/golden-section", request);
+
+    public async Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request)
+        => await SendPostRequestAsync<OptimizationResponse>("api/optimization/gradient-descent", request);
 }

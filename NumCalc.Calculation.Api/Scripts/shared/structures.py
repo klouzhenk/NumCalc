@@ -67,6 +67,20 @@ class DifferentiationResponseEnvelope:
     success: DifferentiationSuccessData | None
     failure: FailureData | None
 
+# Optimization result
+@dataclass
+class OptimizationSuccessData:
+    minimum_value: float
+    arg_min_x: float | None
+    arg_min_point: List[float] | None
+    chart_points: List[Point] | None
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class OptimizationResponseEnvelope:
+    success: OptimizationSuccessData | None
+    failure: FailureData | None
+
 # Integration result
 @dataclass
 class IntegrationSuccessData:
