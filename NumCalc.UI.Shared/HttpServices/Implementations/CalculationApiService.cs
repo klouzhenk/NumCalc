@@ -8,6 +8,8 @@ using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
+using NumCalc.Shared.ODE.Requests;
+using NumCalc.Shared.ODE.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
@@ -78,4 +80,19 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request)
         => await SendPostRequestAsync<OptimizationResponse>("api/optimization/gradient-descent", request);
+
+    public async Task<OdeResponse?> SolveEuler(OdeRequest request)
+        => await SendPostRequestAsync<OdeResponse>("api/ode/euler", request);
+    
+    public async Task<OdeResponse?> SolveEulerImproved(OdeRequest request)
+        => await SendPostRequestAsync<OdeResponse>("api/ode/euler-improved", request);
+
+    public async Task<OdeResponse?> SolveRungeKutta2(OdeRequest request)
+        => await SendPostRequestAsync<OdeResponse>("api/ode/runge-kutta-2", request);
+
+    public async Task<OdeResponse?> SolveRungeKutta4(OdeRequest request)
+        => await SendPostRequestAsync<OdeResponse>("api/ode/runge-kutta-4", request);
+    
+    public async Task<OdeResponse?> SolvePicard(OdeRequest request)
+        => await SendPostRequestAsync<OdeResponse>("api/ode/picard", request);
 }

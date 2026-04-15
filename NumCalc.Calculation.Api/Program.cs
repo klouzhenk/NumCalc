@@ -51,6 +51,7 @@ builder.Services.AddScoped<IInterpolationService, InterpolationService>();
 builder.Services.AddScoped<IDifferentiationService, DifferentiationService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<IOptimizationService, OptimizationService>();
+builder.Services.AddScoped<IOdeService, OdeService>();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

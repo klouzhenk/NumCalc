@@ -92,3 +92,15 @@ class IntegrationSuccessData:
 class IntegrationResponseEnvelope:
     success: IntegrationSuccessData | None
     failure: FailureData | None
+
+# ODE result
+@dataclass
+class OdeSuccessData:
+    solution_points: List[Point]
+    polynomial_latex: str | None
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class OdeResponseEnvelope:
+    success: OdeSuccessData | None
+    failure: FailureData | None

@@ -8,6 +8,8 @@ using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
+using NumCalc.Shared.ODE.Requests;
+using NumCalc.Shared.ODE.Responses;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
 
@@ -36,4 +38,9 @@ public interface ICalculationApiService
     Task<OptimizationResponse?> OptimizeUniformSearchAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGoldenSectionAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request);
+    Task<OdeResponse?> SolveEuler(OdeRequest request);
+    Task<OdeResponse?> SolveEulerImproved(OdeRequest request);
+    Task<OdeResponse?> SolveRungeKutta2(OdeRequest request);
+    Task<OdeResponse?> SolveRungeKutta4(OdeRequest request);
+    Task<OdeResponse?> SolvePicard(OdeRequest request);
 }
