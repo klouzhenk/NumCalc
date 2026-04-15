@@ -4,5 +4,7 @@ public enum OdeMethod
 {
     Euler,
     EulerImproved,
-    RungeKutta4
+    RungeKutta2,
+    RungeKutta4,
+    Picard
 }

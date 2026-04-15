@@ -25,7 +25,7 @@ public class OdeService(IPythonEnvironment env) : IOdeService
         var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
 
-        return MapToResponse(result, stopWatch.ElapsedMilliseconds);
+        return MapToResponse(result, stopWatch.Elapsed.TotalMilliseconds);
     }
 
     public OdeResponse SolveEulerImproved(OdeRequest request)
@@ -44,7 +44,7 @@ public class OdeService(IPythonEnvironment env) : IOdeService
         var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
 
-        return MapToResponse(result, stopWatch.ElapsedMilliseconds);
+        return MapToResponse(result, stopWatch.Elapsed.TotalMilliseconds);
     }
 
     public OdeResponse SolveRungeKutta2(OdeRequest request)
@@ -63,7 +63,7 @@ public class OdeService(IPythonEnvironment env) : IOdeService
         var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
 
-        return MapToResponse(result, stopWatch.ElapsedMilliseconds);
+        return MapToResponse(result, stopWatch.Elapsed.TotalMilliseconds);
     }
 
     public OdeResponse SolveRungeKutta4(OdeRequest request)
@@ -82,7 +82,7 @@ public class OdeService(IPythonEnvironment env) : IOdeService
         var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
 
-        return MapToResponse(result, stopWatch.ElapsedMilliseconds);
+        return MapToResponse(result, stopWatch.Elapsed.TotalMilliseconds);
     }
 
     public OdeResponse SolvePicard(OdeRequest request)
@@ -102,7 +102,7 @@ public class OdeService(IPythonEnvironment env) : IOdeService
         var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
 
-        return MapToResponse(result, stopWatch.ElapsedMilliseconds);
+        return MapToResponse(result, stopWatch.Elapsed.TotalMilliseconds);
     }
 
     private static OdeResponse MapToResponse(OdeData data, double executionTimeMs) =>

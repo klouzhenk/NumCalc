@@ -13,6 +13,13 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
             )
             return json.dumps(asdict(envelope))
 
+        if step_size <= 0:
+            envelope = OdeResponseEnvelope(
+                success=None,
+                failure=FailureData("RANGE_INVALID", "step_size must be positive")
+            )
+            return json.dumps(asdict(envelope))
+
         if picard_order < 1 or picard_order > 10:
             envelope = OdeResponseEnvelope(
                 success=None,
@@ -74,6 +81,13 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
                 solution_points.append(Point(x=float(xv), y=yv))
             except Exception:
                 break
+
+        if not solution_points:
+            envelope = OdeResponseEnvelope(
+                success=None,
+                failure=FailureData("RANGE_INVALID", "Picard approximation diverges over the given interval; reduce the interval or picard_order")
+            )
+            return json.dumps(asdict(envelope))
 
         polynomial_latex = sympy.latex(phi)
 

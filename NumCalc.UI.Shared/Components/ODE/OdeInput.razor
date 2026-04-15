@@ -1,0 +1,54 @@
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Enums.ODE
+
+@if (Method is OdeMethod.Picard)
+{
+    <div class="ode-input__picard-warning">
+        <span class="remark">Picard's method is symbolic and converges only near x₀. Keep |x_target − x₀| small (typically &lt; 1). Higher approximation order on wide intervals will diverge or be very slow.</span>
+    </div>
+}
+
+<div class="ode-input__function">
+    <MathInput Label="f(x, y) — right-hand side of y' = f(x, y)" @ref="_mathInput" />
+    <span class="remark">e.g. x + y, &nbsp; -2*x*y, &nbsp; x^2 - y</span>
+</div>
+
+<div class="ode-input__initial-condition">
+    <label class="input-group__label">Initial condition</label>
+    <div class="ode-input__initial-condition-row">
+        <div class="input-group">
+            <label class="input-group__label">x₀</label>
+            <input type="number" step="any" class="input-group__input" @bind="_initialX" />
+        </div>
+        <div class="input-group">
+            <label class="input-group__label">y₀</label>
+            <input type="number" step="any" class="input-group__input" @bind="_initialY" />
+        </div>
+    </div>
+</div>
+
+<div class="input-group">
+    <label class="input-group__label">x target</label>
+    <input type="number" step="any" class="input-group__input" @bind="_targetX" />
+</div>
+
+@if (Method is OdeMethod.Picard)
+{
+    <div class="input-group">
+        <label class="input-group__label">Approximation order (k)</label>
+        <select class="input-group__input" @bind="_picardOrder">
+            @for (var i = 1; i <= 10; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+    </div>
+}
+
+<details class="ode-input__advanced">
+    <summary>Advanced (h = @_stepSize, n ≈ @ComputedStepCount)</summary>
+    <div class="input-group">
+        <label class="input-group__label">Step size (h)</label>
+        <input type="number" step="any" min="0.0001" class="input-group__input" @bind="_stepSize" />
+    </div>
+</details>

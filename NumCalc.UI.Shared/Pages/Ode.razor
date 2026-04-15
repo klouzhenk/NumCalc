@@ -1,0 +1,54 @@
+@page "/ode"
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Components.ODE
+@using NumCalc.UI.Shared.Enums.ODE
+
+@inherits BasePage<Ode>
+
+<div class="page-wrapper page__ode">
+    <div class="ode__form-wrapper">
+
+        <div class="ode__filters-container">
+            <Dropdown TItem="OdeMethod"
+                      Label="Method"
+                      Data="@(Enum.GetValues<OdeMethod>())"
+                      @bind-Value="_method"
+                      TextField="@(item => item.ToString())" />
+        </div>
+
+        <div class="ode__form">
+            <OdeInput Method="_method" @ref="_input" />
+            <button class="button button--primary" @onclick="Calculate">Calculate</button>
+        </div>
+
+        @if (Result is not null)
+        {
+            <div class="ode-result">
+                <div class="ode-result__answer">
+                    <span>y(@Result.SolutionPoints?.LastOrDefault()?.X?.ToString("F4") ?? "?") ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("F8")</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Result.PolynomialLatex))
+                {
+                    <div class="ode-result__polynomial">
+                        <span class="solution-steps__item-formula">@Result.PolynomialLatex</span>
+                    </div>
+                }
+
+                <SolutionStepsList Steps="@Result.SolutionSteps" />
+            </div>
+        }
+        else
+        {
+            <div class="root-finding-result__container--empty">
+                <span class="remark">Click Calculate to view result</span>
+            </div>
+        }
+
+    </div>
+
+    <div class="chart__container">
+        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+    </div>
+</div>
