@@ -1,0 +1,22 @@
+<div class="integration-input__function">
+    <MathInput Label="f(x)" @ref="_mathInput" />
+</div>
+
+<div class="integration-input__bounds">
+    <div class="input-group">
+        <label class="input-group__label">a (lower bound)</label>
+        <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
+    </div>
+    <div class="input-group">
+        <label class="input-group__label">b (upper bound)</label>
+        <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
+    </div>
+</div>
+
+<details class="integration-input__advanced">
+    <summary>Advanced (n = @_intervals)</summary>
+    <div class="input-group">
+        <label class="input-group__label">Number of intervals (n)</label>
+        <input type="number" min="1" max="10000" class="input-group__input" @bind="_intervals" />
+    </div>
+</details>

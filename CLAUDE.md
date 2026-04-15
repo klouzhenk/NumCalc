@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -71,21 +71,25 @@ Scripts/
   differentiation/
     finite_diff.py    — Forward, backward, central finite differences (1st and 2nd order)
     diff_lagrange.py  — Derivative via Lagrange interpolation polynomial (symbolic diff)
+  integration/
+    rectangle.py      — Left, right, midpoint rectangle rules (all 3 variants in one call)
+    trapezoid.py      — Composite trapezoidal rule
+    simpson.py        — Composite Simpson's 1/3 rule (auto-corrects odd n to even)
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
     structures.py     — Shared data structures
 ```
 
-Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `warming_up.py`.
+Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `integration.py`, `warming_up.py`.
 
 **CSnakes naming rule:** Sub-module filenames must be unique across the entire `Scripts/` tree (CSnakes generates proxy hint names from filename only, ignoring folder path). A duplicate filename anywhere causes the entire generator to fail. Also, a top-level `foo.py` and a `foo/` subfolder must not coexist — the `foo/__init__.py` collides with `foo.py`. Sub-folders do not need `__init__.py` (Python 3 namespace packages).
 
 ### Shared DTOs (`NumCalc.Shared`)
 
-- Request/response classes for root finding, equation systems, interpolation, and differentiation
+- Request/response classes for root finding, equation systems, interpolation, differentiation, and integration
 - `Point` (x, y), `SolutionStep` (iteration step with LaTeX formula)
-- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData), `DifferentiationInputMode` (Function | RawData)
+- Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData), `DifferentiationInputMode` (Function | RawData), `IntegrationInputMode` (Function | RawData)
 - `ResponseEnvelope<T>` — wraps success/failure from Python → C# boundary
 - `SystemSolvingRequest` — for linear methods (Cramer, Gaussian): `Equations`, `Variables`
 - `NonLinearSystemRequest` — for iterative methods (Fixed-point, Seidel): `IterationFunctions`, `Variables`, `InitialGuess`, `Tolerance`, `MaxIterations`
@@ -94,6 +98,8 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - `InterpolationResponse` — `InterpolatedValue`, `PolynomialLatex?` (null for Spline), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 - `DifferentiationRequest` — `Mode`, `FunctionExpression?`, `XNodes?`, `YValues?`, `QueryPoint`, `StepSize` (default 0.001), `DerivativeOrder` (1 or 2)
 - `DifferentiationResponse` — `DerivativeValue`, `PolynomialLatex?` (Lagrange only), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
+- `IntegrationRequest` — `Mode`, `FunctionExpression?`, `LowerBound`, `UpperBound`, `Intervals` (default 100)
+- `IntegrationResponse` — `IntegralValue`, `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -136,11 +142,15 @@ Currently working:
   - Lagrange derivative (symbolic differentiation of the interpolation polynomial)
   - Chart renders f(x) curve + tangent line at x*
   - Variant dropdown (Forward/Backward/Central) filters which step is displayed
+- Numerical integration — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
+  - Rectangle rule: left, right, midpoint (single endpoint; variant dropdown filters displayed step)
+  - Trapezoidal rule
+  - Simpson's 1/3 rule (auto-corrects odd n to even)
+  - Function mode only (f(x) + bounds + n intervals)
 - Python integration via CSnakes
-- Blazor UI for root finding, equation systems, interpolation, and differentiation
+- Blazor UI for root finding, equation systems, interpolation, differentiation, and integration
 
 Not implemented yet:
-- Numerical integration
 - Optimization
 - Differential equations (ODE)
 - Full-featured backend for users/history
@@ -198,10 +208,10 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-### Numerical Integration (Чисельне інтегрування) — TODO
-- Rectangle rule (left, right, midpoint)
-- Trapezoidal rule
-- Simpson’s rule
+### Numerical Integration (Чисельне інтегрування) — COMPLETED
+- Rectangle rule (left, right, midpoint) — implemented
+- Trapezoidal rule — implemented
+- Simpson’s 1/3 rule — implemented
 
 ---
 

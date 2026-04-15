@@ -1,0 +1,67 @@
+@page "/integration"
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Components.Integration
+@using NumCalc.UI.Shared.Enums.Integration
+
+@inherits BasePage<Integration>
+
+<div class="page-wrapper page__integration">
+    <div class="integration__form-wrapper">
+
+        <div class="integration__filters-container">
+            <Dropdown TItem="IntegrationMethod"
+                      Label="Method"
+                      Data="@(Enum.GetValues<IntegrationMethod>())"
+                      @bind-Value="_method"
+                      TextField="@(item => item.ToString())" />
+
+            @if (_method is IntegrationMethod.RectangleLeft
+                          or IntegrationMethod.RectangleRight
+                          or IntegrationMethod.RectangleMiddle)
+            {
+                <Dropdown TItem="RectangleVariant"
+                          Label="Variant"
+                          Data="@(Enum.GetValues<RectangleVariant>())"
+                          @bind-Value="_rectangleVariant"
+                          TextField="@(item => item.ToString())" />
+            }
+        </div>
+
+        <div class="integration__form">
+            <IntegrationInput @ref="_input" />
+            <button class="button button--primary" @onclick="Calculate">Calculate</button>
+        </div>
+
+        @if (Result is not null)
+        {
+            <div class="integration-result">
+                <div class="integration-result__answer">
+                    @if (_method is IntegrationMethod.RectangleLeft
+                                  or IntegrationMethod.RectangleRight
+                                  or IntegrationMethod.RectangleMiddle)
+                    {
+                        <span>@SelectedStep?.Value</span>
+                    }
+                    else
+                    {
+                        <span>I = @Result.IntegralValue.ToString("F8")</span>
+                    }
+                </div>
+
+                <SolutionStepsList Steps="@FilteredSteps" />
+            </div>
+        }
+        else
+        {
+            <div class="root-finding-result__container--empty">
+                <span class="remark">Click Calculate to view result</span>
+            </div>
+        }
+
+    </div>
+
+    <div class="chart__container">
+        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+    </div>
+</div>
