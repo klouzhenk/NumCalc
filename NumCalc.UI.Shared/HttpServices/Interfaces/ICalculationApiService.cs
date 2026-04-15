@@ -2,6 +2,8 @@
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
+using NumCalc.Shared.Integration.Requests;
+using NumCalc.Shared.Integration.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
 using NumCalc.Shared.RootFinding.Requests;
@@ -26,4 +28,7 @@ public interface ICalculationApiService
     Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);
     Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request);
     Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request);
+    Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request);
+    Task<IntegrationResponse?> IntegrateTrapezoidAsync(IntegrationRequest request);
+    Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request);
 }

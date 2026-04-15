@@ -49,6 +49,7 @@ builder.Services.AddScoped<IRootFindingService, RootFindingService>();
 builder.Services.AddScoped<IEquationsSystemService, EquationsSystemService>();
 builder.Services.AddScoped<IInterpolationService, InterpolationService>();
 builder.Services.AddScoped<IDifferentiationService, DifferentiationService>();
+builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

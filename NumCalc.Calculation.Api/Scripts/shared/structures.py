@@ -66,3 +66,15 @@ class DifferentiationSuccessData:
 class DifferentiationResponseEnvelope:
     success: DifferentiationSuccessData | None
     failure: FailureData | None
+
+# Integration result
+@dataclass
+class IntegrationSuccessData:
+    integral_value: float
+    chart_points: List[Point]
+    solution_steps: List[SolutionStep] = field(default_factory=list)
+
+@dataclass
+class IntegrationResponseEnvelope:
+    success: IntegrationSuccessData | None
+    failure: FailureData | None

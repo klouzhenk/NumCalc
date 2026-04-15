@@ -2,6 +2,8 @@
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
+using NumCalc.Shared.Integration.Requests;
+using NumCalc.Shared.Integration.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
 using NumCalc.Shared.RootFinding.Requests;
@@ -56,4 +58,13 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request)
         => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/lagrange", request);
+
+    public async Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request)
+        => await SendPostRequestAsync<IntegrationResponse>("api/integration/rectangle", request);
+
+    public async Task<IntegrationResponse?> IntegrateTrapezoidAsync(IntegrationRequest request)
+        => await SendPostRequestAsync<IntegrationResponse>("api/integration/trapezoid", request);
+
+    public async Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request)
+        => await SendPostRequestAsync<IntegrationResponse>("api/integration/simpson", request);
 }
