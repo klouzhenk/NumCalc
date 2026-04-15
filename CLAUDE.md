@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson), `OptimizationController` (uniform-search, golden-section, gradient-descent)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -75,13 +75,17 @@ Scripts/
     rectangle.py      — Left, right, midpoint rectangle rules (all 3 variants in one call)
     trapezoid.py      — Composite trapezoidal rule
     simpson.py        — Composite Simpson's 1/3 rule (auto-corrects odd n to even)
+  optimization/
+    uniform_search.py — Brute grid search over [a, b]
+    golden_section.py — Golden section interval search
+    gradient_descent.py — Gradient descent (N-D, auto-detects variables from expression)
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
     structures.py     — Shared data structures
 ```
 
-Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `integration.py`, `warming_up.py`.
+Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `integration.py`, `optimization.py`, `warming_up.py`.
 
 **CSnakes naming rule:** Sub-module filenames must be unique across the entire `Scripts/` tree (CSnakes generates proxy hint names from filename only, ignoring folder path). A duplicate filename anywhere causes the entire generator to fail. Also, a top-level `foo.py` and a `foo/` subfolder must not coexist — the `foo/__init__.py` collides with `foo.py`. Sub-folders do not need `__init__.py` (Python 3 namespace packages).
 
@@ -100,6 +104,9 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - `DifferentiationResponse` — `DerivativeValue`, `PolynomialLatex?` (Lagrange only), `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 - `IntegrationRequest` — `Mode`, `FunctionExpression?`, `LowerBound`, `UpperBound`, `Intervals` (default 100)
 - `IntegrationResponse` — `IntegralValue`, `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
+- `OptimizationRequest` — `FunctionExpression`, `LowerBound`, `UpperBound`, `Points` (default 100), `Tolerance` (default 1e-6)
+- `GradientDescentRequest` — `FunctionExpression`, `InitialPoint[]`, `LearningRate` (0.01), `Tolerance` (1e-6), `MaxIterations` (200)
+- `OptimizationResponse` — `MinimumValue`, `ArgMinX?` (2D methods), `ArgMinPoint?` (gradient descent), `ChartData?`, `SolutionSteps`, `ExecutionTimeMs`
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -147,11 +154,14 @@ Currently working:
   - Trapezoidal rule
   - Simpson's 1/3 rule (auto-corrects odd n to even)
   - Function mode only (f(x) + bounds + n intervals)
+- Optimization — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
+  - Uniform search (brute grid search over [a, b])
+  - Golden section search
+  - Gradient descent (N-D; auto-detects variables alphabetically from expression; chart for single-variable case)
 - Python integration via CSnakes
-- Blazor UI for root finding, equation systems, interpolation, differentiation, and integration
+- Blazor UI for root finding, equation systems, interpolation, differentiation, integration, and optimization
 
 Not implemented yet:
-- Optimization
 - Differential equations (ODE)
 - Full-featured backend for users/history
 - Complete MAUI UI
@@ -215,14 +225,14 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-### Optimization (Оптимізація функцій) — TODO
+### Optimization (Оптимізація функцій) — COMPLETED
 
 #### One-dimensional optimization
-- Uniform search (brute grid search)
-- Golden section search (Золотий перетин)
+- Uniform search (brute grid search) — implemented
+- Golden section search (Золотий перетин) — implemented
 
 #### Multi-dimensional optimization
-- Gradient descent method
+- Gradient descent method — implemented
 
 ---
 

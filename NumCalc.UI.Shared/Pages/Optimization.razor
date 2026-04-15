@@ -1,0 +1,55 @@
+@page "/optimization"
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Components.Optimization
+@using NumCalc.UI.Shared.Enums.Optimization
+
+@inherits BasePage<Optimization>
+
+<div class="page-wrapper page__optimization">
+    <div class="optimization__form-wrapper">
+
+        <div class="optimization__filters-container">
+            <Dropdown TItem="OptimizationMethod"
+                      Label="Method"
+                      Data="@(Enum.GetValues<OptimizationMethod>())"
+                      @bind-Value="_method"
+                      TextField="@(item => item.ToString())" />
+        </div>
+
+        <div class="optimization__form">
+            <OptimizationInput Method="_method" @ref="_input" />
+            <button class="button button--primary" @onclick="Calculate">Calculate</button>
+        </div>
+
+        @if (Result is not null)
+        {
+            <div class="optimization-result">
+                <div class="optimization-result__answer">
+                    <span>f(x*) = @Result.MinimumValue.ToString("F8")</span>
+                    @if (Result.ArgMinX.HasValue)
+                    {
+                        <span>x* = @Result.ArgMinX.Value.ToString("F8")</span>
+                    }
+                    @if (Result.ArgMinPoint is { Count: > 0 })
+                    {
+                        <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("F8"))))</span>
+                    }
+                </div>
+
+                <SolutionStepsList Steps="@Result.SolutionSteps" />
+            </div>
+        }
+        else
+        {
+            <div class="root-finding-result__container--empty">
+                <span class="remark">Click Calculate to view result</span>
+            </div>
+        }
+
+    </div>
+
+    <div class="chart__container">
+        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+    </div>
+</div>
