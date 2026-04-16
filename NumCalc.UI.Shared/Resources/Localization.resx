@@ -31,4 +31,7 @@
   <data name="ToleranceMustBeReasonable" xml:space="preserve">
     <value>ToleranceMustBeReasonable</value>
   </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>Export PDF</value>
+  </data>
 </root>

@@ -121,6 +121,8 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - `BaseApiService` — abstract HTTP client base; subclasses implement specific endpoints
 - Blazor components: modal dialogs, image cropper (Cropper.Blazor integration)
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
+- Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
+- LaTeX in `SolutionStep.LatexFormula` is currently displayed as raw text — **KaTeX** is planned but not yet added
 
 ### Web UI (`NumCalc.UI.Web`)
 
@@ -135,6 +137,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **Error handling:** All exceptions surface through `GlobalExceptionHandler`; numerical errors use typed `ErrorCodes` rather than raw exceptions.
 - **Localization:** All user-visible strings go in `NumCalc.UI.Shared/Localization/Localization.resx` (and `.uk.resx`). Do not hard-code display text in components.
 - **Shared UI components:** New reusable Blazor components belong in `NumCalc.UI.Shared`, not in `NumCalc.UI.Web`, so they can be reused by MAUI.
+- **Logging:** Serilog is configured at the host level (`builder.Host.UseSerilog()`) in `NumCalc.Calculation.Api/Program.cs`. All 7 API services inject `ILogger<T>` via primary constructor and log method entry + completion with key parameters. `GlobalExceptionHandler` logs warnings/errors. UI pages log via `BasePage<T>.Logger`. `PythonWarmingUpService` logs warmup start/completion.
 
 ## Current State (CRITICAL)
 
@@ -180,6 +183,7 @@ Currently working:
 Not implemented yet:
 - Full-featured backend for users/history
 - Complete MAUI UI
+- PDF export (planned — see roadmap below)
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
@@ -257,3 +261,33 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Euler Improved (Heun) — implemented
 - Runge-Kutta 2nd order — implemented
 - Runge-Kutta 4th order — implemented
+
+---
+
+## PDF Export (Planned — Not Yet Implemented)
+
+Target audience: students and teachers who need to include calculation results in lab reports or course materials.
+
+### What the PDF contains
+1. Method name and timestamp
+2. User inputs (expression, bounds, tolerance, etc.)
+3. Solution steps — each `SolutionStep.LatexFormula` rendered as a PNG image via KaTeX + html2canvas
+4. Final result value
+5. Chart image — captured from Highcharts via `chart.getSVG()`
+
+### Architecture
+- PDF generation: **QuestPDF** (NuGet) — added to `NumCalc.UI.Shared`; no changes to `NumCalc.Calculation.Api`
+- LaTeX rendering: **KaTeX** (npm) renders each `LatexFormula` string into a hidden DOM element; **html2canvas** captures it as a base64 PNG
+- Chart export: JS interop calls Highcharts `getSVG()` on the chart instance by container element ID, returns SVG string embedded in the PDF
+- Service: `IPdfExportService` / `PdfExportService` in `NumCalc.UI.Shared/Services/` — takes result DTO + step images (base64) + chart SVG, returns `byte[]`
+- Trigger: "Export PDF" button on each result page calls JS interop to collect images, then calls `PdfExportService`, then triggers a browser file download
+
+### Adding KaTeX also fixes the UI
+Currently `SolutionStep.LatexFormula` is shown as raw text in the browser. Adding KaTeX allows proper math rendering in the browser UI as well — both problems solved in one step.
+
+### JS functions needed (add to `charts.js` or a new `pdf-export.js`)
+- `getChartSvg(containerId)` — finds the Highcharts chart by container ID, returns `chart.getSVG()`
+- `renderLatexToPng(latexString)` — renders LaTeX via KaTeX into a hidden div, captures with html2canvas, returns base64 PNG
+
+### Key constraint
+QuestPDF cannot render LaTeX directly. All LaTeX must be pre-rendered to images (PNG or SVG) in the browser before PDF generation.

@@ -25,6 +25,7 @@ builder.Services.AddHttpClient<IOcrService, OcrService>(client =>
 });
 
 builder.Services.AddScoped<IUiStateService, UiStateService>();
+builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 
 builder.Services.AddNumCalcUiShared()
     .AddSharedLogging("Logs/web-log-.txt");

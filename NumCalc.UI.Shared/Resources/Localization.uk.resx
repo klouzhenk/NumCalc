@@ -25,4 +25,7 @@
         <data name="PleaseSelectAtLeastOneMethodForBenchmarking" xml:space="preserve">
         <value>Please select at least one method for benchmarking</value>
       </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>Експорт PDF</value>
+  </data>
 </root>

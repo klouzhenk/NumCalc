@@ -68,6 +68,10 @@
                 </div>
             </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+            @if (Mode is AnalysisMode.Single && Result is not null)
+            {
+                <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+            }
         </div>
         @if (Mode is AnalysisMode.Single && Result?.SolutionSteps is { Count: > 0 })
         {

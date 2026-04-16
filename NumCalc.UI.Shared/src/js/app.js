@@ -2,6 +2,7 @@
 import 'mathlive';
 import { MathHelper } from './math-input.js';
 import { ImageHelper } from './image-helper.js';
+import { PdfHelper } from './pdf-helper.js';
 
 window.NumCalc = {
     ...MathHelper,
@@ -9,4 +10,8 @@ window.NumCalc = {
 
 window.ImageHelper = {
     ...ImageHelper,
+}
+
+window.PdfHelper = {
+    ...PdfHelper,
 }
