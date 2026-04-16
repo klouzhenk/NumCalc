@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson), `OptimizationController` (uniform-search, golden-section, gradient-descent)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson), `OptimizationController` (uniform-search, golden-section, gradient-descent), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -79,19 +79,25 @@ Scripts/
     uniform_search.py — Brute grid search over [a, b]
     golden_section.py — Golden section interval search
     gradient_descent.py — Gradient descent (N-D, auto-detects variables from expression)
+  odes/
+    euler.py          — Euler method
+    euler_improved.py — Euler improved (Heun) method
+    runge_kutta_2.py  — Runge-Kutta 2nd order
+    runge_kutta_4.py  — Runge-Kutta 4th order
+    picard.py         — Picard successive approximation (symbolic, SymPy)
   shared/
     functions.py      — Function parsing/evaluation
     parsing.py
     structures.py     — Shared data structures
 ```
 
-Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `integration.py`, `optimization.py`, `warming_up.py`.
+Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equation_systems.py`, `interpolation.py`, `differentiation.py`, `integration.py`, `optimization.py`, `ode.py`, `warming_up.py`.
 
 **CSnakes naming rule:** Sub-module filenames must be unique across the entire `Scripts/` tree (CSnakes generates proxy hint names from filename only, ignoring folder path). A duplicate filename anywhere causes the entire generator to fail. Also, a top-level `foo.py` and a `foo/` subfolder must not coexist — the `foo/__init__.py` collides with `foo.py`. Sub-folders do not need `__init__.py` (Python 3 namespace packages).
 
 ### Shared DTOs (`NumCalc.Shared`)
 
-- Request/response classes for root finding, equation systems, interpolation, differentiation, and integration
+- Request/response classes for root finding, equation systems, interpolation, differentiation, integration, optimization, and ODE
 - `Point` (x, y), `SolutionStep` (iteration step with LaTeX formula)
 - Enums: `RootFindingMethod`, `ErrorCodes` (SyntaxError, RangeInvalid, etc.), `InterpolationInputMode` (Function | RawData), `DifferentiationInputMode` (Function | RawData), `IntegrationInputMode` (Function | RawData)
 - `ResponseEnvelope<T>` — wraps success/failure from Python → C# boundary
@@ -107,6 +113,8 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - `OptimizationRequest` — `FunctionExpression`, `LowerBound`, `UpperBound`, `Points` (default 100), `Tolerance` (default 1e-6)
 - `GradientDescentRequest` — `FunctionExpression`, `InitialPoint[]`, `LearningRate` (0.01), `Tolerance` (1e-6), `MaxIterations` (200)
 - `OptimizationResponse` — `MinimumValue`, `ArgMinX?` (2D methods), `ArgMinPoint?` (gradient descent), `ChartData?`, `SolutionSteps`, `ExecutionTimeMs`
+- `OdeRequest` — `FunctionExpression`, `InitialX`, `InitialY`, `TargetX`, `StepSize` (default 0.1, must be positive), `PicardOrder` (1–10, default 4)
+- `OdeResponse` — `SolutionPoints` (List<Point>), `PolynomialLatex?` (Picard only), `SolutionSteps`, `ExecutionTimeMs`
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
@@ -158,11 +166,18 @@ Currently working:
   - Uniform search (brute grid search over [a, b])
   - Golden section search
   - Gradient descent (N-D; auto-detects variables alphabetically from expression; chart for single-variable case)
+- Ordinary Differential Equations (ODE) — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
+  - Euler method
+  - Euler Improved (Heun) method
+  - Runge-Kutta 2nd order
+  - Runge-Kutta 4th order
+  - Picard successive approximation (symbolic, SymPy; returns `PolynomialLatex`; chart shows vertical x₀ plot line)
+  - Single `OdeInput` component; Picard warning callout + `PicardOrder` select (1–10) shown only when Picard selected
+  - Step size `h` in `<details>` advanced section with live computed step count
 - Python integration via CSnakes
-- Blazor UI for root finding, equation systems, interpolation, differentiation, integration, and optimization
+- Blazor UI for root finding, equation systems, interpolation, differentiation, integration, optimization, and ODE
 
 Not implemented yet:
-- Differential equations (ODE)
 - Full-featured backend for users/history
 - Complete MAUI UI
 
@@ -236,7 +251,9 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-### Ordinary Differential Equations (ОДР) — TODO
-- Picard method
-- Euler method (simple and improved)
-- Runge-Kutta methods (2nd and 4th order)
+### Ordinary Differential Equations (ОДР) — COMPLETED
+- Picard method — implemented (symbolic, SymPy)
+- Euler method (simple) — implemented
+- Euler Improved (Heun) — implemented
+- Runge-Kutta 2nd order — implemented
+- Runge-Kutta 4th order — implemented

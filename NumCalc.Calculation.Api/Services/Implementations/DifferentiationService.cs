@@ -1,4 +1,5 @@
 ﻿using CSnakes.Runtime;
+using Microsoft.Extensions.Logging;
 using NumCalc.Calculation.Api.Entities.Differentiation;
 using NumCalc.Calculation.Api.Services.Interfaces;
 using NumCalc.Calculation.Api.Utils;
@@ -8,10 +9,13 @@ using NumCalc.Shared.Enums.Differentiation;
 
 namespace NumCalc.Calculation.Api.Services.Implementations;
 
-public class DifferentiationService(IPythonEnvironment env) : IDifferentiationService
+public class DifferentiationService(IPythonEnvironment env, ILogger<DifferentiationService> logger) : IDifferentiationService
 {
     public DifferentiationResponse SolveFiniteDiff(DifferentiationRequest request)
     {
+        logger.LogInformation("FiniteDiff: f={Expression}, x={QueryPoint}, h={StepSize}, order={Order}",
+            request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder);
+
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var solver = env.Differentiation();
 
@@ -25,11 +29,17 @@ public class DifferentiationService(IPythonEnvironment env) : IDifferentiationSe
         var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
         stopwatch.Stop();
 
+        logger.LogInformation("FiniteDiff completed: derivative={Value}, elapsed={ElapsedMs}ms",
+            result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
+
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }
 
     public DifferentiationResponse SolveLagrange(DifferentiationRequest request)
     {
+        logger.LogInformation("Lagrange differentiation: mode={Mode}, nodes={NodeCount}, x={QueryPoint}",
+            request.Mode, request.XNodes?.Count, request.QueryPoint);
+
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var solver = env.Differentiation();
 
@@ -42,6 +52,9 @@ public class DifferentiationService(IPythonEnvironment env) : IDifferentiationSe
 
         var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
         stopwatch.Stop();
+
+        logger.LogInformation("Lagrange differentiation completed: derivative={Value}, elapsed={ElapsedMs}ms",
+            result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
 
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }

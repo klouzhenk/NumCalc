@@ -14,6 +14,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/api-log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14)
     .CreateLogger();
 
+builder.Host.UseSerilog();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();builder.Services.AddSwaggerGen(options =>
 {

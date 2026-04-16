@@ -11,15 +11,17 @@ namespace NumCalc.UI.Shared.Services.Implementations;
 public class OcrService : IOcrService
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<OcrService> _logger;
     private readonly string? _apiKey;
-    
+
     public OcrService(HttpClient httpClient, ILogger<OcrService> logger, IConfiguration configuration)
     {
         _httpClient = httpClient;
+        _logger = logger;
         _apiKey = configuration["OcrSettings:GeminiApiKey"];
         // TODO : use try-catch
     }
-    
+
     public async Task<string> RecognizeExpression(IBrowserFile file)
     {
         using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
@@ -27,8 +29,8 @@ public class OcrService : IOcrService
         await stream.CopyToAsync(ms);
         var base64Image = Convert.ToBase64String(ms.ToArray());
         var mimeType = file.ContentType;
-        
-        try 
+
+        try
         {
             if (!string.IsNullOrEmpty(_apiKey))
             {
@@ -37,15 +39,15 @@ public class OcrService : IOcrService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Gemini failed: {ex.Message}. Trying fallback...");
+            _logger.LogWarning(ex, "Gemini OCR failed for uploaded file, returning error");
         }
 
         return "RECOGNIZING_ERROR";
     }
-    
+
     public async Task<string> RecognizeExpression(string? imageBase64DataUrl)
     {
-        try 
+        try
         {
             if (string.IsNullOrEmpty(_apiKey) || string.IsNullOrEmpty(imageBase64DataUrl))
                 return "RECOGNIZING_ERROR";
@@ -64,7 +66,7 @@ public class OcrService : IOcrService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Gemini failed: {ex.Message}. Trying fallback...");
+            _logger.LogWarning(ex, "Gemini OCR failed for base64 data URL, returning error");
             return "RECOGNIZING_ERROR";
         }
     }
