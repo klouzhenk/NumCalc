@@ -9,6 +9,8 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
+using NumCalc.UI.Shared.Models.Export;
+using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -18,6 +20,7 @@ public partial class Differentiation : BasePage<Differentiation>
     private const string ChartContainerId = "chart--differentiation";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private DifferentiationMethod _method = DifferentiationMethod.FiniteDifferences;
     private FiniteDiffVariant _variant = FiniteDiffVariant.Central;
@@ -25,6 +28,9 @@ public partial class Differentiation : BasePage<Differentiation>
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
     private double _queryPoint;
+    private string? _lastExpression;
+    private double _lastStepSize;
+    private int _lastDerivativeOrder;
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
@@ -44,6 +50,9 @@ public partial class Differentiation : BasePage<Differentiation>
 
         var formData = await _input.GetFormData();
         _queryPoint = formData.QueryPoint;
+        _lastExpression = formData.FunctionExpression;
+        _lastStepSize = formData.StepSize;
+        _lastDerivativeOrder = formData.DerivativeOrder;
 
         var request = new DifferentiationRequest
         {
@@ -139,5 +148,55 @@ public partial class Differentiation : BasePage<Differentiation>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private async Task ExportPdfAsync()
+    {
+        if (Result is null) return;
+
+        var steps = new List<StepExportItem>();
+        foreach (var step in FilteredSteps ?? [])
+        {
+            string? imageBase64 = null;
+            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+        }
+
+        var chartImage = IsChartVisible
+            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+            : null;
+
+        var inputs = new Dictionary<string, string>
+        {
+            ["Method"] = _method.ToString(),
+            ["Query Point"] = _queryPoint.ToString("G"),
+            ["Derivative Order"] = _lastDerivativeOrder.ToString()
+        };
+        if (!string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["Expression"] = _lastExpression;
+        if (_method is DifferentiationMethod.FiniteDifferences)
+        {
+            inputs["Variant"] = _variant.ToString();
+            inputs["Step Size"] = _lastStepSize.ToString("G");
+        }
+
+        var resultStr = _method is DifferentiationMethod.FiniteDifferences
+            ? SelectedStep?.Value ?? Result.DerivativeValue.ToString("G10")
+            : $"f'(x*) = {Result.DerivativeValue:G10}";
+
+        var request = new PdfExportRequest
+        {
+            MethodName = $"Differentiation — {_method}",
+            Inputs = inputs,
+            Result = resultStr,
+            Steps = steps,
+            ChartImage = chartImage
+        };
+
+        var pdfBytes = PdfExportService.GeneratePdf(request);
+        var base64 = Convert.ToBase64String(pdfBytes);
+        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+            $"differentiation-{_method}.pdf", "application/pdf", base64);
     }
 }

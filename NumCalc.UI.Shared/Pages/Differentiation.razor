@@ -36,6 +36,10 @@
         <div class="differentiation__form">
             <DifferentiationInput Method="_method" Mode="_mode" @ref="_input" />
             <button class="button button--primary" @onclick="Calculate">Calculate</button>
+            @if (Result is not null)
+            {
+                <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+            }
         </div>
 
         @if (Result is not null)

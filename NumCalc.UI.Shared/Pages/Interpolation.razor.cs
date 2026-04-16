@@ -9,6 +9,8 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Interpolation;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
+using NumCalc.UI.Shared.Models.Export;
+using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -18,12 +20,15 @@ public partial class Interpolation : BasePage<Interpolation>
     private const string ChartContainerId = "chart--interpolation";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private InterpolationInputMode _mode = InterpolationInputMode.Function;
     private InterpolationMethod _method = InterpolationMethod.Newton;
     private InterpolationInput? _input;
     private InterpolationResponse? Result { get; set; }
     private double _queryPoint;
+    private string? _lastExpression;
+    private string? _lastXNodesText;
     private bool IsChartVisible => Result?.ChartData is not null;
 
     private async Task Calculate()
@@ -34,6 +39,8 @@ public partial class Interpolation : BasePage<Interpolation>
 
         var formData = await _input.GetFormData();
         _queryPoint = formData.QueryPoint;
+        _lastExpression = formData.FunctionExpression;
+        _lastXNodesText = formData.XNodes is not null ? string.Join(", ", formData.XNodes) : null;
 
         var request = new InterpolationRequest
         {
@@ -104,5 +111,48 @@ public partial class Interpolation : BasePage<Interpolation>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private async Task ExportPdfAsync()
+    {
+        if (Result is null) return;
+
+        var steps = new List<StepExportItem>();
+        foreach (var step in Result.SolutionSteps ?? [])
+        {
+            string? imageBase64 = null;
+            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+        }
+
+        var chartImage = IsChartVisible
+            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+            : null;
+
+        var inputs = new Dictionary<string, string>
+        {
+            ["Method"] = _method.ToString(),
+            ["Mode"] = _mode.ToString(),
+            ["Query Point"] = _queryPoint.ToString("G")
+        };
+        if (_mode is InterpolationInputMode.Function && !string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["Expression"] = _lastExpression;
+        if (!string.IsNullOrWhiteSpace(_lastXNodesText))
+            inputs["X Nodes"] = _lastXNodesText;
+
+        var request = new PdfExportRequest
+        {
+            MethodName = $"Interpolation — {_method}",
+            Inputs = inputs,
+            Result = $"P(x*) = {Result.InterpolatedValue:G10}",
+            Steps = steps,
+            ChartImage = chartImage
+        };
+
+        var pdfBytes = PdfExportService.GeneratePdf(request);
+        var base64 = Convert.ToBase64String(pdfBytes);
+        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+            $"interpolation-{_method}.pdf", "application/pdf", base64);
     }
 }

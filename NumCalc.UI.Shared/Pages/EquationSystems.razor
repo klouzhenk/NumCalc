@@ -48,6 +48,10 @@
             }
 
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+            @if (Result is not null)
+            {
+                <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+            }
         </div>
 
         @if (Result?.Roots is { Count: > 0 })

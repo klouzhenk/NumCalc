@@ -8,6 +8,8 @@ using NumCalc.UI.Shared.Components.Integration;
 using NumCalc.UI.Shared.Enums.Integration;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
+using NumCalc.UI.Shared.Models.Export;
+using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -17,11 +19,16 @@ public partial class Integration : BasePage<Integration>
     private const string ChartContainerId = "chart--integration";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private IntegrationMethod _method = IntegrationMethod.Trapezoid;
     private RectangleVariant _rectangleVariant = RectangleVariant.Midpoint;
     private IntegrationInput? _input;
     private IntegrationResponse? Result { get; set; }
+    private string? _lastExpression;
+    private double _lastLowerBound;
+    private double _lastUpperBound;
+    private int _lastIntervals;
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
@@ -42,6 +49,10 @@ public partial class Integration : BasePage<Integration>
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
+        _lastExpression = formData.FunctionExpression;
+        _lastLowerBound = formData.LowerBound;
+        _lastUpperBound = formData.UpperBound;
+        _lastIntervals = formData.Intervals;
 
         var request = new IntegrationRequest
         {
@@ -107,5 +118,53 @@ public partial class Integration : BasePage<Integration>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private async Task ExportPdfAsync()
+    {
+        if (Result is null) return;
+
+        var steps = new List<StepExportItem>();
+        foreach (var step in FilteredSteps ?? [])
+        {
+            string? imageBase64 = null;
+            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+        }
+
+        var chartImage = IsChartVisible
+            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+            : null;
+
+        var inputs = new Dictionary<string, string>
+        {
+            ["Method"] = _method.ToString(),
+            ["Lower Bound"] = _lastLowerBound.ToString("G"),
+            ["Upper Bound"] = _lastUpperBound.ToString("G"),
+            ["Intervals"] = _lastIntervals.ToString()
+        };
+        if (!string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["Expression"] = _lastExpression;
+        if (_method is IntegrationMethod.RectangleLeft or IntegrationMethod.RectangleRight or IntegrationMethod.RectangleMiddle)
+            inputs["Variant"] = _rectangleVariant.ToString();
+
+        var resultStr = _method is IntegrationMethod.RectangleLeft or IntegrationMethod.RectangleRight or IntegrationMethod.RectangleMiddle
+            ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G10}"
+            : $"I = {Result.IntegralValue:G10}";
+
+        var request = new PdfExportRequest
+        {
+            MethodName = $"Integration — {_method}",
+            Inputs = inputs,
+            Result = resultStr,
+            Steps = steps,
+            ChartImage = chartImage
+        };
+
+        var pdfBytes = PdfExportService.GeneratePdf(request);
+        var base64 = Convert.ToBase64String(pdfBytes);
+        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+            $"integration-{_method}.pdf", "application/pdf", base64);
     }
 }

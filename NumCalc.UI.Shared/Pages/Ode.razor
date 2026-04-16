@@ -19,6 +19,10 @@
         <div class="ode__form">
             <OdeInput Method="_method" @ref="_input" />
             <button class="button button--primary" @onclick="Calculate">Calculate</button>
+            @if (Result is not null)
+            {
+                <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+            }
         </div>
 
         @if (Result is not null)
