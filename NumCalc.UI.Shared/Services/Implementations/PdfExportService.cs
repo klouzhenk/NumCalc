@@ -8,10 +8,13 @@ namespace NumCalc.UI.Shared.Services.Implementations;
 
 public class PdfExportService : IPdfExportService
 {
-    public byte[] GeneratePdf(PdfExportRequest request)
+    static PdfExportService()
     {
         QuestPDF.Settings.License = LicenseType.Community;
+    }
 
+    public byte[] GeneratePdf(PdfExportRequest request)
+    {
         return Document.Create(container =>
         {
             container.Page(page =>
@@ -22,12 +25,12 @@ public class PdfExportService : IPdfExportService
 
                 page.Header().Element(ComposeHeader(request.MethodName));
                 page.Content().Element(ComposeContent(request));
-                page.Footer().AlignCenter().Text(text =>
+                page.Footer().AlignCenter().DefaultTextStyle(s => s.FontColor(Colors.Grey.Medium)).Text(text =>
                 {
-                    text.Span("NumCalc — ").FontColor(Colors.Grey.Medium);
-                    text.CurrentPageNumber().FontColor(Colors.Grey.Medium);
-                    text.Span(" / ").FontColor(Colors.Grey.Medium);
-                    text.TotalPages().FontColor(Colors.Grey.Medium);
+                    text.Span("NumCalc — ");
+                    text.CurrentPageNumber();
+                    text.Span(" / ");
+                    text.TotalPages();
                 });
             });
         }).GeneratePdf();

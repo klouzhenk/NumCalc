@@ -12,7 +12,8 @@ builder.Services.AddLocalization();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(options => options.MaximumReceiveMessageSize = 10 * 1024 * 1024);
 
 const string baseApiUrl = "http://localhost:5229";
 builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>

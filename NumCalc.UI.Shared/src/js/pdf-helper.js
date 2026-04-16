@@ -2,36 +2,11 @@ import katex from 'katex';
 import html2canvas from 'html2canvas';
 
 export const PdfHelper = {
-    getChartImage: (containerId) => {
-        const chart = Highcharts.charts.find(c => c && c.renderTo.id === containerId);
-        if (!chart) return null;
-
-        const svg = chart.getSVG();
-        const width = chart.chartWidth || 600;
-        const height = chart.chartHeight || 400;
-
-        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
-
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, width, height);
-                ctx.drawImage(img, 0, 0, width, height);
-                URL.revokeObjectURL(url);
-                resolve(canvas.toDataURL('image/png'));
-            };
-            img.onerror = () => {
-                URL.revokeObjectURL(url);
-                resolve(null);
-            };
-            img.src = url;
-        });
+    getChartImage: async (containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return null;
+        const canvas = await html2canvas(container, { backgroundColor: '#ffffff' });
+        return canvas.toDataURL('image/png');
     },
 
     renderLatexToPng: async (latexString) => {
