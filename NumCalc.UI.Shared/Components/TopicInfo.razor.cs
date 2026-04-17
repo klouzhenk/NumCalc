@@ -7,7 +7,7 @@ public partial class TopicInfo : ComponentBase
 {
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public RenderFragment? BodyContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 

@@ -1,4 +1,5 @@
 @page "/"
+@using NumCalc.UI.Shared.Components
 @inherits BasePage<MainPage>
 
 <div class="page-wrapper page__main">
@@ -27,7 +28,7 @@
         {
             <div class="method-card" @onclick="() => Navigation.NavigateTo(card.Route)">
                 <div class="method-card__header">
-                    <span class="method-card__icon">@card.Icon</span>
+                    <SvgIcon Name="@card.Icon"/>
                     <h2 class="method-card__title">@Localizer[card.TitleKey]</h2>
                 </div>
                 <ul class="method-card__methods">

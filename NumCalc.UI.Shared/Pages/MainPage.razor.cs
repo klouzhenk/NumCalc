@@ -8,25 +8,25 @@ public partial class MainPage : BasePage<MainPage>
 
     private static readonly List<CategoryCard> Categories =
     [
-        new("√", "Roots", "/root-finding",
+        new("zero-function", "Roots", "/root-finding",
             ["Bisection", "Newton-Raphson", "Secant", "Simple Iteration", "Combined (Brent)"]),
 
-        new("≡", "EquationSystems", "/equation-systems",
+        new("equation-system", "EquationSystems", "/equation-systems",
             ["Cramer's Rule", "Gaussian Elimination", "Fixed-point Iteration", "Gauss-Seidel"]),
 
-        new("∿", "Interpolation", "/interpolation",
+        new("interpolation", "Interpolation", "/interpolation",
             ["Newton Polynomial", "Lagrange Polynomial", "Cubic Spline"]),
 
-        new("∂", "Differentiation", "/differentiation",
+        new("differentiation", "Differentiation", "/differentiation",
             ["Forward / Backward / Central Differences", "Lagrange Derivative"]),
 
-        new("∫", "Integration", "/integration",
+        new("integration", "Integration", "/integration",
             ["Rectangle Rule", "Trapezoid Rule", "Simpson's 1/3 Rule"]),
 
-        new("⬡", "Optimization", "/optimization",
+        new("optimization", "Optimization", "/optimization",
             ["Uniform Search", "Golden Section", "Gradient Descent"]),
 
-        new("dy/dx", "Ode", "/ode",
+        new("ode", "Ode", "/ode",
             ["Euler", "Euler Improved (Heun)", "Runge-Kutta 2", "Runge-Kutta 4", "Picard"]),
     ];
 }

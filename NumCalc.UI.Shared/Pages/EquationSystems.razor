@@ -8,10 +8,12 @@
 <div class="page-wrapper page__equation-systems">
     <div class="equation-systems__form-wrapper">
         <div class="equation-systems__filters-container">
+            <EquationSystemsTopicInfo />
+            
             <Switch TItem="EquationSystemCategory"
                     Data="@(Enum.GetValues<EquationSystemCategory>())"
                     @bind-Value="Category"
-                    TextField="@(item => item.ToString())" />
+                    TextField="@(item => item.ToString())"/>
 
             @if (Category is EquationSystemCategory.Linear)
             {
@@ -19,7 +21,7 @@
                           Label="Method"
                           Data="@(Enum.GetValues<LinearSystemMethod>())"
                           @bind-Value="LinearMethod"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => item.ToString())"/>
             }
             else
             {
@@ -27,14 +29,14 @@
                           Label="Method"
                           Data="@(Enum.GetValues<NonLinearSystemMethod>())"
                           @bind-Value="NonLinearMethod"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => item.ToString())"/>
             }
 
             <Dropdown TItem="int"
                       Label="Size"
                       Data="@_sizes"
                       @bind-Value="Size"
-                      TextField="@(item => $"{item}×{item}")" />
+                      TextField="@(item => $"{item}×{item}")"/>
         </div>
 
         <div class="equation-systems__form">

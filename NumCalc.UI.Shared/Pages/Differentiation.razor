@@ -8,13 +8,13 @@
 
 <div class="page-wrapper page__differentiation">
     <div class="differentiation__form-wrapper">
-
         <div class="differentiation__filters-container">
+            <DifferentiationTopicInfo />
             <Dropdown TItem="DifferentiationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<DifferentiationMethod>())"
                       @bind-Value="_method"
-                      TextField="@(item => item.ToString())" />
+                      TextField="@(item => item.ToString())"/>
 
             @if (_method is DifferentiationMethod.FiniteDifferences)
             {
@@ -22,14 +22,14 @@
                           Label="Variant"
                           Data="@(Enum.GetValues<FiniteDiffVariant>())"
                           @bind-Value="_variant"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => item.ToString())"/>
             }
             else
             {
                 <Switch TItem="DifferentiationInputMode"
                         Data="@(Enum.GetValues<DifferentiationInputMode>())"
                         @bind-Value="_mode"
-                        TextField="@(item => item.ToString())" />
+                        TextField="@(item => item.ToString())"/>
             }
         </div>
 

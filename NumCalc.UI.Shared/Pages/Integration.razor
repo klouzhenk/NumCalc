@@ -7,23 +7,24 @@
 
 <div class="page-wrapper page__integration">
     <div class="integration__form-wrapper">
-
         <div class="integration__filters-container">
+            <IntegrationTopicInfo />
+            
             <Dropdown TItem="IntegrationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<IntegrationMethod>())"
                       @bind-Value="_method"
-                      TextField="@(item => item.ToString())" />
+                      TextField="@(item => item.ToString())"/>
 
             @if (_method is IntegrationMethod.RectangleLeft
-                          or IntegrationMethod.RectangleRight
-                          or IntegrationMethod.RectangleMiddle)
+                 or IntegrationMethod.RectangleRight
+                 or IntegrationMethod.RectangleMiddle)
             {
                 <Dropdown TItem="RectangleVariant"
                           Label="Variant"
                           Data="@(Enum.GetValues<RectangleVariant>())"
                           @bind-Value="_rectangleVariant"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => item.ToString())"/>
             }
         </div>
 

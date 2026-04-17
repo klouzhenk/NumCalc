@@ -10,6 +10,8 @@
 <div class="page-wrapper page__root-finding">
     <div class="root-finding__form-wrapper">
         <div class="root-finding__filters-container">
+            <RootFindingTopicInfo />
+            
             <Switch TItem="AnalysisMode"
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="Mode"

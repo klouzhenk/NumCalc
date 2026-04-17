@@ -8,18 +8,19 @@
 
 <div class="page-wrapper page__interpolation">
     <div class="interpolation__form-wrapper">
-
         <div class="interpolation__filters-container">
+            <InterpolationTopicInfo />
+            
             <Switch TItem="InterpolationInputMode"
                     Data="@(Enum.GetValues<InterpolationInputMode>())"
                     @bind-Value="_mode"
-                    TextField="@(item => item.ToString())" />
+                    TextField="@(item => item.ToString())"/>
 
             <Dropdown TItem="InterpolationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<InterpolationMethod>())"
                       @bind-Value="_method"
-                      TextField="@(item => item.ToString())" />
+                      TextField="@(item => item.ToString())"/>
         </div>
 
         <div class="interpolation__form">

@@ -2,7 +2,7 @@
     --header-height: 75px;
     
     background-color: var(--layout-background);
-    padding: var(--dimension-m) var(--dimension-xl);
+    padding: var(--dimension-m) var(--dimension-xxl);
     height: var(--header-height);
     width: calc(100% - 80px - 100px);
     display: flex;
@@ -12,7 +12,11 @@
     z-index: 90;
     border-radius: calc(var(--header-height) / 2);
     box-shadow: var(--component-shadow);
-
+    
+    & svg {
+        fill: var(--gray-light-color);
+    }
+    
     & .header__icon {
         font-family: var(--font-heading), monospace;
         font-size: var(--dimension-xl);
