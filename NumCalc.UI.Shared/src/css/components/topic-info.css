@@ -3,22 +3,32 @@
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        width: 1.6rem;
-        height: 1.6rem;
-        border-radius: 50%;
-        border: var(--border-m) var(--secondary-light-color);
+        gap: var(--dimension-xs);
+        padding: var(--dimension-xs);
+        border: none;
         background: transparent;
-        color: var(--secondary-color);
-        font-size: 1rem;
+        color: var(--primary-color);
+        font-weight: 600;
         cursor: pointer;
-        transition: var(--default-transition);
+        white-space: nowrap;
+        position: relative;
 
-        &:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: var(--white-color);
-            box-shadow: var(--component-shadow);
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
     }
 

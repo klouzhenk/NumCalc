@@ -17,6 +17,13 @@
         fill: var(--gray-light-color);
     }
     
+    & .header__actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: var(--dimension-m);
+    }
+
     & .header__icon {
         font-family: var(--font-heading), monospace;
         font-size: var(--dimension-xl);

@@ -3,7 +3,32 @@
         <SvgIcon Name="calculator"/>
         <span class="brand-icon"></span> NumCalc
     </div>
-    
-    @* TODO : maybe add some contacts or tutorials *@
+
+    <div class="header__actions">
+        @switch (CurrentPath)
+        {
+            case "/root-finding":
+                <RootFindingTopicInfo />
+                break;
+            case "/equation-systems":
+                <EquationSystemsTopicInfo />
+                break;
+            case "/interpolation":
+                <InterpolationTopicInfo />
+                break;
+            case "/differentiation":
+                <DifferentiationTopicInfo />
+                break;
+            case "/integration":
+                <IntegrationTopicInfo />
+                break;
+            case "/optimization":
+                <OptimizationTopicInfo />
+                break;
+            case "/ode":
+                <OdeTopicInfo />
+                break;
+        }
+    </div>
 </header>
 
