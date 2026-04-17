@@ -122,7 +122,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - Blazor components: modal dialogs, image cropper (Cropper.Blazor integration)
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
 - Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
-- LaTeX in `SolutionStep.LatexFormula` is currently displayed as raw text — **KaTeX** is planned but not yet added
+- LaTeX in `SolutionStep.LatexFormula` is rendered via **KaTeX** (html2canvas captures it as PNG for PDF export)
 
 ### Web UI (`NumCalc.UI.Web`)
 
@@ -179,11 +179,11 @@ Currently working:
   - Step size `h` in `<details>` advanced section with live computed step count
 - Python integration via CSnakes
 - Blazor UI for root finding, equation systems, interpolation, differentiation, integration, optimization, and ODE
+- PDF export — fully implemented on all 7 result pages (QuestPDF + KaTeX + html2canvas)
 
 Not implemented yet:
 - Full-featured backend for users/history
 - Complete MAUI UI
-- PDF export (planned — see roadmap below)
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
@@ -264,7 +264,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 
 ---
 
-## PDF Export (Planned — Not Yet Implemented)
+## PDF Export — COMPLETED
 
 Target audience: students and teachers who need to include calculation results in lab reports or course materials.
 
@@ -273,21 +273,15 @@ Target audience: students and teachers who need to include calculation results i
 2. User inputs (expression, bounds, tolerance, etc.)
 3. Solution steps — each `SolutionStep.LatexFormula` rendered as a PNG image via KaTeX + html2canvas
 4. Final result value
-5. Chart image — captured from Highcharts via `chart.getSVG()`
+5. Chart image — captured via html2canvas
 
 ### Architecture
-- PDF generation: **QuestPDF** (NuGet) — added to `NumCalc.UI.Shared`; no changes to `NumCalc.Calculation.Api`
-- LaTeX rendering: **KaTeX** (npm) renders each `LatexFormula` string into a hidden DOM element; **html2canvas** captures it as a base64 PNG
-- Chart export: JS interop calls Highcharts `getSVG()` on the chart instance by container element ID, returns SVG string embedded in the PDF
-- Service: `IPdfExportService` / `PdfExportService` in `NumCalc.UI.Shared/Services/` — takes result DTO + step images (base64) + chart SVG, returns `byte[]`
-- Trigger: "Export PDF" button on each result page calls JS interop to collect images, then calls `PdfExportService`, then triggers a browser file download
-
-### Adding KaTeX also fixes the UI
-Currently `SolutionStep.LatexFormula` is shown as raw text in the browser. Adding KaTeX allows proper math rendering in the browser UI as well — both problems solved in one step.
-
-### JS functions needed (add to `charts.js` or a new `pdf-export.js`)
-- `getChartSvg(containerId)` — finds the Highcharts chart by container ID, returns `chart.getSVG()`
-- `renderLatexToPng(latexString)` — renders LaTeX via KaTeX into a hidden div, captures with html2canvas, returns base64 PNG
+- PDF generation: **QuestPDF** (NuGet) — in `NumCalc.UI.Shared`; no changes to `NumCalc.Calculation.Api`
+- LaTeX rendering: **KaTeX** (npm) renders each `LatexFormula` into a hidden DOM element; **html2canvas** captures it as a base64 PNG
+- Chart export: html2canvas captures the chart container as a PNG embedded in the PDF
+- Service: `IPdfExportService` / `PdfExportService` in `NumCalc.UI.Shared/Services/` — takes `PdfExportRequest` (inputs, steps with base64 images, chart image, result), returns `byte[]`
+- JS helpers: `pdf-helper.js` — `renderLatexToPng()`, `getChartImage()`, `downloadFile()`
+- Trigger: "Export PDF" button on every result page (all 7 pages) calls JS interop to collect images, then `PdfExportService.GeneratePdf()`, then triggers browser download
 
 ### Key constraint
-QuestPDF cannot render LaTeX directly. All LaTeX must be pre-rendered to images (PNG or SVG) in the browser before PDF generation.
+QuestPDF cannot render LaTeX directly. All LaTeX is pre-rendered to PNG in the browser before PDF generation.

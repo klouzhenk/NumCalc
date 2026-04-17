@@ -1,2 +1,43 @@
-﻿@page "/"
+@page "/"
+@inherits BasePage<MainPage>
 
+<div class="page-wrapper page__main">
+    <section class="main-hero">
+        <div class="main-hero__text">
+            <p class="main-hero__subtitle">@Localizer["MainHeroSubtitle"]</p>
+        </div>
+        <div class="main-hero__stats">
+            <div class="stat-badge">
+                <span class="stat-badge__number">7</span>
+                <span class="stat-badge__label">@Localizer["StatCategories"]</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-badge__number">20+</span>
+                <span class="stat-badge__label">@Localizer["StatMethods"]</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-badge__number">PDF</span>
+                <span class="stat-badge__label">@Localizer["StatExport"]</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-cards">
+        @foreach (var card in Categories)
+        {
+            <div class="method-card" @onclick="() => Navigation.NavigateTo(card.Route)">
+                <div class="method-card__header">
+                    <span class="method-card__icon">@card.Icon</span>
+                    <h2 class="method-card__title">@Localizer[card.TitleKey]</h2>
+                </div>
+                <ul class="method-card__methods">
+                    @foreach (var method in card.Methods)
+                    {
+                        <li>@method</li>
+                    }
+                </ul>
+                <button class="button button--primary method-card__btn">@Localizer["Open"]</button>
+            </div>
+        }
+    </section>
+</div>

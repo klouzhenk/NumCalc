@@ -34,4 +34,133 @@
   <data name="ExportPdf" xml:space="preserve">
     <value>Export PDF</value>
   </data>
+  <data name="MainHeroSubtitle" xml:space="preserve">
+    <value>A numerical methods computation platform for root finding, interpolation, integration, and more.</value>
+  </data>
+  <data name="FeatureStepByStep" xml:space="preserve">
+    <value>Step-by-step solutions</value>
+  </data>
+  <data name="FeaturePdf" xml:space="preserve">
+    <value>PDF export</value>
+  </data>
+  <data name="FeatureCharts" xml:space="preserve">
+    <value>Interactive charts</value>
+  </data>
+  <data name="Roots" xml:space="preserve">
+    <value>Root Finding</value>
+  </data>
+  <data name="RootsDesc" xml:space="preserve">
+    <value>Find where f(x) = 0 using iterative numerical methods.</value>
+  </data>
+  <data name="EquationSystems" xml:space="preserve">
+    <value>Equation Systems</value>
+  </data>
+  <data name="EquationSystemsDesc" xml:space="preserve">
+    <value>Solve linear and non-linear systems of equations.</value>
+  </data>
+  <data name="Interpolation" xml:space="preserve">
+    <value>Interpolation</value>
+  </data>
+  <data name="InterpolationDesc" xml:space="preserve">
+    <value>Estimate f(x) between known data points using polynomials or splines.</value>
+  </data>
+  <data name="Differentiation" xml:space="preserve">
+    <value>Differentiation</value>
+  </data>
+  <data name="DifferentiationDesc" xml:space="preserve">
+    <value>Numerically compute first and second derivatives of functions.</value>
+  </data>
+  <data name="Integration" xml:space="preserve">
+    <value>Integration</value>
+  </data>
+  <data name="IntegrationDesc" xml:space="preserve">
+    <value>Calculate definite integrals using rectangle, trapezoid, or Simpson rules.</value>
+  </data>
+  <data name="Optimization" xml:space="preserve">
+    <value>Optimization</value>
+  </data>
+  <data name="OptimizationDesc" xml:space="preserve">
+    <value>Find the minimum of a function in one or multiple dimensions.</value>
+  </data>
+  <data name="Ode" xml:space="preserve">
+    <value>Differential Equations</value>
+  </data>
+  <data name="OdeDesc" xml:space="preserve">
+    <value>Solve ordinary differential equations step by step with initial conditions.</value>
+  </data>
+  <data name="Method_Bisection" xml:space="preserve">
+    <value>Bisection</value>
+  </data>
+  <data name="Method_Newton" xml:space="preserve">
+    <value>Newton-Raphson</value>
+  </data>
+  <data name="Method_Secant" xml:space="preserve">
+    <value>Secant</value>
+  </data>
+  <data name="Method_SimpleIteration" xml:space="preserve">
+    <value>Simple Iteration</value>
+  </data>
+  <data name="Method_Combined" xml:space="preserve">
+    <value>Combined (Brent)</value>
+  </data>
+  <data name="Method_Cramer" xml:space="preserve">
+    <value>Cramer's Rule</value>
+  </data>
+  <data name="Method_Gaussian" xml:space="preserve">
+    <value>Gaussian Elimination</value>
+  </data>
+  <data name="Method_FixedPoint" xml:space="preserve">
+    <value>Fixed-point Iteration</value>
+  </data>
+  <data name="Method_GaussSeidel" xml:space="preserve">
+    <value>Gauss-Seidel</value>
+  </data>
+  <data name="Method_NewtonPoly" xml:space="preserve">
+    <value>Newton Polynomial</value>
+  </data>
+  <data name="Method_LagrangePoly" xml:space="preserve">
+    <value>Lagrange Polynomial</value>
+  </data>
+  <data name="Method_CubicSpline" xml:space="preserve">
+    <value>Cubic Spline</value>
+  </data>
+  <data name="Method_FiniteDiff" xml:space="preserve">
+    <value>Finite Differences</value>
+  </data>
+  <data name="Method_LagrangeDeriv" xml:space="preserve">
+    <value>Lagrange Derivative</value>
+  </data>
+  <data name="Method_Rectangle" xml:space="preserve">
+    <value>Rectangle Rule</value>
+  </data>
+  <data name="Method_Trapezoid" xml:space="preserve">
+    <value>Trapezoid Rule</value>
+  </data>
+  <data name="Method_Simpson" xml:space="preserve">
+    <value>Simpson's 1/3 Rule</value>
+  </data>
+  <data name="Method_UniformSearch" xml:space="preserve">
+    <value>Uniform Search</value>
+  </data>
+  <data name="Method_GoldenSection" xml:space="preserve">
+    <value>Golden Section</value>
+  </data>
+  <data name="Method_GradientDescent" xml:space="preserve">
+    <value>Gradient Descent</value>
+  </data>
+  <data name="Method_Euler" xml:space="preserve">
+    <value>Euler</value>
+  </data>
+  <data name="Method_EulerImproved" xml:space="preserve">
+    <value>Euler Improved (Heun)</value>
+  </data>
+  <data name="Method_RK2" xml:space="preserve">
+    <value>Runge-Kutta 2</value>
+  </data>
+  <data name="Method_RK4" xml:space="preserve">
+    <value>Runge-Kutta 4</value>
+  </data>
+  <data name="Method_Picard" xml:space="preserve">
+    <value>Picard</value>
+  </data>
 </root>
