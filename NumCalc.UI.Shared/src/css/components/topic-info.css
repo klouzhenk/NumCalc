@@ -1,0 +1,93 @@
+.topic-info {
+    &__trigger {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 50%;
+        border: var(--border-m) var(--secondary-light-color);
+        background: transparent;
+        color: var(--secondary-color);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--default-transition);
+
+        &:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--white-color);
+            box-shadow: var(--component-shadow);
+        }
+    }
+
+    &__modal {
+        width: min(860px, 95vw);
+        max-width: min(860px, 95vw);
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xl);
+    }
+
+    &__overview {
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: var(--gray-color);
+    }
+
+    &__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--dimension-l);
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-s);
+        padding: var(--dimension-l);
+        border: var(--default-border);
+        border-radius: var(--border-radius-l);
+        background: var(--layout-background);
+        box-shadow: var(--component-shadow);
+
+        h3 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+    }
+
+    &__formula {
+        padding: var(--dimension-s) var(--dimension-m);
+        background: var(--primary-background);
+        border-radius: var(--border-radius-s);
+        font-size: 0.9rem;
+        overflow-x: auto;
+
+        .katex-display {
+            margin: 0;
+        }
+    }
+
+    &__limitation {
+        font-size: 0.8rem !important;
+        color: var(--danger-color) !important;
+        font-style: italic;
+
+        &::before {
+            content: "⚠ ";
+        }
+    }
+}

@@ -1,0 +1,51 @@
+﻿<TopicInfo Title="Root Finding" Subtitle="Find x such that f(x) = 0">
+    <div>
+        <p class="topic-info__overview">
+            Root-finding algorithms locate values of $x$ where $f(x) = 0$.
+            All methods require a continuous function. Iterative methods
+            additionally require a proper initial interval or initial guess.
+        </p>
+
+        <div class="topic-info__cards">
+            <div class="topic-info__card">
+                <h3>Bisection (Dichotomy)</h3>
+                <div class="topic-info__formula">$$x_{mid} = \frac{a + b}{2}$$</div>
+                <p>Repeatedly halves an interval $[a, b]$ where $f(a) \cdot f(b) &lt; 0$.
+                Guaranteed to converge but requires a sign change. Convergence is linear.</p>
+                <p class="topic-info__limitation">Fails if $f(a)$ and $f(b)$ have the same sign or the root has even multiplicity.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Newton-Raphson</h3>
+                <div class="topic-info__formula">$$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$$</div>
+                <p>Uses the tangent line at the current point to produce the next approximation.
+                Quadratic convergence near a simple root. Requires a good initial guess $x_0$.</p>
+                <p class="topic-info__limitation">Diverges if $f'(x_n) \approx 0$ or the initial guess is far from the root.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Secant Method</h3>
+                <div class="topic-info__formula">$$x_{n+1} = x_n - f(x_n) \cdot \frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$$</div>
+                <p>Approximates the derivative using two previous iterates. Superlinear
+                convergence (order $\approx 1.618$). Does not require evaluating $f'$.</p>
+                <p class="topic-info__limitation">Can diverge if $f(x_n) \approx f(x_{n-1})$ (nearly horizontal secant).</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Simple Iteration</h3>
+                <div class="topic-info__formula">$$x_{n+1} = \varphi(x_n), \quad f(x) = 0 \Rightarrow x = \varphi(x)$$</div>
+                <p>Rewrites $f(x)=0$ as a fixed-point equation $x = \varphi(x)$ and iterates.
+                Converges when $|\varphi'(x)| &lt; 1$ in a neighbourhood of the root.</p>
+                <p class="topic-info__limitation">Choice of $\varphi$ is critical; wrong rearrangement diverges.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Combined (Brent)</h3>
+                <div class="topic-info__formula">$$\text{bisection} \cup \text{secant} \cup \text{inverse quadratic}$$</div>
+                <p>Brent's hybrid method combines bisection (for safety), secant, and inverse
+                quadratic interpolation. Robust and fast — always converges on a bracketed root.</p>
+                <p class="topic-info__limitation">Requires a sign-change bracket $[a, b]$ like bisection.</p>
+            </div>
+        </div>
+    </div>
+</TopicInfo>

@@ -1,0 +1,9 @@
+<button class="topic-info__trigger" @onclick="Open" title="About this topic">&#9432;</button>
+
+<BaseModal @ref="_modal" Title="@Title" Subtitle="@Subtitle" CssClass="topic-info__modal">
+    <BodyContent>
+        <div class="topic-info__body" id="@_bodyId">
+            @BodyContent
+        </div>
+    </BodyContent>
+</BaseModal>

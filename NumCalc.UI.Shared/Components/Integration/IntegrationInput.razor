@@ -3,20 +3,35 @@
 </div>
 
 <div class="integration-input__bounds">
-    <div class="input-group">
-        <label class="input-group__label">a (lower bound)</label>
-        <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
-    </div>
-    <div class="input-group">
-        <label class="input-group__label">b (upper bound)</label>
-        <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
-    </div>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">a (lower bound)</label>
+                <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
+            </div>
+        </Content>
+        <Hint>Left endpoint a of the integration interval [a, b].</Hint>
+    </Tooltip>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">b (upper bound)</label>
+                <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
+            </div>
+        </Content>
+        <Hint>Right endpoint b of the integration interval [a, b].</Hint>
+    </Tooltip>
 </div>
 
 <details class="integration-input__advanced">
     <summary>Advanced (n = @_intervals)</summary>
-    <div class="input-group">
-        <label class="input-group__label">Number of intervals (n)</label>
-        <input type="number" min="1" max="10000" class="input-group__input" @bind="_intervals" />
-    </div>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">Number of intervals (n)</label>
+                <input type="number" min="1" max="10000" class="input-group__input" @bind="_intervals" />
+            </div>
+        </Content>
+        <Hint>Number of sub-intervals n. More intervals improve accuracy at the cost of computation time.</Hint>
+    </Tooltip>
 </details>

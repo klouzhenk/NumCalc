@@ -163,4 +163,40 @@
   <data name="Method_Picard" xml:space="preserve">
     <value>Picard</value>
   </data>
+  <data name="Hint_Tolerance" xml:space="preserve">
+    <value>Maximum allowed error between successive iterations. Smaller values give more precise results but require more iterations (e.g. 0.0001).</value>
+  </data>
+  <data name="Hint_StepSize" xml:space="preserve">
+    <value>Step size h used in finite-difference formulas. Smaller h reduces truncation error but increases round-off error. Default 0.001 is a safe starting point.</value>
+  </data>
+  <data name="Hint_InitialGuess" xml:space="preserve">
+    <value>Starting point x₀ for the iterative method. Choose a value close to the expected root or solution for faster convergence.</value>
+  </data>
+  <data name="Hint_MaxIterations" xml:space="preserve">
+    <value>Maximum number of iterations allowed before stopping. Increase if the method has not yet converged within the tolerance.</value>
+  </data>
+  <data name="Hint_LowerBound" xml:space="preserve">
+    <value>Left endpoint a of the search interval [a, b]. Must be less than the upper bound.</value>
+  </data>
+  <data name="Hint_UpperBound" xml:space="preserve">
+    <value>Right endpoint b of the search interval [a, b]. Must be greater than the lower bound.</value>
+  </data>
+  <data name="Hint_QueryPoint" xml:space="preserve">
+    <value>The point x* at which to evaluate the interpolated or differentiated value.</value>
+  </data>
+  <data name="Hint_DerivativeOrder" xml:space="preserve">
+    <value>Order of the derivative to compute: 1 for f'(x), 2 for f''(x).</value>
+  </data>
+  <data name="Hint_LearningRate" xml:space="preserve">
+    <value>Step multiplier α for gradient descent. Too large causes divergence; too small causes slow convergence. Typical range: 0.001 – 0.1.</value>
+  </data>
+  <data name="Hint_PicardOrder" xml:space="preserve">
+    <value>Number of successive approximation steps k in Picard's method. Higher values are more accurate near x₀ but diverge further away.</value>
+  </data>
+  <data name="Hint_XNodes" xml:space="preserve">
+    <value>Interpolation nodes xᵢ — the x-coordinates of the known data points. Must be distinct and sorted in ascending order.</value>
+  </data>
+  <data name="AboutThisTopic" xml:space="preserve">
+    <value>About this topic</value>
+  </data>
 </root>

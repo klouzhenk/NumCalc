@@ -184,6 +184,7 @@ Currently working:
 Not implemented yet:
 - Full-featured backend for users/history
 - Complete MAUI UI
+- Help & Tooltip system (planned — see roadmap below)
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
@@ -285,3 +286,84 @@ Target audience: students and teachers who need to include calculation results i
 
 ### Key constraint
 QuestPDF cannot render LaTeX directly. All LaTeX is pre-rendered to PNG in the browser before PDF generation.
+
+---
+
+## Help & Tooltip System (Planned — Not Yet Implemented)
+
+Two distinct components with different purposes and behaviors.
+
+### Component 1 — `<Tooltip>` (input-level hints)
+
+Wraps any label/input and shows a small floating hint when the user hovers the wrapper.
+
+**Usage:**
+```razor
+<Tooltip Key="Tolerance">
+    <div class="input-group">
+        <label>Tolerance</label>
+        <input ... />
+    </div>
+</Tooltip>
+```
+
+- Renders a `(?)` icon beside the wrapped content
+- On hover: small floating text box appears (CSS-driven, no JS required)
+- Content resolved by `Key` from `tooltips.json`
+- Lives in `NumCalc.UI.Shared/Components/Tooltip.razor`
+
+**Keys to cover (minimum):** `Tolerance`, `StepSize`, `InitialGuess`, `MaxIterations`,
+`LowerBound`, `UpperBound`, `QueryPoint`, `DerivativeOrder`, `LearningRate`, `PicardOrder`, `XNodes`
+
+---
+
+### Component 2 — `<TopicInfo>` (page-level modal)
+
+A small `ⓘ` button placed in the filter bar of each page. On click, opens a modal
+(reuses existing `BaseModal.razor`) with rich information about the topic.
+
+**Usage:**
+```razor
+<TopicInfo Topic="root-finding" />
+```
+
+**Modal content per page:**
+- Topic title + overview paragraph
+- Common problems / when methods fail
+- One card per method containing:
+  - Method name
+  - Formula (LaTeX string — rendered via KaTeX already installed)
+  - Short description
+  - Limitations / failure conditions
+
+- Lives in `NumCalc.UI.Shared/Components/TopicInfo.razor`
+
+**Topic keys:** `root-finding`, `equation-systems`, `interpolation`,
+`differentiation`, `integration`, `optimization`, `ode`
+
+---
+
+### Content files (JSON, in `wwwroot/data/`)
+
+```
+tooltips.json       — input field hints keyed by field name
+method-info.json    — per-topic: overview + per-method cards with LaTeX formulas
+```
+
+### Service
+
+`IHelpContentService` / `HelpContentService` in `NumCalc.UI.Shared/Services/`
+— loads and caches both JSON files on first use via `HttpClient`.
+
+### Implementation order
+
+1. Create `wwwroot/data/tooltips.json` and `wwwroot/data/method-info.json` with content
+2. `IHelpContentService` + `HelpContentService`
+3. `Tooltip.razor` + CSS
+4. `TopicInfo.razor` + modal markup + CSS
+5. Wire `<Tooltip>` onto inputs across all 7 pages
+6. Wire `<TopicInfo>` into the filter bar of each page
+
+### Key constraint
+KaTeX is already installed (used for PDF export). Reuse it to render `formula` strings
+inside the `TopicInfo` modal — no additional dependencies needed.

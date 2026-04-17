@@ -1,0 +1,61 @@
+﻿<TopicInfo Title="Ordinary Differential Equations" Subtitle="Solve y' = f(x, y) with initial condition y(x₀) = y₀">
+    <div>
+        <p class="topic-info__overview">
+            ODE solvers advance the solution from the initial condition $(x_0, y_0)$
+            step by step until the target $x$. Step size $h$ controls accuracy and
+            computational cost.
+        </p>
+
+        <div class="topic-info__cards">
+            <div class="topic-info__card">
+                <h3>Euler Method</h3>
+                <div class="topic-info__formula">$$y_{n+1} = y_n + h \cdot f(x_n, y_n)$$</div>
+                <p>Simplest one-step method: extrapolates the tangent at each point.
+                $O(h)$ local truncation error. Good for a first approximation.</p>
+                <p class="topic-info__limitation">Low accuracy; may be unstable for stiff equations with large $h$.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Euler Improved (Heun)</h3>
+                <div class="topic-info__formula">
+                    $$\tilde{y}_{n+1} = y_n + h f(x_n, y_n)$$
+                    $$y_{n+1} = y_n + \frac{h}{2}\bigl[f(x_n, y_n) + f(x_{n+1}, \tilde{y}_{n+1})\bigr]$$
+                </div>
+                <p>Predictor-corrector variant of Euler. $O(h^2)$ accuracy — a significant
+                improvement with only one extra function evaluation per step.</p>
+                <p class="topic-info__limitation">Still unstable for stiff problems; requires $h$ small enough.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Runge-Kutta 2 (RK2)</h3>
+                <div class="topic-info__formula">
+                    $$k_1 = f(x_n, y_n), \quad k_2 = f\!\left(x_n+h, y_n+hk_1\right)$$
+                    $$y_{n+1} = y_n + \frac{h}{2}(k_1 + k_2)$$
+                </div>
+                <p>Two-stage Runge-Kutta, equivalent to Heun's method. $O(h^2)$ accuracy
+                with a clean stage formulation.</p>
+                <p class="topic-info__limitation">$O(h^2)$ accuracy; use RK4 for higher precision requirements.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Runge-Kutta 4 (RK4)</h3>
+                <div class="topic-info__formula">
+                    $$k_1 = hf(x_n,y_n),\quad k_2 = hf\!\left(x_n+\tfrac{h}{2}, y_n+\tfrac{k_1}{2}\right)$$
+                    $$k_3 = hf\!\left(x_n+\tfrac{h}{2}, y_n+\tfrac{k_2}{2}\right),\quad k_4 = hf(x_n+h,y_n+k_3)$$
+                    $$y_{n+1} = y_n + \tfrac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)$$
+                </div>
+                <p>The classic standard solver. $O(h^4)$ accuracy per step. Four evaluations
+                of $f$ per step give excellent accuracy for most smooth ODEs.</p>
+                <p class="topic-info__limitation">Four evaluations per step; not suitable for very stiff equations without adaptive step control.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Picard Successive Approximation</h3>
+                <div class="topic-info__formula">$$y^{(k+1)}(x) = y_0 + \int_{x_0}^{x} f\!\left(t, y^{(k)}(t)\right)\,dt$$</div>
+                <p>Builds symbolic approximations by integrating $f$ iteratively starting
+                from $y^{(0)}(x) = y_0$. Returns a closed-form polynomial expression.</p>
+                <p class="topic-info__limitation">Converges only near $x_0$; higher order on wide intervals diverges. Symbolic computation is slow for large order.</p>
+            </div>
+        </div>
+    </div>
+</TopicInfo>

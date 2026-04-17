@@ -1,0 +1,10 @@
+<div class="tooltip__wrapper">
+    @Content
+    @if (Hint is not null)
+    {
+        <span class="tooltip__icon" @onmouseenter="OnFirstHover">&#63;</span>
+        <div class="tooltip__popup" id="@_popupId">
+            @Hint
+        </div>
+    }
+</div>

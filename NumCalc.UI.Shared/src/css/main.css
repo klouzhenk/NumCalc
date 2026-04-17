@@ -22,6 +22,8 @@
 @import "components/math-input.css";
 @import "components/ocr-input.css";
 @import "components/modal.css";
+@import "components/tooltip.css";
+@import "components/topic-info.css";
 
 /* pages */
 @import "pages/root-finding.css";

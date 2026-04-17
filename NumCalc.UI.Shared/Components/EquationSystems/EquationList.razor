@@ -23,17 +23,27 @@
         }
 
         <div class="equation-list__params">
-            <div class="input-group">
-                <label class="input-group__label">Tolerance</label>
-                <input type="number" step="any" class="input-group__input"
-                       @bind="Tolerance" />
-            </div>
+            <Tooltip>
+                <Content>
+                    <div class="input-group">
+                        <label class="input-group__label">Tolerance</label>
+                        <input type="number" step="any" class="input-group__input"
+                               @bind="Tolerance" />
+                    </div>
+                </Content>
+                <Hint>Maximum allowed error between iterations (e.g. 0.000001).</Hint>
+            </Tooltip>
 
-            <div class="input-group">
-                <label class="input-group__label">Max iterations</label>
-                <input type="number" class="input-group__input"
-                       @bind="MaxIterations" />
-            </div>
+            <Tooltip>
+                <Content>
+                    <div class="input-group">
+                        <label class="input-group__label">Max iterations</label>
+                        <input type="number" class="input-group__input"
+                               @bind="MaxIterations" />
+                    </div>
+                </Content>
+                <Hint>Maximum number of iterations before stopping.</Hint>
+            </Tooltip>
         </div>
     </div>
 }

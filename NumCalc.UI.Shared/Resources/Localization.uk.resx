@@ -157,4 +157,40 @@
   <data name="Method_Picard" xml:space="preserve">
     <value>Метод Пікара</value>
   </data>
+  <data name="Hint_Tolerance" xml:space="preserve">
+    <value>Максимально допустима похибка між послідовними ітераціями. Менші значення дають точніші результати, але потребують більше ітерацій (наприклад, 0.0001).</value>
+  </data>
+  <data name="Hint_StepSize" xml:space="preserve">
+    <value>Крок h у формулах скінченних різниць. Менший крок зменшує похибку усічення, але збільшує похибку округлення. Значення 0.001 є безпечним за замовчуванням.</value>
+  </data>
+  <data name="Hint_InitialGuess" xml:space="preserve">
+    <value>Початкове наближення x₀ для ітераційного методу. Оберіть значення, близьке до очікуваного кореня або розв'язку.</value>
+  </data>
+  <data name="Hint_MaxIterations" xml:space="preserve">
+    <value>Максимальна кількість ітерацій до зупинки. Збільшіть, якщо метод ще не збігся до заданої точності.</value>
+  </data>
+  <data name="Hint_LowerBound" xml:space="preserve">
+    <value>Ліва межа a інтервалу пошуку [a, b]. Повинна бути менше верхньої межі.</value>
+  </data>
+  <data name="Hint_UpperBound" xml:space="preserve">
+    <value>Права межа b інтервалу пошуку [a, b]. Повинна бути більше нижньої межі.</value>
+  </data>
+  <data name="Hint_QueryPoint" xml:space="preserve">
+    <value>Точка x*, в якій обчислюється інтерпольоване або диференційоване значення.</value>
+  </data>
+  <data name="Hint_DerivativeOrder" xml:space="preserve">
+    <value>Порядок похідної: 1 — для f'(x), 2 — для f''(x).</value>
+  </data>
+  <data name="Hint_LearningRate" xml:space="preserve">
+    <value>Множник кроку α для градієнтного спуску. Надто великий викликає розбіжність; надто малий — повільну збіжність. Типовий діапазон: 0.001–0.1.</value>
+  </data>
+  <data name="Hint_PicardOrder" xml:space="preserve">
+    <value>Кількість послідовних наближень k у методі Пікара. Більші значення точніші поблизу x₀, але розбігаються далі.</value>
+  </data>
+  <data name="Hint_XNodes" xml:space="preserve">
+    <value>Вузли інтерполяції xᵢ — x-координати відомих точок. Мають бути різними та впорядкованими за зростанням.</value>
+  </data>
+  <data name="AboutThisTopic" xml:space="preserve">
+    <value>Про цей розділ</value>
+  </data>
 </root>

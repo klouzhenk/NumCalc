@@ -9,28 +9,43 @@
     </div>
 
     <div class="differentiation-input__query">
-        <div class="input-group">
-            <label class="input-group__label">x*</label>
-            <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
-        </div>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">x*</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+                </div>
+            </Content>
+            <Hint>Query point x* — evaluate the derivative at this value.</Hint>
+        </Tooltip>
     </div>
 
     <div class="differentiation-input__order">
-        <div class="input-group">
-            <label class="input-group__label">Derivative order</label>
-            <select class="input-group__input" @bind="_derivativeOrder">
-                <option value="1">1st</option>
-                <option value="2">2nd</option>
-            </select>
-        </div>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">Derivative order</label>
+                    <select class="input-group__input" @bind="_derivativeOrder">
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                    </select>
+                </div>
+            </Content>
+            <Hint>Order of the derivative: 1 for f'(x), 2 for f''(x).</Hint>
+        </Tooltip>
     </div>
 
     <details class="differentiation-input__advanced">
         <summary>Advanced (h = @_stepSize)</summary>
-        <div class="input-group">
-            <label class="input-group__label">Step size (h)</label>
-            <input type="number" step="any" class="input-group__input" @bind="_stepSize" />
-        </div>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">Step size (h)</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_stepSize" />
+                </div>
+            </Content>
+            <Hint>Step size h in finite-difference formulas. Default 0.001 balances truncation and round-off error.</Hint>
+        </Tooltip>
     </details>
 }
 else
@@ -85,9 +100,14 @@ else
     </div>
 
     <div class="differentiation-input__query">
-        <div class="input-group">
-            <label class="input-group__label">x*</label>
-            <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
-        </div>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">x*</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+                </div>
+            </Content>
+            <Hint>Query point x* — evaluate the derivative at this value.</Hint>
+        </Tooltip>
     </div>
 }

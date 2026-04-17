@@ -1,0 +1,35 @@
+﻿<TopicInfo Title="Function Optimization" Subtitle="Find the minimum of f(x) or f(x₁, x₂, …)">
+    <div>
+        <p class="topic-info__overview">
+            Optimization locates the point $x^*$ that minimizes $f(x)$.
+            One-dimensional methods search an interval $[a, b]$ assuming
+            unimodal $f$; gradient descent handles multi-dimensional cases.
+        </p>
+
+        <div class="topic-info__cards">
+            <div class="topic-info__card">
+                <h3>Uniform Search</h3>
+                <div class="topic-info__formula">$$x^* \approx \arg\min_{x_i \in \{a,\,a+h,\,a+2h,\ldots,b\}} f(x_i), \quad h = \frac{b-a}{n-1}$$</div>
+                <p>Evaluates $f$ at $n$ equally-spaced points and returns the minimum.
+                    Simple and parallelizable but accuracy depends entirely on $n$.</p>
+                <p class="topic-info__limitation">Only finds the global minimum if $f$ is unimodal; misses narrow valleys with small $n$.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Golden Section Search</h3>
+                <div class="topic-info__formula">$$\rho = \frac{3 - \sqrt{5}}{2} \approx 0.382, \quad [a,b] \to [a,b'] \text{ with } |b'-a'| = \rho|b-a|$$</div>
+                <p>Narrows the search interval by the golden ratio at each step without
+                    re-evaluating previously computed points. Logarithmic convergence.</p>
+                <p class="topic-info__limitation">Assumes $f$ is unimodal on $[a, b]$; fails for multi-modal functions.</p>
+            </div>
+
+            <div class="topic-info__card">
+                <h3>Gradient Descent</h3>
+                <div class="topic-info__formula">$$\mathbf{x}^{(k+1)} = \mathbf{x}^{(k)} - \alpha \nabla f(\mathbf{x}^{(k)})$$</div>
+                <p>Moves along the negative gradient direction with step $\alpha$ (learning rate).
+                    Works for smooth multi-dimensional functions; auto-detects variables.</p>
+                <p class="topic-info__limitation">Converges to a local minimum; step size $\alpha$ must be chosen carefully to avoid divergence.</p>
+            </div>
+        </div>
+    </div>
+</TopicInfo>
