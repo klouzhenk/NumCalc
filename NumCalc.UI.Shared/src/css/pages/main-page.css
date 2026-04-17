@@ -35,11 +35,10 @@
     padding: var(--dimension-m) var(--dimension-l);
     border-radius: var(--border-radius-l);
     border: var(--default-border);
-    background-color: var(--primary-background);
-
+    background: linear-gradient(160deg, var(--primary-background) 0%, transparent 100%);
     &__number {
         font-family: var(--font-heading), monospace;
-        font-size: 1.6rem;
+        font-size: 1.75rem;
         font-weight: 700;
         color: var(--primary-color);
         line-height: 1;
