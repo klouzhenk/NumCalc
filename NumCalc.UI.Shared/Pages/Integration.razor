@@ -8,8 +8,6 @@
 <div class="page-wrapper page__integration">
     <div class="integration__form-wrapper">
         <div class="integration__filters-container">
-            <IntegrationTopicInfo />
-            
             <Dropdown TItem="IntegrationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<IntegrationMethod>())"
