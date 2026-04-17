@@ -1,9 +1,5 @@
 ﻿<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 120 120">
-    <style>
-        .text { font-family: Arial, sans-serif; font-size: 28px; fill: #111; }
-        .line { stroke: #111; stroke-width: 2; }
-    </style>
-    <text x="60" y="45" text-anchor="middle" class="text">Δy</text>
-    <line x1="25" y1="60" x2="95" y2="60" class="line"/>
-    <text x="60" y="90" text-anchor="middle" class="text">Δx</text>
+    <text x="60" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="32px" font-weight="700">Δy</text>
+    <line x1="25" y1="60" x2="95" y2="60" stroke="currentColor" stroke-width="4"/>
+    <text x="60" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="32px" font-weight="700">Δx</text>
 </svg>

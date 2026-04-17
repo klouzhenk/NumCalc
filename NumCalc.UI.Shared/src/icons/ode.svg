@@ -1,1 +1,12 @@
-﻿<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 120 120"> <style> .field { stroke: #111; stroke-width: 1.5; } .curve { fill: none; stroke: #111; stroke-width: 2; } </style> <!-- direction field (few strokes) --> <line x1="20" y1="30" x2="30" y2="25" class="field"/> <line x1="50" y1="30" x2="60" y2="35" class="field"/> <line x1="80" y1="30" x2="90" y2="28" class="field"/> <line x1="20" y1="60" x2="30" y2="60" class="field"/> <line x1="50" y1="60" x2="60" y2="55" class="field"/> <line x1="80" y1="60" x2="90" y2="65" class="field"/> <line x1="20" y1="90" x2="30" y2="95" class="field"/> <line x1="50" y1="90" x2="60" y2="85" class="field"/> <line x1="80" y1="90" x2="90" y2="92" class="field"/> <!-- solution curve --> <path d="M10 100 C 40 80, 70 40, 110 20" class="curve"/> </svg>
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 120 120">
+    <line x1="20" y1="30" x2="30" y2="25" stroke="currentColor" stroke-width="3"/>
+    <line x1="50" y1="30" x2="60" y2="35" stroke="currentColor" stroke-width="3"/>
+    <line x1="80" y1="30" x2="90" y2="28" stroke="currentColor" stroke-width="3"/>
+    <line x1="20" y1="60" x2="30" y2="60" stroke="currentColor" stroke-width="3"/>
+    <line x1="50" y1="60" x2="60" y2="55" stroke="currentColor" stroke-width="3"/>
+    <line x1="80" y1="60" x2="90" y2="65" stroke="currentColor" stroke-width="3"/>
+    <line x1="20" y1="90" x2="30" y2="95" stroke="currentColor" stroke-width="3"/>
+    <line x1="50" y1="90" x2="60" y2="85" stroke="currentColor" stroke-width="3"/>
+    <line x1="80" y1="90" x2="90" y2="92" stroke="currentColor" stroke-width="3"/>
+    <path d="M10 100 C 40 80, 70 40, 110 20" fill="none" stroke="currentColor" stroke-width="4"/>
+</svg>

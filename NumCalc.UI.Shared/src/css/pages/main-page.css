@@ -89,6 +89,7 @@
         
         & .icon {
             fill: var(--primary-color);
+            color: var(--primary-color);
             width: 2rem;
             height: 2rem;
         }
