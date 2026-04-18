@@ -5,6 +5,7 @@
 <div class="page-wrapper page__main">
     <section class="main-hero">
         <div class="main-hero__text">
+            <h1 class="main-hero__title">@Localizer["MainHeroTitle"]</h1>
             <p class="main-hero__subtitle">@Localizer["MainHeroSubtitle"]</p>
         </div>
         <div class="main-hero__stats">
@@ -23,6 +24,32 @@
         </div>
     </section>
 
+    <section class="main-how-it-works">
+        <div class="how-it-works__step">
+            <span class="how-it-works__number">1</span>
+            <div class="how-it-works__content">
+                <h3 class="how-it-works__step-title">@Localizer["HowItWorksStep1Title"]</h3>
+                <p class="how-it-works__step-desc">@Localizer["HowItWorksStep1Desc"]</p>
+            </div>
+        </div>
+        <div class="how-it-works__divider"></div>
+        <div class="how-it-works__step">
+            <span class="how-it-works__number">2</span>
+            <div class="how-it-works__content">
+                <h3 class="how-it-works__step-title">@Localizer["HowItWorksStep2Title"]</h3>
+                <p class="how-it-works__step-desc">@Localizer["HowItWorksStep2Desc"]</p>
+            </div>
+        </div>
+        <div class="how-it-works__divider"></div>
+        <div class="how-it-works__step">
+            <span class="how-it-works__number">3</span>
+            <div class="how-it-works__content">
+                <h3 class="how-it-works__step-title">@Localizer["HowItWorksStep3Title"]</h3>
+                <p class="how-it-works__step-desc">@Localizer["HowItWorksStep3Desc"]</p>
+            </div>
+        </div>
+    </section>
+
     <section class="main-cards">
         @foreach (var card in Categories)
         {
@@ -31,6 +58,7 @@
                     <SvgIcon Name="@card.Icon"/>
                     <h2 class="method-card__title">@Localizer[card.TitleKey]</h2>
                 </div>
+                <p class="method-card__desc">@Localizer[card.DescKey]</p>
                 <ul class="method-card__methods">
                     @foreach (var method in card.Methods)
                     {

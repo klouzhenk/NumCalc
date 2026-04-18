@@ -38,10 +38,10 @@ select,
 
     & > * {
         flex: 1;
-    }
-
-    &--ode-function > *:has(.math-input) {
-        flex: 3;
+        
+        &:has(.math-input) {
+            flex: 3;
+        }
     }
 }
 

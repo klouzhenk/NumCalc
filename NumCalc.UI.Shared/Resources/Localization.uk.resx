@@ -28,8 +28,41 @@
   <data name="ExportPdf" xml:space="preserve">
     <value>Експорт PDF</value>
   </data>
+  <data name="StatCategories" xml:space="preserve">
+    <value>Категорій</value>
+  </data>
+  <data name="StatMethods" xml:space="preserve">
+    <value>Методів</value>
+  </data>
+  <data name="StatExport" xml:space="preserve">
+    <value>Експорт</value>
+  </data>
+  <data name="MainHeroTitle" xml:space="preserve">
+    <value>Калькулятор чисельних методів</value>
+  </data>
   <data name="MainHeroSubtitle" xml:space="preserve">
     <value>Платформа для чисельних методів: корені рівнянь, інтерполяція, інтегрування та інше.</value>
+  </data>
+  <data name="HowItWorksTitle" xml:space="preserve">
+    <value>Як це працює</value>
+  </data>
+  <data name="HowItWorksStep1Title" xml:space="preserve">
+    <value>Введіть вираз</value>
+  </data>
+  <data name="HowItWorksStep1Desc" xml:space="preserve">
+    <value>Введіть функцію або вставте набір точок у поле введення.</value>
+  </data>
+  <data name="HowItWorksStep2Title" xml:space="preserve">
+    <value>Оберіть метод</value>
+  </data>
+  <data name="HowItWorksStep2Desc" xml:space="preserve">
+    <value>Виберіть чисельний алгоритм, що підходить для вашої задачі.</value>
+  </data>
+  <data name="HowItWorksStep3Title" xml:space="preserve">
+    <value>Перегляньте та експортуйте</value>
+  </data>
+  <data name="HowItWorksStep3Desc" xml:space="preserve">
+    <value>Перегляньте покрокові розв'язки, графіки та збережіть звіт у PDF.</value>
   </data>
   <data name="FeatureStepByStep" xml:space="preserve">
     <value>Покрокові розв'язки</value>

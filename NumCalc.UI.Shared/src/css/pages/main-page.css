@@ -25,15 +25,95 @@
     gap: var(--dimension-xl);
     flex-wrap: wrap;
 
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-s);
+    }
+
+    &__title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--black-color);
+        margin: 0;
+        line-height: 1.2;
+    }
+
     &__subtitle {
         color: var(--gray-color);
-        max-width: 480px;
+        margin: 0;
     }
 
     &__stats {
         display: flex;
         gap: var(--dimension-l);
         flex-wrap: wrap;
+    }
+}
+
+section.main-how-it-works {
+    display: flex;
+    align-items: center;
+    gap: var(--dimension-xxl);
+    flex-wrap: wrap;
+    padding: var(--dimension-xl);
+    border-radius: var(--border-radius-l);
+    box-shadow: var(--text-shadow);
+    background: linear-gradient(160deg, var(--primary-background) 0%, transparent 100%);
+}
+
+.how-it-works {
+    &__step {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--dimension-l);
+        flex: 1;
+        min-width: 180px;
+    }
+
+    &__number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xs);
+    }
+
+    &__step-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--black-color);
+        margin: 0;
+    }
+
+    &__step-desc {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+        margin: 0;
+    }
+
+    &__divider {
+        height: 2.5rem;
+        width: 2px;
+        background-color: var(--primary-color);
+        flex-shrink: 0;
+        align-self: center;
+
+        @media (max-width: 600px) {
+            display: none;
+        }
     }
 }
 
@@ -108,6 +188,13 @@
         font-size: 1rem;
         font-weight: 700;
         color: var(--black-color);
+    }
+
+    &__desc {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+        margin: 0;
+        line-height: 1.4;
     }
 
     &__methods {

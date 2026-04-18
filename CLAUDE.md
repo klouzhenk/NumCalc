@@ -184,7 +184,7 @@ Currently working:
 Not implemented yet:
 - Full-featured backend for users/history
 - Complete MAUI UI
-- Help & Tooltip system (planned — see roadmap below)
+- Help & Tooltip system — COMPLETED (see section below)
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
@@ -289,7 +289,7 @@ QuestPDF cannot render LaTeX directly. All LaTeX is pre-rendered to PNG in the b
 
 ---
 
-## Help & Tooltip System (Planned — Not Yet Implemented)
+## Help & Tooltip System — COMPLETED
 
 Two distinct components with different purposes and behaviors.
 
@@ -354,15 +354,6 @@ method-info.json    — per-topic: overview + per-method cards with LaTeX formul
 
 `IHelpContentService` / `HelpContentService` in `NumCalc.UI.Shared/Services/`
 — loads and caches both JSON files on first use via `HttpClient`.
-
-### Implementation order
-
-1. Create `wwwroot/data/tooltips.json` and `wwwroot/data/method-info.json` with content
-2. `IHelpContentService` + `HelpContentService`
-3. `Tooltip.razor` + CSS
-4. `TopicInfo.razor` + modal markup + CSS
-5. Wire `<Tooltip>` onto inputs across all 7 pages
-6. Wire `<TopicInfo>` into the filter bar of each page
 
 ### Key constraint
 KaTeX is already installed (used for PDF export). Reuse it to render `formula` strings

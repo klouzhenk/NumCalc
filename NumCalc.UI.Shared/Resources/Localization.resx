@@ -34,8 +34,41 @@
   <data name="ExportPdf" xml:space="preserve">
     <value>Export PDF</value>
   </data>
+  <data name="StatCategories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="StatMethods" xml:space="preserve">
+    <value>Methods</value>
+  </data>
+  <data name="StatExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="MainHeroTitle" xml:space="preserve">
+    <value>Numerical Methods Calculator</value>
+  </data>
   <data name="MainHeroSubtitle" xml:space="preserve">
     <value>A numerical methods computation platform for root finding, interpolation, integration, and more.</value>
+  </data>
+  <data name="HowItWorksTitle" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="HowItWorksStep1Title" xml:space="preserve">
+    <value>Enter expression</value>
+  </data>
+  <data name="HowItWorksStep1Desc" xml:space="preserve">
+    <value>Type your function or paste data points into the input field.</value>
+  </data>
+  <data name="HowItWorksStep2Title" xml:space="preserve">
+    <value>Choose a method</value>
+  </data>
+  <data name="HowItWorksStep2Desc" xml:space="preserve">
+    <value>Select the numerical algorithm that fits your problem.</value>
+  </data>
+  <data name="HowItWorksStep3Title" xml:space="preserve">
+    <value>View results &amp; export</value>
+  </data>
+  <data name="HowItWorksStep3Desc" xml:space="preserve">
+    <value>Explore step-by-step solutions, interactive charts, and export to PDF.</value>
   </data>
   <data name="FeatureStepByStep" xml:space="preserve">
     <value>Step-by-step solutions</value>
