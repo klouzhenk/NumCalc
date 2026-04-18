@@ -33,13 +33,57 @@ public partial class RootFinding : BasePage<RootFinding>
     private MathInput? _mathInputComponent;
     private bool IsChartVisible => !string.IsNullOrWhiteSpace(_formData.FunctionExpression);
 
+    private record ExpressionValidationResult(bool Valid, string[] Variables);
+
     private async Task Calculate()
     {
         Result = null;
         ComparisonResult = null;
 
+        if (!await ValidateAsync()) return;
+
         if (Mode == AnalysisMode.Single) await DoSingleMethodCalculation();
         else await DoMultipleMethodCalculations();
+    }
+
+    private async Task<bool> ValidateAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_formData.FunctionExpression))
+        {
+            UiService.ShowError(Localizer["ExpressionRequired"]);
+            return false;
+        }
+
+        // TODO : check the bug with '5x + 3'
+        // var result = await JsRuntime.InvokeAsync<ExpressionValidationResult>(
+        //     "NumCalc.validateExpression", _formData.FunctionExpression);
+        //
+        // if (!result.Valid)
+        // {
+        //     UiService.ShowError(Localizer["ExpressionInvalid"]);
+        //     return false;
+        // }
+
+        // if (result.Variables.Any(v => v != "x"))
+        // {
+        //     UiService.ShowError(Localizer["ExpressionOnlyX"]);
+        //     return false;
+        // }
+
+        var isNewton = Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton;
+        if (!isNewton && _formData.StartPoint >= _formData.EndPoint)
+        {
+            UiService.ShowError(Localizer["StartMustBeLessThanEnd"]);
+            return false;
+        }
+
+        if (Mode is AnalysisMode.Benchmark && _benchmarkMethods.Count == 0)
+        {
+            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+            return false;
+        }
+
+        return true;
     }
 
     private async Task DoSingleMethodCalculation()
@@ -96,25 +140,12 @@ public partial class RootFinding : BasePage<RootFinding>
             ? await _mathInputComponent.GetAsciiValue()
             : null;
         if (string.IsNullOrWhiteSpace(asciiEquation)) return;
+        if (_formData.StartPoint >= _formData.EndPoint) return;
 
-        var (min, max) = GetChartRange();
-        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), min, max);
+        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), _formData.StartPoint, _formData.EndPoint);
         AppendResultSeries(config);
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
-    }
-
-    private (double min, double max) GetChartRange()
-    {
-        var min = _formData.StartPoint;
-        var max = _formData.EndPoint;
-
-        if (!(min >= max)) return (min, max);
-
-        max = min + 10;
-        min -= 10;
-
-        return (min, max);
     }
 
     private void AppendResultSeries(Chart config)

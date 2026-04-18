@@ -226,4 +226,19 @@
   <data name="AboutThisTopic" xml:space="preserve">
     <value>Про цей розділ</value>
   </data>
+  <data name="ExpressionRequired" xml:space="preserve">
+    <value>Будь ласка, введіть вираз функції.</value>
+  </data>
+  <data name="StartMustBeLessThanEnd" xml:space="preserve">
+    <value>Початкова точка має бути менша за кінцеву.</value>
+  </data>
+  <data name="SelectAtLeastOneMethod" xml:space="preserve">
+    <value>Будь ласка, оберіть хоча б один метод.</value>
+  </data>
+  <data name="ExpressionInvalid" xml:space="preserve">
+    <value>Вираз містить синтаксичну помилку.</value>
+  </data>
+  <data name="ExpressionOnlyX" xml:space="preserve">
+    <value>Вираз має містити лише змінну x.</value>
+  </data>
 </root>

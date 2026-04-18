@@ -232,4 +232,19 @@
   <data name="AboutThisTopic" xml:space="preserve">
     <value>About this topic</value>
   </data>
+  <data name="ExpressionRequired" xml:space="preserve">
+    <value>Please enter a function expression.</value>
+  </data>
+  <data name="StartMustBeLessThanEnd" xml:space="preserve">
+    <value>Start point must be less than end point.</value>
+  </data>
+  <data name="SelectAtLeastOneMethod" xml:space="preserve">
+    <value>Please select at least one method.</value>
+  </data>
+  <data name="ExpressionInvalid" xml:space="preserve">
+    <value>The expression contains a syntax error.</value>
+  </data>
+  <data name="ExpressionOnlyX" xml:space="preserve">
+    <value>The expression must contain only the variable x.</value>
+  </data>
 </root>
