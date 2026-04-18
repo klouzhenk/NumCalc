@@ -23,6 +23,13 @@
                 <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
             }
         </div>
+    </div>
+
+    <section>
+        <div class="chart__container">
+            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+        </div>
 
         @if (Result is not null)
         {
@@ -48,11 +55,5 @@
                 <span class="remark">Click Calculate to view result</span>
             </div>
         }
-
-    </div>
-
-    <div class="chart__container">
-        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
-    </div>
+    </section>
 </div>

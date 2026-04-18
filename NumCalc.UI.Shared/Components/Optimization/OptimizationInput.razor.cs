@@ -23,10 +23,10 @@ public partial class OptimizationInput : ComponentBase
 
     private void AddVariable() => _initialPoint.Add(0.0);
 
-    private void RemoveVariable()
+    private void RemoveVariable(int index)
     {
         if (_initialPoint.Count <= 1) return;
-        _initialPoint.RemoveAt(_initialPoint.Count - 1);
+        _initialPoint.RemoveAt(index);
     }
 
     public async Task<OptimizationFormData> GetFormData()

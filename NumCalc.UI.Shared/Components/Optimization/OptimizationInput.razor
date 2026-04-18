@@ -6,39 +6,8 @@
     <div class="optimization-input__function">
         <MathInput Label="f(x₁, x₂, ...)" @ref="_mathInput" />
     </div>
-
-    <div class="optimization-input__table">
-        <table class="optimization-input__nodes">
-            <thead>
-                <tr>
-                    <th>Variable</th>
-                    <th>Initial value</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (var i = 0; i < _initialPoint.Count; i++)
-                {
-                    var index = i;
-                    <tr>
-                        <td>x<sub>@(index + 1)</sub></td>
-                        <td>
-                            <input type="number" step="any" class="input-group__input"
-                                   value="@_initialPoint[index]"
-                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _initialPoint[index] = v; }" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        <div class="optimization-input__row-controls">
-            <button class="button button--secondary" type="button" @onclick="AddVariable">+ Add variable</button>
-            <button class="button button--secondary" type="button" @onclick="RemoveVariable" disabled="@(_initialPoint.Count <= 1)">- Remove</button>
-        </div>
-    </div>
-
-    <details class="optimization-input__advanced">
-        <summary>Advanced (lr = @_learningRate, tol = @_tolerance, iter = @_maxIterations)</summary>
+    
+    <div class="input-section__wrapper">
         <div class="input-group">
             <label class="input-group__label">Learning rate</label>
             <input type="number" step="any" class="input-group__input" @bind="_learningRate" />
@@ -51,7 +20,29 @@
             <label class="input-group__label">Max iterations</label>
             <input type="number" min="1" max="10000" class="input-group__input" @bind="_maxIterations" />
         </div>
-    </details>
+    </div>
+
+    <div class="node-table optimization-input__vars-table">
+        <div class="node-table__header">
+            <span>Variable</span>
+            <span>Initial value</span>
+            <button class="node-table__add-btn" type="button" @onclick="AddVariable">+</button>
+        </div>
+
+        @for (var i = 0; i < _initialPoint.Count; i++)
+        {
+            var index = i;
+            <div class="node-table__row">
+                <span>x<sub>@(index + 1)</sub></span>
+                <input type="number" step="any"
+                       value="@_initialPoint[index]"
+                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _initialPoint[index] = v; }" />
+                <button class="node-table__remove-btn" type="button"
+                        disabled="@(_initialPoint.Count <= 1)"
+                        @onclick="() => RemoveVariable(index)">&times;</button>
+            </div>
+        }
+    </div>
 }
 else
 {
@@ -59,7 +50,7 @@ else
         <MathInput Label="f(x)" @ref="_mathInput" />
     </div>
 
-    <div class="optimization-input__bounds">
+    <div class="input-section__wrapper">
         <div class="input-group">
             <label class="input-group__label">a (lower bound)</label>
             <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
@@ -68,26 +59,20 @@ else
             <label class="input-group__label">b (upper bound)</label>
             <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
         </div>
-    </div>
-
-    @if (Method is OptimizationMethod.UniformSearch)
-    {
-        <details class="optimization-input__advanced">
-            <summary>Advanced (n = @_points)</summary>
+        
+        @if (Method is OptimizationMethod.UniformSearch)
+        {
             <div class="input-group">
                 <label class="input-group__label">Number of points (n)</label>
                 <input type="number" min="2" max="10000" class="input-group__input" @bind="_points" />
             </div>
-        </details>
-    }
-    else
-    {
-        <details class="optimization-input__advanced">
-            <summary>Advanced (tol = @_tolerance)</summary>
+        }
+        else
+        {
             <div class="input-group">
                 <label class="input-group__label">Tolerance</label>
                 <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
             </div>
-        </details>
-    }
+        }
+    </div>
 }
