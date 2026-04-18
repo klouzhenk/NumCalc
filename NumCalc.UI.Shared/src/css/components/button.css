@@ -34,6 +34,7 @@
     &--primary{
         color: var(--white-color);
         background-color: var(--primary-color);
+        max-height: fit-content;
 
         &:hover{
             background-color: var(--primary-dark-color);
@@ -43,6 +44,7 @@
     &--secondary{
         color: var(--white-color);
         background-color: var(--secondary-color);
+        max-height: fit-content;
 
         &:hover{
             background-color: var(--secondary-dark-color);
@@ -52,6 +54,7 @@
     &--danger{
         color: var(--white-color);
         background-color: var(--danger-color);
+        max-height: fit-content;
 
         &:hover{
             background-color: var(--danger-dark-color);
@@ -61,6 +64,7 @@
     &--success{
         color: var(--white-color);
         background-color: var(--success-color);
+        max-height: fit-content;
         
         &:hover{
             background-color: var(--success-dark-color);
@@ -71,6 +75,7 @@
         color: var(--white-color);
         background-color: var(--primary-color);
         box-shadow: var(--active-shadow);
+        max-height: fit-content;
 
         &:hover{
             background-color: var(--primary-dark-color);

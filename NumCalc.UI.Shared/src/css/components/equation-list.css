@@ -1,0 +1,60 @@
+.equation-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-m);
+    padding: 0 var(--dimension-m);
+
+    &__row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--dimension-xl);
+    }
+
+    &__label {
+        font-family: var(--font-heading), monospace;
+        font-weight: 700;
+        color: var(--primary-color);
+        flex-shrink: 0;
+        min-width: 3rem;
+    }
+
+    &__math-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__guess {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--dimension-l);
+        flex-shrink: 0;
+
+        span {
+            font-family: var(--font-heading), monospace;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+        input[type="number"] {
+            width: 5rem;
+            font-family: var(--font-heading), monospace;
+            text-align: center;
+        }
+    }
+
+    &__params {
+        display: flex;
+        flex-direction: row;
+        gap: var(--dimension-l);
+        padding-top: var(--dimension-s);
+        border-top: var(--default-border);
+
+        & > * {
+            flex: 1;
+        }
+    }
+}

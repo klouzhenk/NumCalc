@@ -24,7 +24,15 @@
 @import "components/modal.css";
 @import "components/tooltip.css";
 @import "components/topic-info.css";
+@import "components/matrix-input.css";
+@import "components/equation-list.css";
 
 /* pages */
 @import "pages/root-finding.css";
 @import "pages/main-page.css";
+@import "pages/equation-systems.css";
+@import "pages/interpolation.css";
+@import "pages/differentiation.css";
+@import "pages/integration.css";
+@import "pages/optimization.css";
+@import "pages/ode.css";

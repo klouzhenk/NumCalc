@@ -1,31 +1,33 @@
-﻿<header>
+﻿@using NumCalc.UI.Shared.Enums
+
+<header>
     <div class="header__icon" @onclick="OnHeaderLogoClick">
         <SvgIcon Name="calculator"/>
         <span class="brand-icon"></span> NumCalc
     </div>
 
     <div class="header__actions">
-        @switch (CurrentPath)
+        @switch (CurrentNavItem)
         {
-            case "/root-finding":
+            case NavigationItem.Roots:
                 <RootFindingTopicInfo />
                 break;
-            case "/equation-systems":
+            case NavigationItem.EquationSystems:
                 <EquationSystemsTopicInfo />
                 break;
-            case "/interpolation":
+            case NavigationItem.Interpolation:
                 <InterpolationTopicInfo />
                 break;
-            case "/differentiation":
+            case NavigationItem.Differentiation:
                 <DifferentiationTopicInfo />
                 break;
-            case "/integration":
+            case NavigationItem.Integration:
                 <IntegrationTopicInfo />
                 break;
-            case "/optimization":
+            case NavigationItem.Optimization:
                 <OptimizationTopicInfo />
                 break;
-            case "/ode":
+            case NavigationItem.Ode:
                 <OdeTopicInfo />
                 break;
         }

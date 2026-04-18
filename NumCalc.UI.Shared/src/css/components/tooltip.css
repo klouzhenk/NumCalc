@@ -4,27 +4,30 @@
         display: inline-flex;
         align-items: center;
         gap: var(--dimension-xs);
-        width: 100%;
-
-        &:hover .tooltip__popup {
-            display: block;
+        width: fit-content;
+        
+        & > * {
+            flex: 1;
+        }
+        
+        &:has(.tooltip__icon:hover) {
+            .tooltip__popup {
+                display: block;
+            }
         }
     }
 
     &__icon {
-        flex-shrink: 0;
+        flex: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 1.1rem;
-        height: 1.1rem;
+        padding: 0 var(--dimension-s);
         border-radius: 50%;
         border: var(--border-m) var(--primary-light-color);
         color: var(--primary-color);
-        font-size: 0.7rem;
         font-weight: 700;
-        cursor: default;
-        user-select: none;
+        cursor: pointer;
         transition: var(--default-transition);
 
         &:hover {
@@ -37,8 +40,8 @@
     &__popup {
         display: none;
         position: absolute;
-        bottom: calc(100% + var(--dimension-xs));
-        left: 0;
+        bottom: calc(100% - var(--dimension-xs));
+        right: 0;
         z-index: 200;
         min-width: 200px;
         max-width: 320px;
@@ -52,5 +55,11 @@
         color: var(--black-color);
         line-height: 1.5;
         pointer-events: none;
+    }
+}
+
+.tooltip__wrapper:has([class*="label"]) {
+    & .tooltip__icon {
+        margin-top: var(--dimension-l);
     }
 }

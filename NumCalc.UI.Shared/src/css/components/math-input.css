@@ -34,8 +34,9 @@
         --caret-color: var(--primary-color);
         --selection-background: var(--primary-background);
         --selection-color: var(--black-color);
-        background: transparent;
         --keyboard-zindex: 10000;
+        background: transparent;
+        cursor: text;
     }
     
     &__copy-btn, .button--ocr {

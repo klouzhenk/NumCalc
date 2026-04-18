@@ -8,9 +8,11 @@
     }
 
     &__label {
-        font-weight: 600;
-        font-size: 0.9rem;
+        font-family: var(--font-heading), monospace;
+        font-weight: 700;
+        font-size: 0.75rem;
         color: var(--black-color);
+        margin-left: var(--dimension-s);
     }
     
     &__trigger-button {

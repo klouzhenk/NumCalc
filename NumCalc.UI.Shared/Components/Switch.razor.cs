@@ -4,6 +4,7 @@ namespace NumCalc.UI.Shared.Components;
 
 public partial class Switch<TItem> : ComponentBase
 {
+    [Parameter] public string? Label { get; set; }
     [Parameter] public IEnumerable<TItem> Data { get; set; } = [];
     
     [Parameter] public TItem? Value { get; set; }

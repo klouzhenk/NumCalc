@@ -1,14 +1,20 @@
 ﻿@typeparam TItem
 
-<div class="multi-switch">
-    @foreach (var item in Data)
+<div class="multi-switch__wrapper">
+    @if (!string.IsNullOrEmpty(Label))
     {
-        var isSelected = IsSelected(item);
-        
-        <button type="button" 
-                class="multi-switch__option @(isSelected ? "multi-switch__option--selected" : "")"
-                @onclick="() => SelectItem(item)">
-            @TextField(item)
-        </button>
+        <span class="multi-switch__title">@Label</span>
     }
+    <div class="multi-switch">
+        @foreach (var item in Data)
+        {
+            var isSelected = IsSelected(item);
+        
+            <button type="button" 
+                    class="multi-switch__option @(isSelected ? "multi-switch__option--selected" : "")"
+                    @onclick="() => SelectItem(item)">
+                @TextField(item)
+            </button>
+        }
+    </div>    
 </div>

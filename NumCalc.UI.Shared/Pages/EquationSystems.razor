@@ -9,6 +9,7 @@
     <div class="equation-systems__form-wrapper">
         <div class="equation-systems__filters-container">
             <Switch TItem="EquationSystemCategory"
+                    Label="@Localizer["Category"]"
                     Data="@(Enum.GetValues<EquationSystemCategory>())"
                     @bind-Value="Category"
                     TextField="@(item => item.ToString())"/>
@@ -53,8 +54,8 @@
                 <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
             }
         </div>
-
-        @if (Result?.Roots is { Count: > 0 })
+    </div>
+            @if (Result?.Roots is { Count: > 0 })
         {
             <div class="equation-systems-result">
                 <div class="equation-systems-result__roots">
@@ -108,5 +109,4 @@
                 <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
         }
-    </div>
 </div>

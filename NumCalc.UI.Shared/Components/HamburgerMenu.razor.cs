@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Localization;
 using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Resources;
+using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Components;
 
@@ -9,17 +10,6 @@ public partial class HamburgerMenu : ComponentBase
 {
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] protected IStringLocalizer<Localization> Localizer { get; set; } = null!;
-
-    private Dictionary<NavigationItem, string> NavigationItems { get; } = new()
-    {
-        { NavigationItem.Roots, "root-finding" },   
-        { NavigationItem.EquationSystems, "equation-systems" },  
-        { NavigationItem.Integration, "integration" }, 
-        { NavigationItem.Interpolation, "interpolation" },
-        { NavigationItem.Differentiation, "differentiation" },
-        { NavigationItem.Optimization, "optimization" },
-        { NavigationItem.Ode, "ode" },
-    };
     
     private bool _isMenuOpen;
 
@@ -34,10 +24,11 @@ public partial class HamburgerMenu : ComponentBase
 
     private void OnListItemClick(NavigationItem item)
     {
-        if (!NavigationItems.TryGetValue(item, out string? relativePath) 
+        if (!NavigationUtils.NavigationItems.TryGetValue(item, out string? relativePath) 
             || string.IsNullOrEmpty(relativePath)) 
             return;
         
+        CloseMenu();
         NavigationManager.NavigateTo($"/{relativePath}");
     }
 }

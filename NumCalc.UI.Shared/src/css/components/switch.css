@@ -6,6 +6,18 @@
     border: 1px solid rgba(var(--black-rgb), 0.1);
     width: 100%;
     gap: var(--dimension-xs);
+    
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xs);
+    }
+    
+    &__title {
+        font-size: 0.75rem;
+        color: var(--black-color);
+        margin-left: var(--dimension-s);
+    }
 
     &__option {
         transition: var(--default-transition);

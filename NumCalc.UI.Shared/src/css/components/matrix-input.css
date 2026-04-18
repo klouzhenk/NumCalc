@@ -1,0 +1,70 @@
+.matrix-input {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-l);
+    padding: 0 var(--dimension-l);
+
+    &__wrapper {
+        overflow-x: auto;
+        padding: var(--dimension-s) 0;
+    }
+
+    &__row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--dimension-xl);
+        min-width: max-content;
+        
+        &-label {
+            font-family: var(--font-heading), monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--gray-light-color);
+            flex-shrink: 0;
+        }
+        
+        &-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: var(--dimension-s);
+        }
+    }
+
+    &__cell {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--dimension-s);
+
+        input[type="number"] {
+            width: 5rem;
+            font-family: var(--font-heading), monospace;
+            text-align: center;
+        }
+
+        span {
+            font-family: var(--font-heading), monospace;
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+    }
+
+    &__operator {
+        font-family: var(--font-heading), monospace;
+        font-weight: 700;
+        color: var(--gray-color);
+        flex-shrink: 0;
+        min-width: 1rem;
+        text-align: center;
+        margin: var(--dimension-s);
+    }
+
+    & > .matrix-input__row input[type="number"]:last-child {
+        border-radius: var(--border-radius-s);
+        box-shadow: var(--secondary-shadow);
+        width: 7.5rem;
+    }
+}
