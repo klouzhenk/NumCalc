@@ -38,7 +38,6 @@ public partial class Interpolation : BasePage<Interpolation>
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
-        _queryPoint = formData.QueryPoint;
         _lastExpression = formData.FunctionExpression;
         _lastXNodesText = formData.XNodes is not null ? string.Join(", ", formData.XNodes) : null;
 

@@ -5,6 +5,16 @@
         flex-direction: column;
         gap: var(--dimension-xxl);
         padding: 0 calc(var(--dimension-xxl) * 1.5);
+        
+        section {
+            flex-direction: row;
+            display: flex;
+            width: 100%;
+            
+            & > * { 
+                flex: unset;
+            }
+        }
     }
 }
 
@@ -52,7 +62,7 @@
     }
 }
 
-.main-cards {
+.page__main .main-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--dimension-xl);

@@ -9,15 +9,3 @@
 }
 
 <NodeTable ShowY="@(Mode is InterpolationInputMode.RawData)" @ref="_nodeTable" />
-
-<div class="interpolation-input__query">
-    <Tooltip>
-        <Content>
-            <div class="input-group">
-                <label class="input-group__label">x*</label>
-                <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
-            </div>
-        </Content>
-        <Hint>Query point x* — the x-value at which to estimate f(x*).</Hint>
-    </Tooltip>
-</div>

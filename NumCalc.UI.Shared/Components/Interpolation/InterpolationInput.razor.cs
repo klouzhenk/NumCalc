@@ -10,7 +10,6 @@ public partial class InterpolationInput : ComponentBase
 
     private MathInput? _mathInput;
     private NodeTable? _nodeTable;
-    private double _queryPoint;
 
     public async Task<InterpolationFormData> GetFormData()
     {
@@ -18,7 +17,6 @@ public partial class InterpolationInput : ComponentBase
         {
             Mode = Mode,
             XNodes = _nodeTable?.GetXNodes() ?? [],
-            QueryPoint = _queryPoint
         };
 
         if (Mode is InterpolationInputMode.Function)

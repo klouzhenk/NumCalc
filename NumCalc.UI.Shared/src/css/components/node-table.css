@@ -5,7 +5,7 @@
     box-shadow: var(--component-shadow);
     border-radius: var(--border-radius-xl);
     padding: var(--dimension-l) var(--dimension-xl) var(--dimension-xl);
-    max-height: 320px;
+    flex: 1;
     overflow-y: auto;
 
     &__add-btn {
