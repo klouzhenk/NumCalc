@@ -19,14 +19,15 @@ public partial class Dropdown<TItem> : ComponentBase, IDisposable
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
 
     private readonly string _dropdownId = $"dropdown_{Guid.NewGuid()}";
-    private bool IsAllSelected
+    private bool IsAllSelected => Data.Any() && SelectedItems.Count == Data.Count();
+
+    private async Task OnSelectAllChanged(ChangeEventArgs e)
     {
-        get => Data.Any() && SelectedItems.Count == Data.Count();
-        set
-        {
-            if (value) SelectedItems = Data.ToList();
-            else SelectedItems.Clear();
-        }
+        if (e.Value is true) SelectedItems = Data.ToList();
+        else SelectedItems.Clear();
+
+        await SelectedItemsChanged.InvokeAsync(SelectedItems);
+        StateHasChanged();
     }
     
     private bool _isOpen;

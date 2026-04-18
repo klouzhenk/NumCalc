@@ -68,18 +68,21 @@
                     </Hint>
                 </Tooltip>
 
-                <Tooltip>
-                    <Content>
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["EndPoint"]</label>
-                            <input type="number" class="input-group__input" step="any"
-                                   @bind="_formData.EndPoint"
-                                   @bind:event="oninput"
-                                   @bind:after="OnParametersChanged" />
-                        </div>
-                    </Content>
-                    <Hint>Right endpoint b of the search interval [a, b].</Hint>
-                </Tooltip>
+                @if (!(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton))
+                {
+                    <Tooltip>
+                        <Content>
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["EndPoint"]</label>
+                                <input type="number" class="input-group__input" step="any"
+                                       @bind="_formData.EndPoint"
+                                       @bind:event="oninput"
+                                       @bind:after="OnParametersChanged" />
+                            </div>
+                        </Content>
+                        <Hint>Right endpoint b of the search interval [a, b].</Hint>
+                    </Tooltip>
+                }
 
                 <Tooltip>
                     <Content>
@@ -91,11 +94,13 @@
                     <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>
                 </Tooltip>
             </div >
-            <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
-            @if (Mode is AnalysisMode.Single && Result is not null)
-            {
-                <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
-            }
+            <div class="form-actions">
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+                @if (Mode is AnalysisMode.Single && Result is not null)
+                {
+                    <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+                }
+            </div>
         </div>
         @if (Mode is AnalysisMode.Single && Result?.SolutionSteps is { Count: > 0 })
         {

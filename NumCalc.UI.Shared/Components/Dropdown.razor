@@ -23,8 +23,8 @@
                         <input type="checkbox"
                                class="dropdown-item__checkbox"
                                id="@($"{_dropdownId}_all")"
-                               @bind-Checked="@IsAllSelected"
-                               @bind-Checked:event="onchange" />
+                               checked="@IsAllSelected"
+                               @onchange="OnSelectAllChanged" />
                         <span class="dropdown-item__checkmark"></span>
                         <span class="dropdown-item__text">Select All</span>
                     </label>

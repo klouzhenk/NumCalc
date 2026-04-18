@@ -45,6 +45,17 @@ select,
     }
 }
 
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--dimension-m);
+
+    & .button {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
 .input-group {
     display: flex;
     flex-direction: column;
