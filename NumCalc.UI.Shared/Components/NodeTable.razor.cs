@@ -25,12 +25,12 @@ public partial class NodeTable : ComponentBase
         _yValues.Add(0.0);
     }
 
-    private void RemoveNode()
+    private void RemoveNode(int index)
     {
         if (_nodeCount <= 2) return;
         _nodeCount--;
-        _xNodes.RemoveAt(_nodeCount);
-        _yValues.RemoveAt(_nodeCount);
+        _xNodes.RemoveAt(index);
+        _yValues.RemoveAt(index);
     }
 
     public List<double> GetXNodes() => [.. _xNodes];

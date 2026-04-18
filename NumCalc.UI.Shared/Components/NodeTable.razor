@@ -6,6 +6,7 @@
         {
             <span>y<sub>i</sub></span>
         }
+        <button class="node-table__add-btn" type="button" @onclick="AddNode">+</button>
     </div>
 
     @for (var i = 0; i < _nodeCount; i++)
@@ -22,11 +23,9 @@
                        value="@_yValues[index]"
                        @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _yValues[index] = v; }" />
             }
+            <button class="node-table__remove-btn" type="button"
+                    disabled="@(_nodeCount <= 2)"
+                    @onclick="() => RemoveNode(index)">&times;</button>
         </div>
     }
-
-    <div class="node-table__controls">
-        <button class="button button--secondary" type="button" @onclick="AddNode">+ Add node</button>
-        <button class="button button--secondary" type="button" @onclick="RemoveNode" disabled="@(_nodeCount <= 2)">- Remove</button>
-    </div>
 </div>

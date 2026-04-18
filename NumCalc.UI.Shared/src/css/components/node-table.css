@@ -4,33 +4,65 @@
     gap: var(--dimension-s);
     box-shadow: var(--component-shadow);
     border-radius: var(--border-radius-xl);
-    padding: var(--dimension-xl);
+    padding: var(--dimension-l) var(--dimension-xl) var(--dimension-xl);
+    max-height: 320px;
+    overflow-y: auto;
+
+    &__add-btn {
+        border: none;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        color: var(--white-color);
+        font-weight: 700;
+        cursor: pointer;
+        line-height: 1;
+        transition: var(--default-transition);
+        font-size: 0.85rem;
+        width: 2rem;
+        height: 2rem;
+        margin: 0 auto;
+
+        &:hover {
+            transform: scale(1.05);
+            box-shadow: var(--text-shadow);
+        }
+    }
 
     &__header,
     &__row {
         display: grid;
-        grid-template-columns: 2rem 1fr;
+        grid-template-columns: 2rem 1fr 2rem;
         align-items: center;
         gap: var(--dimension-xl);
 
         .node-table--with-y & {
-            grid-template-columns: 2rem 1fr 1fr;
+            grid-template-columns: 2.5rem 1fr 1fr 2.5rem;
         }
     }
 
     &__header {
+        padding: var(--dimension-xs);
+
         span {
             font-family: var(--font-heading), monospace;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: var(--gray-dark-color);
+            color: var(--gray-light-color);
             text-align: center;
-            border-bottom: var(--default-border);
-            height: 2rem;
+            padding-bottom: var(--dimension-xs);
         }
     }
 
     &__row {
+        border: var(--default-border);
+        border-radius: var(--border-radius-m);
+        padding: var(--dimension-xs);
+        transition: border-color 0.2s;
+
+        &:hover {
+            border-color: var(--primary-light-color);
+        }
+
         span {
             font-family: var(--font-heading), monospace;
             font-size: 0.75rem;
@@ -41,17 +73,38 @@
 
         input {
             text-align: center;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+
+            &:focus, &:hover {
+                border: none;
+                box-shadow: none;
+            }
         }
     }
 
-    &__controls {
+    &__remove-btn {
+        background: transparent;
+        border: none;
+        color: var(--danger-color);
+        font-size: 1.1rem;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0.4;
+        transition: var(--default-transition);
         display: flex;
-        flex-direction: row;
-        gap: var(--dimension-s);
-        margin-top: var(--dimension-xs);
+        align-items: center;
+        justify-content: center;
 
-        button {
-            flex: 1;
+        &:hover:not(:disabled) {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        &:disabled {
+            opacity: 0.15;
+            cursor: not-allowed;
         }
     }
 }
