@@ -1,5 +1,10 @@
 <div class="integration-input__function">
-    <MathInput Label="f(x)" @ref="_mathInput" />
+    <Tooltip>
+        <Content>
+            <MathInput Label="f(x)" @ref="_mathInput" />
+        </Content>
+        <Hint>Integrand f(x). The definite integral ∫f(x)dx is computed numerically over [a, b].</Hint>
+    </Tooltip>
 </div>
 
 <div class="input-section__wrapper">

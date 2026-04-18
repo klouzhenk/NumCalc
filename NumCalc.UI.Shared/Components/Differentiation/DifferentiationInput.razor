@@ -4,7 +4,12 @@
 
 @if (Method is DifferentiationMethod.FiniteDifferences)
 {
-    <MathInput Label="f(x)" @ref="_mathInput" />
+    <Tooltip>
+        <Content>
+            <MathInput Label="f(x)" @ref="_mathInput" />
+        </Content>
+        <Hint>Function f(x) to differentiate. Use standard math notation, e.g. sin(x), x^2 + 3*x.</Hint>
+    </Tooltip>
 
     <div class="input-section__wrapper">
         <Tooltip>
@@ -44,7 +49,12 @@ else
     @if (Mode is DifferentiationInputMode.Function)
     {
         <div class="input-section__wrapper">
-            <MathInput Label="f(x)" @ref="_mathInput" />
+            <Tooltip>
+                <Content>
+                    <MathInput Label="f(x)" @ref="_mathInput" />
+                </Content>
+                <Hint>Function f(x) to differentiate symbolically via Lagrange polynomial interpolation.</Hint>
+            </Tooltip>
             <Tooltip>
                 <Content>
                     <div class="input-group">

@@ -10,15 +10,25 @@
                 <span class="equation-list__label">g<sub>@(index + 1)</sub>(x)</span>
 
                 <div class="equation-list__math-input">
-                    <MathInput @ref="MathInputs[index]" />
+                    <Tooltip>
+                        <Content>
+                            <MathInput @ref="MathInputs[index]" />
+                        </Content>
+                        <Hint>Iteration function g<sub>@(index + 1)</sub>(x). Rewrite f<sub>@(index + 1)</sub>(x) = 0 as x<sub>@(index + 1)</sub> = g<sub>@(index + 1)</sub>(x) for fixed-point / Seidel iteration.</Hint>
+                    </Tooltip>
                 </div>
 
-                <div class="equation-list__guess">
-                    <span>x<sub>@(index + 1)</sub><sup>0</sup> =</span>
-                    <input type="number" step="any"
-                           value="@InitialGuess[index]"
-                           @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) InitialGuess[index] = v; }" />
-                </div>
+                <Tooltip>
+                    <Content>
+                        <div class="equation-list__guess">
+                            <span>x<sub>@(index + 1)</sub><sup>0</sup> =</span>
+                            <input type="number" step="any"
+                                   value="@InitialGuess[index]"
+                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) InitialGuess[index] = v; }" />
+                        </div>
+                    </Content>
+                    <Hint>Initial guess for x<sub>@(index + 1)</sub>. Choose a value close to the expected solution.</Hint>
+                </Tooltip>
             </div>
         }
 

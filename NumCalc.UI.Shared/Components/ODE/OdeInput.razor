@@ -11,31 +11,56 @@
         </Hint>
     </Tooltip>
     
-    <div class="input-group">
-        <label class="input-group__label">x₀</label>
-        <input type="number" step="any" class="input-group__input" @bind="_initialX"/>
-    </div>
-    <div class="input-group">
-        <label class="input-group__label">y₀</label>
-        <input type="number" step="any" class="input-group__input" @bind="_initialY"/>
-    </div>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">x₀</label>
+                <input type="number" step="any" class="input-group__input" @bind="_initialX"/>
+            </div>
+        </Content>
+        <Hint>Initial x value x₀ — the starting point of the solution interval.</Hint>
+    </Tooltip>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">y₀</label>
+                <input type="number" step="any" class="input-group__input" @bind="_initialY"/>
+            </div>
+        </Content>
+        <Hint>Initial condition y(x₀) = y₀.</Hint>
+    </Tooltip>
 </div>
 
 <div class="input-section__wrapper">
-    <div class="input-group">
-        <label class="input-group__label">x target</label>
-        <input type="number" step="any" class="input-group__input" @bind="_targetX" />
-    </div>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">x target</label>
+                <input type="number" step="any" class="input-group__input" @bind="_targetX" />
+            </div>
+        </Content>
+        <Hint>Target x value at which y is approximated. For Picard, keep |x_target − x₀| small (typically &lt; 1).</Hint>
+    </Tooltip>
     @if (Method is OdeMethod.Picard)
     {
-        <Dropdown TItem="int"
-                  Label="Approximation order (k)"
-                  Data="@(Enumerable.Range(1, 10))"
-                  TextField="@(i => i.ToString())"
-                  @bind-Value="_picardOrder" />
+        <Tooltip>
+            <Content>
+                <Dropdown TItem="int"
+                          Label="Approximation order (k)"
+                          Data="@(Enumerable.Range(1, 10))"
+                          TextField="@(i => i.ToString())"
+                          @bind-Value="_picardOrder" />
+            </Content>
+            <Hint>Number of Picard iterations. Higher order improves accuracy near x₀ but diverges on wide intervals.</Hint>
+        </Tooltip>
     }
-    <div class="input-group">
-        <label class="input-group__label">Step size (h)</label>
-        <input type="number" step="any" min="0.0001" class="input-group__input" @bind="_stepSize" />
-    </div>
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">Step size (h)</label>
+                <input type="number" step="any" min="0.0001" class="input-group__input" @bind="_stepSize" />
+            </div>
+        </Content>
+        <Hint>Integration step h. Smaller h gives higher accuracy but more computation steps.</Hint>
+    </Tooltip>
 </div>

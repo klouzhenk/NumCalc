@@ -42,30 +42,54 @@
                            @ref="_mathInputComponent"
                            OnInput="OnParametersChanged"/>
 
-                <div class="input-group">
-                    <label class="input-group__label">
-                        @(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton
-                            ? Localizer["InitialGuess"]
-                            : Localizer["StartPoint"])
-                    </label>
-                    <input type="number" class="input-group__input" step="any"
-                           @bind="_formData.StartPoint"
-                           @bind:event="oninput"
-                           @bind:after="OnParametersChanged" />
-                </div>
+                <Tooltip>
+                    <Content>
+                        <div class="input-group">
+                            <label class="input-group__label">
+                                @(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton
+                                    ? Localizer["InitialGuess"]
+                                    : Localizer["StartPoint"])
+                            </label>
+                            <input type="number" class="input-group__input" step="any"
+                                   @bind="_formData.StartPoint"
+                                   @bind:event="oninput"
+                                   @bind:after="OnParametersChanged" />
+                        </div>
+                    </Content>
+                    <Hint>
+                        @if (Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton)
+                        {
+                            <span>Initial guess x₀ for Newton-Raphson. Choose a value close to the expected root.</span>
+                        }
+                        else
+                        {
+                            <span>Left endpoint a of the search interval [a, b]. Must satisfy f(a)·f(b) &lt; 0 for bracketing methods.</span>
+                        }
+                    </Hint>
+                </Tooltip>
 
-                <div class="input-group">
-                    <label class="input-group__label">@Localizer["EndPoint"]</label>
-                    <input type="number" class="input-group__input" step="any"
-                           @bind="_formData.EndPoint"
-                           @bind:event="oninput"
-                           @bind:after="OnParametersChanged" />
-                </div>
+                <Tooltip>
+                    <Content>
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["EndPoint"]</label>
+                            <input type="number" class="input-group__input" step="any"
+                                   @bind="_formData.EndPoint"
+                                   @bind:event="oninput"
+                                   @bind:after="OnParametersChanged" />
+                        </div>
+                    </Content>
+                    <Hint>Right endpoint b of the search interval [a, b].</Hint>
+                </Tooltip>
 
-                <div class="input-group">
-                    <label class="input-group__label">@Localizer["Tolerance"]</label>
-                    <input type="number" @bind="_formData.Tolerance" class="input-group__group" step="0.00001"/>
-                </div>
+                <Tooltip>
+                    <Content>
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["Tolerance"]</label>
+                            <input type="number" @bind="_formData.Tolerance" class="input-group__group" step="0.00001"/>
+                        </div>
+                    </Content>
+                    <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>
+                </Tooltip>
             </div >
             <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
             @if (Mode is AnalysisMode.Single && Result is not null)

@@ -4,22 +4,42 @@
 @if (Method is OptimizationMethod.GradientDescent)
 {
     <div class="optimization-input__function">
-        <MathInput Label="f(x₁, x₂, ...)" @ref="_mathInput" />
+        <Tooltip>
+            <Content>
+                <MathInput Label="f(x₁, x₂, ...)" @ref="_mathInput" />
+            </Content>
+            <Hint>Objective function to minimize. Variables are detected alphabetically from the expression, e.g. x1^2 + x2^2.</Hint>
+        </Tooltip>
     </div>
-    
+
     <div class="input-section__wrapper">
-        <div class="input-group">
-            <label class="input-group__label">Learning rate</label>
-            <input type="number" step="any" class="input-group__input" @bind="_learningRate" />
-        </div>
-        <div class="input-group">
-            <label class="input-group__label">Tolerance</label>
-            <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
-        </div>
-        <div class="input-group">
-            <label class="input-group__label">Max iterations</label>
-            <input type="number" min="1" max="10000" class="input-group__input" @bind="_maxIterations" />
-        </div>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">Learning rate</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_learningRate" />
+                </div>
+            </Content>
+            <Hint>Step size α for each gradient update: x ← x − α·∇f(x). Too large causes divergence; too small slows convergence.</Hint>
+        </Tooltip>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">Tolerance</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
+                </div>
+            </Content>
+            <Hint>Stop when the gradient norm falls below this value.</Hint>
+        </Tooltip>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">Max iterations</label>
+                    <input type="number" min="1" max="10000" class="input-group__input" @bind="_maxIterations" />
+                </div>
+            </Content>
+            <Hint>Maximum number of gradient steps before stopping.</Hint>
+        </Tooltip>
     </div>
 
     <div class="node-table optimization-input__vars-table">
@@ -47,32 +67,57 @@
 else
 {
     <div class="optimization-input__function">
-        <MathInput Label="f(x)" @ref="_mathInput" />
+        <Tooltip>
+            <Content>
+                <MathInput Label="f(x)" @ref="_mathInput" />
+            </Content>
+            <Hint>Objective function f(x) to minimize over [a, b].</Hint>
+        </Tooltip>
     </div>
 
     <div class="input-section__wrapper">
-        <div class="input-group">
-            <label class="input-group__label">a (lower bound)</label>
-            <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
-        </div>
-        <div class="input-group">
-            <label class="input-group__label">b (upper bound)</label>
-            <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
-        </div>
-        
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">a (lower bound)</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
+                </div>
+            </Content>
+            <Hint>Left endpoint a of the search interval [a, b].</Hint>
+        </Tooltip>
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">b (upper bound)</label>
+                    <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
+                </div>
+            </Content>
+            <Hint>Right endpoint b of the search interval [a, b].</Hint>
+        </Tooltip>
+
         @if (Method is OptimizationMethod.UniformSearch)
         {
-            <div class="input-group">
-                <label class="input-group__label">Number of points (n)</label>
-                <input type="number" min="2" max="10000" class="input-group__input" @bind="_points" />
-            </div>
+            <Tooltip>
+                <Content>
+                    <div class="input-group">
+                        <label class="input-group__label">Number of points (n)</label>
+                        <input type="number" min="2" max="10000" class="input-group__input" @bind="_points" />
+                    </div>
+                </Content>
+                <Hint>Number of uniformly spaced sample points. More points improve accuracy at the cost of computation time.</Hint>
+            </Tooltip>
         }
         else
         {
-            <div class="input-group">
-                <label class="input-group__label">Tolerance</label>
-                <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
-            </div>
+            <Tooltip>
+                <Content>
+                    <div class="input-group">
+                        <label class="input-group__label">Tolerance</label>
+                        <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
+                    </div>
+                </Content>
+                <Hint>Stop when the interval length is below this value. Controls the precision of the golden section search.</Hint>
+            </Tooltip>
         }
     </div>
 }

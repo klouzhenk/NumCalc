@@ -4,7 +4,12 @@
 @if (Mode is InterpolationInputMode.Function)
 {
     <div class="interpolation-input__function">
-        <MathInput Label="f(x)" @ref="_mathInput" />
+        <Tooltip>
+            <Content>
+                <MathInput Label="f(x)" @ref="_mathInput" />
+            </Content>
+            <Hint>Function f(x) to interpolate. The polynomial is built through sample points generated from this expression.</Hint>
+        </Tooltip>
     </div>
 }
 
