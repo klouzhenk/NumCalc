@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Localization;
 using NumCalc.UI.Shared.HttpServices.Implementations;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Layouts;
@@ -5,6 +6,7 @@ using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 using WebUI.Components;
 using NumCalc.UI.Shared.Extensions;
+using WebUI.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddLocalization();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddHubOptions(options => options.MaximumReceiveMessageSize = 10 * 1024 * 1024);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICultureService, CultureService>();
 
 const string baseApiUrl = "http://localhost:5229";
 builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
@@ -52,6 +56,16 @@ app.UseHttpsRedirection();
 
 
 app.UseAntiforgery();
+app.MapGet("/set-culture", (string culture, string redirectUri, HttpContext context) =>
+{
+    context.Response.Cookies.Append(
+        CookieRequestCultureProvider.DefaultCookieName,
+        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+    );
+
+    return Results.LocalRedirect(redirectUri);
+});
 
 app.MapStaticAssets();
 

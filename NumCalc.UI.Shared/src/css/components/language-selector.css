@@ -1,0 +1,27 @@
+﻿.language-switch {
+    display: flex;
+    align-items: center;
+    gap: var(--dimension-xxs);
+    padding: var(--dimension-xxs);
+    
+    &__button {
+        padding: var(--dimension-xs) var(--dimension-m);
+        border-radius: var(--border-radius-s);
+        font-family: var(--font-heading), monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--gray-light-color);
+        cursor: pointer;
+        transition: var(--default-transition);
+
+        &:hover {
+            color: var(--black-color);
+        }
+
+        &.active {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+    }
+}
