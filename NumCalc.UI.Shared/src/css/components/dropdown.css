@@ -37,6 +37,8 @@
         left: 0;
         width: 100%;
         z-index: 1000;
+        max-height: 240px;
+        overflow-y: auto;
 
         &__item {
             padding: var(--dimension-s) var(--dimension-m);

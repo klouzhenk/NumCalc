@@ -8,11 +8,20 @@
 <div class="page-wrapper page__ode">
     <div class="ode__form-wrapper">
         <div class="page__filters-container">
-            <Dropdown TItem="OdeMethod"
-                      Label="Method"
-                      Data="@(Enum.GetValues<OdeMethod>())"
-                      @bind-Value="_method"
-                      TextField="@(item => item.ToString())"/>
+            <Tooltip>
+                <Content>
+                    <Dropdown TItem="OdeMethod"
+                              Label="Method"
+                              Data="@(Enum.GetValues<OdeMethod>())"
+                              @bind-Value="_method"
+                              TextField="@(item => item.ToString())"/>
+                </Content>
+                <Hint>
+                    Picard's method is symbolic and converges only near x₀. Keep |x_target − x₀| small (typically &lt; 1).
+                    <br/><br/>
+                    Higher approximation order on wide intervals will diverge or be very slow.
+                </Hint>
+            </Tooltip>
         </div>
 
         <div class="ode__form">

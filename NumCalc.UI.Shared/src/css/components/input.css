@@ -35,10 +35,14 @@ select,
     display: flex;
     flex-direction: row;
     gap: var(--dimension-xl);
-}
 
-.input-section__wrapper >  * {
-    flex: 1;
+    & > * {
+        flex: 1;
+    }
+
+    &--ode-function > *:has(.math-input) {
+        flex: 3;
+    }
 }
 
 .input-group {
