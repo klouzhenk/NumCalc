@@ -4,6 +4,7 @@
     gap: var(--dimension-xs);
     padding: var(--dimension-xs);
     width: 100%;
+    min-width: 320px;
 
     &__wrapper {
         border-radius: var(--border-radius-m);

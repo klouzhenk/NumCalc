@@ -8,7 +8,7 @@
 
 <div class="page-wrapper page__differentiation">
     <div class="differentiation__form-wrapper">
-        <div class="differentiation__filters-container">
+        <div class="page__filters-container">
             <Dropdown TItem="DifferentiationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<DifferentiationMethod>())"
@@ -26,6 +26,7 @@
             else
             {
                 <Switch TItem="DifferentiationInputMode"
+                        Label="@Localizer["Mode"]"
                         Data="@(Enum.GetValues<DifferentiationInputMode>())"
                         @bind-Value="_mode"
                         TextField="@(item => item.ToString())"/>

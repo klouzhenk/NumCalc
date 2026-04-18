@@ -1,0 +1,32 @@
+<div class="node-table @(ShowY ? "node-table--with-y" : "")">
+    <div class="node-table__header">
+        <span>i</span>
+        <span>x<sub>i</sub></span>
+        @if (ShowY)
+        {
+            <span>y<sub>i</sub></span>
+        }
+    </div>
+
+    @for (var i = 0; i < _nodeCount; i++)
+    {
+        var index = i;
+        <div class="node-table__row">
+            <span>@(index + 1)</span>
+            <input type="number" step="any"
+                   value="@_xNodes[index]"
+                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _xNodes[index] = v; }" />
+            @if (ShowY)
+            {
+                <input type="number" step="any"
+                       value="@_yValues[index]"
+                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _yValues[index] = v; }" />
+            }
+        </div>
+    }
+
+    <div class="node-table__controls">
+        <button class="button button--secondary" type="button" @onclick="AddNode">+ Add node</button>
+        <button class="button button--secondary" type="button" @onclick="RemoveNode" disabled="@(_nodeCount <= 2)">- Remove</button>
+    </div>
+</div>

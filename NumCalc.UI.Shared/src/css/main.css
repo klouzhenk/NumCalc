@@ -26,8 +26,10 @@
 @import "components/topic-info.css";
 @import "components/matrix-input.css";
 @import "components/equation-list.css";
+@import "components/node-table.css";
 
 /* pages */
+@import "pages/page.css";
 @import "pages/root-finding.css";
 @import "pages/main-page.css";
 @import "pages/equation-systems.css";

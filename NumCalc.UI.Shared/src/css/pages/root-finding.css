@@ -22,13 +22,6 @@
         flex-direction: column;
         gap: var(--dimension-l);
     }
-    
-    &__filters-container{
-        display: flex;
-        flex-direction: row;
-        gap:  var(--dimension-l);
-        align-items: center;
-    }
 }
 
 .solution-steps,

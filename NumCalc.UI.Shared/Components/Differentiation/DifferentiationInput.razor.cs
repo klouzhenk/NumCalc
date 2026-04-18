@@ -11,31 +11,11 @@ public partial class DifferentiationInput : ComponentBase
     [Parameter] public DifferentiationInputMode Mode { get; set; }
 
     private MathInput? _mathInput;
+    private NodeTable? _nodeTable;
 
-    // Finite differences fields
     private double _queryPoint;
     private double _stepSize = 0.001;
     private int _derivativeOrder = 1;
-
-    // Lagrange fields
-    private int _nodeCount = 4;
-    private List<double> _xNodes = new(Enumerable.Repeat(0.0, 4));
-    private List<double> _yValues = new(Enumerable.Repeat(0.0, 4));
-
-    private void AddNode()
-    {
-        _nodeCount++;
-        _xNodes.Add(0.0);
-        _yValues.Add(0.0);
-    }
-
-    private void RemoveNode()
-    {
-        if (_nodeCount <= 2) return;
-        _nodeCount--;
-        _xNodes.RemoveAt(_nodeCount);
-        _yValues.RemoveAt(_nodeCount);
-    }
 
     public async Task<DifferentiationFormData> GetFormData()
     {
@@ -45,7 +25,7 @@ public partial class DifferentiationInput : ComponentBase
             StepSize = _stepSize,
             DerivativeOrder = _derivativeOrder,
             Mode = Mode,
-            XNodes = [.. _xNodes]
+            XNodes = _nodeTable?.GetXNodes() ?? []
         };
 
         if (Method is DifferentiationMethod.FiniteDifferences || Mode is DifferentiationInputMode.Function)
@@ -54,7 +34,7 @@ public partial class DifferentiationInput : ComponentBase
                 : string.Empty;
 
         if (Mode is DifferentiationInputMode.RawData)
-            formData.YValues = [.. _yValues];
+            formData.YValues = _nodeTable?.GetYValues() ?? [];
 
         return formData;
     }

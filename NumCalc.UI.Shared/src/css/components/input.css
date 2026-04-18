@@ -34,11 +34,11 @@ select,
 .input-section__wrapper{
     display: flex;
     flex-direction: row;
-    gap: var(--dimension-m);
+    gap: var(--dimension-xl);
 }
 
 .input-section__wrapper >  * {
-    flex-grow: 1;
+    flex: 1;
 }
 
 .input-group {
@@ -48,10 +48,11 @@ select,
     padding:  var(--dimension-xs);
     
     &__label{
+        font-family: var(--font-heading), monospace;
         font-weight: 700;
         font-size: 0.75rem;
-        opacity: 0.75;
-        margin: 0 var(--dimension-xs);
+        color: var(--black-color);
+        margin-left: var(--dimension-s);
     }
     
     input{

@@ -16,14 +16,7 @@
         flex-direction: column;
         gap: var(--dimension-xl);
     }
-
-    &__filters-container {
-        display: flex;
-        flex-direction: row;
-        gap: var(--dimension-l);
-        align-items: center;
-    }
-
+    
     &__form {
         display: flex;
         flex-direction: column;

@@ -8,47 +8,7 @@
     </div>
 }
 
-<div class="interpolation-input__table">
-    <table class="interpolation-input__nodes">
-        <thead>
-            <tr>
-                <th>i</th>
-                <th>x<sub>i</sub></th>
-                @if (Mode is InterpolationInputMode.RawData)
-                {
-                    <th>y<sub>i</sub></th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @for (var i = 0; i < _nodeCount; i++)
-            {
-                var index = i;
-                <tr>
-                    <td>@(index + 1)</td>
-                    <td>
-                        <input type="number" step="any" class="input-group__input"
-                               value="@_xNodes[index]"
-                               @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _xNodes[index] = v; }" />
-                    </td>
-                    @if (Mode is InterpolationInputMode.RawData)
-                    {
-                        <td>
-                            <input type="number" step="any" class="input-group__input"
-                                   value="@_yValues[index]"
-                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _yValues[index] = v; }" />
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="interpolation-input__row-controls">
-        <button class="button button--secondary" type="button" @onclick="AddNode">+ Add node</button>
-        <button class="button button--secondary" type="button" @onclick="RemoveNode" disabled="@(_nodeCount <= 2)">- Remove</button>
-    </div>
-</div>
+<NodeTable ShowY="@(Mode is InterpolationInputMode.RawData)" @ref="_nodeTable" />
 
 <div class="interpolation-input__query">
     <Tooltip>
