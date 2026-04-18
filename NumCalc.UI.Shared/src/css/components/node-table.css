@@ -6,6 +6,7 @@
     border-radius: var(--border-radius-xl);
     padding: var(--dimension-l) var(--dimension-xl) var(--dimension-xl);
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
 
     &__add-btn {

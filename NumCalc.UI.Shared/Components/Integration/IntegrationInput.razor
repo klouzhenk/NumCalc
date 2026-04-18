@@ -2,7 +2,7 @@
     <MathInput Label="f(x)" @ref="_mathInput" />
 </div>
 
-<div class="integration-input__bounds">
+<div class="input-section__wrapper">
     <Tooltip>
         <Content>
             <div class="input-group">
@@ -21,10 +21,6 @@
         </Content>
         <Hint>Right endpoint b of the integration interval [a, b].</Hint>
     </Tooltip>
-</div>
-
-<details class="integration-input__advanced">
-    <summary>Advanced (n = @_intervals)</summary>
     <Tooltip>
         <Content>
             <div class="input-group">
@@ -34,4 +30,4 @@
         </Content>
         <Hint>Number of sub-intervals n. More intervals improve accuracy at the cost of computation time.</Hint>
     </Tooltip>
-</details>
+</div>
