@@ -6,12 +6,27 @@ from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
 
-def _factor_latex(value: float) -> str:
-    frac = Fraction(value).limit_denominator(1000)
-    if frac.denominator == 1:
-        return str(frac.numerator)
-    sign = "-" if frac < 0 else ""
-    return f"{sign}\\frac{{{abs(frac.numerator)}}}{{{frac.denominator}}}"
+
+def _to_latex_number(value: float) -> str:
+    fraction = Fraction(value).limit_denominator(1000)
+    if fraction.denominator == 1:
+        return str(fraction.numerator)
+    sign = "-" if fraction < 0 else ""
+    return f"{sign}\\frac{{{abs(fraction.numerator)}}}{{{abs(fraction.denominator)}}}"
+
+
+def _augmented_matrix_to_latex(matrix: np.ndarray, num_variables: int) -> str:
+    rows = []
+    for row_index in range(num_variables):
+        coefficients = " & ".join(
+            _to_latex_number(matrix[row_index, col]) for col in range(num_variables)
+        )
+        right_hand_side = _to_latex_number(matrix[row_index, num_variables])
+        rows.append(f"{coefficients} & {right_hand_side}")
+    column_spec = "c" * num_variables + "|c"
+    body = " \\\\ ".join(rows)
+    return f"\\left(\\begin{{array}}{{{column_spec}}}{body}\\end{{array}}\\right)"
+
 
 def solve(equations: List[str], variables: List[str]) -> str:
     try:
@@ -21,89 +36,119 @@ def solve(equations: List[str], variables: List[str]) -> str:
                 message=f"Expected {len(variables)} equations, got {len(equations)}."
             )
             return json.dumps(asdict(SystemResponseEnvelope(success=None, failure=failure)))
-    
+
         symbols = sympy.symbols(variables)
-        parsed_eqs = []
+        parsed_equations = []
 
-        for eq in equations:
-            if "=" in eq:
-                left, right = eq.split("=", 1)
-                parsed_eqs.append(sympy.sympify(f"{left} - ({right})"))
+        for equation in equations:
+            if "=" in equation:
+                left, right = equation.split("=", 1)
+                parsed_equations.append(sympy.sympify(f"{left} - ({right})"))
             else:
-                parsed_eqs.append(sympy.sympify(eq))
+                parsed_equations.append(sympy.sympify(equation))
 
-        system_matrix = sympy.linear_eq_to_matrix(parsed_eqs, *symbols)
-        A_sym, B_sym = system_matrix
+        coefficient_matrix, rhs_vector = sympy.linear_eq_to_matrix(parsed_equations, *symbols)
 
-        n = len(variables)
-        aug = np.hstack([
-            np.array(A_sym.tolist(), dtype=float),
-            np.array(B_sym.tolist(), dtype=float).reshape(-1, 1)
+        num_variables = len(variables)
+        augmented_matrix = np.hstack([
+            np.array(coefficient_matrix.tolist(), dtype=float),
+            np.array(rhs_vector.tolist(), dtype=float).reshape(-1, 1)
         ])
 
         steps = []
-        step_idx = 1
+        step_index = 1
 
-        aug_sym_initial = sympy.Matrix(A_sym.tolist()).row_join(B_sym)
-        aug_latex = sympy.latex(aug_sym_initial)
         steps.append(SolutionStep(
-            step_index=step_idx,
-            description="InitialAugmentedMatrix",
-            latex_formula=f"[A|B] = {aug_latex}",
+            step_index=step_index,
+            description="Initial Augmented Matrix",
+            latex_formula=_augmented_matrix_to_latex(augmented_matrix, num_variables),
             value=""
         ))
-        step_idx += 1
+        step_index += 1
 
         # Forward elimination with partial pivoting
-        for col in range(n):
-            max_row = col + int(np.argmax(np.abs(aug[col:, col])))
+        for pivot_col in range(num_variables):
+            pivot_row = pivot_col + int(np.argmax(np.abs(augmented_matrix[pivot_col:, pivot_col])))
 
-            if abs(aug[max_row, col]) < 1e-12:
+            if abs(augmented_matrix[pivot_row, pivot_col]) < 1e-12:
                 failure = FailureData(
                     code="SINGULAR_MATRIX",
                     message="The matrix is singular. The system has no unique solution."
                 )
                 return json.dumps(asdict(SystemResponseEnvelope(success=None, failure=failure)))
 
-            if max_row != col:
-                aug[[col, max_row]] = aug[[max_row, col]]
+            if pivot_row != pivot_col:
+                augmented_matrix[[pivot_col, pivot_row]] = augmented_matrix[[pivot_row, pivot_col]]
                 steps.append(SolutionStep(
-                    step_index=step_idx,
-                    description="SwapRows",
-                    latex_formula=f"R_{{{col+1}}} \\leftrightarrow R_{{{max_row+1}}}",
-                    value=f"Swap R{col+1} and R{max_row+1}"
+                    step_index=step_index,
+                    description=f"Row Swap: Column {pivot_col + 1}",
+                    latex_formula=f"R_{{{pivot_col+1}}} \\leftrightarrow R_{{{pivot_row+1}}}",
+                    value=f"Swap R{pivot_col+1} and R{pivot_row+1}"
                 ))
-                step_idx += 1
+                step_index += 1
 
-            for row in range(col + 1, n):
-                if abs(aug[row, col]) < 1e-15:
+            elimination_operations = []
+            for target_row in range(pivot_col + 1, num_variables):
+                if abs(augmented_matrix[target_row, pivot_col]) < 1e-15:
                     continue
-                factor = aug[row, col] / aug[col, col]
-                aug[row] -= factor * aug[col]
+                elimination_factor = augmented_matrix[target_row, pivot_col] / augmented_matrix[pivot_col, pivot_col]
+                augmented_matrix[target_row] -= elimination_factor * augmented_matrix[pivot_col]
+                elimination_operations.append(
+                    f"R_{{{target_row+1}}} \\leftarrow R_{{{target_row+1}}} - "
+                    f"{_to_latex_number(elimination_factor)} \\cdot R_{{{pivot_col+1}}}"
+                )
+
+            if elimination_operations:
+                steps.append(SolutionStep(
+                    step_index=step_index,
+                    description=f"Forward Elimination: Column {pivot_col + 1}",
+                    latex_formula=",\\quad ".join(elimination_operations),
+                    value=""
+                ))
+                step_index += 1
 
                 steps.append(SolutionStep(
-                    step_index=step_idx,
-                    description="EliminationStep",
-                    latex_formula=f"R_{{{row+1}}} \\leftarrow R_{{{row+1}}} - {_factor_latex(factor)} \\cdot R_{{{col+1}}}",
-                    value=f"R{row+1} = R{row+1} - {factor:.4g} * R{col+1}"
+                    step_index=step_index,
+                    description=f"Matrix after Column {pivot_col + 1}",
+                    latex_formula=_augmented_matrix_to_latex(augmented_matrix, num_variables),
+                    value=""
                 ))
-                step_idx += 1
+                step_index += 1
 
-        # Back substitution
-        solution = np.zeros(n)
-        for i in range(n - 1, -1, -1):
-            solution[i] = (aug[i, n] - np.dot(aug[i, i+1:n], solution[i+1:])) / aug[i, i]
+        # Back substitution — one step per variable, from last to first
+        solution = np.zeros(num_variables)
+        for var_index in range(num_variables - 1, -1, -1):
+            already_known_sum = float(np.dot(
+                augmented_matrix[var_index, var_index+1:num_variables],
+                solution[var_index+1:]
+            ))
+            solution[var_index] = (
+                float(augmented_matrix[var_index, num_variables]) - already_known_sum
+            ) / float(augmented_matrix[var_index, var_index])
 
-        solution_latex = ",\\ ".join([
-            f"{variables[i]} = {_factor_latex(solution[i])}"
-            for i in range(n)
-        ])
-        steps.append(SolutionStep(
-            step_index=step_idx,
-            description="BackSubstitution",
-            latex_formula=solution_latex,
-            value=", ".join([f"{variables[i]} = {solution[i]:.6g}" for i in range(n)])
-        ))
+            pivot_coefficient = _to_latex_number(augmented_matrix[var_index, var_index])
+            equation_terms = [f"{pivot_coefficient} \\cdot {variables[var_index]}"]
+
+            for known_var_index in range(var_index + 1, num_variables):
+                coefficient = float(augmented_matrix[var_index, known_var_index])
+                if abs(coefficient) < 1e-12:
+                    continue
+                known_value = _to_latex_number(solution[known_var_index])
+                sign = "+" if coefficient >= 0 else "-"
+                equation_terms.append(f"{sign} {_to_latex_number(abs(coefficient))} \\cdot {known_value}")
+
+            equation_left_side = " ".join(equation_terms)
+            original_rhs = _to_latex_number(float(augmented_matrix[var_index, num_variables]))
+            solution_value = _to_latex_number(solution[var_index])
+            display_value = int(solution[var_index]) if solution[var_index] == int(solution[var_index]) else round(solution[var_index], 8)
+
+            steps.append(SolutionStep(
+                step_index=step_index,
+                description=f"Back-Substitution: {variables[var_index]}",
+                latex_formula=f"{equation_left_side} = {original_rhs} \\Rightarrow {variables[var_index]} = {solution_value}",
+                value=f"{variables[var_index]} = {display_value}"
+            ))
+            step_index += 1
 
         roots = [float(x) for x in solution]
         success = SystemSuccessData(roots=roots, solution_steps=steps)
