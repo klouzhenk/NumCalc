@@ -1,4 +1,4 @@
-from integration import rectangle, trapezoid, simpson
+from integration_methods import rectangle, trapezoid, simpson
 
 def solve_rectangle(expression: str, lower_bound: float, upper_bound: float, n: int) -> str:
     return rectangle.solve(expression, lower_bound, upper_bound, n)

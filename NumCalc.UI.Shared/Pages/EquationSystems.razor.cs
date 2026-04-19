@@ -72,6 +72,12 @@ public partial class EquationSystems : BasePage<EquationSystems>
 
         var formData = await _equationList.GetFormData();
 
+        if (formData.IterationFunctions.Any(string.IsNullOrWhiteSpace))
+        {
+            UiService.ShowError(Localizer["ExpressionRequired"]);
+            return;
+        }
+
         _lastEquations = formData.IterationFunctions.ToList();
         _lastVariables = formData.Variables.ToList();
 

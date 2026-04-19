@@ -12,7 +12,7 @@
                 <div class="equation-list__math-input">
                     <Tooltip>
                         <Content>
-                            <MathInput @ref="MathInputs[index]" />
+                            <MathInput @ref="MathInputs[index]" Placeholder="@($"e.g. {(index % 2 == 0 ? "cos" : "sin")}(x{((index + 1) % Size) + 1})")" />
                         </Content>
                         <Hint>Iteration function g<sub>@(index + 1)</sub>(x). Rewrite f<sub>@(index + 1)</sub>(x) = 0 as x<sub>@(index + 1)</sub> = g<sub>@(index + 1)</sub>(x) for fixed-point / Seidel iteration.</Hint>
                     </Tooltip>

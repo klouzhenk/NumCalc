@@ -5,7 +5,7 @@
     }
 
     <div class="math-input__wrapper">
-        <math-field @ref="_mathFieldRef" class="math-input__field"></math-field>
+        <math-field @ref="_mathFieldRef" class="math-input__field" placeholder="@Placeholder"></math-field>
         
         <button type="button" class="button math-input__copy-btn" @onclick="CopyToClipboard" title="@Localizer["CopyLaTeX"]">
             <SvgIcon Name="copy"/>

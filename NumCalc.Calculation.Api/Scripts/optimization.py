@@ -1,5 +1,5 @@
 from typing import List
-from optimization import uniform_search, golden_section, gradient_descent
+from optimization_methods import uniform_search, golden_section, gradient_descent
 
 def solve_uniform_search(expression: str, lower_bound: float, upper_bound: float, n: int) -> str:
     return uniform_search.solve(expression, lower_bound, upper_bound, n)

@@ -24,7 +24,9 @@ public partial class EquationList : ComponentBase
     {
         var functions = new string[Size];
         for (var i = 0; i < Size; i++)
-            functions[i] = await MathInputs[i].GetAsciiValue();
+            functions[i] = MathInputs[i] is not null
+                ? await MathInputs[i].GetAsciiValue()
+                : string.Empty;
 
         return new NonLinearSystemFormData
         {

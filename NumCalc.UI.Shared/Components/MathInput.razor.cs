@@ -10,6 +10,7 @@ namespace NumCalc.UI.Shared.Components;
 public partial class MathInput : ComponentBase, IDisposable
 {
     [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
     [Parameter] public string? Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback<string> OnInput { get; set; }

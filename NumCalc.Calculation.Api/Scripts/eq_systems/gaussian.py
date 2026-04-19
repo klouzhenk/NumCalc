@@ -5,7 +5,6 @@ from fractions import Fraction
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
-from shared.parsing import parse_expression
 
 def _factor_latex(value: float) -> str:
     frac = Fraction(value).limit_denominator(1000)
@@ -29,9 +28,9 @@ def solve(equations: List[str], variables: List[str]) -> str:
         for eq in equations:
             if "=" in eq:
                 left, right = eq.split("=", 1)
-                parsed_eqs.append(parse_expression(f"{left} - ({right})"))
+                parsed_eqs.append(sympy.sympify(f"{left} - ({right})"))
             else:
-                parsed_eqs.append(parse_expression(eq))
+                parsed_eqs.append(sympy.sympify(eq))
 
         system_matrix = sympy.linear_eq_to_matrix(parsed_eqs, *symbols)
         A_sym, B_sym = system_matrix

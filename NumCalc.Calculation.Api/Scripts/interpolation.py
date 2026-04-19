@@ -1,5 +1,5 @@
 from typing import List, Optional
-from interpolation import newton_interpolation, lagrange, spline
+from interpolation_methods import newton_interpolation, lagrange, spline
 
 
 def solve_newton(
