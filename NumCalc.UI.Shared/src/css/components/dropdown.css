@@ -116,6 +116,11 @@
             border-width: 0 2px 2px 0;
         }
     }
+    
+    &.selected {
+        font-weight: 700;
+        color: var(--primary-dark-color);
+    }
 }
 
 .dropdown__trigger-button.trigger-button{

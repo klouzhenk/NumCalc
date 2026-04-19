@@ -47,7 +47,7 @@ public partial class Interpolation : BasePage<Interpolation>
             FunctionExpression = formData.FunctionExpression,
             XNodes = formData.XNodes,
             YValues = formData.YValues,
-            QueryPoint = formData.QueryPoint
+            QueryPoint = _queryPoint
         };
 
         Func<Task<InterpolationResponse?>> apiCall = _method switch
