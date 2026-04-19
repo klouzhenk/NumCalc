@@ -1,35 +1,33 @@
 ﻿<TopicInfo Title="Interpolation" Subtitle="Estimate f(x) between known data points">
-    <div>
-        <p class="topic-info__overview">
-            Interpolation constructs a function that passes exactly through a set of
-            data points $(x_i, y_i)$. The resulting polynomial or spline can then be
-            evaluated at any query point $x^*$ within the data range.
-        </p>
+    <p class="topic-info__overview">
+        Interpolation constructs a function that passes exactly through a set of
+        data points $(x_i, y_i)$. The resulting polynomial or spline can then be
+        evaluated at any query point $x^*$ within the data range.
+    </p>
 
-        <div class="topic-info__cards">
-            <div class="topic-info__card">
-                <h3>Newton Divided Differences</h3>
-                <div class="topic-info__formula">$$P(x) = [y_0] + [y_0,y_1](x-x_0) + [y_0,y_1,y_2](x-x_0)(x-x_1)+\cdots$$</div>
-                <p>Builds the interpolating polynomial incrementally using divided differences.
-                    Adding a new data point only requires one additional term.</p>
-                <p class="topic-info__limitation">High-degree polynomials oscillate at the endpoints (Runge's phenomenon).</p>
-            </div>
+    <div class="topic-info__cards">
+        <div class="topic-info__card">
+            <h3>Newton Divided Differences</h3>
+            <div class="topic-info__formula">$$P(x) = [y_0] + [y_0,y_1](x-x_0) + [y_0,y_1,y_2](x-x_0)(x-x_1)+\cdots$$</div>
+            <p>Builds the interpolating polynomial incrementally using divided differences.
+                Adding a new data point only requires one additional term.</p>
+            <p class="topic-info__limitation">High-degree polynomials oscillate at the endpoints (Runge's phenomenon).</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Lagrange Polynomial</h3>
-                <div class="topic-info__formula">$$P(x) = \sum_{i=0}^{n} y_i \prod_{j \neq i} \frac{x - x_j}{x_i - x_j}$$</div>
-                <p>Expresses the interpolating polynomial as a weighted sum of basis polynomials
-                    $L_i(x)$. Each $L_i(x_j) = \delta_{ij}$.</p>
-                <p class="topic-info__limitation">Runge's phenomenon; recomputing the whole polynomial when adding a node.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Lagrange Polynomial</h3>
+            <div class="topic-info__formula">$$P(x) = \sum_{i=0}^{n} y_i \prod_{j \neq i} \frac{x - x_j}{x_i - x_j}$$</div>
+            <p>Expresses the interpolating polynomial as a weighted sum of basis polynomials
+                $L_i(x)$. Each $L_i(x_j) = \delta_{ij}$.</p>
+            <p class="topic-info__limitation">Runge's phenomenon; recomputing the whole polynomial when adding a node.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Cubic Spline</h3>
-                <div class="topic-info__formula">$$S_i(x) = a_i + b_i(x-x_i) + c_i(x-x_i)^2 + d_i(x-x_i)^3$$</div>
-                <p>Piecewise cubic polynomials joined with $C^2$ continuity. Avoids Runge's
-                    phenomenon and produces smooth, visually appealing curves.</p>
-                <p class="topic-info__limitation">Requires solving a tridiagonal system; extrapolation outside the data range is unreliable.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Cubic Spline</h3>
+            <div class="topic-info__formula">$$S_i(x) = a_i + b_i(x-x_i) + c_i(x-x_i)^2 + d_i(x-x_i)^3$$</div>
+            <p>Piecewise cubic polynomials joined with $C^2$ continuity. Avoids Runge's
+                phenomenon and produces smooth, visually appealing curves.</p>
+            <p class="topic-info__limitation">Requires solving a tridiagonal system; extrapolation outside the data range is unreliable.</p>
         </div>
     </div>
 </TopicInfo>

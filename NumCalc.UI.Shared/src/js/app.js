@@ -1,4 +1,5 @@
 ﻿import 'virtual:svg-icons-register';
+import 'katex/dist/katex.min.css';
 import 'mathlive';
 import { MathHelper } from './math-input.js';
 import { ImageHelper } from './image-helper.js';

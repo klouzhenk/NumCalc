@@ -13,11 +13,20 @@ public partial class TopicInfo : ComponentBase
 
     private BaseModal? _modal;
     private readonly string _bodyId = $"topic-info-body-{Guid.NewGuid():N}";
+    private bool _latexRendered;
 
-    private async Task Open()
+    private void Open()
     {
         _modal?.Show();
-        await Task.Yield();
-        await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexInContainer", _bodyId);
+        _latexRendered = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_modal?.IsVisible == true && !_latexRendered)
+        {
+            _latexRendered = true;
+            await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexInContainer", _bodyId);
+        }
     }
 }

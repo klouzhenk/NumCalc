@@ -33,14 +33,20 @@
     }
 
     &__modal {
-        width: min(860px, 95vw);
-        max-width: min(860px, 95vw);
+        width: min(920px, 95vw);
+        max-width: min(920px, 95vw);
+        
+        p {
+            margin: 0;
+        }
     }
 
     &__body {
         display: flex;
         flex-direction: column;
-        gap: var(--dimension-xl);
+        gap: var(--dimension-l);
+        overflow-y: auto;
+        padding: 0 var(--dimension-m) var(--dimension-m);
     }
 
     &__overview {
@@ -64,26 +70,25 @@
         border-radius: var(--border-radius-l);
         background: var(--layout-background);
         box-shadow: var(--component-shadow);
+        font-size: 0.85rem;
+        line-height: 1.6;
 
         h3 {
             margin: 0;
-            font-family: var(--font-heading);
+            font-family: var(--font-heading), monospace;
             font-size: 0.9rem;
             color: var(--primary-color);
-        }
-
-        p {
-            margin: 0;
-            font-size: 0.85rem;
-            line-height: 1.6;
         }
     }
 
     &__formula {
-        padding: var(--dimension-s) var(--dimension-m);
+        padding: var(--dimension-l);
+        box-shadow: var(--text-shadow);
         background: var(--primary-background);
         border-radius: var(--border-radius-s);
-        font-size: 0.9rem;
+        margin: var(--dimension-m) var(--dimension-xs);
+        letter-spacing: 2px;
+        font-size: 1rem;
         overflow-x: auto;
 
         .katex-display {
@@ -92,9 +97,10 @@
     }
 
     &__limitation {
-        font-size: 0.8rem !important;
-        color: var(--danger-color) !important;
+        font-size: 0.8rem;
+        color: var(--danger-color);
         font-style: italic;
+        line-height: 1;
 
         &::before {
             content: "⚠ ";

@@ -1,43 +1,41 @@
 ﻿<TopicInfo Title="Equation Systems" Subtitle="Solve linear and non-linear systems">
-    <div>
-        <p class="topic-info__overview">
-            A system of $n$ equations in $n$ unknowns. Linear systems have a unique
-            solution when the coefficient matrix is non-singular. Non-linear systems
-            require iterative methods starting from an initial guess.
-        </p>
+    <p class="topic-info__overview">
+        A system of $n$ equations in $n$ unknowns. Linear systems have a unique
+        solution when the coefficient matrix is non-singular. Non-linear systems
+        require iterative methods starting from an initial guess.
+    </p>
 
-        <div class="topic-info__cards">
-            <div class="topic-info__card">
-                <h3>Cramer's Rule</h3>
-                <div class="topic-info__formula">$$x_i = \frac{\det(A_i)}{\det(A)}$$</div>
-                <p>Expresses each unknown as a ratio of determinants. Exact for small systems
-                but $O(n!)$ complexity makes it impractical beyond $n \approx 4$.</p>
-                <p class="topic-info__limitation">Fails when $\det(A) = 0$ (singular matrix).</p>
-            </div>
+    <div class="topic-info__cards">
+        <div class="topic-info__card">
+            <h3>Cramer's Rule</h3>
+            <div class="topic-info__formula">$$x_i = \frac{\det(A_i)}{\det(A)}$$</div>
+            <p>Expresses each unknown as a ratio of determinants. Exact for small systems
+            but $O(n!)$ complexity makes it impractical beyond $n \approx 4$.</p>
+            <p class="topic-info__limitation">Fails when $\det(A) = 0$ (singular matrix).</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Gaussian Elimination</h3>
-                <div class="topic-info__formula">$$A\mathbf{x} = \mathbf{b} \xrightarrow{\text{row ops}} U\mathbf{x} = \mathbf{c}$$</div>
-                <p>Reduces the augmented matrix $[A|\mathbf{b}]$ to upper-triangular form with
-                partial pivoting, then back-substitutes. $O(n^3)$ — the standard workhorse.</p>
-                <p class="topic-info__limitation">Numerical instability without pivoting; fails on singular systems.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Gaussian Elimination</h3>
+            <div class="topic-info__formula">$$A\mathbf{x} = \mathbf{b} \xrightarrow{\text{row ops}} U\mathbf{x} = \mathbf{c}$$</div>
+            <p>Reduces the augmented matrix $[A|\mathbf{b}]$ to upper-triangular form with
+            partial pivoting, then back-substitutes. $O(n^3)$ — the standard workhorse.</p>
+            <p class="topic-info__limitation">Numerical instability without pivoting; fails on singular systems.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Fixed-Point Iteration</h3>
-                <div class="topic-info__formula">$$\mathbf{x}^{(k+1)} = \mathbf{g}(\mathbf{x}^{(k)})$$</div>
-                <p>Rewrites each equation as $x_i = g_i(\mathbf{x})$ and iterates from an
-                initial guess. Converges when the spectral radius $\rho(J_g) &lt; 1$.</p>
-                <p class="topic-info__limitation">Convergence is not guaranteed; sensitive to initial guess and formulation.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Fixed-Point Iteration</h3>
+            <div class="topic-info__formula">$$\mathbf{x}^{(k+1)} = \mathbf{g}(\mathbf{x}^{(k)})$$</div>
+            <p>Rewrites each equation as $x_i = g_i(\mathbf{x})$ and iterates from an
+            initial guess. Converges when the spectral radius $\rho(J_g) &lt; 1$.</p>
+            <p class="topic-info__limitation">Convergence is not guaranteed; sensitive to initial guess and formulation.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Gauss-Seidel</h3>
-                <div class="topic-info__formula">$$x_i^{(k+1)} = g_i\!\left(x_1^{(k+1)},\ldots,x_{i-1}^{(k+1)},x_i^{(k)},\ldots\right)$$</div>
-                <p>Like fixed-point but immediately uses freshly computed values within each
-                sweep. Typically converges faster than Jacobi-style fixed-point iteration.</p>
-                <p class="topic-info__limitation">Convergence not guaranteed for all systems; requires diagonally dominant or similar structure.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Gauss-Seidel</h3>
+            <div class="topic-info__formula">$$x_i^{(k+1)} = g_i\!\left(x_1^{(k+1)},\ldots,x_{i-1}^{(k+1)},x_i^{(k)},\ldots\right)$$</div>
+            <p>Like fixed-point but immediately uses freshly computed values within each
+            sweep. Typically converges faster than Jacobi-style fixed-point iteration.</p>
+            <p class="topic-info__limitation">Convergence not guaranteed for all systems; requires diagonally dominant or similar structure.</p>
         </div>
     </div>
 </TopicInfo>

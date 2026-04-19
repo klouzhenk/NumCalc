@@ -1,43 +1,41 @@
 ﻿<TopicInfo Title="Numerical Differentiation" Subtitle="Approximate f'(x) and f''(x) from function values">
-    <div>
-        <p class="topic-info__overview">
-            Numerical differentiation estimates derivatives using finite differences
-            or polynomial differentiation. The step size $h$ controls the trade-off
-            between truncation error and round-off error.
-        </p>
+    <p class="topic-info__overview">
+        Numerical differentiation estimates derivatives using finite differences
+        or polynomial differentiation. The step size $h$ controls the trade-off
+        between truncation error and round-off error.
+    </p>
 
-        <div class="topic-info__cards">
-            <div class="topic-info__card">
-                <h3>Forward Difference</h3>
-                <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x)}{h}, \quad O(h)$$</div>
-                <p>Uses function values at $x$ and $x+h$. First-order accuracy.
-                Simple but asymmetric — error depends on the direction chosen.</p>
-                <p class="topic-info__limitation">$O(h)$ truncation error; too small $h$ causes catastrophic cancellation.</p>
-            </div>
+    <div class="topic-info__cards">
+        <div class="topic-info__card">
+            <h3>Forward Difference</h3>
+            <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x)}{h}, \quad O(h)$$</div>
+            <p>Uses function values at $x$ and $x+h$. First-order accuracy.
+            Simple but asymmetric — error depends on the direction chosen.</p>
+            <p class="topic-info__limitation">$O(h)$ truncation error; too small $h$ causes catastrophic cancellation.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Backward Difference</h3>
-                <div class="topic-info__formula">$$f'(x) \approx \frac{f(x) - f(x-h)}{h}, \quad O(h)$$</div>
-                <p>Mirror image of forward difference. Same $O(h)$ accuracy. Useful
-                at right-hand boundaries where forward values are unavailable.</p>
-                <p class="topic-info__limitation">Same limitations as forward difference.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Backward Difference</h3>
+            <div class="topic-info__formula">$$f'(x) \approx \frac{f(x) - f(x-h)}{h}, \quad O(h)$$</div>
+            <p>Mirror image of forward difference. Same $O(h)$ accuracy. Useful
+            at right-hand boundaries where forward values are unavailable.</p>
+            <p class="topic-info__limitation">Same limitations as forward difference.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Central Difference</h3>
-                <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}, \quad O(h^2)$$</div>
-                <p>Uses symmetric points around $x$. Second-order accuracy — much
-                more accurate than forward/backward for the same $h$.</p>
-                <p class="topic-info__limitation">Requires function values on both sides; $O(h^2)$ still limited for very small $h$.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Central Difference</h3>
+            <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}, \quad O(h^2)$$</div>
+            <p>Uses symmetric points around $x$. Second-order accuracy — much
+            more accurate than forward/backward for the same $h$.</p>
+            <p class="topic-info__limitation">Requires function values on both sides; $O(h^2)$ still limited for very small $h$.</p>
+        </div>
 
-            <div class="topic-info__card">
-                <h3>Lagrange Derivative</h3>
-                <div class="topic-info__formula">$$f'(x^*) = P'(x^*), \quad P = \text{Lagrange interpolant}$$</div>
-                <p>Differentiates the Lagrange interpolating polynomial symbolically and
-                evaluates at $x^*$. More accurate for smooth functions over many nodes.</p>
-                <p class="topic-info__limitation">Accuracy depends on node placement; Runge's phenomenon affects high-degree cases.</p>
-            </div>
+        <div class="topic-info__card">
+            <h3>Lagrange Derivative</h3>
+            <div class="topic-info__formula">$$f'(x^*) = P'(x^*), \quad P = \text{Lagrange interpolant}$$</div>
+            <p>Differentiates the Lagrange interpolating polynomial symbolically and
+            evaluates at $x^*$. More accurate for smooth functions over many nodes.</p>
+            <p class="topic-info__limitation">Accuracy depends on node placement; Runge's phenomenon affects high-degree cases.</p>
         </div>
     </div>
 </TopicInfo>
