@@ -151,50 +151,52 @@ public partial class Differentiation : BasePage<Differentiation>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in FilteredSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-        }
+            var steps = new List<StepExportItem>();
+            foreach (var step in FilteredSteps ?? [])
+            {
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+            }
 
-        var chartImage = IsChartVisible
-            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-            : null;
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["Query Point"] = _queryPoint.ToString("G"),
-            ["Derivative Order"] = _lastDerivativeOrder.ToString()
-        };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
-        if (_method is DifferentiationMethod.FiniteDifferences)
-        {
-            inputs["Variant"] = _variant.ToString();
-            inputs["Step Size"] = _lastStepSize.ToString("G");
-        }
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Query Point"] = _queryPoint.ToString("G"),
+                ["Derivative Order"] = _lastDerivativeOrder.ToString()
+            };
+            if (!string.IsNullOrWhiteSpace(_lastExpression))
+                inputs["Expression"] = _lastExpression;
+            if (_method is DifferentiationMethod.FiniteDifferences)
+            {
+                inputs["Variant"] = _variant.ToString();
+                inputs["Step Size"] = _lastStepSize.ToString("G");
+            }
 
-        var resultStr = _method is DifferentiationMethod.FiniteDifferences
-            ? SelectedStep?.Value ?? Result.DerivativeValue.ToString("G10")
-            : $"f'(x*) = {Result.DerivativeValue:G10}";
+            var resultStr = _method is DifferentiationMethod.FiniteDifferences
+                ? SelectedStep?.Value ?? Result.DerivativeValue.ToString("G10")
+                : $"f'(x*) = {Result.DerivativeValue:G10}";
 
-        var request = new PdfExportRequest
-        {
-            MethodName = $"Differentiation — {_method}",
-            Inputs = inputs,
-            Result = resultStr,
-            Steps = steps,
-            ChartImage = chartImage
-        };
+            var request = new PdfExportRequest
+            {
+                MethodName = $"Differentiation — {_method}",
+                Inputs = inputs,
+                Result = resultStr,
+                Steps = steps,
+                ChartImage = chartImage
+            };
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"differentiation-{_method}.pdf", "application/pdf", base64);
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"differentiation-{_method}.pdf", "application/pdf", base64);
+        });
     }
 }

@@ -5,6 +5,7 @@ public enum Color
     Primary,
     PrimaryDark,
     PrimaryLight,
+    PrimaryBorder,
 
     Secondary,
     SecondaryDark,

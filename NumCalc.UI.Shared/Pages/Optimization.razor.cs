@@ -142,60 +142,62 @@ public partial class Optimization : BasePage<Optimization>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in Result.SolutionSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-        }
+            var steps = new List<StepExportItem>();
+            foreach (var step in Result.SolutionSteps ?? [])
+            {
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+            }
 
-        var chartImage = IsChartVisible
-            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-            : null;
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["Goal"] = _maximize ? "Maximize" : "Minimize",
-            ["Tolerance"] = _lastTolerance.ToString("G")
-        };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Goal"] = _maximize ? "Maximize" : "Minimize",
+                ["Tolerance"] = _lastTolerance.ToString("G")
+            };
+            if (!string.IsNullOrWhiteSpace(_lastExpression))
+                inputs["Expression"] = _lastExpression;
 
-        if (_method is OptimizationMethod.GradientDescent)
-        {
-            if (_lastInitialPoint is { Count: > 0 })
-                inputs["Initial Point"] = $"({string.Join(", ", _lastInitialPoint)})";
-            inputs["Learning Rate"] = _lastLearningRate.ToString("G");
-            inputs["Max Iterations"] = _lastMaxIterations.ToString();
-        }
-        else
-        {
-            inputs["Lower Bound"] = _lastLowerBound.ToString("G");
-            inputs["Upper Bound"] = _lastUpperBound.ToString("G");
-        }
+            if (_method is OptimizationMethod.GradientDescent)
+            {
+                if (_lastInitialPoint is { Count: > 0 })
+                    inputs["Initial Point"] = $"({string.Join(", ", _lastInitialPoint)})";
+                inputs["Learning Rate"] = _lastLearningRate.ToString("G");
+                inputs["Max Iterations"] = _lastMaxIterations.ToString();
+            }
+            else
+            {
+                inputs["Lower Bound"] = _lastLowerBound.ToString("G");
+                inputs["Upper Bound"] = _lastUpperBound.ToString("G");
+            }
 
-        var resultStr = $"f(x*) = {Result.MinimumValue:G10}";
-        if (Result.ArgMinX.HasValue)
-            resultStr += $", x* = {Result.ArgMinX.Value:G10}";
-        else if (Result.ArgMinPoint is { Count: > 0 })
-            resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
+            var resultStr = $"f(x*) = {Result.MinimumValue:G10}";
+            if (Result.ArgMinX.HasValue)
+                resultStr += $", x* = {Result.ArgMinX.Value:G10}";
+            else if (Result.ArgMinPoint is { Count: > 0 })
+                resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
 
-        var request = new PdfExportRequest
-        {
-            MethodName = $"Optimization — {_method}",
-            Inputs = inputs,
-            Result = resultStr,
-            Steps = steps,
-            ChartImage = chartImage
-        };
+            var request = new PdfExportRequest
+            {
+                MethodName = $"Optimization — {_method}",
+                Inputs = inputs,
+                Result = resultStr,
+                Steps = steps,
+                ChartImage = chartImage
+            };
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"optimization-{_method}.pdf", "application/pdf", base64);
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"optimization-{_method}.pdf", "application/pdf", base64);
+        });
     }
 }

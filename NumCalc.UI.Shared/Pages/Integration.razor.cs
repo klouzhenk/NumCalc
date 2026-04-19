@@ -123,48 +123,51 @@ public partial class Integration : BasePage<Integration>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in FilteredSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-        }
+            var steps = new List<StepExportItem>();
+            foreach (var step in FilteredSteps ?? [])
+            {
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+                steps.Add(new StepExportItem
+                    { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+            }
 
-        var chartImage = IsChartVisible
-            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-            : null;
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["Lower Bound"] = _lastLowerBound.ToString("G"),
-            ["Upper Bound"] = _lastUpperBound.ToString("G"),
-            ["Intervals"] = _lastIntervals.ToString()
-        };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
-        if (_method is IntegrationMethod.Rectangle)
-            inputs["Variant"] = _rectangleVariant.ToString();
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Lower Bound"] = _lastLowerBound.ToString("G"),
+                ["Upper Bound"] = _lastUpperBound.ToString("G"),
+                ["Intervals"] = _lastIntervals.ToString()
+            };
+            if (!string.IsNullOrWhiteSpace(_lastExpression))
+                inputs["Expression"] = _lastExpression;
+            if (_method is IntegrationMethod.Rectangle)
+                inputs["Variant"] = _rectangleVariant.ToString();
 
-        var resultStr = _method is IntegrationMethod.Rectangle
-            ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G10}"
-            : $"I = {Result.IntegralValue:G10}";
+            var resultStr = _method is IntegrationMethod.Rectangle
+                ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G10}"
+                : $"I = {Result.IntegralValue:G10}";
 
-        var request = new PdfExportRequest
-        {
-            MethodName = $"Integration — {_method}",
-            Inputs = inputs,
-            Result = resultStr,
-            Steps = steps,
-            ChartImage = chartImage
-        };
+            var request = new PdfExportRequest
+            {
+                MethodName = $"Integration — {_method}",
+                Inputs = inputs,
+                Result = resultStr,
+                Steps = steps,
+                ChartImage = chartImage
+            };
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"integration-{_method}.pdf", "application/pdf", base64);
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"integration-{_method}.pdf", "application/pdf", base64);
+        });
     }
 }

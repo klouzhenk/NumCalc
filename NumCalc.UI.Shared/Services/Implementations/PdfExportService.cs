@@ -1,13 +1,23 @@
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using NumCalc.UI.Shared.Utils;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using Color = NumCalc.UI.Shared.Enums.Color;
 
 namespace NumCalc.UI.Shared.Services.Implementations;
 
 public class PdfExportService : IPdfExportService
 {
+    private static readonly string ColorPrimary       = ColorUtils.GetHexColor(Color.Primary);
+    private static readonly string ColorPrimaryLight  = ColorUtils.GetHexColor(Color.PrimaryLight);
+    private static readonly string ColorPrimaryBorder = ColorUtils.GetHexColor(Color.PrimaryBorder);
+    private static readonly string ColorBorderLight   = ColorUtils.GetHexColor(Color.GrayUltraLight);
+    private static readonly string ColorTableHeader   = ColorUtils.GetHexColor(Color.GrayUltraLight);
+    private static readonly string ColorTextMuted = ColorUtils.GetHexColor(Color.Gray);
+    private static readonly string ColorFooter   = ColorUtils.GetHexColor(Color.GrayLight);
+
     static PdfExportService()
     {
         QuestPDF.Settings.License = LicenseType.Community;
@@ -25,7 +35,7 @@ public class PdfExportService : IPdfExportService
 
                 page.Header().Element(ComposeHeader(request.MethodName));
                 page.Content().Element(ComposeContent(request));
-                page.Footer().AlignCenter().DefaultTextStyle(s => s.FontColor(Colors.Grey.Medium)).Text(text =>
+                page.Footer().AlignCenter().DefaultTextStyle(s => s.FontColor(ColorFooter)).Text(text =>
                 {
                     text.Span("NumCalc — ");
                     text.CurrentPageNumber();
@@ -38,17 +48,17 @@ public class PdfExportService : IPdfExportService
 
     private static Action<IContainer> ComposeHeader(string methodName) =>
         container => container
-            .BorderBottom(1)
-            .BorderColor(Colors.Grey.Lighten1)
-            .PaddingBottom(8)
+            .BorderBottom(2)
+            .BorderColor(ColorPrimary)
+            .PaddingBottom(10)
             .Row(row =>
             {
-                row.RelativeItem().Column(col =>
-                {
-                    col.Item().Text(methodName).FontSize(18).Bold();
-                    col.Item().Text($"Generated: {DateTime.Now:dd MMM yyyy, HH:mm}")
-                        .FontSize(9).FontColor(Colors.Grey.Medium);
-                });
+                row.RelativeItem()
+                    .Text(methodName).FontSize(18).Bold().FontColor(ColorPrimary);
+                row.AutoItem()
+                    .AlignBottom()
+                    .Text($"{DateTime.Now:dd MMM yyyy, HH:mm}")
+                    .FontSize(9).FontColor(ColorTextMuted);
             });
 
     private static Action<IContainer> ComposeContent(PdfExportRequest request) =>
@@ -56,11 +66,10 @@ public class PdfExportService : IPdfExportService
         {
             col.Spacing(16);
 
-            // Inputs section
             if (request.Inputs.Count > 0)
             {
                 col.Item().Element(SectionLabel("Input Parameters"));
-                col.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Table(table =>
+                col.Item().Border(1).BorderColor(ColorBorderLight).Table(table =>
                 {
                     table.ColumnsDefinition(cols =>
                     {
@@ -70,13 +79,12 @@ public class PdfExportService : IPdfExportService
 
                     foreach (var (key, value) in request.Inputs)
                     {
-                        table.Cell().Background(Colors.Grey.Lighten4).Padding(6).Text(key).SemiBold();
+                        table.Cell().Background(ColorTableHeader).Padding(6).Text(key).SemiBold();
                         table.Cell().Padding(6).Text(value);
                     }
                 });
             }
 
-            // Solution steps section
             if (request.Steps.Count > 0)
             {
                 col.Item().Element(SectionLabel("Solution Steps"));
@@ -85,40 +93,41 @@ public class PdfExportService : IPdfExportService
                     stepsCol.Spacing(8);
                     foreach (var (step, index) in request.Steps.Select((s, i) => (s, i + 1)))
                     {
-                        stepsCol.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(8).Column(stepCol =>
+                        stepsCol.Item().ShowEntire().Border(1).BorderColor(ColorBorderLight).Padding(8).Column(stepCol =>
                         {
                             stepCol.Spacing(4);
 
                             if (!string.IsNullOrWhiteSpace(step.Description))
-                                stepCol.Item().Text($"{index}. {step.Description}").SemiBold();
+                                stepCol.Item()
+                                    .Text($"{index}. {step.Description}")
+                                    .SemiBold()
+                                    .FontColor(ColorPrimary);
 
                             if (!string.IsNullOrWhiteSpace(step.ImageBase64))
                             {
                                 var imageBytes = Convert.FromBase64String(
                                     step.ImageBase64.Replace("data:image/png;base64,", ""));
-                                stepCol.Item().AlignCenter().Image(imageBytes).FitWidth();
+                                stepCol.Item().MaxHeight(38).AlignCenter().Image(imageBytes).FitHeight();
                             }
 
                             if (!string.IsNullOrWhiteSpace(step.Value))
-                                stepCol.Item().Text($"= {step.Value}").FontColor(Colors.Grey.Darken2);
+                                stepCol.Item().Text(step.Value).FontColor(ColorTextMuted);
                         });
                     }
                 });
             }
 
-            // Result section
             if (!string.IsNullOrWhiteSpace(request.Result))
             {
                 col.Item().Element(SectionLabel("Result"));
                 col.Item()
-                    .Background(Colors.Blue.Lighten5)
-                    .Border(1).BorderColor(Colors.Blue.Lighten3)
+                    .Background(ColorPrimaryLight)
+                    .Border(1).BorderColor(ColorPrimaryBorder)
                     .Padding(12)
                     .Text(request.Result)
-                    .FontSize(14).Bold();
+                    .FontSize(14).Bold().FontColor(ColorPrimary);
             }
 
-            // Chart section
             if (!string.IsNullOrWhiteSpace(request.ChartImage))
             {
                 col.Item().Element(SectionLabel("Chart"));
@@ -130,9 +139,11 @@ public class PdfExportService : IPdfExportService
 
     private static Action<IContainer> SectionLabel(string title) =>
         container => container
-            .PaddingBottom(4)
+            .BorderBottom(1)
+            .BorderColor(ColorPrimary)
+            .PaddingBottom(3)
             .Text(title)
             .FontSize(13)
             .Bold()
-            .FontColor(Colors.Blue.Darken2);
+            .FontColor(ColorPrimary);
 }

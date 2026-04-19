@@ -14,6 +14,7 @@
     --primary-color: rgb(var(--primary-rgb));
     --primary-dark-color: color-mix(in srgb, var(--primary-color), var(--black-color) 20%);
     --primary-light-color: color-mix(in srgb, var(--primary-color), var(--white-color) 60%);
+    --primary-border-color: color-mix(in srgb, var(--primary-color), var(--white-color) 40%);
     
     --secondary-color: rgb(var(--secondary-rgb));
     --secondary-dark-color: color-mix(in srgb, var(--secondary-color), var(--black-color) 20%);

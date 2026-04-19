@@ -105,51 +105,53 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in Result.SolutionSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-        }
+            var steps = new List<StepExportItem>();
+            foreach (var step in Result.SolutionSteps ?? [])
+            {
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+            }
 
-        var methodName = Category is EquationSystemCategory.Linear
-            ? $"Equation Systems — {LinearMethod}"
-            : $"Equation Systems — {NonLinearMethod}";
+            var methodName = Category is EquationSystemCategory.Linear
+                ? $"Equation Systems — {LinearMethod}"
+                : $"Equation Systems — {NonLinearMethod}";
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Category"] = Category.ToString(),
-            ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
-        };
-        if (_lastEquations is { Count: > 0 })
-        {
-            var label = Category is EquationSystemCategory.Linear ? "Equation" : "Iteration Function";
-            for (var i = 0; i < _lastEquations.Count; i++)
-                inputs[$"{label} {i + 1}"] = _lastEquations[i];
-        }
-        if (_lastVariables is { Count: > 0 })
-            inputs["Variables"] = string.Join(", ", _lastVariables);
+            var inputs = new Dictionary<string, string>
+            {
+                ["Category"] = Category.ToString(),
+                ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
+            };
+            if (_lastEquations is { Count: > 0 })
+            {
+                var label = Category is EquationSystemCategory.Linear ? "Equation" : "Iteration Function";
+                for (var i = 0; i < _lastEquations.Count; i++)
+                    inputs[$"{label} {i + 1}"] = _lastEquations[i];
+            }
+            if (_lastVariables is { Count: > 0 })
+                inputs["Variables"] = string.Join(", ", _lastVariables);
 
-        var resultStr = Result.Roots is { Count: > 0 }
-            ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
-            : "No solution found";
+            var resultStr = Result.Roots is { Count: > 0 }
+                ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
+                : "No solution found";
 
-        var request = new PdfExportRequest
-        {
-            MethodName = methodName,
-            Inputs = inputs,
-            Result = resultStr,
-            Steps = steps
-        };
+            var request = new PdfExportRequest
+            {
+                MethodName = methodName,
+                Inputs = inputs,
+                Result = resultStr,
+                Steps = steps
+            };
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf",
-            "application/pdf", base64);
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf",
+                "application/pdf", base64);
+        });
     }
 
     private static List<string> BuildEquationStrings(double[,] coefficients, double[] rhs, List<string> variables)

@@ -117,43 +117,45 @@ public partial class Interpolation : BasePage<Interpolation>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in Result.SolutionSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-            steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-        }
+            var steps = new List<StepExportItem>();
+            foreach (var step in Result.SolutionSteps ?? [])
+            {
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
+            }
 
-        var chartImage = IsChartVisible
-            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-            : null;
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["Mode"] = _mode.ToString(),
-            ["Query Point"] = _queryPoint.ToString("G")
-        };
-        if (_mode is InterpolationInputMode.Function && !string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
-        if (!string.IsNullOrWhiteSpace(_lastXNodesText))
-            inputs["X Nodes"] = _lastXNodesText;
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Mode"] = _mode.ToString(),
+                ["Query Point"] = _queryPoint.ToString("G")
+            };
+            if (_mode is InterpolationInputMode.Function && !string.IsNullOrWhiteSpace(_lastExpression))
+                inputs["Expression"] = _lastExpression;
+            if (!string.IsNullOrWhiteSpace(_lastXNodesText))
+                inputs["X Nodes"] = _lastXNodesText;
 
-        var request = new PdfExportRequest
-        {
-            MethodName = $"Interpolation — {_method}",
-            Inputs = inputs,
-            Result = $"P(x*) = {Result.InterpolatedValue:G10}",
-            Steps = steps,
-            ChartImage = chartImage
-        };
+            var request = new PdfExportRequest
+            {
+                MethodName = $"Interpolation — {_method}",
+                Inputs = inputs,
+                Result = $"P(x*) = {Result.InterpolatedValue:G10}",
+                Steps = steps,
+                ChartImage = chartImage
+            };
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"interpolation-{_method}.pdf", "application/pdf", base64);
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"interpolation-{_method}.pdf", "application/pdf", base64);
+        });
     }
 }

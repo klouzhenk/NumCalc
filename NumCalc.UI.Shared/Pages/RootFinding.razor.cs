@@ -216,50 +216,52 @@ public partial class RootFinding : BasePage<RootFinding>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-
-        var steps = new List<StepExportItem>();
-        foreach (var step in Result.SolutionSteps ?? [])
+        await SafeExecuteAsync(async () =>
         {
-            string? imageBase64 = null;
-            if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-
-            steps.Add(new StepExportItem
+            var steps = new List<StepExportItem>();
+            foreach (var step in Result.SolutionSteps ?? [])
             {
-                Description = step.Description,
-                ImageBase64 = imageBase64,
-                Value = step.Value
-            });
-        }
+                string? imageBase64 = null;
+                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
+                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
 
-        var chartImage = IsChartVisible
-            ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-            : null;
+                steps.Add(new StepExportItem
+                {
+                    Description = step.Description,
+                    ImageBase64 = imageBase64,
+                    Value = step.Value
+                });
+            }
 
-        var isNewton = _formData.Method is RootFindingMethod.Newton;
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _formData.Method.ToString(),
-            ["Expression"] = _formData.FunctionExpression ?? string.Empty,
-            [isNewton ? "Initial Guess" : "Start"] = _formData.StartPoint.ToString("G"),
-        };
-        if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
-        inputs["Tolerance"] = _formData.Tolerance.ToString("G");
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
 
-        var request = new PdfExportRequest
-        {
-            MethodName = $"Root Finding — {_formData.Method}",
-            Inputs = inputs,
-            Result = Result.Root.HasValue
-                ? $"Root: {Result.Root.Value:G10}    Iterations: {Result.Iterations}"
-                : "No root found",
-            Steps = steps,
-            ChartImage = chartImage
-        };
+            var isNewton = _formData.Method is RootFindingMethod.Newton;
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _formData.Method.ToString(),
+                ["Expression"] = _formData.FunctionExpression ?? string.Empty,
+                [isNewton ? "Initial Guess" : "Start"] = _formData.StartPoint.ToString("G"),
+            };
+            if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
+            inputs["Tolerance"] = _formData.Tolerance.ToString("G");
 
-        var pdfBytes = PdfExportService.GeneratePdf(request);
-        var base64 = Convert.ToBase64String(pdfBytes);
-        await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-            $"root-finding-{_formData.Method}.pdf", "application/pdf", base64);
+            var request = new PdfExportRequest
+            {
+                MethodName = $"Root Finding — {_formData.Method}",
+                Inputs = inputs,
+                Result = Result.Root.HasValue
+                    ? $"Root: {Result.Root.Value:G10}    Iterations: {Result.Iterations}"
+                    : "No root found",
+                Steps = steps,
+                ChartImage = chartImage
+            };
+
+            var pdfBytes = PdfExportService.GeneratePdf(request);
+            var base64 = Convert.ToBase64String(pdfBytes);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
+                $"root-finding-{_formData.Method}.pdf", "application/pdf", base64);
+        });
     }
 }
