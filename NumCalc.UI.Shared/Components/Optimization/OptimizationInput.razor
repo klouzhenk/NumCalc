@@ -56,7 +56,7 @@
                 <span>x<sub>@(index + 1)</sub></span>
                 <input type="number" step="any"
                        value="@_initialPoint[index]"
-                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _initialPoint[index] = v; }" />
+                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) _initialPoint[index] = v; }" />
                 <button class="node-table__remove-btn" type="button"
                         disabled="@(_initialPoint.Count <= 1)"
                         @onclick="() => RemoveVariable(index)">&times;</button>

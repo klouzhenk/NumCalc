@@ -44,14 +44,14 @@
         {
             <div class="optimization-result">
                 <div class="optimization-result__answer">
-                    <span>f(x*) = @Result.MinimumValue.ToString("F8") (@(_maximize ? "max" : "min"))</span>
+                    <span>f(x*) = @Result.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
                     @if (Result.ArgMinX.HasValue)
                     {
-                        <span>x* = @Result.ArgMinX.Value.ToString("F8")</span>
+                        <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
                     }
                     @if (Result.ArgMinPoint is { Count: > 0 })
                     {
-                        <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("F8"))))</span>
+                        <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
                     }
                 </div>
 

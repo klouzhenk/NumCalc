@@ -59,7 +59,7 @@
         {
             <div class="interpolation-result">
                 <div class="interpolation-result__answer">
-                    <span>x* = @Result.InterpolatedValue</span>
+                    <span>x* = @Result.InterpolatedValue.ToString("G6")</span>
                 </div>
 
                 @if (!string.IsNullOrEmpty(Result.PolynomialLatex))

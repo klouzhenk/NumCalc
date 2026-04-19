@@ -15,7 +15,7 @@
                             <div class="matrix-input__cell">
                                 <input type="number" step="any"
                                        value="@Coefficients[eqIdx, varIdx]"
-                                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) Coefficients[eqIdx, varIdx] = v; }" />
+                                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) Coefficients[eqIdx, varIdx] = v; }" />
 
                                 <span>x<sub>@(varIdx + 1)</sub></span>
                             </div>
@@ -31,7 +31,7 @@
                         @{ var rhsIdx = equationIndex; }
                         <input type="number" step="any"
                                value="@Rhs[rhsIdx]"
-                               @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) Rhs[rhsIdx] = v; }" />
+                               @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) Rhs[rhsIdx] = v; }" />
                     </div>
                 </div>
             }

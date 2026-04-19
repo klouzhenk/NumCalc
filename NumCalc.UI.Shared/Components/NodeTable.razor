@@ -16,12 +16,12 @@
             <span>@(index + 1)</span>
             <input type="number" step="any"
                    value="@_xNodes[index]"
-                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _xNodes[index] = v; }" />
+                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) _xNodes[index] = v; }" />
             @if (ShowY)
             {
                 <input type="number" step="any"
                        value="@_yValues[index]"
-                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) _yValues[index] = v; }" />
+                       @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) _yValues[index] = v; }" />
             }
             <button class="node-table__remove-btn" type="button"
                     disabled="@(_nodeCount <= 2)"

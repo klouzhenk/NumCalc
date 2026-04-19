@@ -40,7 +40,7 @@
         {
             <div class="ode-result">
                 <div class="ode-result__answer">
-                    <span>y(@Result.SolutionPoints?.LastOrDefault()?.X?.ToString("F4") ?? "?") ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("F8")</span>
+                    <span>y(@Result.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?") ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
                 </div>
 
                 @if (!string.IsNullOrEmpty(Result.PolynomialLatex))

@@ -67,7 +67,7 @@
                 <div class="equation-systems-result__roots">
                     @for (var i = 0; i < Result.Roots.Count; i++)
                     {
-                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i]</span>
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
                     }
                 </div>
 

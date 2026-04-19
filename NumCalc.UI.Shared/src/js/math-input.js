@@ -46,6 +46,7 @@ export const MathHelper = {
 
             tooltip: {
                 valueSuffix: tooltipSuffix || '',
+                valueDecimals: 6,
                 shared: true
             },
 

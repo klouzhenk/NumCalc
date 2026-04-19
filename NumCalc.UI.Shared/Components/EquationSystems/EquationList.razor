@@ -22,7 +22,7 @@
                             <span>x<sub>@(index + 1)</sub><sup>0</sup> =</span>
                             <input type="number" step="any"
                                    value="@InitialGuess[index]"
-                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), out var v)) InitialGuess[index] = v; }" />
+                                   @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) InitialGuess[index] = v; }" />
                         </div>
                     </Content>
                     <Hint>Initial guess for x<sub>@(index + 1)</sub>. Choose a value close to the expected solution.</Hint>
