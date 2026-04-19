@@ -33,6 +33,7 @@
     flex-direction: column;
     gap: var(--dimension-l);
     flex: 1;
+    min-height: 0;
 
     &__answer {
         font-family: var(--font-heading), monospace;

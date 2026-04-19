@@ -47,7 +47,8 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
         ]
 
         for i in range(picard_order):
-            integrand = expr.subs([(x_sym, t_sym), (y_sym, phi)])
+            phi_t = phi.subs(x_sym, t_sym)
+            integrand = expr.subs([(x_sym, t_sym), (y_sym, phi_t)])
             try:
                 phi = sympy.Float(initial_y) + sympy.integrate(integrand, (t_sym, x0, x_sym))
                 phi = sympy.expand(phi)

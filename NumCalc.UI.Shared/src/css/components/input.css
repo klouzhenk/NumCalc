@@ -31,6 +31,10 @@ select,
     }
 }
 
+input[type="number"] {
+    min-width: 64px;
+}
+
 .input-section__wrapper{
     display: flex;
     flex-direction: row;
