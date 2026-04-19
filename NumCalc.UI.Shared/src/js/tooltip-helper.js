@@ -1,56 +1,65 @@
 import renderMathInElement from 'katex/contrib/auto-render';
 
+const KATEX_DELIMITERS = [
+    { left: '$$', right: '$$', display: true },
+    { left: '$',  right: '$',  display: false }
+];
+
+function getPopupForIcon(icon) {
+    const wrapper = icon.closest('.tooltip__wrapper');
+    if (!wrapper) return null;
+
+    if (!wrapper._tooltipPopup) {
+        const popup = wrapper.querySelector('.tooltip__popup');
+        if (!popup) return null;
+        wrapper._tooltipPopup = popup;
+        document.body.appendChild(popup); // portal: escapes all stacking contexts
+    }
+
+    return wrapper._tooltipPopup;
+}
+
+function positionPopup(icon, popup) {
+    const rect = icon.getBoundingClientRect();
+
+    requestAnimationFrame(() => {
+        const h = popup.offsetHeight;
+        const w = popup.offsetWidth;
+        const gap = 4;
+
+        const top  = rect.top - h - gap;
+        const left = rect.right - w;
+
+        popup.style.top  = top < 8  ? `${rect.bottom + gap}px` : `${top}px`;
+        popup.style.left = left < 8 ? '8px'                    : `${left}px`;
+    });
+}
+
 export const TooltipHelper = {
-    renderLatexInContainer: (containerId) => {
+    renderLatexInContainer(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;
-        renderMathInElement(el, {
-            delimiters: [
-                { left: '$$', right: '$$', display: true },
-                { left: '$', right: '$', display: false }
-            ],
-            throwOnError: false
-        });
+        renderMathInElement(el, { delimiters: KATEX_DELIMITERS, throwOnError: false });
     },
 
-    init: () => {
+    init() {
         document.addEventListener('mouseover', (e) => {
             if (!e.target.classList.contains('tooltip__icon')) return;
-            const icon = e.target;
-            const wrapper = icon.closest('.tooltip__wrapper');
-            if (!wrapper) return;
 
-            if (!wrapper._tooltipPopup) {
-                const popup = wrapper.querySelector('.tooltip__popup');
-                if (!popup) return;
-                wrapper._tooltipPopup = popup;
-                document.body.appendChild(popup);
-            }
+            const icon  = e.target;
+            const popup = getPopupForIcon(icon);
+            if (!popup) return;
 
-            const popup = wrapper._tooltipPopup;
-            TooltipHelper._position(icon, popup);
             popup.style.display = 'block';
+            positionPopup(icon, popup);
         });
 
         document.addEventListener('mouseout', (e) => {
             if (!e.target.classList.contains('tooltip__icon')) return;
-            const icon = e.target;
-            if (icon.contains(e.relatedTarget)) return;
-            const popup = icon.closest('.tooltip__wrapper')?._tooltipPopup;
-            if (popup) popup.style.display = 'none';
-        });
-    },
+            if (e.target.contains(e.relatedTarget)) return;
 
-    _position: (icon, popup) => {
-        const rect = icon.getBoundingClientRect();
-        popup.style.top = `${rect.top - 120}px`;
-        popup.style.left = `${Math.max(8, rect.right - 320)}px`;
-        requestAnimationFrame(() => {
-            const h = popup.offsetHeight || 80;
-            const w = popup.offsetWidth || 320;
-            const top = rect.top - h - 4;
-            popup.style.top = top < 8 ? `${rect.bottom + 4}px` : `${top}px`;
-            popup.style.left = `${Math.max(8, rect.right - w)}px`;
+            const popup = e.target.closest('.tooltip__wrapper')?._tooltipPopup;
+            if (popup) popup.style.display = 'none';
         });
     }
 };
