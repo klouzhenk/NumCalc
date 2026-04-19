@@ -1,6 +1,6 @@
 ﻿<TopicInfo Title="Function Optimization" Subtitle="Find the minimum of f(x) or f(x₁, x₂, …)">
     <p class="topic-info__overview">
-        Optimization locates the point $x^*$ that minimizes $f(x)$.
+        Optimization locates the point $x^*$ that minimizes or maximizes $f(x)$.
         One-dimensional methods search an interval $[a, b]$ assuming
         unimodal $f$; gradient descent handles multi-dimensional cases.
     </p>
@@ -9,16 +9,16 @@
         <div class="topic-info__card">
             <h3>Uniform Search</h3>
             <div class="topic-info__formula">$$x^* \approx \arg\min_{x_i \in \{a,\,a+h,\,a+2h,\ldots,b\}} f(x_i), \quad h = \frac{b-a}{n-1}$$</div>
-            <p>Evaluates $f$ at $n$ equally-spaced points and returns the minimum.
+            <p>Evaluates $f$ at $n$ equally-spaced points and returns the minimum or maximum.
                 Simple and parallelizable but accuracy depends entirely on $n$.</p>
-            <p class="topic-info__limitation">Only finds the global minimum if $f$ is unimodal; misses narrow valleys with small $n$.</p>
+            <p class="topic-info__limitation">Only finds the global extremum if $f$ is unimodal; misses narrow peaks/valleys with small $n$.</p>
         </div>
 
         <div class="topic-info__card">
             <h3>Golden Section Search</h3>
             <div class="topic-info__formula">$$\varphi = \frac{\sqrt{5} - 1}{2} \approx 0.618, \quad [a,b] \to [a,b'] \text{ with } |b'-a'| = \varphi|b-a|$$</div>
             <p>Narrows the search interval by the golden ratio at each step without
-                re-evaluating previously computed points. Logarithmic convergence.</p>
+                re-evaluating previously computed points. Works for both minimum and maximum. Logarithmic convergence.</p>
             <p class="topic-info__limitation">Assumes $f$ is unimodal on $[a, b]$; fails for multi-modal functions.</p>
         </div>
 

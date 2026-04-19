@@ -9,6 +9,7 @@
         <div class="topic-info__card">
             <h3>Forward Difference</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x)}{h}, \quad O(h)$$</div>
+            <div class="topic-info__formula">$$f''(x) \approx \frac{f(x+2h) - 2f(x+h) + f(x)}{h^2}, \quad O(h)$$</div>
             <p>Uses function values at $x$ and $x+h$. First-order accuracy.
             Simple but asymmetric — error depends on the direction chosen.</p>
             <p class="topic-info__limitation">$O(h)$ truncation error; too small $h$ causes catastrophic cancellation.</p>
@@ -17,6 +18,7 @@
         <div class="topic-info__card">
             <h3>Backward Difference</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x) - f(x-h)}{h}, \quad O(h)$$</div>
+            <div class="topic-info__formula">$$f''(x) \approx \frac{f(x) - 2f(x-h) + f(x-2h)}{h^2}, \quad O(h)$$</div>
             <p>Mirror image of forward difference. Same $O(h)$ accuracy. Useful
             at right-hand boundaries where forward values are unavailable.</p>
             <p class="topic-info__limitation">Same limitations as forward difference.</p>
@@ -25,6 +27,7 @@
         <div class="topic-info__card">
             <h3>Central Difference</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}, \quad O(h^2)$$</div>
+            <div class="topic-info__formula">$$f''(x) \approx \frac{f(x+h) - 2f(x) + f(x-h)}{h^2}, \quad O(h^2)$$</div>
             <p>Uses symmetric points around $x$. Second-order accuracy — much
             more accurate than forward/backward for the same $h$.</p>
             <p class="topic-info__limitation">Requires function values on both sides; $O(h^2)$ still limited for very small $h$.</p>

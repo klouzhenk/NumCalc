@@ -1,0 +1,52 @@
+﻿.solution-steps {
+    &__container, &__container--empty{
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--dimension-m);
+        box-shadow:  var(--component-shadow);
+        border-radius: var(--border-radius-xl);
+        overflow-y: auto;
+    }
+    
+    &__list {
+        flex: 1;
+        overflow: auto;
+        padding: 0;
+        box-shadow: none;
+        align-self: flex-start;
+    }
+    
+    &__item {
+        padding: var(--dimension-l) var(--dimension-xs);
+    }
+    
+    &__item-title {
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: var(--dimension-xs);
+    }
+
+    &__item-desc {
+        color: var(--gray-color);
+    }
+
+    &__item-formula {
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin-top: var(--dimension-s);
+
+        .katex-display {
+            margin: 0;
+            text-align: left;
+        }
+    }
+
+    &__item-value {
+        display: block;
+        margin-top: var(--dimension-xs);
+        color: var(--gray-color);
+        font-family: var(--font-heading), monospace;
+    }
+}

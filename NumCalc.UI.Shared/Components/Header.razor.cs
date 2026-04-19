@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using NumCalc.UI.Shared.Enums;
+using NumCalc.UI.Shared.Resources;
 using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
 

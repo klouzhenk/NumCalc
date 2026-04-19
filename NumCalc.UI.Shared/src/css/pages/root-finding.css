@@ -28,10 +28,9 @@
     }
 }
 
-.solution-steps,
 .root-finding-result {
     &__container, &__container--empty{
-        flex: 1;        
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -39,7 +38,7 @@
         box-shadow:  var(--component-shadow);
         border-radius: var(--border-radius-xl);
     }
-    
+
     &__list{
         flex: 1;
         overflow: auto;

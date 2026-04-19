@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components;
 
@@ -10,6 +12,7 @@ public partial class TopicInfo : ComponentBase
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private BaseModal? _modal;
     private readonly string _bodyId = $"topic-info-body-{Guid.NewGuid():N}";

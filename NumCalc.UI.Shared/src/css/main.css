@@ -28,6 +28,7 @@
 @import "components/matrix-input.css";
 @import "components/equation-list.css";
 @import "components/node-table.css";
+@import "components/solution-steps.css";
 
 /* pages */
 @import "pages/page.css";

@@ -110,37 +110,9 @@
         </div>
         @if (Mode is AnalysisMode.Single && Result?.SolutionSteps is { Count: > 0 })
         {
-            <ul class="root-finding-result__list solution-steps__list">
-                @foreach (var step in Result.SolutionSteps)
-                {
-                    <li class="solution-steps__item">
-                        <span class="solution-steps__item-title">
-                            @step.StepIndex
-                            @if (!string.IsNullOrWhiteSpace(step.Description))
-                            {
-                                <span class="solution-steps__item-desc">&nbsp;&mdash;&nbsp;@Localizer[step.Description]</span>
-                            }
-                        </span>
-                        <div class="solution-steps__item-text">
-                            @if (step.IsThereTextContent)
-                            {
-                                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                                {
-                                    <span class="solution-steps__item-formula">@($"{Localizer["LaTeXRecord"]}: {step.LatexFormula}").&nbsp;</span>
-                                }
-                                if (!string.IsNullOrWhiteSpace(step.Value))
-                                {
-                                    <span class="solution-steps__item-value">@($"{Localizer["GottenValue"]}: {step.Value}").</span>
-                                }
-                            }
-                            else
-                            {
-                                @Localizer["ThereIsNoDescriptionToStep"]
-                            }
-                        </div>
-                    </li>
-                }
-            </ul>
+            <div class="solution-steps__container">
+                <SolutionStepsList Steps="Result.SolutionSteps" />
+            </div>
         }
         else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
         {
