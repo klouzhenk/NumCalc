@@ -22,7 +22,8 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.FunctionExpression,
             request.LowerBound,
             request.UpperBound,
-            request.Points
+            request.Points,
+            request.Maximize
         );
 
         var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
@@ -46,7 +47,8 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.FunctionExpression,
             request.LowerBound,
             request.UpperBound,
-            request.Tolerance
+            request.Tolerance,
+            request.Maximize
         );
 
         var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
@@ -71,7 +73,8 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.InitialPoint,
             request.LearningRate,
             request.Tolerance,
-            request.MaxIterations
+            request.MaxIterations,
+            request.Maximize
         );
 
         var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();

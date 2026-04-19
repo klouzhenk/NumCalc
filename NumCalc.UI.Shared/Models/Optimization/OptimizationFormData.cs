@@ -16,4 +16,6 @@ public class OptimizationFormData
     public int MaxIterations { get; set; } = 200;
 
     public bool IsGradientDescent { get; set; }
+
+    public bool Maximize { get; set; }
 }

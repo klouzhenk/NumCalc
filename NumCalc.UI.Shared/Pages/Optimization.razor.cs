@@ -21,6 +21,7 @@ public partial class Optimization : BasePage<Optimization>
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
+    private bool _maximize;
     private OptimizationInput? _input;
     private OptimizationResponse? Result { get; set; }
 
@@ -58,7 +59,8 @@ public partial class Optimization : BasePage<Optimization>
                 LowerBound = formData.LowerBound,
                 UpperBound = formData.UpperBound,
                 Points = formData.Points,
-                Tolerance = formData.Tolerance
+                Tolerance = formData.Tolerance,
+                Maximize = _maximize
             }),
             OptimizationMethod.GoldenSection => () => CalculationApiService.OptimizeGoldenSectionAsync(new OptimizationRequest
             {
@@ -66,7 +68,8 @@ public partial class Optimization : BasePage<Optimization>
                 LowerBound = formData.LowerBound,
                 UpperBound = formData.UpperBound,
                 Points = formData.Points,
-                Tolerance = formData.Tolerance
+                Tolerance = formData.Tolerance,
+                Maximize = _maximize
             }),
             OptimizationMethod.GradientDescent => () => CalculationApiService.OptimizeGradientDescentAsync(new GradientDescentRequest
             {
@@ -74,7 +77,8 @@ public partial class Optimization : BasePage<Optimization>
                 InitialPoint = formData.InitialPoint,
                 LearningRate = formData.LearningRate,
                 Tolerance = formData.Tolerance,
-                MaxIterations = formData.MaxIterations
+                MaxIterations = formData.MaxIterations,
+                Maximize = _maximize
             }),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
@@ -155,6 +159,7 @@ public partial class Optimization : BasePage<Optimization>
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = _method.ToString(),
+            ["Goal"] = _maximize ? "Maximize" : "Minimize",
             ["Tolerance"] = _lastTolerance.ToString("G")
         };
         if (!string.IsNullOrWhiteSpace(_lastExpression))

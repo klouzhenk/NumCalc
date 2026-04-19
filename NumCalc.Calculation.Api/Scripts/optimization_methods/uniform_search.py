@@ -7,7 +7,7 @@ from shared.parsing import parse_expression
 from shared.functions import generate_points
 
 
-def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> str:
+def solve(expression: str, lower_bound: float, upper_bound: float, n: int, maximize: bool = False) -> str:
     try:
         if lower_bound >= upper_bound:
             envelope = OptimizationResponseEnvelope(
@@ -32,10 +32,12 @@ def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> st
         xs = np.linspace(lower_bound, upper_bound, n + 1)
         ys = np.array([float(f(x)) for x in xs])
 
-        idx = int(np.argmin(ys))
+        idx = int(np.argmax(ys)) if maximize else int(np.argmin(ys))
         x_star = float(xs[idx])
         f_star = float(ys[idx])
         h = (upper_bound - lower_bound) / n
+        goal = "Maximum" if maximize else "Minimum"
+        arg_goal = r"\arg\max" if maximize else r"\arg\min"
 
         steps = [
             SolutionStep(
@@ -46,8 +48,8 @@ def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> st
             ),
             SolutionStep(
                 step_index=2,
-                description="Minimum found",
-                latex_formula=r"x^* = \arg\min_{x_i} f(x_i)",
+                description=f"{goal} found",
+                latex_formula=rf"x^* = {arg_goal}_{{x_i}} f(x_i)",
                 value=f"x* = {x_star:.8f}, f(x*) = {f_star:.8f}"
             ),
         ]

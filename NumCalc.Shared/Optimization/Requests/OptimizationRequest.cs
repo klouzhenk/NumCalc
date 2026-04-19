@@ -17,4 +17,6 @@ public class OptimizationRequest
     public int Points { get; set; } = 100;
 
     public double Tolerance { get; set; } = 1e-6;
+
+    public bool Maximize { get; set; }
 }

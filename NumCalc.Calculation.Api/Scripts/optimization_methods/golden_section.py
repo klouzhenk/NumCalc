@@ -9,7 +9,7 @@ from shared.functions import generate_points
 _PHI = (math.sqrt(5) - 1) / 2  # golden ratio conjugate ≈ 0.618
 
 
-def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: float) -> str:
+def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: float, maximize: bool = False) -> str:
     try:
         if lower_bound >= upper_bound:
             envelope = OptimizationResponseEnvelope(
@@ -41,7 +41,7 @@ def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: fl
 
         while (b - a) > tolerance:
             iteration += 1
-            if f1 > f2:
+            if (f1 < f2) if maximize else (f1 > f2):
                 a = x1
                 x1, f1 = x2, f2
                 x2 = a + _PHI * (b - a)

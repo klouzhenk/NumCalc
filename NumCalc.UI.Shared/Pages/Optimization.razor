@@ -14,6 +14,12 @@
                       @bind-Value="_method"
                       @bind-Value:after="ResetResult"
                       TextField="@(item => item.ToString())"/>
+            <Switch TItem="bool"
+                    Label="Goal"
+                    Data="@(new[] { false, true })"
+                    @bind-Value="_maximize"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(b => b ? "Maximize" : "Minimize")" />
         </div>
 
         <div class="optimization__form">
@@ -38,7 +44,7 @@
         {
             <div class="optimization-result">
                 <div class="optimization-result__answer">
-                    <span>f(x*) = @Result.MinimumValue.ToString("F8")</span>
+                    <span>f(x*) = @Result.MinimumValue.ToString("F8") (@(_maximize ? "max" : "min"))</span>
                     @if (Result.ArgMinX.HasValue)
                     {
                         <span>x* = @Result.ArgMinX.Value.ToString("F8")</span>

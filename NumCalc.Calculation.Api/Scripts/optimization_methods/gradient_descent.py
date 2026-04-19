@@ -8,7 +8,7 @@ from shared.parsing import parse_expression
 from shared.functions import generate_points
 
 
-def solve(expression: str, initial_point: List[float], learning_rate: float, tolerance: float, max_iterations: int) -> str:
+def solve(expression: str, initial_point: List[float], learning_rate: float, tolerance: float, max_iterations: int, maximize: bool = False) -> str:
     try:
         expr = parse_expression(expression)
         free_vars = sorted(expr.free_symbols, key=lambda s: str(s))
@@ -54,19 +54,21 @@ def solve(expression: str, initial_point: List[float], learning_rate: float, tol
             grad_val = [float(g(*point)) for g in grad_f]
             grad_norm = float(np.linalg.norm(grad_val))
 
+            step_latex = r"x_{k+1} = x_k + \alpha \nabla f(x_k)" if maximize else r"x_{k+1} = x_k - \alpha \nabla f(x_k)"
             if i % record_every == 0 or grad_norm < tolerance:
                 var_str = ", ".join(f"{str(v)}={p:.6f}" for v, p in zip(free_vars, point))
                 steps.append(SolutionStep(
                     step_index=i + 1,
                     description=f"Iteration {i + 1}",
-                    latex_formula=r"x_{k+1} = x_k - \alpha \nabla f(x_k)",
+                    latex_formula=step_latex,
                     value=f"{var_str}, f = {f_val:.8f}, |\u2207f| = {grad_norm:.2e}"
                 ))
 
             if grad_norm < tolerance:
                 break
 
-            point = [p - learning_rate * g for p, g in zip(point, grad_val)]
+            sign = 1 if maximize else -1
+            point = [p + sign * learning_rate * g for p, g in zip(point, grad_val)]
 
         f_star = float(f(*point))
 

@@ -16,4 +16,6 @@ public class GradientDescentRequest
 
     [Range(1, 10000)]
     public int MaxIterations { get; set; } = 200;
+
+    public bool Maximize { get; set; }
 }
