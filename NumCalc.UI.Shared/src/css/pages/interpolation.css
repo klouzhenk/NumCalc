@@ -27,7 +27,7 @@
         flex: 1;
         min-height: 0;
         overflow: hidden;
-        padding: 0 var(--dimension-s);
+        padding: var(--dimension-s);
 
         & > button {
             flex-shrink: 0;

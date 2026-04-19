@@ -27,6 +27,8 @@ public partial class Differentiation : BasePage<Differentiation>
     private DifferentiationInputMode _mode = DifferentiationInputMode.Function;
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
+
+    private void ResetResult() => Result = null;
     private double _queryPoint;
     private string? _lastExpression;
     private double _lastStepSize;
@@ -92,59 +94,55 @@ public partial class Differentiation : BasePage<Differentiation>
         var xMin = chartData.Min(p => p[0]);
         var xMax = chartData.Max(p => p[0]);
 
-        // Compute f(x*) from the nearest chart point
         var nearest = chartData.MinBy(p => Math.Abs(p[0] - _queryPoint));
         var fAtXStar = nearest![1];
-        var slope = Result.DerivativeValue;
 
-        var tangentData = new List<double[]>
+        var series = new List<ChartSeries>
         {
-            new[] { xMin, fAtXStar + slope * (xMin - _queryPoint) },
-            new[] { xMax, fAtXStar + slope * (xMax - _queryPoint) }
+            new()
+            {
+                Name = "f(x)",
+                Data = chartData,
+                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                LineWidth = 2,
+                IsVisible = true
+            }
         };
+
+        if (_lastDerivativeOrder == 1)
+        {
+            var slope = Result.DerivativeValue;
+            series.Add(new ChartSeries
+            {
+                Name = "Tangent at x*",
+                Data =
+                [
+                    [xMin, fAtXStar + slope * (xMin - _queryPoint)],
+                    [xMax, fAtXStar + slope * (xMax - _queryPoint)]
+                ],
+                Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
+                LineWidth = 1,
+                IsVisible = true
+            });
+        }
+
+        series.Add(new ChartSeries
+        {
+            Name = "x*",
+            Type = ChartType.Scatter,
+            Data = [[_queryPoint, fAtXStar]],
+            Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
+            IsVisible = true,
+            Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle }
+        });
 
         var config = new Chart
         {
             ContainerId = ChartContainerId,
             Title = null,
-            XAxis = new ChartAxis
-            {
-                Title = "x",
-                PlotLines = [ChartUtils.CreateZeroLine()]
-            },
-            YAxis = new ChartAxis
-            {
-                Title = "f(x)",
-                PlotLines = [ChartUtils.CreateZeroLine()]
-            },
-            Series =
-            [
-                new ChartSeries
-                {
-                    Name = "f(x)",
-                    Data = chartData,
-                    Color = ColorUtils.GetColor(Enums.Color.Primary),
-                    LineWidth = 2,
-                    IsVisible = true
-                },
-                new ChartSeries
-                {
-                    Name = "Tangent at x*",
-                    Data = tangentData,
-                    Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
-                    LineWidth = 1,
-                    IsVisible = true
-                },
-                new ChartSeries
-                {
-                    Name = "x*",
-                    Type = ChartType.Scatter,
-                    Data = [[_queryPoint, fAtXStar]],
-                    Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
-                    IsVisible = true,
-                    Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle }
-                }
-            ]
+            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
+            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
+            Series = series
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);

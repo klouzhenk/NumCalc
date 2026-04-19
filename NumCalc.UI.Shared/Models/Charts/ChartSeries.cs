@@ -17,4 +17,6 @@ public class ChartSeries
     public ChartMarker? Marker { get; set; }
     public double? Opacity { get; set; }
     public int? ZIndex { get; set; }
+    public double? FillLowerBound { get; set; }
+    public double? FillUpperBound { get; set; }
 }

@@ -23,6 +23,8 @@ public partial class Optimization : BasePage<Optimization>
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
     private OptimizationInput? _input;
     private OptimizationResponse? Result { get; set; }
+
+    private void ResetResult() => Result = null;
     private string? _lastExpression;
     private double _lastLowerBound;
     private double _lastUpperBound;

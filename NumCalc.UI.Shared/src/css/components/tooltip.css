@@ -62,3 +62,7 @@
         margin-top: var(--dimension-l);
     }
 }
+
+.tooltip__wrapper:has(.math-input) {
+    flex: 3;
+}

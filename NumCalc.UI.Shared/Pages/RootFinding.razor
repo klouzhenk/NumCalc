@@ -13,6 +13,7 @@
             <Switch TItem="AnalysisMode"
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="Mode"
+                    @bind-Value:after="OnParametersChanged"
                     TextField="@(item => item.ToString())"/>
 
             @switch (Mode)
@@ -21,6 +22,7 @@
                     <Dropdown TItem="RootFindingMethod"
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               @bind-Value="_formData.Method"
+                              @bind-Value:after="OnParametersChanged"
                               TextField="@(item => item.ToString())"/>
                     break;
                 case AnalysisMode.Benchmark:
@@ -28,6 +30,7 @@
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               MultiSelect="true"
                               @bind-SelectedItems="_benchmarkMethods"
+                              @bind-SelectedItems:after="OnParametersChanged"
                               TextField="@(item => item.ToString())"/>
                     break;
                 default:
@@ -88,7 +91,10 @@
                     <Content>
                         <div class="input-group">
                             <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" @bind="_formData.Tolerance" class="input-group__group" step="0.00001"/>
+                            <input type="number" class="input-group__group" step="0.00001"
+                               @bind="_formData.Tolerance"
+                               @bind:event="oninput"
+                               @bind:after="OnParametersChanged" />
                         </div>
                     </Content>
                     <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>

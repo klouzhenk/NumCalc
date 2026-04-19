@@ -21,10 +21,12 @@ public partial class Integration : BasePage<Integration>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
-    private IntegrationMethod _method = IntegrationMethod.Trapezoid;
+    private IntegrationMethod _method = IntegrationMethod.Rectangle;
     private RectangleVariant _rectangleVariant = RectangleVariant.Midpoint;
     private IntegrationInput? _input;
     private IntegrationResponse? Result { get; set; }
+
+    private void ResetResult() => Result = null;
     private string? _lastExpression;
     private double _lastLowerBound;
     private double _lastUpperBound;
@@ -36,9 +38,7 @@ public partial class Integration : BasePage<Integration>
         .FirstOrDefault(s => s.StepIndex == (int)_rectangleVariant + 1);
 
     private IList<SolutionStep>? FilteredSteps =>
-        _method is IntegrationMethod.RectangleLeft
-                or IntegrationMethod.RectangleRight
-                or IntegrationMethod.RectangleMiddle
+        _method is IntegrationMethod.Rectangle
             ? Result?.SolutionSteps?.Where(s => s.StepIndex == (int)_rectangleVariant + 1).ToList()
             : Result?.SolutionSteps;
 
@@ -65,11 +65,9 @@ public partial class Integration : BasePage<Integration>
 
         Func<Task<IntegrationResponse?>> apiCall = _method switch
         {
-            IntegrationMethod.RectangleLeft
-                or IntegrationMethod.RectangleRight
-                or IntegrationMethod.RectangleMiddle => () => CalculationApiService.IntegrateRectangleAsync(request),
-            IntegrationMethod.Trapezoid              => () => CalculationApiService.IntegrateTrapezoidAsync(request),
-            IntegrationMethod.Simpson                => () => CalculationApiService.IntegrateSimpsonAsync(request),
+            IntegrationMethod.Rectangle => () => CalculationApiService.IntegrateRectangleAsync(request),
+            IntegrationMethod.Trapezoid => () => CalculationApiService.IntegrateTrapezoidAsync(request),
+            IntegrationMethod.Simpson   => () => CalculationApiService.IntegrateSimpsonAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 
@@ -112,7 +110,9 @@ public partial class Integration : BasePage<Integration>
                     Data = chartData,
                     Color = ColorUtils.GetColor(Enums.Color.Primary),
                     LineWidth = 2,
-                    IsVisible = true
+                    IsVisible = true,
+                    FillLowerBound = _lastLowerBound,
+                    FillUpperBound = _lastUpperBound
                 }
             ]
         };
@@ -146,10 +146,10 @@ public partial class Integration : BasePage<Integration>
         };
         if (!string.IsNullOrWhiteSpace(_lastExpression))
             inputs["Expression"] = _lastExpression;
-        if (_method is IntegrationMethod.RectangleLeft or IntegrationMethod.RectangleRight or IntegrationMethod.RectangleMiddle)
+        if (_method is IntegrationMethod.Rectangle)
             inputs["Variant"] = _rectangleVariant.ToString();
 
-        var resultStr = _method is IntegrationMethod.RectangleLeft or IntegrationMethod.RectangleRight or IntegrationMethod.RectangleMiddle
+        var resultStr = _method is IntegrationMethod.Rectangle
             ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G10}"
             : $"I = {Result.IntegralValue:G10}";
 

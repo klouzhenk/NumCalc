@@ -3,7 +3,7 @@
     flex-direction: row;
     gap: var(--dimension-l);
     align-items: center;
-    padding: var(--dimension-m);
+    padding: 0 var(--dimension-m);
 
     & > * {
         flex: 1;

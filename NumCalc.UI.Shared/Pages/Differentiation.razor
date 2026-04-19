@@ -13,6 +13,7 @@
                       Label="Method"
                       Data="@(Enum.GetValues<DifferentiationMethod>())"
                       @bind-Value="_method"
+                      @bind-Value:after="ResetResult"
                       TextField="@(item => item.ToString())"/>
 
             @if (_method is DifferentiationMethod.FiniteDifferences)
@@ -21,6 +22,7 @@
                           Label="Variant"
                           Data="@(Enum.GetValues<FiniteDiffVariant>())"
                           @bind-Value="_variant"
+                          @bind-Value:after="ResetResult"
                           TextField="@(item => item.ToString())"/>
             }
             else
@@ -29,6 +31,7 @@
                         Label="@Localizer["Mode"]"
                         Data="@(Enum.GetValues<DifferentiationInputMode>())"
                         @bind-Value="_mode"
+                        @bind-Value:after="ResetResult"
                         TextField="@(item => item.ToString())"/>
             }
         </div>

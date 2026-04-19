@@ -24,6 +24,8 @@ public partial class Ode : BasePage<Ode>
     private OdeMethod _method = OdeMethod.EulerImproved;
     private OdeInput? _input;
     private OdeResponse? Result { get; set; }
+
+    private void ResetResult() => Result = null;
     private double _initialX;
     private string? _lastExpression;
     private double _lastInitialY;

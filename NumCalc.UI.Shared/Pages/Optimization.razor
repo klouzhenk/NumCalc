@@ -12,6 +12,7 @@
                       Label="Method"
                       Data="@(Enum.GetValues<OptimizationMethod>())"
                       @bind-Value="_method"
+                      @bind-Value:after="ResetResult"
                       TextField="@(item => item.ToString())"/>
         </div>
 

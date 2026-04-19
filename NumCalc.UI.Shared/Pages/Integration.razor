@@ -12,16 +12,16 @@
                       Label="Method"
                       Data="@(Enum.GetValues<IntegrationMethod>())"
                       @bind-Value="_method"
+                      @bind-Value:after="ResetResult"
                       TextField="@(item => item.ToString())"/>
 
-            @if (_method is IntegrationMethod.RectangleLeft
-                 or IntegrationMethod.RectangleRight
-                 or IntegrationMethod.RectangleMiddle)
+            @if (_method is IntegrationMethod.Rectangle)
             {
                 <Dropdown TItem="RectangleVariant"
                           Label="Variant"
                           Data="@(Enum.GetValues<RectangleVariant>())"
                           @bind-Value="_rectangleVariant"
+                          @bind-Value:after="ResetResult"
                           TextField="@(item => item.ToString())"/>
             }
         </div>
@@ -41,9 +41,7 @@
         {
             <div class="integration-result">
                 <div class="integration-result__answer">
-                    @if (_method is IntegrationMethod.RectangleLeft
-                                  or IntegrationMethod.RectangleRight
-                                  or IntegrationMethod.RectangleMiddle)
+                    @if (_method is IntegrationMethod.Rectangle)
                     {
                         <span>@SelectedStep?.Value</span>
                     }

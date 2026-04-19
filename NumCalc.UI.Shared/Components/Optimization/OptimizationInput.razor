@@ -3,7 +3,7 @@
 
 @if (Method is OptimizationMethod.GradientDescent)
 {
-    <div class="optimization-input__function">
+    <div class="input-section__wrapper">
         <Tooltip>
             <Content>
                 <MathInput Label="f(x₁, x₂, ...)" @ref="_mathInput" />
@@ -66,7 +66,7 @@
 }
 else
 {
-    <div class="optimization-input__function">
+    <div class="input-section__wrapper">
         <Tooltip>
             <Content>
                 <MathInput Label="f(x)" @ref="_mathInput" />

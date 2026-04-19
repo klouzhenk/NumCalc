@@ -30,6 +30,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private List<string>? _lastEquations;
     private List<string>? _lastVariables;
 
+    private void ResetResult() => Result = null;
+
     private async Task Calculate()
     {
         Result = null;

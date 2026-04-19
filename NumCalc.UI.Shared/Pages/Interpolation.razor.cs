@@ -26,6 +26,8 @@ public partial class Interpolation : BasePage<Interpolation>
     private InterpolationMethod _method = InterpolationMethod.Newton;
     private InterpolationInput? _input;
     private InterpolationResponse? Result { get; set; }
+
+    private void ResetResult() => Result = null;
     private double _queryPoint;
     private string? _lastExpression;
     private string? _lastXNodesText;

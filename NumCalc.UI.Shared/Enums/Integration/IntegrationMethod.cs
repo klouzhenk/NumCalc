@@ -1,10 +1,8 @@
-﻿namespace NumCalc.UI.Shared.Enums.Integration;
+namespace NumCalc.UI.Shared.Enums.Integration;
 
 public enum IntegrationMethod
 {
-    RectangleLeft,
-    RectangleRight,
-    RectangleMiddle,
+    Rectangle,
     Trapezoid,
     Simpson
 }

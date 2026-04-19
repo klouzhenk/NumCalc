@@ -87,12 +87,23 @@ export const MathHelper = {
 function processSeries(seriesItem, xAxis){
     try {
         if (seriesItem.type === 'scatter' || (seriesItem.data && seriesItem.data.length > 0)) {
+            const hasFill = seriesItem.fillLowerBound != null && seriesItem.fillUpperBound != null;
             return {
                 name: seriesItem.name,
                 data: seriesItem.data,
                 color: seriesItem.color,
-                type: seriesItem.type ? seriesItem.type.toLowerCase() : 'line',
-                marker: { enabled: true, radius: 4 }
+                type: hasFill ? 'area' : (seriesItem.type ? seriesItem.type.toLowerCase() : 'line'),
+                lineWidth: seriesItem.lineWidth || 2,
+                marker: { enabled: seriesItem.type === 'scatter', radius: 4 },
+                ...(hasFill && {
+                    fillOpacity: 0.25,
+                    zoneAxis: 'x',
+                    zones: [
+                        { value: seriesItem.fillLowerBound, fillColor: 'transparent' },
+                        { value: seriesItem.fillUpperBound },
+                        { fillColor: 'transparent' }
+                    ]
+                })
             };
         }
 

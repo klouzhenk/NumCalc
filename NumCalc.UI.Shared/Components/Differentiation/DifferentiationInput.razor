@@ -4,12 +4,14 @@
 
 @if (Method is DifferentiationMethod.FiniteDifferences)
 {
-    <Tooltip>
-        <Content>
-            <MathInput Label="f(x)" @ref="_mathInput" />
-        </Content>
-        <Hint>Function f(x) to differentiate. Use standard math notation, e.g. sin(x), x^2 + 3*x.</Hint>
-    </Tooltip>
+    <div class="input-section__wrapper">
+        <Tooltip>
+            <Content>
+                <MathInput Label="f(x)" @ref="_mathInput" />
+            </Content>
+            <Hint>Function f(x) to differentiate. Use standard math notation, e.g. sin(x), x^2 + 3*x.</Hint>
+        </Tooltip>
+    </div>
 
     <div class="input-section__wrapper">
         <Tooltip>

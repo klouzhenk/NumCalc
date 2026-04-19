@@ -13,19 +13,24 @@
                     Label="@Localizer["Mode"]"
                     Data="@(Enum.GetValues<InterpolationInputMode>())"
                     @bind-Value="_mode"
+                    @bind-Value:after="ResetResult"
                     TextField="@(item => item.ToString())"/>
 
             <Dropdown TItem="InterpolationMethod"
                       Label="Method"
                       Data="@(Enum.GetValues<InterpolationMethod>())"
                       @bind-Value="_method"
+                      @bind-Value:after="ResetResult"
                       TextField="@(item => item.ToString())"/>
 
             <Tooltip>
                 <Content>
                     <div class="input-group">
                         <label class="input-group__label">x*</label>
-                        <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+                        <input type="number" step="any" class="input-group__input"
+                               @bind="_queryPoint"
+                               @bind:event="oninput"
+                               @bind:after="ResetResult" />
                     </div>
                 </Content>
                 <Hint>Query point x* — the x-value at which to estimate f(x*).</Hint>

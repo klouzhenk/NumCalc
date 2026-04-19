@@ -12,6 +12,7 @@
                     Label="@Localizer["Category"]"
                     Data="@(Enum.GetValues<EquationSystemCategory>())"
                     @bind-Value="Category"
+                    @bind-Value:after="ResetResult"
                     TextField="@(item => item.ToString())"/>
 
             @if (Category is EquationSystemCategory.Linear)
@@ -20,6 +21,7 @@
                           Label="Method"
                           Data="@(Enum.GetValues<LinearSystemMethod>())"
                           @bind-Value="LinearMethod"
+                          @bind-Value:after="ResetResult"
                           TextField="@(item => item.ToString())"/>
             }
             else
@@ -28,6 +30,7 @@
                           Label="Method"
                           Data="@(Enum.GetValues<NonLinearSystemMethod>())"
                           @bind-Value="NonLinearMethod"
+                          @bind-Value:after="ResetResult"
                           TextField="@(item => item.ToString())"/>
             }
 
@@ -35,6 +38,7 @@
                       Label="Size"
                       Data="@_sizes"
                       @bind-Value="Size"
+                      @bind-Value:after="ResetResult"
                       TextField="@(item => $"{item}×{item}")"/>
         </div>
 
