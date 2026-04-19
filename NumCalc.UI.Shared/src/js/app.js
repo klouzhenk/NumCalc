@@ -22,3 +22,5 @@ window.PdfHelper = {
 window.TooltipHelper = {
     ...TooltipHelper,
 }
+
+TooltipHelper.init();
