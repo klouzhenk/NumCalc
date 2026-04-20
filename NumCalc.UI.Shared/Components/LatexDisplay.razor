@@ -1,0 +1,6 @@
+@if (!string.IsNullOrEmpty(Latex))
+{
+    <div id="@_containerId" class="latex-display">
+        <div class="solution-steps__item-formula" data-latex="@(Prefix + Latex)"></div>
+    </div>
+}

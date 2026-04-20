@@ -68,12 +68,7 @@
                     }
                 </div>
 
-                @if (!string.IsNullOrEmpty(Result.PolynomialLatex))
-                {
-                    <div class="differentiation-result__polynomial">
-                        <span class="solution-steps__item-formula">@Result.PolynomialLatex</span>
-                    </div>
-                }
+                <LatexDisplay Latex="@Result.PolynomialLatex" />
 
                 <SolutionStepsList Steps="@FilteredSteps"/>
             </div>

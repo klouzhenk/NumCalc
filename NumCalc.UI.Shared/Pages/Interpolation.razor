@@ -62,12 +62,7 @@
                     <span>x* = @Result.InterpolatedValue.ToString("G6")</span>
                 </div>
 
-                @if (!string.IsNullOrEmpty(Result.PolynomialLatex))
-                {
-                    <div class="interpolation-result__polynomial">
-                        <span class="solution-steps__item-formula">P(x) = @Result.PolynomialLatex</span>
-                    </div>
-                }
+                <LatexDisplay Latex="@Result.PolynomialLatex" Prefix="P(x) = " />
 
                 <SolutionStepsList Steps="Result.SolutionSteps" />
             </div>
