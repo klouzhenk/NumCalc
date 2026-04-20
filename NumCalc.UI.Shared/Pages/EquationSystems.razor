@@ -62,33 +62,33 @@
         </div>
     </div>
 
-    @if (Result?.Roots is { Count: > 0 })
-    {
-        <div class="equation-systems-result">
-            <div class="equation-systems-result__roots">
-                @for (var i = 0; i < Result.Roots.Count; i++)
+    <section>
+        @if (Result?.Roots is { Count: > 0 })
+        {
+            <div class="equation-systems-result">
+                <div class="equation-systems-result__roots">
+                    @for (var i = 0; i < Result.Roots.Count; i++)
+                    {
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
+                    }
+                </div>
+
+                @if (Result.SolutionSteps is { Count: > 0 })
                 {
-                    <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
+                    <SolutionStepsList Steps="Result.SolutionSteps" />
                 }
             </div>
+        }
+        else
+        {
+            <div class="root-finding-result__container--empty">
+                <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
+            </div>
+        }
 
-            @if (Result.SolutionSteps is { Count: > 0 })
-            {
-                <div class="solution-steps__container">
-                    <SolutionStepsList Steps="Result.SolutionSteps" />
-                </div>
-            }
+        <div class="chart__container">
+            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
         </div>
-    }
-    else
-    {
-        <div class="root-finding-result__container--empty">
-            <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
-        </div>
-    }
-
-    <div class="chart__container">
-        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
-    </div>
+    </section>
 </div>

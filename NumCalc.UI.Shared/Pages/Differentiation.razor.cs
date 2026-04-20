@@ -120,7 +120,7 @@ public partial class Differentiation : BasePage<Differentiation>
                     [xMin, fAtXStar + slope * (xMin - _queryPoint)],
                     [xMax, fAtXStar + slope * (xMax - _queryPoint)]
                 ],
-                Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
+                Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 LineWidth = 1,
                 IsVisible = true
             });
@@ -131,9 +131,9 @@ public partial class Differentiation : BasePage<Differentiation>
             Name = "x*",
             Type = ChartType.Scatter,
             Data = [[_queryPoint, fAtXStar]],
-            Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
+            Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
             IsVisible = true,
-            Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle }
+            Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
         });
 
         var config = new Chart

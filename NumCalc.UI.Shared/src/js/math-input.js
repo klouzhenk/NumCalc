@@ -189,7 +189,7 @@ function processSeries(seriesItem, xAxis){
                 color: seriesItem.color,
                 type: hasFill ? 'area' : (seriesItem.type ? seriesItem.type.toLowerCase() : 'line'),
                 lineWidth: seriesItem.lineWidth || 2,
-                marker: { enabled: seriesItem.type === 'scatter', radius: 4 },
+                marker: { enabled: seriesItem.type?.toLowerCase() === 'scatter', radius: seriesItem.marker?.radius ?? 8 },
                 ...(hasFill && {
                     fillOpacity: 0.25,
                     zoneAxis: 'x',

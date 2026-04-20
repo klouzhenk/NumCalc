@@ -6,6 +6,7 @@ using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
@@ -148,7 +149,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
                     Data = [[Result.Roots[0], Result.Roots[1], Result.Roots[2]]],
                     Type = Enums.Charts.ChartType.Scatter,
                     Color = ColorUtils.GetColor(Enums.Color.Danger),
-                    IsVisible = true
+                    IsVisible = true,
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
                 });
             }
 
@@ -190,7 +192,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
                     Color = ColorUtils.GetColor(Enums.Color.Danger),
                     LineWidth = 0,
                     ZIndex = 5,
-                    IsVisible = true
+                    IsVisible = true,
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
                 });
             }
 

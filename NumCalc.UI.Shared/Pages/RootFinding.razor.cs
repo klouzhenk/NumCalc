@@ -157,8 +157,9 @@ public partial class RootFinding : BasePage<RootFinding>
                 Name = $"{Localizer["Root"]} ({_formData.Method})",
                 Type = ChartType.Scatter,
                 Data = [[Result.Root.Value, 0]],
-                Color = ColorUtils.GetColor(Color.SuccessLight),
-                IsVisible = true
+                Color = ColorUtils.GetColor(Color.PrimaryDark),
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
             });
         }
         else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
@@ -172,7 +173,7 @@ public partial class RootFinding : BasePage<RootFinding>
                     Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
                     Color = ColorUtils.GetSeriesColor((int)result.Method),
                     IsVisible = true,
-                    Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle },
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle },
                     Opacity = 0.8
                 });
             }

@@ -110,9 +110,7 @@
         </div>
         @if (Mode is AnalysisMode.Single && Result?.SolutionSteps is { Count: > 0 })
         {
-            <div class="solution-steps__container">
-                <SolutionStepsList Steps="Result.SolutionSteps" />
-            </div>
+            <SolutionStepsList Steps="Result.SolutionSteps" />
         }
         else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
         {

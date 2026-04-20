@@ -104,9 +104,9 @@ public partial class Interpolation : BasePage<Interpolation>
                     Name = "x*",
                     Type = ChartType.Scatter,
                     Data = [[_queryPoint, Result.InterpolatedValue]],
-                    Color = ColorUtils.GetColor(Color.SuccessLight),
+                    Color = ColorUtils.GetColor(Color.PrimaryDark),
                     IsVisible = true,
-                    Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle }
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
                 }
             ]
         };

@@ -52,8 +52,7 @@
 
     &__answer {
         display: flex;
-        flex-direction: column;
-        gap: var(--dimension-xs);
+        gap: var(--dimension-xs) var(--dimension-l);
 
         span {
             font-family: var(--font-heading), monospace;

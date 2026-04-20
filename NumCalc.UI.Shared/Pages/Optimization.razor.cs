@@ -121,9 +121,9 @@ public partial class Optimization : BasePage<Optimization>
                 Name = "x*",
                 Type = ChartType.Scatter,
                 Data = [[xStar.Value, Result.MinimumValue]],
-                Color = ColorUtils.GetColor(Enums.Color.SuccessLight),
+                Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 IsVisible = true,
-                Marker = new ChartMarker { Radius = 5, Symbol = ChartSymbolType.Circle }
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
             });
         }
 
