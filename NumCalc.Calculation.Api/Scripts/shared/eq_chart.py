@@ -5,10 +5,13 @@ from shared.structures import Point, EquationChartSeries
 
 _RANGE = 10
 _N_POINTS = 200
+_GRID_N = 15
 
 
 def linear_chart_series(equations, variables, roots):
-    """2×2 only. Plots each linear equation as a straight line."""
+    """Dispatches to 2D or 3D chart generation based on system size."""
+    if len(variables) == 3:
+        return _linear_chart_series_3d(equations, variables, roots)
     if len(variables) != 2:
         return None
 
@@ -96,5 +99,43 @@ def nonlinear_chart_series(iteration_functions, variables, roots):
         if points:
             label = f"{variables[i]} = {iteration_functions[i]}"
             series.append(EquationChartSeries(label=label, points=points))
+
+    return series if series else None
+
+
+def _linear_chart_series_3d(equations, variables, roots):
+    """3×3 only. Generates a scatter grid on each plane for 3D visualisation."""
+    x1_star, x2_star, x3_star = roots[0], roots[1], roots[2]
+    syms = sympy.symbols(variables)
+    series = []
+
+    x1_vals = np.linspace(x1_star - _RANGE, x1_star + _RANGE, _GRID_N)
+    x2_vals = np.linspace(x2_star - _RANGE, x2_star + _RANGE, _GRID_N)
+
+    for i, eq in enumerate(equations):
+        if "=" in eq:
+            left, right = eq.split("=", 1)
+            expr = sympy.sympify(f"({left}) - ({right})")
+        else:
+            expr = sympy.sympify(eq)
+
+        try:
+            x3_sols = sympy.solve(expr, syms[2])
+            if not x3_sols:
+                continue
+            x3_func = sympy.lambdify([syms[0], syms[1]], x3_sols[0], modules="numpy")
+            pts = []
+            for x1 in x1_vals:
+                for x2 in x2_vals:
+                    try:
+                        x3 = float(x3_func(float(x1), float(x2)))
+                        if np.isfinite(x3):
+                            pts.append(Point(x=float(x1), y=float(x2), z=x3))
+                    except Exception:
+                        pass
+            if pts:
+                series.append(EquationChartSeries(label=f"Eq. {i + 1}: {eq}", points=pts))
+        except Exception:
+            pass
 
     return series if series else None

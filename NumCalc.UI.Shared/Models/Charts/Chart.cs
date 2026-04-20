@@ -5,6 +5,7 @@ public class Chart
     public required string ContainerId { get; set; }
     public ChartAxis XAxis { get; set; } = new();
     public ChartAxis YAxis { get; set; } = new();
+    public ChartAxis? ZAxis { get; set; }
 
     public List<ChartSeries> Series { get; set; } = [];
     public string? Title { get; set; }

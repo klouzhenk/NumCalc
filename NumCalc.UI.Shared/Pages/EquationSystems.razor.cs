@@ -121,44 +121,90 @@ public partial class EquationSystems : BasePage<EquationSystems>
         var x1Name = _lastVariables?.ElementAtOrDefault(0) ?? "x\u2081";
         var x2Name = _lastVariables?.ElementAtOrDefault(1) ?? "x\u2082";
 
-        var series = Result.ChartSeries
-            .Select((s, idx) => new ChartSeries
-            {
-                Name = s.Label,
-                Data = s.Points
-                    .Where(p => p.X.HasValue && p.Y.HasValue)
-                    .Select(p => new double[] { p.X!.Value, p.Y!.Value })
-                    .ToList(),
-                Color = ColorUtils.GetSeriesColor(idx),
-                LineWidth = 2,
-                IsVisible = true
-            })
-            .ToList();
+        var is3D = Result.ChartSeries.Any(s => s.Points.Any(p => p.Z.HasValue));
 
-        if (Result.Roots is { Count: >= 2 })
+        if (is3D)
         {
-            series.Add(new ChartSeries
+            var x3Name = _lastVariables?.ElementAtOrDefault(2) ?? "x\u2083";
+
+            var series3d = Result.ChartSeries
+                .Select((s, idx) => new ChartSeries
+                {
+                    Name = s.Label,
+                    Data = s.Points
+                        .Where(p => p.X.HasValue && p.Y.HasValue && p.Z.HasValue)
+                        .Select(p => new double[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
+                        .ToList(),
+                    Color = ColorUtils.GetSeriesColor(idx),
+                    IsVisible = true
+                })
+                .ToList();
+
+            if (Result.Roots is { Count: >= 3 })
             {
-                Name = "Solution",
-                Data = [[Result.Roots[0], Result.Roots[1]]],
-                Type = Enums.Charts.ChartType.Scatter,
-                Color = ColorUtils.GetColor(Enums.Color.Danger),
-                LineWidth = 0,
-                ZIndex = 5,
-                IsVisible = true
-            });
+                series3d.Add(new ChartSeries
+                {
+                    Name = "Solution",
+                    Data = [[Result.Roots[0], Result.Roots[1], Result.Roots[2]]],
+                    Type = Enums.Charts.ChartType.Scatter,
+                    Color = ColorUtils.GetColor(Enums.Color.Danger),
+                    IsVisible = true
+                });
+            }
+
+            var config3d = new Chart
+            {
+                ContainerId = ChartContainerId,
+                ShowLegend = true,
+                XAxis = new ChartAxis { Title = x1Name },
+                YAxis = new ChartAxis { Title = x2Name },
+                ZAxis = new ChartAxis { Title = x3Name }
+            };
+            config3d.Series.AddRange(series3d);
+
+            await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config3d);
         }
-
-        var config = new Chart
+        else
         {
-            ContainerId = ChartContainerId,
-            ShowLegend = true,
-            XAxis = new ChartAxis { Title = x1Name, PlotLines = [ChartUtils.CreateZeroLine()] },
-            YAxis = new ChartAxis { Title = x2Name, PlotLines = [ChartUtils.CreateZeroLine()] }
-        };
-        config.Series.AddRange(series);
+            var series = Result.ChartSeries
+                .Select((s, idx) => new ChartSeries
+                {
+                    Name = s.Label,
+                    Data = s.Points
+                        .Where(p => p.X.HasValue && p.Y.HasValue)
+                        .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+                        .ToList(),
+                    Color = ColorUtils.GetSeriesColor(idx),
+                    LineWidth = 2,
+                    IsVisible = true
+                })
+                .ToList();
 
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+            if (Result.Roots is { Count: >= 2 })
+            {
+                series.Add(new ChartSeries
+                {
+                    Name = "Solution",
+                    Data = [[Result.Roots[0], Result.Roots[1]]],
+                    Type = Enums.Charts.ChartType.Scatter,
+                    Color = ColorUtils.GetColor(Enums.Color.Danger),
+                    LineWidth = 0,
+                    ZIndex = 5,
+                    IsVisible = true
+                });
+            }
+
+            var config = new Chart
+            {
+                ContainerId = ChartContainerId,
+                ShowLegend = true,
+                XAxis = new ChartAxis { Title = x1Name, PlotLines = [ChartUtils.CreateZeroLine()] },
+                YAxis = new ChartAxis { Title = x2Name, PlotLines = [ChartUtils.CreateZeroLine()] }
+            };
+            config.Series.AddRange(series);
+
+            await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+        }
     }
 
     private async Task ExportPdfAsync()

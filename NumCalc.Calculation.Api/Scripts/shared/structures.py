@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 class Point:
     x: float
     y: float
+    z: float | None = None
 
 @dataclass
 class SolutionStep:
