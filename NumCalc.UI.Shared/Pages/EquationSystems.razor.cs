@@ -6,8 +6,10 @@ using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
 
@@ -21,6 +23,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private NonLinearSystemMethod NonLinearMethod { get; set; } = NonLinearSystemMethod.FixedPoint;
     private int Size { get; set; } = 2;
 
+    private const string ChartContainerId = "chart--equation-systems";
+
     private readonly int[] _sizes = [2, 3, 4];
 
     private LinearSystemInput? _linearInput;
@@ -29,6 +33,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private SystemSolvingResponse? Result { get; set; }
     private List<string>? _lastEquations;
     private List<string>? _lastVariables;
+
+    private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
     private void ResetResult() => Result = null;
 
@@ -66,6 +72,9 @@ public partial class EquationSystems : BasePage<EquationSystems>
         };
 
         Result = await SafeExecuteAsync(apiCall);
+
+        if (Result is not null)
+            await UpdateChart();
     }
 
     private async Task CalculateNonLinear()
@@ -100,6 +109,56 @@ public partial class EquationSystems : BasePage<EquationSystems>
         };
 
         Result = await SafeExecuteAsync(apiCall);
+
+        if (Result is not null)
+            await UpdateChart();
+    }
+
+    private async Task UpdateChart()
+    {
+        if (Result?.ChartSeries is not { Count: > 0 }) return;
+
+        var x1Name = _lastVariables?.ElementAtOrDefault(0) ?? "x\u2081";
+        var x2Name = _lastVariables?.ElementAtOrDefault(1) ?? "x\u2082";
+
+        var series = Result.ChartSeries
+            .Select((s, idx) => new ChartSeries
+            {
+                Name = s.Label,
+                Data = s.Points
+                    .Where(p => p.X.HasValue && p.Y.HasValue)
+                    .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+                    .ToList(),
+                Color = ColorUtils.GetSeriesColor(idx),
+                LineWidth = 2,
+                IsVisible = true
+            })
+            .ToList();
+
+        if (Result.Roots is { Count: >= 2 })
+        {
+            series.Add(new ChartSeries
+            {
+                Name = "Solution",
+                Data = [[Result.Roots[0], Result.Roots[1]]],
+                Type = Enums.Charts.ChartType.Scatter,
+                Color = ColorUtils.GetColor(Enums.Color.Danger),
+                LineWidth = 0,
+                ZIndex = 5,
+                IsVisible = true
+            });
+        }
+
+        var config = new Chart
+        {
+            ContainerId = ChartContainerId,
+            ShowLegend = true,
+            XAxis = new ChartAxis { Title = x1Name, PlotLines = [ChartUtils.CreateZeroLine()] },
+            YAxis = new ChartAxis { Title = x2Name, PlotLines = [ChartUtils.CreateZeroLine()] }
+        };
+        config.Series.AddRange(series);
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
 
     private async Task ExportPdfAsync()
@@ -138,12 +197,17 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
                 : "No solution found";
 
+            var chartImage = IsChartVisible
+                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
+                : null;
+
             var request = new PdfExportRequest
             {
                 MethodName = methodName,
                 Inputs = inputs,
                 Result = resultStr,
-                Steps = steps
+                Steps = steps,
+                ChartImage = chartImage
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);

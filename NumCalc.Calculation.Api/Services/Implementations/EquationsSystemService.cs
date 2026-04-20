@@ -30,6 +30,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         return new SystemSolvingResponse
         {
             Roots = result.Roots,
+            ChartSeries = result.ChartSeries,
             SolutionSteps = result.SolutionSteps
         };
     }
@@ -51,6 +52,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         return new SystemSolvingResponse
         {
             Roots = result.Roots,
+            ChartSeries = result.ChartSeries,
             SolutionSteps = result.SolutionSteps
         };
     }
@@ -78,6 +80,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         return new SystemSolvingResponse
         {
             Roots = result.Roots,
+            ChartSeries = result.ChartSeries,
             SolutionSteps = result.SolutionSteps
         };
     }
@@ -105,6 +108,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         return new SystemSolvingResponse
         {
             Roots = result.Roots,
+            ChartSeries = result.ChartSeries,
             SolutionSteps = result.SolutionSteps
         };
     }

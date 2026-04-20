@@ -5,6 +5,7 @@ from fractions import Fraction
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
+from shared.eq_chart import linear_chart_series
 
 
 def _to_latex_number(value: float) -> str:
@@ -151,7 +152,9 @@ def solve(equations: List[str], variables: List[str]) -> str:
             step_index += 1
 
         roots = [float(x) for x in solution]
-        success = SystemSuccessData(roots=roots, solution_steps=steps)
+        chart = linear_chart_series(equations, variables, roots)
+
+        success = SystemSuccessData(roots=roots, chart_series=chart, solution_steps=steps)
         return json.dumps(asdict(SystemResponseEnvelope(success=success, failure=None)))
 
     except Exception as e:

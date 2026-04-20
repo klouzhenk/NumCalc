@@ -118,8 +118,12 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
-- `BaseApiService` — abstract HTTP client base; subclasses implement specific endpoints
-- Blazor components: modal dialogs, image cropper (Cropper.Blazor integration)
+- **HTTP layer:** `BaseApiService` (abstract base) → `ICalculationApiService` / `CalculationApiService` (single concrete client covering all 7 topic areas)
+- **All page components** live in `NumCalc.UI.Shared/Pages/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`, `MainPage.razor`
+- **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
+- **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) — rendered from `Header.razor` via a switch on `NavigationItem`
+- **Services:** `IPdfExportService` / `PdfExportService`, `IOcrService` / `OcrService`, `IUiStateService` / `UiStateService`, `ICultureService`
+- **Layout:** `MainLayout.razor` in `Layouts/`
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
 - Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
 - LaTeX in `SolutionStep.LatexFormula` is rendered via **KaTeX** (html2canvas captures it as PNG for PDF export)
@@ -127,9 +131,9 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 ### Web UI (`NumCalc.UI.Web`)
 
 - Server-side Blazor with interactive server rendering
-- Razor components for root finding input, results display, and equation system solving
+- Contains only `App.razor` and `Routes.razor` — all page and component logic lives in `NumCalc.UI.Shared`
 - Localization: supports `en` and `uk` cultures via `RequestLocalizationOptions`
-- Communicates with the Calculation API via typed HTTP clients (registered as `BaseApiService` subclasses)
+- Communicates with the Calculation API via `ICalculationApiService`
 
 ## Key Patterns
 
@@ -184,7 +188,6 @@ Currently working:
 Not implemented yet:
 - Full-featured backend for users/history
 - Complete MAUI UI
-- Help & Tooltip system — COMPLETED (see section below)
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
@@ -299,62 +302,38 @@ Wraps any label/input and shows a small floating hint when the user hovers the w
 
 **Usage:**
 ```razor
-<Tooltip Key="Tolerance">
-    <div class="input-group">
-        <label>Tolerance</label>
-        <input ... />
-    </div>
+<Tooltip>
+    <Content>
+        <div class="input-group">
+            <label>Tolerance</label>
+            <input ... />
+        </div>
+    </Content>
+    <Hint>Maximum allowed error ε.</Hint>
 </Tooltip>
 ```
 
 - Renders a `(?)` icon beside the wrapped content
 - On hover: small floating text box appears (CSS-driven, no JS required)
-- Content resolved by `Key` from `tooltips.json`
+- Hint text is passed directly as a `<Hint>` render fragment (no JSON file)
 - Lives in `NumCalc.UI.Shared/Components/Tooltip.razor`
-
-**Keys to cover (minimum):** `Tolerance`, `StepSize`, `InitialGuess`, `MaxIterations`,
-`LowerBound`, `UpperBound`, `QueryPoint`, `DerivativeOrder`, `LearningRate`, `PicardOrder`, `XNodes`
 
 ---
 
 ### Component 2 — `<TopicInfo>` (page-level modal)
 
-A small `ⓘ` button placed in the filter bar of each page. On click, opens a modal
-(reuses existing `BaseModal.razor`) with rich information about the topic.
+A generic modal wrapper. Each topic has its own dedicated Razor component in `Components/TopicInfos/` that wraps `<TopicInfo>` with hard-coded content.
 
-**Usage:**
+**`TopicInfo.razor` usage (inside a topic component):**
 ```razor
-<TopicInfo Topic="root-finding" />
+<TopicInfo Title="..." Subtitle="...">
+    <!-- rich content with KaTeX-rendered formulas -->
+</TopicInfo>
 ```
 
-**Modal content per page:**
-- Topic title + overview paragraph
-- Common problems / when methods fail
-- One card per method containing:
-  - Method name
-  - Formula (LaTeX string — rendered via KaTeX already installed)
-  - Short description
-  - Limitations / failure conditions
+**Rendering:** `Header.razor` switches on `NavigationItem` to render the correct per-topic component (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, etc.)
 
 - Lives in `NumCalc.UI.Shared/Components/TopicInfo.razor`
-
-**Topic keys:** `root-finding`, `equation-systems`, `interpolation`,
-`differentiation`, `integration`, `optimization`, `ode`
-
----
-
-### Content files (JSON, in `wwwroot/data/`)
-
-```
-tooltips.json       — input field hints keyed by field name
-method-info.json    — per-topic: overview + per-method cards with LaTeX formulas
-```
-
-### Service
-
-`IHelpContentService` / `HelpContentService` in `NumCalc.UI.Shared/Services/`
-— loads and caches both JSON files on first use via `HttpClient`.
-
-### Key constraint
-KaTeX is already installed (used for PDF export). Reuse it to render `formula` strings
-inside the `TopicInfo` modal — no additional dependencies needed.
+- Per-topic components in `NumCalc.UI.Shared/Components/TopicInfos/`
+- No JSON files or `HelpContentService` — content is embedded directly in Razor components
+- KaTeX (already installed for PDF export) renders LaTeX formulas inside the modals

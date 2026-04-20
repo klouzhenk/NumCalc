@@ -32,8 +32,14 @@ class ResponseEnvelope:
 
 # Equation system result
 @dataclass
+class EquationChartSeries:
+    label: str
+    points: List[Point]
+
+@dataclass
 class SystemSuccessData:
     roots: List[float]
+    chart_series: List[EquationChartSeries] | None = None
     solution_steps: List[SolutionStep] = field(default_factory=list)
 
 @dataclass

@@ -5,5 +5,6 @@ namespace NumCalc.Shared.EquationsSystems.Responses;
 public class SystemSolvingResponse
 {
     public List<double>? Roots { get; set; }
+    public List<EquationChartSeries>? ChartSeries { get; set; }
     public List<SolutionStep>? SolutionSteps { get; set; }
 }

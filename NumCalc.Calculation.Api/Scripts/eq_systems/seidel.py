@@ -4,6 +4,7 @@ import math
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
+from shared.eq_chart import nonlinear_chart_series
 
 def _format_state(variables, values):
     return ",\\ ".join([f"{variables[i]} = {values[i]:.6g}" for i in range(len(variables))])
@@ -67,7 +68,8 @@ def solve(
             ))
 
             if max(abs(x[i] - x_old[i]) for i in range(len(variables))) < tolerance:
-                success = SystemSuccessData(roots=list(x), solution_steps=steps)
+                chart = nonlinear_chart_series(iteration_functions, variables, list(x))
+                success = SystemSuccessData(roots=list(x), chart_series=chart, solution_steps=steps)
                 return json.dumps(asdict(SystemResponseEnvelope(success=success, failure=None)))
 
         failure = FailureData(
