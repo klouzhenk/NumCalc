@@ -35,34 +35,27 @@
     </div>
 
     <section>
-        <div class="chart__container">
-            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
-        </div>
-
-        @if (Result is not null)
-        {
-            <div class="optimization-result">
-                <div class="optimization-result__answer">
-                    <span>f(x*) = @Result.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
-                    @if (Result.ArgMinX.HasValue)
-                    {
-                        <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
-                    }
-                    @if (Result.ArgMinPoint is { Count: > 0 })
-                    {
-                        <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
-                    }
+        <ResultPanel HasResult="Result is not null">
+            <Header>
+                <span>f(x*) = @Result!.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
+                @if (Result.ArgMinX.HasValue)
+                {
+                    <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
+                }
+                @if (Result.ArgMinPoint is { Count: > 0 })
+                {
+                    <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
+                }
+            </Header>
+            <ChartContent>
+                <div class="chart__container">
+                    <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                    <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
                 </div>
-
+            </ChartContent>
+            <ResultContent>
                 <SolutionStepsList Steps="@Result.SolutionSteps" />
-            </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">Click Calculate to view result</span>
-            </div>
-        }
+            </ResultContent>
+        </ResultPanel>
     </section>
 </div>

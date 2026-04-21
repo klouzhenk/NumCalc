@@ -49,35 +49,27 @@
     </div>
     
     <section>
-        <div class="chart__container">
-            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
-        </div>
-        
-        @if (Result is not null)
-        {
-            <div class="differentiation-result">
-                <div class="differentiation-result__answer">
-                    @if (_method is DifferentiationMethod.FiniteDifferences)
-                    {
-                        <span>@SelectedStep?.Value</span>
-                    }
-                    else
-                    {
-                        <span>f'(x*) = @Result.DerivativeValue.ToString("G6")</span>
-                    }
+        <ResultPanel HasResult="Result is not null">
+            <Header>
+                @if (_method is DifferentiationMethod.FiniteDifferences)
+                {
+                    <span>@SelectedStep?.Value</span>
+                }
+                else
+                {
+                    <span>f'(x*) = @Result!.DerivativeValue.ToString("G6")</span>
+                }
+            </Header>
+            <ChartContent>
+                <div class="chart__container">
+                    <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                    <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
                 </div>
-
-                <LatexDisplay Latex="@Result.PolynomialLatex" />
-
-                <SolutionStepsList Steps="@FilteredSteps"/>
-            </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">Click Calculate to view result</span>
-            </div>
-        }
+            </ChartContent>
+            <ResultContent>
+                <LatexDisplay Latex="@Result!.PolynomialLatex" />
+                <SolutionStepsList Steps="@FilteredSteps" />
+            </ResultContent>
+        </ResultPanel>
     </section>
 </div>

@@ -43,6 +43,12 @@ export const TooltipHelper = {
         renderMathInElement(el, { delimiters: KATEX_DELIMITERS, throwOnError: false });
     },
 
+    renderLatexById(elementId, latex) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        katex.render(latex, el, { throwOnError: false, displayMode: true });
+    },
+
     renderStepFormulas(containerId) {
         const el = document.getElementById(containerId);
         if (!el) return;

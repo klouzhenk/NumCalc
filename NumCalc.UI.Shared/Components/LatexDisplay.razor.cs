@@ -11,12 +11,14 @@ public partial class LatexDisplay : ComponentBase
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 
     private readonly string _containerId = $"latex-display-{Guid.NewGuid():N}";
-    private string? _lastLatex;
+    private bool _rendered;
+
+    protected override void OnParametersSet() => _rendered = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Latex == _lastLatex || string.IsNullOrEmpty(Latex)) return;
-        _lastLatex = Latex;
-        await JsRuntime.InvokeVoidAsync("TooltipHelper.renderStepFormulas", _containerId);
+        if (_rendered || string.IsNullOrEmpty(Latex)) return;
+        _rendered = true;
+        await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexById", _containerId, Prefix + Latex);
     }
 }

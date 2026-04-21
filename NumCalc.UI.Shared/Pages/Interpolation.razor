@@ -50,28 +50,20 @@
     </div>
 
     <section>
-        <div class="chart__container">
-            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
-        </div>
-        
-        @if (Result is not null)
-        {
-            <div class="interpolation-result">
-                <div class="interpolation-result__answer">
-                    <span>x* = @Result.InterpolatedValue.ToString("G6")</span>
+        <ResultPanel HasResult="Result is not null">
+            <Header>
+                <span>x* = @Result!.InterpolatedValue.ToString("G6")</span>
+            </Header>
+            <ChartContent>
+                <div class="chart__container">
+                    <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                    <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
                 </div>
-
+            </ChartContent>
+            <ResultContent>
                 <LatexDisplay Latex="@Result.PolynomialLatex" Prefix="P(x) = " />
-
                 <SolutionStepsList Steps="Result.SolutionSteps" />
-            </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
-            </div>
-        }
+            </ResultContent>
+        </ResultPanel>
     </section>
 </div>
