@@ -8,6 +8,7 @@ def solve_lagrange(
     x_nodes: List[float],
     y_values: Optional[List[float]],
     query_point: float,
-    expression: Optional[str] = None
+    expression: Optional[str] = None,
+    order: int = 1
 ) -> str:
-    return diff_lagrange.solve(x_nodes, y_values, query_point, expression)
+    return diff_lagrange.solve(x_nodes, y_values, query_point, expression, order)

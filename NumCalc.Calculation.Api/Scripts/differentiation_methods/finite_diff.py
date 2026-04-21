@@ -39,19 +39,19 @@ def solve(expression: str, x_point: float, h: float, order: int) -> str:
 
             steps.append(SolutionStep(
                 step_index=1,
-                description="Forward difference (1st order)",
+                description="Forward difference — 1st derivative, accuracy O(h)",
                 latex_formula=r"f'(x) \approx \frac{f(x+h) - f(x)}{h}",
                 value=f"f'({x_point}) \u2248 {float(fwd):.8f}"
             ))
             steps.append(SolutionStep(
-                step_index=2,
-                description="Backward difference (1st order)",
+                step_index=1,
+                description="Backward difference — 1st derivative, accuracy O(h)",
                 latex_formula=r"f'(x) \approx \frac{f(x) - f(x-h)}{h}",
                 value=f"f'({x_point}) \u2248 {float(bwd):.8f}"
             ))
             steps.append(SolutionStep(
-                step_index=3,
-                description="Central difference (1st order, most accurate)",
+                step_index=1,
+                description="Central difference — 1st derivative, accuracy O(h²), most accurate",
                 latex_formula=r"f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}",
                 value=f"f'({x_point}) \u2248 {float(cen):.8f}"
             ))
@@ -65,19 +65,19 @@ def solve(expression: str, x_point: float, h: float, order: int) -> str:
 
             steps.append(SolutionStep(
                 step_index=1,
-                description="Forward difference (2nd order)",
+                description="Forward difference — 2nd derivative, accuracy O(h)",
                 latex_formula=r"f''(x) \approx \frac{f(x+2h) - 2f(x+h) + f(x)}{h^2}",
                 value=f"f''({x_point}) \u2248 {float(fwd):.8f}"
             ))
             steps.append(SolutionStep(
-                step_index=2,
-                description="Backward difference (2nd order)",
+                step_index=1,
+                description="Backward difference — 2nd derivative, accuracy O(h)",
                 latex_formula=r"f''(x) \approx \frac{f(x) - 2f(x-h) + f(x-2h)}{h^2}",
                 value=f"f''({x_point}) \u2248 {float(bwd):.8f}"
             ))
             steps.append(SolutionStep(
-                step_index=3,
-                description="Central difference (2nd order, most accurate)",
+                step_index=1,
+                description="Central difference — 2nd derivative, accuracy O(h²), most accurate",
                 latex_formula=r"f''(x) \approx \frac{f(x+h) - 2f(x) + f(x-h)}{h^2}",
                 value=f"f''({x_point}) \u2248 {float(cen):.8f}"
             ))

@@ -57,8 +57,9 @@
                 }
                 else
                 {
-                    <span>f'(x*) = @Result!.DerivativeValue.ToString("G6")</span>
+                    <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
                 }
+                <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             </Header>
             <ChartContent>
                 <div class="chart__container">
@@ -67,7 +68,6 @@
                 </div>
             </ChartContent>
             <ResultContent>
-                <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
                 <SolutionStepsList Steps="@FilteredSteps" />
             </ResultContent>
         </ResultPanel>

@@ -31,6 +31,10 @@
             flex-shrink: 0;
             margin: var(--dimension-m) 0;
         }
+
+        .tooltip__wrapper:has(.math-input) {
+            flex: 2;
+        }
     }
 }
 

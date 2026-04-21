@@ -47,7 +47,8 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
             request.XNodes!,
             request.Mode == DifferentiationInputMode.RawData ? request.YValues : null,
             request.QueryPoint,
-            request.Mode == DifferentiationInputMode.Function ? request.FunctionExpression : null
+            request.Mode == DifferentiationInputMode.Function ? request.FunctionExpression : null,
+            request.DerivativeOrder
         );
 
         var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();

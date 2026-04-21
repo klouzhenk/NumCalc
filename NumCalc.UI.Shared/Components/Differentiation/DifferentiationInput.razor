@@ -48,39 +48,37 @@
 }
 else
 {
-    @if (Mode is DifferentiationInputMode.Function)
-    {
-        <div class="input-section__wrapper">
+
+    <div class="input-section__wrapper">
+        @if (Mode is DifferentiationInputMode.Function)
+        {
             <Tooltip>
                 <Content>
-                    <MathInput Label="f(x)" @ref="_mathInput" />
+                    <MathInput Label="f(x)" @ref="_mathInput"/>
                 </Content>
                 <Hint>Function f(x) to differentiate symbolically via Lagrange polynomial interpolation.</Hint>
             </Tooltip>
-            <Tooltip>
-                <Content>
-                    <div class="input-group">
-                        <label class="input-group__label">x*</label>
-                        <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
-                    </div>
-                </Content>
-                <Hint>Query point x* — evaluate the derivative at this value.</Hint>
-            </Tooltip>
-        </div>
-    }
-
-    <NodeTable ShowY="@(Mode is DifferentiationInputMode.RawData)" @ref="_nodeTable" />
-
-    @if (Mode is DifferentiationInputMode.RawData)
-    {
+        }
+        <Tooltip>
+            <Content>
+                <Dropdown TItem="int"
+                          Label="Derivative order"
+                          Data="@(new[] { 1, 2 })"
+                          @bind-Value="_derivativeOrder"
+                          TextField="@(n => n == 1 ? "1st" : "2nd")"/>
+            </Content>
+            <Hint>Order of the derivative: 1 for P'(x), 2 for P''(x).</Hint>
+        </Tooltip>
         <Tooltip>
             <Content>
                 <div class="input-group">
                     <label class="input-group__label">x*</label>
-                    <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
+                    <input type="number" step="any" class="input-group__input" @bind="_queryPoint"/>
                 </div>
             </Content>
             <Hint>Query point x* — evaluate the derivative at this value.</Hint>
         </Tooltip>
-    }
+    </div>
+
+    <NodeTable ShowY="@(Mode is DifferentiationInputMode.RawData)" @ref="_nodeTable" />
 }
