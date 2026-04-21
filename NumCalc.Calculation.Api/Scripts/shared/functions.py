@@ -2,6 +2,14 @@
 import numpy as np
 from typing import List, Tuple, Callable, Any
 
+
+def round_sympy_expression(expr: sympy.Expr, decimal_places: int = 6) -> sympy.Expr:
+    return expr.xreplace({
+        atom: sympy.Float(round(float(atom), decimal_places))
+        for atom in expr.atoms(sympy.Float)
+    })
+
+
 def generate_points(f: Callable[[Any], Any], a: float, b: float, steps: int = 100) -> List[Tuple[float, float]]:
     try:
         padding = (b - a) * 0.1

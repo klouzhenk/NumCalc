@@ -3,6 +3,7 @@ import sympy
 from dataclasses import asdict
 from shared.structures import OdeResponseEnvelope, OdeSuccessData, FailureData, Point, SolutionStep
 from shared.parsing import parse_expression
+from shared.functions import round_sympy_expression
 
 def solve(expression: str, initial_x: float, initial_y: float, target_x: float, step_size: float, picard_order: int) -> str:
     try:
@@ -62,7 +63,7 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
             steps.append(SolutionStep(
                 step_index=i + 2,
                 description=f"Approximation φ_{i + 1}(x)",
-                latex_formula=r"\varphi_{" + str(i + 1) + r"}(x) = " + sympy.latex(phi),
+                latex_formula=r"\varphi_{" + str(i + 1) + r"}(x) = " + sympy.latex(round_sympy_expression(phi)),
                 value=""
             ))
 
@@ -90,7 +91,7 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
             )
             return json.dumps(asdict(envelope))
 
-        polynomial_latex = sympy.latex(phi)
+        polynomial_latex = sympy.latex(round_sympy_expression(phi))
 
         envelope = OdeResponseEnvelope(
             success=OdeSuccessData(

@@ -5,7 +5,7 @@ from typing import List, Optional
 from dataclasses import asdict
 from shared.structures import DifferentiationResponseEnvelope, DifferentiationSuccessData, FailureData, Point, SolutionStep
 from shared.parsing import parse_expression
-from shared.functions import generate_points
+from shared.functions import generate_points, round_sympy_expression
 
 
 def _evaluate_y_values(expression: str, x_nodes: List[float]) -> Optional[List[float]]:
@@ -63,7 +63,7 @@ def solve(
             poly = poly + ys[i] * basis_polys[i]
 
         poly_expanded = sympy.expand(poly)
-        poly_latex = sympy.latex(poly_expanded)
+        poly_latex = sympy.latex(round_sympy_expression(poly_expanded))
 
         steps.append(SolutionStep(
             step_index=1,
@@ -75,7 +75,7 @@ def solve(
         # Differentiate symbolically
         deriv = sympy.diff(poly_expanded, x)
         deriv_expanded = sympy.expand(deriv)
-        deriv_latex = sympy.latex(deriv_expanded)
+        deriv_latex = sympy.latex(round_sympy_expression(deriv_expanded))
 
         steps.append(SolutionStep(
             step_index=2,

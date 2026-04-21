@@ -5,7 +5,7 @@ from typing import List, Optional
 from dataclasses import asdict
 from shared.structures import InterpolationResponseEnvelope, InterpolationSuccessData, FailureData, Point, SolutionStep
 from shared.parsing import parse_expression
-from shared.functions import generate_points
+from shared.functions import generate_points, round_sympy_expression
 
 
 def _evaluate_y_values(expression: str, x_nodes: List[float]) -> Optional[List[float]]:
@@ -78,7 +78,7 @@ def solve(
                 basis = basis * (x - xs[k])
 
         poly_expanded = sympy.expand(poly)
-        poly_latex = sympy.latex(poly_expanded)
+        poly_latex = sympy.latex(round_sympy_expression(poly_expanded))
 
         steps.append(SolutionStep(
             step_index=2,
