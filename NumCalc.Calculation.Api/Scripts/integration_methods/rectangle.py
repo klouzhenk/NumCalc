@@ -7,7 +7,7 @@ from shared.parsing import parse_expression
 from shared.functions import generate_points
 
 
-def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> str:
+def solve(expression: str, lower_bound: float, upper_bound: float, n: int, variant: str) -> str:
     try:
         if lower_bound >= upper_bound:
             envelope = IntegrationResponseEnvelope(
@@ -32,39 +32,35 @@ def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> st
         h = (upper_bound - lower_bound) / n
         xs = np.linspace(lower_bound, upper_bound, n + 1)
 
-        left  = float(h * np.sum(f(xs[:-1])))
-        right = float(h * np.sum(f(xs[1:])))
-        mid   = float(h * np.sum(f((xs[:-1] + xs[1:]) / 2)))
+        match variant.lower():
+            case "left":
+                value = float(h * np.sum(f(xs[:-1])))
+                description = "Left rectangle rule"
+                latex = r"I \approx h \sum_{i=0}^{n-1} f(x_i)"
+            case "right":
+                value = float(h * np.sum(f(xs[1:])))
+                description = "Right rectangle rule"
+                latex = r"I \approx h \sum_{i=1}^{n} f(x_i)"
+            case _:
+                value = float(h * np.sum(f((xs[:-1] + xs[1:]) / 2)))
+                description = "Midpoint rectangle rule"
+                latex = r"I \approx h \sum_{i=0}^{n-1} f\!\left(\frac{x_i + x_{i+1}}{2}\right)"
 
-        steps = [
-            SolutionStep(
-                step_index=1,
-                description="Left rectangle rule",
-                latex_formula=r"I \approx h \sum_{i=0}^{n-1} f(x_i)",
-                value=f"I \u2248 {left:.8f}"
-            ),
-            SolutionStep(
-                step_index=2,
-                description="Right rectangle rule",
-                latex_formula=r"I \approx h \sum_{i=1}^{n} f(x_i)",
-                value=f"I \u2248 {right:.8f}"
-            ),
-            SolutionStep(
-                step_index=3,
-                description="Midpoint rectangle rule",
-                latex_formula=r"I \approx h \sum_{i=0}^{n-1} f\!\left(\frac{x_i + x_{i+1}}{2}\right)",
-                value=f"I \u2248 {mid:.8f}"
-            ),
-        ]
+        step = SolutionStep(
+            step_index=1,
+            description=description,
+            latex_formula=latex,
+            value=f"I \u2248 {value:.8f}"
+        )
 
         chart_pts = generate_points(f, lower_bound, upper_bound)
         chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in chart_pts]
 
         envelope = IntegrationResponseEnvelope(
             success=IntegrationSuccessData(
-                integral_value=mid,
+                integral_value=value,
                 chart_points=chart_points,
-                solution_steps=steps
+                solution_steps=[step]
             ),
             failure=None
         )

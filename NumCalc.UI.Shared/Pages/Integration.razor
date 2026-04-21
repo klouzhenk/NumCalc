@@ -1,6 +1,7 @@
 @page "/integration"
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Integration
+@using NumCalc.Shared.Enums.Integration
 @using NumCalc.UI.Shared.Enums.Integration
 
 @inherits BasePage<Integration>
@@ -36,35 +37,27 @@
                 }
             </div>
         </div>
-
-        @if (Result is not null)
-        {
-            <div class="integration-result">
-                <div class="integration-result__answer">
-                    @if (_method is IntegrationMethod.Rectangle)
-                    {
-                        <span>@SelectedStep?.Value</span>
-                    }
-                    else
-                    {
-                        <span>I = @Result.IntegralValue.ToString("G6")</span>
-                    }
-                </div>
-
-                <SolutionStepsList Steps="@FilteredSteps" />
-            </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">Click Calculate to view result</span>
-            </div>
-        }
-
     </div>
 
-    <div class="chart__container">
-        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
-    </div>
+    <ResultPanel HasResult="Result is not null">
+        <Header>
+            @if (_method is IntegrationMethod.Rectangle)
+            {
+                <span>@SelectedStep?.Value</span>
+            }
+            else
+            {
+                <span>I = @Result!.IntegralValue.ToString("G6")</span>
+            }
+        </Header>
+        <ChartContent>
+            <div class="chart__container">
+                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+            </div>
+        </ChartContent>
+        <ResultContent>
+            <SolutionStepsList Steps="Result?.SolutionSteps" />
+        </ResultContent>
+    </ResultPanel>
 </div>

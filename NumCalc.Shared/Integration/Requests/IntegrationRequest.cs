@@ -18,4 +18,6 @@ public class IntegrationRequest
 
     [Range(1, 10000)]
     public int Intervals { get; set; } = 100;
+
+    public RectangleVariant? RectangleVariant { get; set; }
 }

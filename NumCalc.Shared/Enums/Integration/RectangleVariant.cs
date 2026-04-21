@@ -1,4 +1,4 @@
-namespace NumCalc.UI.Shared.Enums.Integration;
+namespace NumCalc.Shared.Enums.Integration;
 
 public enum RectangleVariant
 {

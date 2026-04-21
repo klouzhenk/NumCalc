@@ -48,28 +48,26 @@
         </div>
     </div>
     
-    <section>
-        <ResultPanel HasResult="Result is not null">
-            <Header>
-                @if (_method is DifferentiationMethod.FiniteDifferences)
-                {
-                    <span>@SelectedStep?.Value</span>
-                }
-                else
-                {
-                    <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
-                }
-                <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
-            </Header>
-            <ChartContent>
-                <div class="chart__container">
-                    <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-                    <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
-                </div>
-            </ChartContent>
-            <ResultContent>
-                <SolutionStepsList Steps="@FilteredSteps" />
-            </ResultContent>
-        </ResultPanel>
-    </section>
+    <ResultPanel HasResult="Result is not null">
+        <Header>
+            @if (_method is DifferentiationMethod.FiniteDifferences)
+            {
+                <span>@SelectedStep?.Value</span>
+            }
+            else
+            {
+                <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
+            }
+            <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
+        </Header>
+        <ChartContent>
+            <div class="chart__container">
+                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
+            </div>
+        </ChartContent>
+        <ResultContent>
+            <SolutionStepsList Steps="@FilteredSteps" />
+        </ResultContent>
+    </ResultPanel>
 </div>

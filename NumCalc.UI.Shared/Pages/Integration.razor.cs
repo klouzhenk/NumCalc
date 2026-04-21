@@ -34,13 +34,9 @@ public partial class Integration : BasePage<Integration>
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
-    private SolutionStep? SelectedStep => Result?.SolutionSteps?
-        .FirstOrDefault(s => s.StepIndex == (int)_rectangleVariant + 1);
+    private SolutionStep? SelectedStep => Result?.SolutionSteps?.FirstOrDefault();
 
-    private IList<SolutionStep>? FilteredSteps =>
-        _method is IntegrationMethod.Rectangle
-            ? Result?.SolutionSteps?.Where(s => s.StepIndex == (int)_rectangleVariant + 1).ToList()
-            : Result?.SolutionSteps;
+    private IList<SolutionStep>? FilteredSteps => Result?.SolutionSteps;
 
     private async Task Calculate()
     {
@@ -60,7 +56,8 @@ public partial class Integration : BasePage<Integration>
             FunctionExpression = formData.FunctionExpression,
             LowerBound = formData.LowerBound,
             UpperBound = formData.UpperBound,
-            Intervals = formData.Intervals
+            Intervals = formData.Intervals,
+            RectangleVariant = _method is IntegrationMethod.Rectangle ? _rectangleVariant : null
         };
 
         Func<Task<IntegrationResponse?>> apiCall = _method switch

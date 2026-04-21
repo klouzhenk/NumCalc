@@ -1,26 +1,28 @@
-<div class="result-panel">
-    @if (HasResult)
-    {
-        <div class="result-panel__header">
-            @if (Header is not null)
-            {
-                <div class="result-panel__result">@Header</div>
-            }
-            <Switch TItem="bool"
-                    Data="@(new[] { true, false })"
-                    @bind-Value="_showChart"
-                    TextField="@(v => v ? "Chart" : "Steps")" />
-        </div>
-    }
+<section>
+    <div class="result-panel">
+        @if (HasResult)
+        {
+            <div class="result-panel__header">
+                @if (Header is not null)
+                {
+                    <div class="result-panel__result">@Header</div>
+                }
+                <Switch TItem="bool"
+                        Data="@(new[] { true, false })"
+                        @bind-Value="_showChart"
+                        TextField="@(v => v ? "Chart" : "Steps")" />
+            </div>
+        }
 
-    <div class="result-panel__pane" style="display: @(_showChart ? "flex" : "none");">
-        @ChartContent
+        <div class="result-panel__pane" style="display: @(_showChart ? "flex" : "none");">
+            @ChartContent
+        </div>
+
+        @if (!_showChart && HasResult)
+        {
+            <div class="result-panel__pane result-panel__pane--steps">
+                @ResultContent
+            </div>
+        }
     </div>
-
-    @if (!_showChart && HasResult)
-    {
-        <div class="result-panel__pane result-panel__pane--steps">
-            @ResultContent
-        </div>
-    }
-</div>
+</section>

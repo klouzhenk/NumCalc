@@ -18,11 +18,13 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var solver = env.Integration();
 
+        var variant = (request.RectangleVariant ?? Shared.Enums.Integration.RectangleVariant.Midpoint).ToString();
         var jsonEnvelope = solver.SolveRectangle(
             request.FunctionExpression!,
             request.LowerBound,
             request.UpperBound,
-            request.Intervals
+            request.Intervals,
+            variant
         );
 
         var result = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
