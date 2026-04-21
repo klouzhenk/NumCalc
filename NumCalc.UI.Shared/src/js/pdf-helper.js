@@ -18,8 +18,8 @@ export const PdfHelper = {
         div.style.cssText = 'position:absolute;left:-9999px;top:-9999px;background:#fff;padding:8px;font-size:18px';
         document.body.appendChild(div);
         try {
-            katex.render(latexString, div, { throwOnError: false });
-            const canvas = await html2canvas(div, { backgroundColor: '#ffffff' });
+            katex.render(latexString, div, { throwOnError: false, displayMode: true });
+            const canvas = await html2canvas(div, { backgroundColor: '#ffffff', scale: 2 });
             return canvas.toDataURL('image/png');
         } catch {
             return null;

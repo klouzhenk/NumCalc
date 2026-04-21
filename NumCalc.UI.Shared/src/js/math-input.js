@@ -62,14 +62,17 @@ export const MathHelper = {
 
         const existingChart = Highcharts.charts.find(c => c && c.renderTo.id === containerId);
 
-        console.log("chart creation", existingChart);
-        
         if (existingChart) {
-            while (existingChart.series.length > 0) {
-                existingChart.series[0].remove(false);
+            if (existingChart.options?.chart?.options3d?.enabled) {
+                existingChart.destroy();
+                Highcharts.chart(containerId, chartOptions);
+            } else {
+                while (existingChart.series.length > 0) {
+                    existingChart.series[0].remove(false);
+                }
+                generatedSeries.forEach(s => existingChart.addSeries(s, false));
+                existingChart.update(chartOptions);
             }
-            generatedSeries.forEach(s => existingChart.addSeries(s, false));
-            existingChart.update(chartOptions);
         } else {
             Highcharts.chart(containerId, chartOptions);
         }

@@ -116,7 +116,7 @@ public partial class Optimization : BasePage<Optimization>
             {
                 Name = "f(x)",
                 Data = chartData,
-                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                Color = ColorUtils.GetColor(Enums.Color.PrimaryLight),
                 LineWidth = 2,
                 IsVisible = true
             }
@@ -160,7 +160,7 @@ public partial class Optimization : BasePage<Optimization>
             {
                 Name = "f(x, y)",
                 Data = surfaceData,
-                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                Color = ColorUtils.GetColor(Enums.Color.PrimaryLight),
                 IsVisible = true
             }
         };

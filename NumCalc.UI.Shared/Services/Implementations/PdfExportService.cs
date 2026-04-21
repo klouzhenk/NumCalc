@@ -107,7 +107,7 @@ public class PdfExportService : IPdfExportService
                             {
                                 var imageBytes = DecodeDataUrl(step.ImageBase64);
                                 if (imageBytes is not null)
-                                    stepCol.Item().MaxHeight(38).AlignCenter().Image(imageBytes).FitHeight();
+                                    stepCol.Item().AlignCenter().Image(imageBytes).FitWidth();
                             }
 
                             if (!string.IsNullOrWhiteSpace(step.Value))
