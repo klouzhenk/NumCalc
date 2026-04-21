@@ -1,0 +1,28 @@
+.result-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-m);
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--dimension-m);
+    }
+
+    &__result {
+        font-size: 0.9rem;
+        color: var(--black-color);
+    }
+
+    &__pane {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+
+        &--steps {
+            overflow-y: auto;
+        }
+    }
+}
