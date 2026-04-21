@@ -19,4 +19,5 @@ public class ChartSeries
     public int? ZIndex { get; set; }
     public double? FillLowerBound { get; set; }
     public double? FillUpperBound { get; set; }
+    public string? Step { get; set; }
 }

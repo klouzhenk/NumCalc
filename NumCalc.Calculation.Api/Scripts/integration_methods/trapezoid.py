@@ -6,6 +6,8 @@ from shared.structures import IntegrationResponseEnvelope, IntegrationSuccessDat
 from shared.parsing import parse_expression
 from shared.functions import generate_points
 
+SHAPE_THRESHOLD = 20
+
 
 def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> str:
     try:
@@ -35,6 +37,10 @@ def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> st
 
         result = float(h * (ys[0] / 2 + np.sum(ys[1:-1]) + ys[-1] / 2))
 
+        x0, x1 = float(xs[0]), float(xs[1])
+        x_last = float(xs[-1])
+        terms_preview = rf"\frac{{f({x0:.4g})}}{2} + f({x1:.4g}) + \cdots + \frac{{f({x_last:.4g})}}{2}"
+
         steps = [
             SolutionStep(
                 step_index=1,
@@ -44,20 +50,25 @@ def solve(expression: str, lower_bound: float, upper_bound: float, n: int) -> st
             ),
             SolutionStep(
                 step_index=2,
-                description="Parameters",
-                latex_formula=r"h = \frac{b - a}{n}",
-                value=f"h = ({upper_bound} - {lower_bound}) / {n} = {h:.8f}"
+                description="Sub-interval calculation",
+                latex_formula=rf"h = \frac{{b - a}}{{n}} = \frac{{{upper_bound} - ({lower_bound})}}{{{n}}} = {h:.6g}",
+                value=rf"I \approx {h:.6g} \cdot [{terms_preview}]"
             ),
         ]
 
         chart_pts = generate_points(f, lower_bound, upper_bound)
         chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in chart_pts]
 
+        shape_points = None
+        if n <= SHAPE_THRESHOLD:
+            shape_points = [Point(x=float(xs[i]), y=float(ys[i])) for i in range(len(xs))]
+
         envelope = IntegrationResponseEnvelope(
             success=IntegrationSuccessData(
                 integral_value=result,
                 chart_points=chart_points,
-                solution_steps=steps
+                solution_steps=steps,
+                shape_points=shape_points
             ),
             failure=None
         )

@@ -89,6 +89,7 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
         {
             IntegralValue = data.IntegralValue,
             ChartData = data.ChartPoints,
+            ShapePoints = data.ShapePoints,
             SolutionSteps = data.SolutionSteps,
             ExecutionTimeMs = executionTimeMs
         };

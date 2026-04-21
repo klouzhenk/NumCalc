@@ -11,6 +11,9 @@ public class IntegrationData
     [JsonPropertyName("chart_points")]
     public IEnumerable<Point>? ChartPoints { get; set; }
 
+    [JsonPropertyName("shape_points")]
+    public IEnumerable<Point>? ShapePoints { get; set; }
+
     [JsonPropertyName("solution_steps")]
     public List<SolutionStep>? SolutionSteps { get; set; }
 }

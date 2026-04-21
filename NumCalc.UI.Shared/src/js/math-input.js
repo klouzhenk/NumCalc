@@ -198,7 +198,8 @@ function processSeries(seriesItem, xAxis){
                         { value: seriesItem.fillUpperBound },
                         { fillColor: 'transparent' }
                     ]
-                })
+                }),
+                ...(seriesItem.step && { step: seriesItem.step })
             };
         }
 

@@ -85,33 +85,54 @@ public partial class Integration : BasePage<Integration>
 
         if (chartData.Count == 0) return;
 
+        var useShapes = Result.ShapePoints is not null;
+
+        var curveSeries = new ChartSeries
+        {
+            Name = "f(x)",
+            Data = chartData,
+            Color = ColorUtils.GetColor(Enums.Color.Primary),
+            LineWidth = 2,
+            IsVisible = true,
+            FillLowerBound = useShapes ? null : _lastLowerBound,
+            FillUpperBound = useShapes ? null : _lastUpperBound
+        };
+
+        var seriesList = new List<ChartSeries>();
+
+        if (useShapes)
+        {
+            var shapeData = Result.ShapePoints!
+                .Where(p => p.X.HasValue && p.Y.HasValue)
+                .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+                .ToList();
+
+            var shapeName = _method is IntegrationMethod.Rectangle
+                ? $"{_rectangleVariant} rectangles"
+                : "Trapezoids";
+
+            seriesList.Add(new ChartSeries
+            {
+                Name = shapeName,
+                Data = shapeData,
+                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                LineWidth = 1,
+                IsVisible = true,
+                FillLowerBound = _lastLowerBound,
+                FillUpperBound = _lastUpperBound,
+                Step = _method is IntegrationMethod.Rectangle ? "left" : null
+            });
+        }
+
+        seriesList.Add(curveSeries);
+
         var config = new Chart
         {
             ContainerId = ChartContainerId,
             Title = null,
-            XAxis = new ChartAxis
-            {
-                Title = "x",
-                PlotLines = [ChartUtils.CreateZeroLine()]
-            },
-            YAxis = new ChartAxis
-            {
-                Title = "f(x)",
-                PlotLines = [ChartUtils.CreateZeroLine()]
-            },
-            Series =
-            [
-                new ChartSeries
-                {
-                    Name = "f(x)",
-                    Data = chartData,
-                    Color = ColorUtils.GetColor(Enums.Color.Primary),
-                    LineWidth = 2,
-                    IsVisible = true,
-                    FillLowerBound = _lastLowerBound,
-                    FillUpperBound = _lastUpperBound
-                }
-            ]
+            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
+            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
+            Series = seriesList
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);

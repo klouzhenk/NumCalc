@@ -94,6 +94,7 @@ class IntegrationSuccessData:
     integral_value: float
     chart_points: List[Point]
     solution_steps: List[SolutionStep] = field(default_factory=list)
+    shape_points: List[Point] | None = None
 
 @dataclass
 class IntegrationResponseEnvelope:
