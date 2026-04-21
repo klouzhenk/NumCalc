@@ -93,6 +93,14 @@ public partial class Optimization : BasePage<Optimization>
     {
         if (Result?.ChartData is null) return;
 
+        var is3D = Result.ChartData.Any(p => p.Z.HasValue);
+
+        if (is3D)
+        {
+            await UpdateChart3dAsync();
+            return;
+        }
+
         var chartData = Result.ChartData
             .Where(p => p is { X: not null, Y: not null })
             .Select(p => new double[] { p.X!.Value, p.Y!.Value })
@@ -137,6 +145,55 @@ public partial class Optimization : BasePage<Optimization>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private async Task UpdateChart3dAsync()
+    {
+        var surfaceData = Result!.ChartData!
+            .Where(p => p is { X: not null, Y: not null, Z: not null })
+            .Select(p => new double[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
+            .ToList();
+
+        var series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "f(x, y)",
+                Data = surfaceData,
+                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                IsVisible = true
+            }
+        };
+
+        if (Result.PathData is not null)
+        {
+            var pathData = Result.PathData
+                .Where(p => p is { X: not null, Y: not null, Z: not null })
+                .Select(p => new[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
+                .ToList();
+
+            series.Add(new ChartSeries
+            {
+                Name = "Descent path",
+                Data = pathData,
+                Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
+                Type = ChartType.Scatter,
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
+            });
+        }
+
+        var config = new Chart
+        {
+            ContainerId = ChartContainerId,
+            ShowLegend = true,
+            XAxis = new ChartAxis { Title = "x" },
+            YAxis = new ChartAxis { Title = "y" },
+            ZAxis = new ChartAxis { Title = "f(x, y)" },
+            Series = series
+        };
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config);
     }
 
     private async Task ExportPdfAsync()

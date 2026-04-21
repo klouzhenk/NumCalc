@@ -82,6 +82,7 @@ class OptimizationSuccessData:
     arg_min_point: List[float] | None
     chart_points: List[Point] | None
     solution_steps: List[SolutionStep] = field(default_factory=list)
+    path_points: List[Point] | None = None
 
 @dataclass
 class OptimizationResponseEnvelope:

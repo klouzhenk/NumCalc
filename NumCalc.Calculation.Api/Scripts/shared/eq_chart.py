@@ -2,10 +2,10 @@ import numpy as np
 import sympy
 from scipy.optimize import brentq
 from shared.structures import Point, EquationChartSeries
+from shared.functions import generate_surface
 
 _RANGE = 10
 _N_POINTS = 200
-_GRID_N = 15
 
 
 def linear_chart_series(equations, variables, roots):
@@ -109,9 +109,6 @@ def _linear_chart_series_3d(equations, variables, roots):
     syms = sympy.symbols(variables)
     series = []
 
-    x1_vals = np.linspace(x1_star - _RANGE, x1_star + _RANGE, _GRID_N)
-    x2_vals = np.linspace(x2_star - _RANGE, x2_star + _RANGE, _GRID_N)
-
     for i, eq in enumerate(equations):
         if "=" in eq:
             left, right = eq.split("=", 1)
@@ -124,15 +121,7 @@ def _linear_chart_series_3d(equations, variables, roots):
             if not x3_sols:
                 continue
             x3_func = sympy.lambdify([syms[0], syms[1]], x3_sols[0], modules="numpy")
-            pts = []
-            for x1 in x1_vals:
-                for x2 in x2_vals:
-                    try:
-                        x3 = float(x3_func(float(x1), float(x2)))
-                        if np.isfinite(x3):
-                            pts.append(Point(x=float(x1), y=float(x2), z=x3))
-                    except Exception:
-                        pass
+            pts = [Point(x=x, y=y, z=z) for x, y, z in generate_surface(x3_func, x1_star, x2_star)]
             if pts:
                 series.append(EquationChartSeries(label=f"Eq. {i + 1}: {eq}", points=pts))
         except Exception:

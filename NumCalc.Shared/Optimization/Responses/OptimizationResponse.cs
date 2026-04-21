@@ -8,6 +8,7 @@ public class OptimizationResponse
     public double? ArgMinX { get; set; }
     public List<double>? ArgMinPoint { get; set; }
     public IEnumerable<Point>? ChartData { get; set; }
+    public IEnumerable<Point>? PathData { get; set; }
     public List<SolutionStep>? SolutionSteps { get; set; }
     public double ExecutionTimeMs { get; set; }
 }

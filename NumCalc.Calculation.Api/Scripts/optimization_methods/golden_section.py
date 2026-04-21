@@ -6,7 +6,13 @@ from shared.structures import OptimizationResponseEnvelope, OptimizationSuccessD
 from shared.parsing import parse_expression
 from shared.functions import generate_points
 
-_PHI = (math.sqrt(5) - 1) / 2  # golden ratio conjugate ≈ 0.618
+_PHI = (math.sqrt(5) - 1) / 2  # ≈ 0.618034
+
+
+def _fmt(v: float) -> str:
+    if v == 0:
+        return "0.000000"
+    return f"{v:.6f}" if abs(v) >= 0.0001 else f"{v:.4e}"
 
 
 def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: float, maximize: bool = False) -> str:
@@ -36,49 +42,67 @@ def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: fl
         x2 = a + _PHI * (b - a)
         f1, f2 = float(f(x1)), float(f(x2))
 
-        steps = []
+        steps = [
+            SolutionStep(
+                step_index=1,
+                description="Golden ratio constant",
+                latex_formula=r"\varphi = \frac{\sqrt{5}-1}{2} \approx 0.618034",
+                value=f"Initial x₁ = {_fmt(x1)},  x₂ = {_fmt(x2)}"
+            )
+        ]
+
         iteration = 0
 
         while (b - a) > tolerance:
             iteration += 1
+
+            x1_before, x2_before = x1, x2
+            f1_before, f2_before = f1, f2
+
             if (f1 < f2) if maximize else (f1 > f2):
+                op = ">" if not maximize else "<"
+                decision = f"a := x₁ = {_fmt(x1_before)}  (keep right subinterval)"
                 a = x1
                 x1, f1 = x2, f2
                 x2 = a + _PHI * (b - a)
                 f2 = float(f(x2))
             else:
+                op = "≤" if not maximize else "≥"
+                decision = f"b := x₂ = {_fmt(x2_before)}  (keep left subinterval)"
                 b = x2
                 x2, f2 = x1, f1
                 x1 = b - _PHI * (b - a)
                 f1 = float(f(x1))
 
             steps.append(SolutionStep(
-                step_index=iteration,
+                step_index=iteration + 1,
                 description=f"Iteration {iteration}",
-                latex_formula=r"[a,b] \leftarrow [a + (1-\varphi)(b-a),\, b] \text{ or } [a,\, b-(1-\varphi)(b-a)]",
-                value=f"a = {a:.6f}, b = {b:.6f}, |b-a| = {b - a:.2e}"
+                latex_formula=(
+                    rf"x_1 = {x1_before:.6f},\; f(x_1) = {_fmt(f1_before)}"
+                    rf"\qquad x_2 = {x2_before:.6f},\; f(x_2) = {_fmt(f2_before)}"
+                ),
+                value=f"f(x₁) {op} f(x₂)  →  {decision}  |  [a, b] = [{_fmt(a)}, {_fmt(b)}],  |b−a| = {_fmt(b - a)}"
             ))
 
             if iteration >= 1000:
                 break
 
-        x_star = (a + b) / 2.0
-        f_star = float(f(x_star))
+        x_min = (a + b) / 2.0
+        f_min = float(f(x_min))
 
         steps.append(SolutionStep(
-            step_index=iteration + 1,
+            step_index=iteration + 2,
             description="Result",
             latex_formula=r"x^* = \frac{a + b}{2}",
-            value=f"x* = {x_star:.8f}, f(x*) = {f_star:.8f}"
+            value=f"x* = {x_min:.8f},  f(x*) = {f_min:.8f}"
         ))
 
-        chart_pts = generate_points(f, lower_bound, upper_bound)
-        chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in chart_pts]
+        chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in generate_points(f, lower_bound, upper_bound)]
 
         envelope = OptimizationResponseEnvelope(
             success=OptimizationSuccessData(
-                minimum_value=f_star,
-                arg_min_x=x_star,
+                minimum_value=f_min,
+                arg_min_x=x_min,
                 arg_min_point=None,
                 chart_points=chart_points,
                 solution_steps=steps

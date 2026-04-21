@@ -93,6 +93,7 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             ArgMinX = data.ArgMinX,
             ArgMinPoint = data.ArgMinPoint,
             ChartData = data.ChartPoints,
+            PathData = data.PathPoints,
             SolutionSteps = data.SolutionSteps,
             ExecutionTimeMs = executionTimeMs
         };

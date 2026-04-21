@@ -5,7 +5,9 @@ from typing import List
 from dataclasses import asdict
 from shared.structures import OptimizationResponseEnvelope, OptimizationSuccessData, FailureData, Point, SolutionStep
 from shared.parsing import parse_expression
-from shared.functions import generate_points
+from shared.functions import generate_points, generate_surface
+
+_MAX_PATH_POINTS = 50
 
 
 def solve(expression: str, initial_point: List[float], learning_rate: float, tolerance: float, max_iterations: int, maximize: bool = False) -> str:
@@ -45,14 +47,17 @@ def solve(expression: str, initial_point: List[float], learning_rate: float, tol
 
         point = list(map(float, initial_point))
         steps = []
+        raw_path: list[tuple] = []
 
-        # Record every k-th step so we never exceed ~50 steps in the response
         record_every = max(1, max_iterations // 50)
 
         for i in range(max_iterations):
             f_val = float(f(*point))
             grad_val = [float(g(*point)) for g in grad_f]
             grad_norm = float(np.linalg.norm(grad_val))
+
+            if n_vars == 2:
+                raw_path.append((point[0], point[1], f_val))
 
             step_latex = r"x_{k+1} = x_k + \alpha \nabla f(x_k)" if maximize else r"x_{k+1} = x_k - \alpha \nabla f(x_k)"
             if i % record_every == 0 or grad_norm < tolerance:
@@ -61,7 +66,7 @@ def solve(expression: str, initial_point: List[float], learning_rate: float, tol
                     step_index=i + 1,
                     description=f"Iteration {i + 1}",
                     latex_formula=step_latex,
-                    value=f"{var_str}, f = {f_val:.8f}, |\u2207f| = {grad_norm:.2e}"
+                    value=f"{var_str}, f = {f_val:.8f}, |∇f| = {grad_norm:.2e}"
                 ))
 
             if grad_norm < tolerance:
@@ -70,23 +75,36 @@ def solve(expression: str, initial_point: List[float], learning_rate: float, tol
             sign = 1 if maximize else -1
             point = [p + sign * learning_rate * g for p, g in zip(point, grad_val)]
 
-        f_star = float(f(*point))
+        f_min = float(f(*point))
 
-        # Chart only for single-variable case
         chart_points = None
+        path_points = None
+
         if n_vars == 1:
             f_1d = sympy.lambdify(free_vars[0], expr, modules="numpy")
             padding = max(5.0, abs(point[0]) * 2)
-            chart_pts = generate_points(f_1d, point[0] - padding, point[0] + padding)
-            chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in chart_pts]
+            chart_points = [
+                Point(x=float(p[0]), y=float(p[1]))
+                for p in generate_points(f_1d, point[0] - padding, point[0] + padding)
+            ]
+
+        elif n_vars == 2:
+            chart_points = [Point(x=x, y=y, z=z) for x, y, z in generate_surface(f, point[0], point[1])]
+
+            step = max(1, len(raw_path) // _MAX_PATH_POINTS)
+            sampled = raw_path[::step]
+            if raw_path and raw_path[-1] not in sampled:
+                sampled = list(sampled) + [raw_path[-1]]
+            path_points = [Point(x=p[0], y=p[1], z=p[2]) for p in sampled]
 
         envelope = OptimizationResponseEnvelope(
             success=OptimizationSuccessData(
-                minimum_value=f_star,
+                minimum_value=f_min,
                 arg_min_x=None,
                 arg_min_point=point,
                 chart_points=chart_points,
-                solution_steps=steps
+                solution_steps=steps,
+                path_points=path_points
             ),
             failure=None
         )

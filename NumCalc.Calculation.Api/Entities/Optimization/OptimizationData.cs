@@ -17,6 +17,9 @@ public class OptimizationData
     [JsonPropertyName("chart_points")]
     public IEnumerable<Point>? ChartPoints { get; set; }
 
+    [JsonPropertyName("path_points")]
+    public IEnumerable<Point>? PathPoints { get; set; }
+
     [JsonPropertyName("solution_steps")]
     public List<SolutionStep>? SolutionSteps { get; set; }
 }
