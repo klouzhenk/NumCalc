@@ -9,6 +9,7 @@
     & > * {
         flex: 1;
         min-height: 0;
+        min-width: 0;
     }
 }
 
@@ -50,20 +51,4 @@
     gap: var(--dimension-l);
     flex: 1;
 
-    &__answer {
-        display: flex;
-        gap: var(--dimension-xs) var(--dimension-l);
-
-        span {
-            font-family: var(--font-heading), monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            padding: var(--dimension-s) var(--dimension-m);
-            border: var(--default-border);
-            border-left: 3px solid var(--primary-color);
-            border-radius: var(--border-radius-s);
-            background: var(--primary-background);
-        }
-    }
 }

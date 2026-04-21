@@ -43,7 +43,7 @@
                     <span>y(@Result.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?") ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
                 </div>
 
-                <LatexDisplay Latex="@Result.PolynomialLatex" />
+                <LatexDisplay Latex="@Result.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
 
                 <SolutionStepsList Steps="@Result.SolutionSteps" />
             </div>

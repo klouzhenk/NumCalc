@@ -7,6 +7,7 @@ public partial class LatexDisplay : ComponentBase
 {
     [Parameter] public string? Latex { get; set; }
     [Parameter] public string? Prefix { get; set; }
+    [Parameter] public string? AdditionalCssClass { get; set; }
 
     [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 

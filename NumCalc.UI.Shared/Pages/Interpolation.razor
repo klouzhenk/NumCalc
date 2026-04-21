@@ -53,6 +53,7 @@
         <ResultPanel HasResult="Result is not null">
             <Header>
                 <span>x* = @Result!.InterpolatedValue.ToString("G6")</span>
+                <LatexDisplay Latex="@Result?.PolynomialLatex" Prefix="P(x) = " AdditionalCssClass="result-panel__formula" />
             </Header>
             <ChartContent>
                 <div class="chart__container">
@@ -61,8 +62,7 @@
                 </div>
             </ChartContent>
             <ResultContent>
-                <LatexDisplay Latex="@Result.PolynomialLatex" Prefix="P(x) = " />
-                <SolutionStepsList Steps="Result.SolutionSteps" />
+                <SolutionStepsList Steps="Result?.SolutionSteps" />
             </ResultContent>
         </ResultPanel>
     </section>
