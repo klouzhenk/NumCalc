@@ -49,15 +49,20 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
         max_display = 10
         while x < target_x - 1e-12:
             h = min(step_size, target_x - x)
-            y_next = y + h * float(f(x, y))
+            slope = float(f(x, y))
+            y_next = y + h * slope
             x_next = x + h
 
             if step_index <= max_display + 1:
+                latex = (
+                    r"f(" + f"{x:.6g},\\, {y:.4f}" + r") = " + f"{slope:.4f}" + r" \quad \text{(slope)}"
+                    r",\quad y_{" + str(step_index - 1) + r"} = " + f"{y:.4f}" + r" + " + f"{h:.6g}" + r" \cdot " + f"{slope:.4f}" + r" = " + f"{y_next:.4f}"
+                )
                 steps.append(SolutionStep(
                     step_index=step_index,
                     description=f"Step x = {x:.6g}",
-                    latex_formula=r"y_{" + str(step_index - 1) + r"} = " + f"{y:.8f}" + r" + " + f"{h:.6g}" + r" \cdot f(" + f"{x:.6g}, {y:.8f}) = {y_next:.8f}",
-                    value=f"y({x_next:.6g}) \u2248 {y_next:.8f}"
+                    latex_formula=latex,
+                    value=f"y({x_next:.6g}) ≈ {y_next:.4f}"
                 ))
 
             x = x_next

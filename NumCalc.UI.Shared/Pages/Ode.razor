@@ -35,30 +35,21 @@
                 }
             </div>
         </div>
-
-        @if (Result is not null)
-        {
-            <div class="ode-result">
-                <div class="ode-result__answer">
-                    <span>y(@Result.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?") ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
-                </div>
-
-                <LatexDisplay Latex="@Result.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
-
-                <SolutionStepsList Steps="@Result.SolutionSteps" />
-            </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">Click Calculate to view result</span>
-            </div>
-        }
-
     </div>
 
-    <div class="chart__container">
-        <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-        <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
-    </div>
+    <ResultPanel HasResult="Result is not null">
+        <Header>
+            <span>y(@(Result!.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?")) ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
+            <LatexDisplay Latex="@Result.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
+        </Header>
+        <ChartContent>
+            <div class="chart__container">
+                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+            </div>
+        </ChartContent>
+        <ResultContent>
+            <SolutionStepsList Steps="Result?.SolutionSteps" />
+        </ResultContent>
+    </ResultPanel>
 </div>

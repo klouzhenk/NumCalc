@@ -105,9 +105,9 @@ public class PdfExportService : IPdfExportService
 
                             if (!string.IsNullOrWhiteSpace(step.ImageBase64))
                             {
-                                var imageBytes = Convert.FromBase64String(
-                                    step.ImageBase64.Replace("data:image/png;base64,", ""));
-                                stepCol.Item().MaxHeight(38).AlignCenter().Image(imageBytes).FitHeight();
+                                var imageBytes = DecodeDataUrl(step.ImageBase64);
+                                if (imageBytes is not null)
+                                    stepCol.Item().MaxHeight(38).AlignCenter().Image(imageBytes).FitHeight();
                             }
 
                             if (!string.IsNullOrWhiteSpace(step.Value))
@@ -130,12 +130,28 @@ public class PdfExportService : IPdfExportService
 
             if (!string.IsNullOrWhiteSpace(request.ChartImage))
             {
-                col.Item().Element(SectionLabel("Chart"));
-                var chartBytes = Convert.FromBase64String(
-                    request.ChartImage.Replace("data:image/png;base64,", ""));
-                col.Item().AlignCenter().Image(chartBytes).FitWidth();
+                var chartBytes = DecodeDataUrl(request.ChartImage);
+                if (chartBytes is not null)
+                {
+                    col.Item().Element(SectionLabel("Chart"));
+                    col.Item().AlignCenter().Image(chartBytes).FitWidth();
+                }
             }
         });
+
+    private static byte[]? DecodeDataUrl(string dataUrl)
+    {
+        try
+        {
+            var commaIndex = dataUrl.IndexOf(',');
+            var base64 = commaIndex >= 0 ? dataUrl[(commaIndex + 1)..] : dataUrl;
+            return string.IsNullOrWhiteSpace(base64) ? null : Convert.FromBase64String(base64);
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     private static Action<IContainer> SectionLabel(string title) =>
         container => container

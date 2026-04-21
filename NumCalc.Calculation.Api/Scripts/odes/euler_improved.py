@@ -56,11 +56,19 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
             x_next = x + h
 
             if step_index <= max_display + 1:
+                latex = (
+                    r"\begin{aligned}"
+                    r"k_1 &= f(" + f"{x:.6g},\\, {y:.4f}" + r") = " + f"{k1:.4f}" + r" && \text{(slope at start)} \\"
+                    r"\tilde{y}_{n+1} &= " + f"{y:.4f}" + r" + " + f"{h:.6g}" + r" \cdot " + f"{k1:.4f}" + r" = " + f"{y_pred:.4f}" + r" && \text{(predictor)} \\"
+                    r"k_2 &= f(" + f"{x_next:.6g},\\, {y_pred:.4f}" + r") = " + f"{k2:.4f}" + r" && \text{(predicted slope)} \\"
+                    r"y_{" + str(step_index - 1) + r"} &= " + f"{y:.4f}" + r" + \tfrac{" + f"{h:.6g}" + r"}{2}(" + f"{k1:.4f}" + r" + " + f"{k2:.4f}" + r") = " + f"{y_next:.4f}" + r" && \text{(corrector)}"
+                    r"\end{aligned}"
+                )
                 steps.append(SolutionStep(
                     step_index=step_index,
                     description=f"Step x = {x:.6g}",
-                    latex_formula=r"\tilde{y} = " + f"{y_pred:.8f}" + r",\quad y_{" + str(step_index - 1) + r"} = " + f"{y_next:.8f}",
-                    value=f"y({x_next:.6g}) \u2248 {y_next:.8f}"
+                    latex_formula=latex,
+                    value=f"y({x_next:.6g}) ≈ {y_next:.4f}"
                 ))
 
             x = x_next

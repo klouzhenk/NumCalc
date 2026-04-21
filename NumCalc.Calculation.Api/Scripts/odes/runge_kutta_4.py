@@ -57,16 +57,20 @@ def solve(expression: str, initial_x: float, initial_y: float, target_x: float, 
             x_next = x + h
 
             if step_index <= max_display + 1:
+                latex = (
+                    r"\begin{aligned}"
+                    r"k_1 &= " + f"{k1:.4f}" + r" && \text{(slope at } x_n \text{)} \\"
+                    r"k_2 &= " + f"{k2:.4f}" + r" && \text{(slope at midpoint, using } k_1 \text{)} \\"
+                    r"k_3 &= " + f"{k3:.4f}" + r" && \text{(slope at midpoint, using } k_2 \text{)} \\"
+                    r"k_4 &= " + f"{k4:.4f}" + r" && \text{(slope at } x_n + h \text{)} \\"
+                    r"y_{" + str(step_index - 1) + r"} &= " + f"{y_next:.4f}"
+                    r"\end{aligned}"
+                )
                 steps.append(SolutionStep(
                     step_index=step_index,
                     description=f"Step x = {x:.6g}",
-                    latex_formula=(
-                        r"k_1=" + f"{k1:.6f}" +
-                        r",\; k_2=" + f"{k2:.6f}" +
-                        r",\; k_3=" + f"{k3:.6f}" +
-                        r",\; k_4=" + f"{k4:.6f}"
-                    ),
-                    value=f"y({x_next:.6g}) \u2248 {y_next:.8f}"
+                    latex_formula=latex,
+                    value=f"y({x_next:.6g}) ≈ {y_next:.4f}"
                 ))
 
             x = x_next
