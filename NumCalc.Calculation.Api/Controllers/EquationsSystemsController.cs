@@ -45,4 +45,22 @@ public class EquationsSystemsController(IEquationsSystemService equationsSystemS
         var response = equationsSystemService.SolveSeidel(request);
         return Ok(response);
     }
+
+    [HttpPost("linear-comparison")]
+    [ProducesResponseType(typeof(LinearSystemComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult CompareLinear([FromBody] LinearSystemComparisonRequest request)
+    {
+        var response = equationsSystemService.CompareLinear(request);
+        return Ok(response);
+    }
+
+    [HttpPost("nonlinear-comparison")]
+    [ProducesResponseType(typeof(NonLinearSystemComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult CompareNonLinear([FromBody] NonLinearSystemComparisonRequest request)
+    {
+        var response = equationsSystemService.CompareNonLinear(request);
+        return Ok(response);
+    }
 }

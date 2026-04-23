@@ -28,6 +28,8 @@ public interface ICalculationApiService
     Task<SystemSolvingResponse?> SolveGaussianAsync(SystemSolvingRequest request);
     Task<SystemSolvingResponse?> SolveFixedPointAsync(NonLinearSystemRequest request);
     Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request);
+    Task<LinearSystemComparisonResponse?> GetLinearComparisonAsync(LinearSystemComparisonRequest request);
+    Task<NonLinearSystemComparisonResponse?> GetNonLinearComparisonAsync(NonLinearSystemComparisonRequest request);
     Task<InterpolationResponse?> InterpolateNewtonAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);

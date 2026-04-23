@@ -45,9 +45,15 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<SystemSolvingResponse?> SolveFixedPointAsync(NonLinearSystemRequest request)
         => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/fixed-point", request);
-    
+
     public async Task<SystemSolvingResponse?> SolveSeidelAsync(NonLinearSystemRequest request)
         => await SendPostRequestAsync<SystemSolvingResponse>("api/equationssystems/seidel", request);
+
+    public async Task<LinearSystemComparisonResponse?> GetLinearComparisonAsync(LinearSystemComparisonRequest request)
+        => await SendPostRequestAsync<LinearSystemComparisonResponse>("api/equationssystems/linear-comparison", request);
+
+    public async Task<NonLinearSystemComparisonResponse?> GetNonLinearComparisonAsync(NonLinearSystemComparisonRequest request)
+        => await SendPostRequestAsync<NonLinearSystemComparisonResponse>("api/equationssystems/nonlinear-comparison", request);
 
     public async Task<InterpolationResponse?> InterpolateNewtonAsync(InterpolationRequest request)
         => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/newton", request);

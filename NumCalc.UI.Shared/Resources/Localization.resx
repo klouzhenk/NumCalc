@@ -304,4 +304,16 @@
   <data name="GoldenSection" xml:space="preserve">
     <value>Golden Section</value>
   </data>
+  <data name="Cramer" xml:space="preserve">
+    <value>Cramer's Rule</value>
+  </data>
+  <data name="Gauss" xml:space="preserve">
+    <value>Gaussian Elimination</value>
+  </data>
+  <data name="FixedPoint" xml:space="preserve">
+    <value>Fixed-Point Iteration</value>
+  </data>
+  <data name="Seidel" xml:space="preserve">
+    <value>Gauss-Seidel</value>
+  </data>
 </root>

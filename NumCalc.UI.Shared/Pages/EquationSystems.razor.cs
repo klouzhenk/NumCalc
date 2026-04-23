@@ -5,6 +5,7 @@ using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
 using NumCalc.UI.Shared.Enums.EquationSystems;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Models.Charts;
@@ -19,6 +20,7 @@ public partial class EquationSystems : BasePage<EquationSystems>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
+    private AnalysisMode _mode = AnalysisMode.Single;
     private EquationSystemCategory Category { get; set; } = EquationSystemCategory.Linear;
     private LinearSystemMethod LinearMethod { get; set; } = LinearSystemMethod.Cramer;
     private NonLinearSystemMethod NonLinearMethod { get; set; } = NonLinearSystemMethod.FixedPoint;
@@ -32,21 +34,79 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private EquationList? _equationList;
 
     private SystemSolvingResponse? Result { get; set; }
+    private LinearSystemComparisonResponse? LinearComparisonResult { get; set; }
+    private NonLinearSystemComparisonResponse? NonLinearComparisonResult { get; set; }
     private List<string>? _lastEquations;
     private List<string>? _lastVariables;
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
-    private void ResetResult() => Result = null;
+    private void ResetResult()
+    {
+        Result = null;
+        LinearComparisonResult = null;
+        NonLinearComparisonResult = null;
+    }
 
     private async Task Calculate()
     {
         Result = null;
+        LinearComparisonResult = null;
+        NonLinearComparisonResult = null;
+
+        if (_mode is AnalysisMode.Benchmark)
+        {
+            if (Category is EquationSystemCategory.Linear)
+                await CompareLinear();
+            else
+                await CompareNonLinear();
+            return;
+        }
 
         if (Category is EquationSystemCategory.Linear)
             await CalculateLinear();
         else
             await CalculateNonLinear();
+    }
+
+    private async Task CompareLinear()
+    {
+        if (_linearInput is null) return;
+
+        var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
+        var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
+
+        var request = new LinearSystemComparisonRequest
+        {
+            Equations = equations,
+            Variables = variables
+        };
+
+        LinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetLinearComparisonAsync(request));
+    }
+
+    private async Task CompareNonLinear()
+    {
+        if (_equationList is null) return;
+
+        var formData = await _equationList.GetFormData();
+
+        if (formData.IterationFunctions.Any(string.IsNullOrWhiteSpace))
+        {
+            UiService.ShowError(Localizer["ExpressionRequired"]);
+            return;
+        }
+
+        var request = new NonLinearSystemComparisonRequest
+        {
+            IterationFunctions = formData.IterationFunctions.ToList(),
+            Variables = formData.Variables.ToList(),
+            InitialGuess = formData.InitialGuess.ToList(),
+            Tolerance = formData.Tolerance,
+            MaxIterations = formData.MaxIterations
+        };
+
+        NonLinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetNonLinearComparisonAsync(request));
     }
 
     private async Task CalculateLinear()

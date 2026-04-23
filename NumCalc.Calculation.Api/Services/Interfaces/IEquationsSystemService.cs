@@ -9,4 +9,6 @@ public interface IEquationsSystemService
     SystemSolvingResponse SolveGaussian(SystemSolvingRequest model);
     SystemSolvingResponse SolveFixedPoint(NonLinearSystemRequest model);
     SystemSolvingResponse SolveSeidel(NonLinearSystemRequest model);
+    LinearSystemComparisonResponse CompareLinear(LinearSystemComparisonRequest request);
+    NonLinearSystemComparisonResponse CompareNonLinear(NonLinearSystemComparisonRequest request);
 }

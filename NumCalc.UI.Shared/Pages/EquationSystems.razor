@@ -2,6 +2,8 @@
 @using NumCalc.UI.Shared.Enums.EquationSystems
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.EquationSystems
+@using NumCalc.UI.Shared.Enums.Roots
+@using NumCalc.Shared.Enums.EquationSystems
 
 @inherits BasePage<EquationSystems>
 
@@ -15,23 +17,33 @@
                     @bind-Value:after="ResetResult"
                     TextField="@(item => item.ToString())"/>
 
-            @if (Category is EquationSystemCategory.Linear)
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="_mode"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(item => item.ToString())"
+                    Label="@Localizer["AnalysisMode"]" />
+
+            @if (_mode is AnalysisMode.Single)
             {
-                <Dropdown TItem="LinearSystemMethod"
-                          Label="Method"
-                          Data="@(Enum.GetValues<LinearSystemMethod>())"
-                          @bind-Value="LinearMethod"
-                          @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
-            }
-            else
-            {
-                <Dropdown TItem="NonLinearSystemMethod"
-                          Label="Method"
-                          Data="@(Enum.GetValues<NonLinearSystemMethod>())"
-                          @bind-Value="NonLinearMethod"
-                          @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                @if (Category is EquationSystemCategory.Linear)
+                {
+                    <Dropdown TItem="LinearSystemMethod"
+                              Label="Method"
+                              Data="@(Enum.GetValues<LinearSystemMethod>())"
+                              @bind-Value="LinearMethod"
+                              @bind-Value:after="ResetResult"
+                              TextField="@(item => item.ToString())"/>
+                }
+                else
+                {
+                    <Dropdown TItem="NonLinearSystemMethod"
+                              Label="Method"
+                              Data="@(Enum.GetValues<NonLinearSystemMethod>())"
+                              @bind-Value="NonLinearMethod"
+                              @bind-Value:after="ResetResult"
+                              TextField="@(item => item.ToString())"/>
+                }
             }
 
             <Dropdown TItem="int"
@@ -54,22 +66,29 @@
 
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
-                @if (Result is not null)
+                @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
             </div>
         </div>
     </div>
-    
-    <ResultPanel HasResult="Result is not null">
+
+    <ResultPanel HasResult="Result is not null || LinearComparisonResult is not null || NonLinearComparisonResult is not null">
         <Header>
-            <div class="equation-systems-result__roots">
-                @for (var i = 0; i < Result?.Roots?.Count; i++)
-                {
-                    <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
-                }
-            </div>
+            @if (_mode is AnalysisMode.Single && Result is not null)
+            {
+                <div class="equation-systems-result__roots">
+                    @for (var i = 0; i < Result?.Roots?.Count; i++)
+                    {
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
+                    }
+                </div>
+            }
+            else
+            {
+                <span>@Localizer["Benchmark"]</span>
+            }
         </Header>
         <ChartContent>
             <div class="chart__container">
@@ -78,7 +97,48 @@
             </div>
         </ChartContent>
         <ResultContent>
-            <SolutionStepsList Steps="Result?.SolutionSteps" />
+            @if (_mode is AnalysisMode.Single)
+            {
+                <SolutionStepsList Steps="Result?.SolutionSteps" />
+            }
+            else if (Category is EquationSystemCategory.Linear && LinearComparisonResult?.Results is { Count: > 0 })
+            {
+                <ul class="root-finding-result__list">
+                    @foreach (var item in LinearComparisonResult.Results)
+                    {
+                        <li class="root-finding-result__item comparison-result__item @(item.Method == LinearComparisonResult.BestMethod ? "marked" : "")">
+                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                            <div class="root-finding-result__item-text">
+                                @if (item.Roots is { Count: > 0 })
+                                {
+                                    <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                    <span> &nbsp;|&nbsp; </span>
+                                }
+                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            else if (Category is EquationSystemCategory.NonLinear && NonLinearComparisonResult?.Results is { Count: > 0 })
+            {
+                <ul class="root-finding-result__list">
+                    @foreach (var item in NonLinearComparisonResult.Results)
+                    {
+                        <li class="root-finding-result__item comparison-result__item @(item.Method == NonLinearComparisonResult.BestMethod ? "marked" : "")">
+                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                            <div class="root-finding-result__item-text">
+                                @if (item.Roots is { Count: > 0 })
+                                {
+                                    <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                    <span> &nbsp;|&nbsp; </span>
+                                }
+                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
         </ResultContent>
     </ResultPanel>
 </div>
