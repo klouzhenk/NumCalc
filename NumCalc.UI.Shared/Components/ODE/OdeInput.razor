@@ -1,5 +1,5 @@
+@using NumCalc.Shared.Enums.ODE
 @using NumCalc.UI.Shared.Components
-@using NumCalc.UI.Shared.Enums.ODE
 
 <div class="input-section__wrapper input-section__wrapper--ode-function">
     <Tooltip>
@@ -61,6 +61,6 @@
                 <input type="number" step="any" min="0.0001" class="input-group__input" @bind="_stepSize" />
             </div>
         </Content>
-        <Hint>Integration step h. Smaller h gives higher accuracy but more computation steps.</Hint>
+        <Hint>Integration step h. Smaller h gives higher accuracy but more computation steps. Estimated steps: @ComputedStepCount.</Hint>
     </Tooltip>
 </div>

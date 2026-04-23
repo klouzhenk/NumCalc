@@ -268,4 +268,16 @@
   <data name="Simpson" xml:space="preserve">
     <value>Метод Сімпсона</value>
   </data>
+  <data name="Euler" xml:space="preserve">
+    <value>Метод Ейлера</value>
+  </data>
+  <data name="EulerImproved" xml:space="preserve">
+    <value>Ейлер вдосконалений (Хойн)</value>
+  </data>
+  <data name="RungeKutta2" xml:space="preserve">
+    <value>Рунге-Кутта 2</value>
+  </data>
+  <data name="RungeKutta4" xml:space="preserve">
+    <value>Рунге-Кутта 4</value>
+  </data>
 </root>

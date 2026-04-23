@@ -101,4 +101,7 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     
     public async Task<OdeResponse?> SolvePicard(OdeRequest request)
         => await SendPostRequestAsync<OdeResponse>("api/ode/picard", request);
+
+    public async Task<OdeComparisonResponse?> GetOdeComparisonAsync(OdeComparisonRequest request)
+        => await SendPostRequestAsync<OdeComparisonResponse>("api/ode/comparison", request);
 }

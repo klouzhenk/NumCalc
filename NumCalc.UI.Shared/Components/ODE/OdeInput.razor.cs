@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using NumCalc.UI.Shared.Enums.ODE;
+using NumCalc.Shared.Enums.ODE;
 using NumCalc.UI.Shared.Models.ODE;
 
 namespace NumCalc.UI.Shared.Components.ODE;

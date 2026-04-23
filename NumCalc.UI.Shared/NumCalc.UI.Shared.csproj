@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <Folder Include="Enums\Interpolation\" />
+      <Folder Include="Enums\ODE\" />
       <Folder Include="src\fonts\" />
     </ItemGroup>
 

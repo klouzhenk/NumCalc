@@ -234,7 +234,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Newton interpolation polynomial — implemented
 - Lagrange interpolation polynomial — implemented
 - Spline interpolation (cubic splines, SciPy) — implemented
-- **Comparison** — IN PROGRESS (compare Newton, Lagrange, Spline; shared result fields: `InterpolatedValue`, `ExecutionTimeMs`)
+- **Comparison** — COMPLETED (`POST api/interpolation/comparison`; `InterpolationComparisonRequest` → `InterpolationComparisonResponse`)
 
 ---
 
@@ -249,7 +249,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Rectangle rule (left, right, midpoint) — implemented
 - Trapezoidal rule — implemented
 - Simpson’s 1/3 rule — implemented
-- **Comparison** — IN PROGRESS (compare Rectangle left/right/mid, Trapezoid, Simpson; shared result fields: `IntegralValue`, `ExecutionTimeMs`)
+- **Comparison** — COMPLETED (`POST api/integration/comparison`; `IntegrationComparisonRequest` → `IntegrationComparisonResponse`)
 
 ---
 
@@ -271,7 +271,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Euler Improved (Heun) — implemented
 - Runge-Kutta 2nd order — implemented
 - Runge-Kutta 4th order — implemented
-- **Comparison** — IN PROGRESS (compare Euler, Euler Improved, RK2, RK4; Picard excluded — symbolic/different output; shared result fields: final `y` at targetX, `ExecutionTimeMs`)
+- **Comparison** — COMPLETED (`POST api/ode/comparison`; `OdeComparisonRequest` → `OdeComparisonResponse`; Picard excluded — symbolic/different output)
 
 ---
 
@@ -305,9 +305,9 @@ Allows users to run multiple methods on the same input and compare results side-
 | Domain | Methods compared | Status |
 |---|---|---|
 | Root Finding | Bisection, Simple Iter, Newton, Secant, Combined | COMPLETED |
-| Integration | Rectangle (L/R/M), Trapezoid, Simpson | IN PROGRESS |
-| Interpolation | Newton, Lagrange, Spline | IN PROGRESS |
-| ODE | Euler, Euler Improved, RK2, RK4 (Picard excluded) | IN PROGRESS |
+| Integration | Rectangle (L/R/M), Trapezoid, Simpson | COMPLETED |
+| Interpolation | Newton, Lagrange, Spline | COMPLETED |
+| ODE | Euler, Euler Improved, RK2, RK4 (Picard excluded) | COMPLETED |
 | Differentiation | Forward, Backward, Central, Lagrange | PLANNED |
 | Optimization (1D) | Uniform search, Golden section (gradient descent excluded) | PLANNED |
 | Equation Systems | Linear: Cramer vs Gaussian / Non-linear: Fixed-point vs Seidel | PLANNED |

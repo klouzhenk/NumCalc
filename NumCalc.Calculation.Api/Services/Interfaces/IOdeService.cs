@@ -10,4 +10,5 @@ public interface IOdeService
     OdeResponse SolveRungeKutta2(OdeRequest request);
     OdeResponse SolveRungeKutta4(OdeRequest request);
     OdeResponse SolvePicard(OdeRequest request);
+    OdeComparisonResponse Compare(OdeComparisonRequest request);
 }

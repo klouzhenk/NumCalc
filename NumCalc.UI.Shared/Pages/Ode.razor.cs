@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NumCalc.Shared.Enums.ODE;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
 using NumCalc.UI.Shared.Components.ODE;
 using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
-using NumCalc.UI.Shared.Enums.ODE;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
+using OdeMethod = NumCalc.Shared.Enums.ODE.OdeMethod;
 
 namespace NumCalc.UI.Shared.Pages;
 
@@ -21,11 +23,19 @@ public partial class Ode : BasePage<Ode>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
+    private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
+    private List<OdeMethod> _benchmarkMethods = [];
     private OdeInput? _input;
     private OdeResponse? Result { get; set; }
+    private OdeComparisonResponse? ComparisonResult { get; set; }
 
-    private void ResetResult() => Result = null;
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
+    }
+
     private double _initialX;
     private string? _lastExpression;
     private double _lastInitialY;
@@ -38,10 +48,34 @@ public partial class Ode : BasePage<Ode>
     private async Task Calculate()
     {
         Result = null;
+        ComparisonResult = null;
 
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
+
+        if (_mode is AnalysisMode.Benchmark)
+        {
+            if (_benchmarkMethods.Count == 0)
+            {
+                UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+                return;
+            }
+
+            var compRequest = new OdeComparisonRequest
+            {
+                FunctionExpression = formData.FunctionExpression,
+                InitialX = formData.InitialX,
+                InitialY = formData.InitialY,
+                TargetX = formData.TargetX,
+                StepSize = formData.StepSize,
+                Methods = _benchmarkMethods
+            };
+
+            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetOdeComparisonAsync(compRequest));
+            return;
+        }
+
         _initialX = formData.InitialX;
         _lastExpression = formData.FunctionExpression;
         _lastInitialY = formData.InitialY;

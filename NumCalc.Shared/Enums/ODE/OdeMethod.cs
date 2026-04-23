@@ -1,4 +1,4 @@
-﻿namespace NumCalc.UI.Shared.Enums.ODE;
+namespace NumCalc.Shared.Enums.ODE;
 
 public enum OdeMethod
 {
