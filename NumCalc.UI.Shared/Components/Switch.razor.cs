@@ -11,6 +11,7 @@ public partial class Switch<TItem> : ComponentBase
     [Parameter] public EventCallback<TItem?> ValueChanged { get; set; }
     
     [Parameter] public Func<TItem, string> TextField { get; set; } = x => x?.ToString() ?? string.Empty;
+    [Parameter] public bool Shrink { get; set; } = false;
 
     private bool IsSelected(TItem item)
     {

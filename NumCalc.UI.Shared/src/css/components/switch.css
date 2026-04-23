@@ -47,4 +47,14 @@
             letter-spacing: 1px;
         }
     }
+
+    &.multi-switch--non-shrink {
+        flex-shrink: 0;
+        width: 100%;
+
+        .multi-switch__option {
+            overflow: visible;
+            text-overflow: unset;
+        }
+    }
 }

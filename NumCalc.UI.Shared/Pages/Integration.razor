@@ -14,7 +14,8 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"/>
+                    TextField="@(item => item.ToString())"
+                    Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
             {

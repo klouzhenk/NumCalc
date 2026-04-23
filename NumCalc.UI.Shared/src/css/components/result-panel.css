@@ -45,16 +45,6 @@
         align-items: center;
     }
 
-    & .multi-switch {
-        flex-shrink: 0;
-        width: max-content;
-        
-        &__option {
-            overflow: visible;
-            text-overflow: unset;
-        }
-    }
-
     &__result {
         font-size: 0.9rem;
         color: var(--black-color);

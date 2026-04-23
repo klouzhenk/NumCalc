@@ -13,4 +13,12 @@ public static class ChartUtils
         Width = 2,
         DashStyle = LineStyle.LongDash
     };
+    
+    public static PlotLine CreateConstant(double constant) => new()
+    {
+        Value = constant,
+        Color = ColorUtils.GetColor(Color.Gray),
+        Width = 2,
+        DashStyle = LineStyle.LongDash
+    };
 }

@@ -5,7 +5,7 @@
     {
         <span class="multi-switch__title">@Label</span>
     }
-    <div class="multi-switch">
+    <div class="multi-switch @(Shrink ? "" : "multi-switch--non-shrink")">
         @foreach (var item in Data)
         {
             var isSelected = IsSelected(item);

@@ -109,8 +109,8 @@ public partial class Integration : BasePage<Integration>
         if (Result?.ChartData is null) return;
 
         var chartData = Result.ChartData
-            .Where(p => p.X.HasValue && p.Y.HasValue)
-            .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+            .Where(p => p is { X: not null, Y: not null })
+            .Select(p => new[] { p.X!.Value, p.Y!.Value })
             .ToList();
 
         if (chartData.Count == 0) return;
@@ -133,8 +133,8 @@ public partial class Integration : BasePage<Integration>
         if (useShapes)
         {
             var shapeData = Result.ShapePoints!
-                .Where(p => p.X.HasValue && p.Y.HasValue)
-                .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+                .Where(p => p is { X: not null, Y: not null })
+                .Select(p => new[] { p.X!.Value, p.Y!.Value })
                 .ToList();
 
             var shapeName = _method is IntegrationMethod.Rectangle
@@ -160,7 +160,16 @@ public partial class Integration : BasePage<Integration>
         {
             ContainerId = ChartContainerId,
             Title = null,
-            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
+            XAxis = new ChartAxis
+            {
+                Title = "x",
+                PlotLines = 
+                [
+                    ChartUtils.CreateZeroLine(),
+                    ChartUtils.CreateConstant(_lastLowerBound),
+                    ChartUtils.CreateConstant(_lastUpperBound)
+                ]
+            },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = seriesList
         };
