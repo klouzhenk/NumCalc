@@ -10,6 +10,7 @@ using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
+using NumCalc.UI.Shared.Models.Integration;
 using NumCalc.UI.Shared.Services.Interfaces;
 using NumCalc.UI.Shared.Utils;
 
@@ -35,10 +36,6 @@ public partial class Integration : BasePage<Integration>
         Result = null;
         ComparisonResult = null;
     }
-    private string? _lastExpression;
-    private double _lastLowerBound;
-    private double _lastUpperBound;
-    private int _lastIntervals;
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
@@ -54,10 +51,6 @@ public partial class Integration : BasePage<Integration>
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
-        _lastExpression = formData.FunctionExpression;
-        _lastLowerBound = formData.LowerBound;
-        _lastUpperBound = formData.UpperBound;
-        _lastIntervals = formData.Intervals;
 
         if (_mode is AnalysisMode.Benchmark)
         {
@@ -101,10 +94,10 @@ public partial class Integration : BasePage<Integration>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
-            await UpdateChart();
+            await UpdateChart(formData);
     }
 
-    private async Task UpdateChart()
+    private async Task UpdateChart(IntegrationFormData data)
     {
         if (Result?.ChartData is null) return;
 
@@ -124,8 +117,8 @@ public partial class Integration : BasePage<Integration>
             Color = ColorUtils.GetColor(Enums.Color.Primary),
             LineWidth = 2,
             IsVisible = true,
-            FillLowerBound = useShapes ? null : _lastLowerBound,
-            FillUpperBound = useShapes ? null : _lastUpperBound
+            FillLowerBound = useShapes ? null : data.LowerBound,
+            FillUpperBound = useShapes ? null : data.UpperBound
         };
 
         var seriesList = new List<ChartSeries>();
@@ -148,8 +141,8 @@ public partial class Integration : BasePage<Integration>
                 Color = ColorUtils.GetColor(Enums.Color.Primary),
                 LineWidth = 1,
                 IsVisible = true,
-                FillLowerBound = _lastLowerBound,
-                FillUpperBound = _lastUpperBound,
+                FillLowerBound = data.LowerBound,
+                FillUpperBound = data.UpperBound,
                 Step = _method is IntegrationMethod.Rectangle ? "left" : null
             });
         }
@@ -166,8 +159,8 @@ public partial class Integration : BasePage<Integration>
                 PlotLines = 
                 [
                     ChartUtils.CreateZeroLine(),
-                    ChartUtils.CreateConstant(_lastLowerBound),
-                    ChartUtils.CreateConstant(_lastUpperBound)
+                    ChartUtils.CreateConstant(data.LowerBound),
+                    ChartUtils.CreateConstant(data.UpperBound)
                 ]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
@@ -182,6 +175,9 @@ public partial class Integration : BasePage<Integration>
         if (Result is null) return;
         await SafeExecuteAsync(async () =>
         {
+            if (_input is null) throw new NullReferenceException();
+            var formData = await _input.GetFormData(); 
+
             var steps = new List<StepExportItem>();
             foreach (var step in FilteredSteps ?? [])
             {
@@ -199,18 +195,18 @@ public partial class Integration : BasePage<Integration>
             var inputs = new Dictionary<string, string>
             {
                 ["Method"] = _method.ToString(),
-                ["Lower Bound"] = _lastLowerBound.ToString("G"),
-                ["Upper Bound"] = _lastUpperBound.ToString("G"),
-                ["Intervals"] = _lastIntervals.ToString()
+                ["Lower Bound"] = formData.LowerBound.ToString("G"),
+                ["Upper Bound"] = formData.UpperBound.ToString("G"),
+                ["Intervals"] = formData.Intervals.ToString()
             };
-            if (!string.IsNullOrWhiteSpace(_lastExpression))
-                inputs["Expression"] = _lastExpression;
+            if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+                inputs["Expression"] = formData.FunctionExpression;
             if (_method is IntegrationMethod.Rectangle)
                 inputs["Variant"] = _rectangleVariant.ToString();
 
             var resultStr = _method is IntegrationMethod.Rectangle
-                ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G10}"
-                : $"I = {Result.IntegralValue:G10}";
+                ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G6}"
+                : $"I = {Result.IntegralValue:G6}";
 
             var request = new PdfExportRequest
             {

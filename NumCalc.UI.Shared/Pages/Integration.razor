@@ -97,7 +97,7 @@
                         <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
                             <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
                             <div class="root-finding-result__item-text">
-                                <span class="root-finding-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G8") ?? "—") &nbsp;|&nbsp;
+                                <span class="root-finding-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
                                 <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                             </div>
                         </li>

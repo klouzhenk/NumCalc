@@ -1,16 +1,34 @@
 @using NumCalc.Shared.Enums.Interpolation
 @using NumCalc.UI.Shared.Components
 
-@if (Mode is InterpolationInputMode.Function)
-{
-    <div class="input-section__wrapper">
+<div class="input-section__wrapper">
+    <Switch TItem="InterpolationInputMode"
+            Label="@Localizer["Mode"]"
+            Data="@(Enum.GetValues<InterpolationInputMode>())"
+            @bind-Value="_mode"
+            TextField="@(item => item.ToString())"/>
+
+    @if (_mode is InterpolationInputMode.Function)
+    {
         <Tooltip>
             <Content>
                 <MathInput Label="f(x)" @ref="_mathInput" />
             </Content>
             <Hint>Function f(x) to interpolate. The polynomial is built through sample points generated from this expression.</Hint>
         </Tooltip>
-    </div>
-}
+    }
+    
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">x*</label>
+                <input type="number" step="any" class="input-group__input"
+                       @bind="_queryPoint"
+                       @bind:event="oninput" />
+            </div>
+        </Content>
+        <Hint>Query point x* — the x-value at which to estimate f(x*).</Hint>
+    </Tooltip>
+</div>
 
-<NodeTable ShowY="@(Mode is InterpolationInputMode.RawData)" @ref="_nodeTable" />
+<NodeTable ShowY="@(_mode is InterpolationInputMode.RawData)" @ref="_nodeTable" />

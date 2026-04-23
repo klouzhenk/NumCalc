@@ -1,25 +1,30 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Enums.Interpolation;
 using NumCalc.UI.Shared.Models.Interpolation;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.Interpolation;
 
 public partial class InterpolationInput : ComponentBase
 {
-    [Parameter] public InterpolationInputMode Mode { get; set; }
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private MathInput? _mathInput;
     private NodeTable? _nodeTable;
+    private double _queryPoint;
+    private InterpolationInputMode _mode = InterpolationInputMode.Function;
 
     public async Task<InterpolationFormData> GetFormData()
     {
         var formData = new InterpolationFormData
         {
-            Mode = Mode,
+            Mode = _mode,
             XNodes = _nodeTable?.GetXNodes() ?? [],
+            QueryPoint = _queryPoint
         };
 
-        if (Mode is InterpolationInputMode.Function)
+        if (_mode is InterpolationInputMode.Function)
             formData.FunctionExpression = _mathInput is not null
                 ? await _mathInput.GetAsciiValue()
                 : string.Empty;

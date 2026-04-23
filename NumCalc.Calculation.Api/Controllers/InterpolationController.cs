@@ -36,4 +36,13 @@ public class InterpolationController(IInterpolationService interpolationService)
         var response = interpolationService.SolveSpline(request);
         return Ok(response);
     }
+    
+    [HttpPost("comparison")]
+    [ProducesResponseType(typeof(InterpolationComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult Compare([FromBody] InterpolationComparisonRequest request)
+    {
+        var response = interpolationService.Compare(request);
+        return Ok(response);
+    }
 }

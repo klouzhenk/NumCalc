@@ -1,4 +1,4 @@
-﻿namespace NumCalc.UI.Shared.Enums.Interpolation;
+﻿namespace NumCalc.Shared.Enums.Interpolation;
 
 public enum InterpolationMethod
 {

@@ -57,6 +57,9 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request)
         => await SendPostRequestAsync<InterpolationResponse>("api/interpolation/spline", request);
 
+    public async Task<InterpolationComparisonResponse?> GetInterpolationComparisonAsync(InterpolationComparisonRequest request)
+        => await SendPostRequestAsync<InterpolationComparisonResponse>("api/interpolation/comparison", request);
+
     public async Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request)
         => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/finite-diff", request);
 

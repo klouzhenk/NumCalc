@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Enums\Interpolation\" />
       <Folder Include="src\fonts\" />
     </ItemGroup>
 
