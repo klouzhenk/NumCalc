@@ -292,4 +292,10 @@
   <data name="RungeKutta4" xml:space="preserve">
     <value>Рунге-Кутта 4</value>
   </data>
+  <data name="UniformSearch" xml:space="preserve">
+    <value>Рівномірний пошук</value>
+  </data>
+  <data name="GoldenSection" xml:space="preserve">
+    <value>Золотий перетин</value>
+  </data>
 </root>

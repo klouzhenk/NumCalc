@@ -15,17 +15,26 @@ public class DifferentiationController(IDifferentiationService differentiationSe
     [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult SolveFiniteDiff([FromBody] DifferentiationRequest request, [FromQuery] FiniteDiffVariant variant = FiniteDiffVariant.Central)
-        => Ok(differentiationService.SolveFiniteDiff(request, variant));
+    {
+        var response = differentiationService.SolveFiniteDiff(request, variant);
+        return Ok(response);
+    }
 
     [HttpPost("lagrange")]
     [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult SolveLagrange([FromBody] DifferentiationRequest request)
-        => Ok(differentiationService.SolveLagrange(request));
+    {
+        var response = differentiationService.SolveLagrange(request);
+        return Ok(response);
+    }
 
     [HttpPost("comparison")]
     [ProducesResponseType(typeof(DifferentiationComparisonResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult Compare([FromBody] DifferentiationComparisonRequest request)
-        => Ok(differentiationService.Compare(request));
+    {
+        var response = differentiationService.Compare(request);
+        return Ok(response);
+    }
 }

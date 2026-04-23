@@ -42,6 +42,7 @@ public interface ICalculationApiService
     Task<OptimizationResponse?> OptimizeUniformSearchAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGoldenSectionAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request);
+    Task<OptimizationComparisonResponse?> GetOptimizationComparisonAsync(OptimizationComparisonRequest request);
     Task<OdeResponse?> SolveEuler(OdeRequest request);
     Task<OdeResponse?> SolveEulerImproved(OdeRequest request);
     Task<OdeResponse?> SolveRungeKutta2(OdeRequest request);

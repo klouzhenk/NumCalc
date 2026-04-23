@@ -1,19 +1,42 @@
 @page "/optimization"
+@using NumCalc.Shared.Enums.Optimization
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Optimization
 @using NumCalc.UI.Shared.Enums.Optimization
+@using NumCalc.UI.Shared.Enums.Roots
 
 @inherits BasePage<Optimization>
 
 <div class="page-wrapper page__optimization">
     <div class="optimization__form-wrapper">
         <div class="page__filters-container">
-            <Dropdown TItem="OptimizationMethod"
-                      Label="Method"
-                      Data="@(Enum.GetValues<OptimizationMethod>())"
-                      @bind-Value="_method"
-                      @bind-Value:after="ResetResult"
-                      TextField="@(item => item.ToString())"/>
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="_mode"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(item => item.ToString())"
+                    Label="@Localizer["AnalysisMode"]" />
+
+            @if (_mode is AnalysisMode.Single)
+            {
+                <Dropdown TItem="OptimizationMethod"
+                          Label="Method"
+                          Data="@(Enum.GetValues<OptimizationMethod>())"
+                          @bind-Value="_method"
+                          @bind-Value:after="ResetResult"
+                          TextField="@(item => item.ToString())" />
+            }
+            else
+            {
+                <Dropdown TItem="OptimizationComparisonMethod"
+                          Label="Methods"
+                          Data="@(Enum.GetValues<OptimizationComparisonMethod>())"
+                          MultiSelect="true"
+                          @bind-SelectedItems="_benchmarkMethods"
+                          @bind-SelectedItems:after="ResetResult"
+                          TextField="@(item => item.ToString())" />
+            }
+
             <Switch TItem="bool"
                     Label="Goal"
                     Data="@(new[] { false, true })"
@@ -26,7 +49,7 @@
             <OptimizationInput Method="_method" @ref="_input" />
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">Calculate</button>
-                @if (Result is not null)
+                @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
@@ -34,16 +57,23 @@
         </div>
     </div>
 
-    <ResultPanel HasResult="Result is not null">
+    <ResultPanel HasResult="Result is not null || ComparisonResult is not null">
         <Header>
-            <span>f(x*) = @Result!.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
-            @if (Result.ArgMinX.HasValue)
+            @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
+                <span>f(x*) = @Result!.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
+                @if (Result.ArgMinX.HasValue)
+                {
+                    <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
+                }
+                @if (Result.ArgMinPoint is { Count: > 0 })
+                {
+                    <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
+                }
             }
-            @if (Result.ArgMinPoint is { Count: > 0 })
+            else
             {
-                <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
+                <span>@Localizer["Benchmark"]</span>
             }
         </Header>
         <ChartContent>
@@ -53,7 +83,30 @@
             </div>
         </ChartContent>
         <ResultContent>
-            <SolutionStepsList Steps="@Result!.SolutionSteps" />
+            @if (_mode is AnalysisMode.Single)
+            {
+                <SolutionStepsList Steps="@Result!.SolutionSteps" />
+            }
+            else if (ComparisonResult?.Results is { Count: > 0 })
+            {
+                <ul class="root-finding-result__list">
+                    @foreach (var item in ComparisonResult.Results)
+                    {
+                        <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
+                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                            <div class="root-finding-result__item-text">
+                                <span class="root-finding-result__item-subtitle">f(x*)</span>: @(item.MinimumValue?.ToString("G6") ?? "—")
+                                @if (item.ArgMinX.HasValue)
+                                {
+                                    <span> &nbsp;|&nbsp; <span class="root-finding-result__item-subtitle">x*</span>: @item.ArgMinX.Value.ToString("G6")</span>
+                                }
+                                &nbsp;|&nbsp;
+                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
         </ResultContent>
     </ResultPanel>
 </div>

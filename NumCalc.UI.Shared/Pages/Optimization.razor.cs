@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NumCalc.Shared.Enums.Optimization;
 using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.UI.Shared.Components.Optimization;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Optimization;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
@@ -20,12 +22,19 @@ public partial class Optimization : BasePage<Optimization>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
+    private AnalysisMode _mode = AnalysisMode.Single;
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
+    private List<OptimizationComparisonMethod> _benchmarkMethods = [];
     private bool _maximize;
     private OptimizationInput? _input;
     private OptimizationResponse? Result { get; set; }
+    private OptimizationComparisonResponse? ComparisonResult { get; set; }
 
-    private void ResetResult() => Result = null;
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
+    }
     private string? _lastExpression;
     private double _lastLowerBound;
     private double _lastUpperBound;
@@ -39,10 +48,27 @@ public partial class Optimization : BasePage<Optimization>
     private async Task Calculate()
     {
         Result = null;
+        ComparisonResult = null;
 
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
+
+        if (_mode is AnalysisMode.Benchmark)
+        {
+            var comparisonRequest = new OptimizationComparisonRequest
+            {
+                FunctionExpression = formData.FunctionExpression,
+                LowerBound = formData.LowerBound,
+                UpperBound = formData.UpperBound,
+                Points = formData.Points,
+                Tolerance = formData.Tolerance,
+                Maximize = _maximize,
+                Methods = _benchmarkMethods
+            };
+            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetOptimizationComparisonAsync(comparisonRequest));
+            return;
+        }
         _lastExpression = formData.FunctionExpression;
         _lastLowerBound = formData.LowerBound;
         _lastUpperBound = formData.UpperBound;

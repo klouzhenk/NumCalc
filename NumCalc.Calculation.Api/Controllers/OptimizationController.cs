@@ -36,4 +36,13 @@ public class OptimizationController(IOptimizationService optimizationService) : 
         var response = optimizationService.SolveGradientDescent(request);
         return Ok(response);
     }
+
+    [HttpPost("comparison")]
+    [ProducesResponseType(typeof(OptimizationComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult Compare([FromBody] OptimizationComparisonRequest request)
+    {
+        var response = optimizationService.Compare(request);
+        return Ok(response);
+    }
 }

@@ -8,4 +8,5 @@ public interface IOptimizationService
     OptimizationResponse SolveUniformSearch(OptimizationRequest request);
     OptimizationResponse SolveGoldenSection(OptimizationRequest request);
     OptimizationResponse SolveGradientDescent(GradientDescentRequest request);
+    OptimizationComparisonResponse Compare(OptimizationComparisonRequest request);
 }

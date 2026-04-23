@@ -91,6 +91,9 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request)
         => await SendPostRequestAsync<OptimizationResponse>("api/optimization/gradient-descent", request);
 
+    public async Task<OptimizationComparisonResponse?> GetOptimizationComparisonAsync(OptimizationComparisonRequest request)
+        => await SendPostRequestAsync<OptimizationComparisonResponse>("api/optimization/comparison", request);
+
     public async Task<OdeResponse?> SolveEuler(OdeRequest request)
         => await SendPostRequestAsync<OdeResponse>("api/ode/euler", request);
     

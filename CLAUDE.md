@@ -241,7 +241,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 ### Numerical Differentiation (Чисельне диференціювання) — COMPLETED
 - Finite differences: forward, backward, central (1st and 2nd order) — implemented
 - Derivative via Lagrange interpolation — implemented
-- **Comparison** — PLANNED (compare Forward, Backward, Central finite diff + Lagrange; shared result fields: `DerivativeValue`, `ExecutionTimeMs`)
+- **Comparison** — COMPLETED (`POST api/differentiation/finite-diff?variant=X` + `POST api/differentiation/comparison`; `DifferentiationComparisonRequest` → `DifferentiationComparisonResponse`)
 
 ---
 
@@ -308,7 +308,7 @@ Allows users to run multiple methods on the same input and compare results side-
 | Integration | Rectangle (L/R/M), Trapezoid, Simpson | COMPLETED |
 | Interpolation | Newton, Lagrange, Spline | COMPLETED |
 | ODE | Euler, Euler Improved, RK2, RK4 (Picard excluded) | COMPLETED |
-| Differentiation | Forward, Backward, Central, Lagrange | PLANNED |
+| Differentiation | Forward, Backward, Central, Lagrange | COMPLETED |
 | Optimization (1D) | Uniform search, Golden section (gradient descent excluded) | PLANNED |
 | Equation Systems | Linear: Cramer vs Gaussian / Non-linear: Fixed-point vs Seidel | PLANNED |
 
