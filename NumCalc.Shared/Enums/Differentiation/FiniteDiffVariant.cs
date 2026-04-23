@@ -1,4 +1,4 @@
-namespace NumCalc.UI.Shared.Enums.Differentiation;
+namespace NumCalc.Shared.Enums.Differentiation;
 
 public enum FiniteDiffVariant
 {

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NumCalc.Calculation.Api.Services.Interfaces;
 using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
+using NumCalc.Shared.Enums.Differentiation;
 
 namespace NumCalc.Calculation.Api.Controllers;
 
@@ -10,23 +11,11 @@ namespace NumCalc.Calculation.Api.Controllers;
 [Produces("application/json")]
 public class DifferentiationController(IDifferentiationService differentiationService) : ControllerBase
 {
-    [HttpPost("forward")]
+    [HttpPost("finite-diff")]
     [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public IActionResult SolveForward([FromBody] DifferentiationRequest request)
-        => Ok(differentiationService.SolveForward(request));
-
-    [HttpPost("backward")]
-    [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public IActionResult SolveBackward([FromBody] DifferentiationRequest request)
-        => Ok(differentiationService.SolveBackward(request));
-
-    [HttpPost("central")]
-    [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public IActionResult SolveCentral([FromBody] DifferentiationRequest request)
-        => Ok(differentiationService.SolveCentral(request));
+    public IActionResult SolveFiniteDiff([FromBody] DifferentiationRequest request, [FromQuery] FiniteDiffVariant variant = FiniteDiffVariant.Central)
+        => Ok(differentiationService.SolveFiniteDiff(request, variant));
 
     [HttpPost("lagrange")]
     [ProducesResponseType(typeof(DifferentiationResponse), StatusCodes.Status200OK)]

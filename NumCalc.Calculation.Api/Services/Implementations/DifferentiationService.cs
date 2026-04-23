@@ -12,53 +12,26 @@ namespace NumCalc.Calculation.Api.Services.Implementations;
 
 public class DifferentiationService(IPythonEnvironment env, ILogger<DifferentiationService> logger) : IDifferentiationService
 {
-    public DifferentiationResponse SolveForward(DifferentiationRequest request)
+    public DifferentiationResponse SolveFiniteDiff(DifferentiationRequest request, FiniteDiffVariant variant)
     {
-        logger.LogInformation("Forward: f={Expression}, x={QueryPoint}, h={StepSize}, order={Order}",
-            request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder);
+        logger.LogInformation("FiniteDiff ({Variant}): f={Expression}, x={QueryPoint}, h={StepSize}, order={Order}",
+            variant, request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder);
 
         var stopwatch = Stopwatch.StartNew();
-        var jsonEnvelope = env.Differentiation().SolveFiniteDiffForward(
-            request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder);
+        var solver = env.Differentiation();
+
+        var jsonEnvelope = variant switch
+        {
+            FiniteDiffVariant.Forward  => solver.SolveFiniteDiffForward(request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+            FiniteDiffVariant.Backward => solver.SolveFiniteDiffBackward(request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+            _                          => solver.SolveFiniteDiffCentral(request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+        };
+
         var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
         stopwatch.Stop();
 
-        logger.LogInformation("Forward completed: derivative={Value}, elapsed={ElapsedMs}ms",
-            result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
-
-        return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
-    }
-
-    public DifferentiationResponse SolveBackward(DifferentiationRequest request)
-    {
-        logger.LogInformation("Backward: f={Expression}, x={QueryPoint}, h={StepSize}, order={Order}",
-            request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder);
-
-        var stopwatch = Stopwatch.StartNew();
-        var jsonEnvelope = env.Differentiation().SolveFiniteDiffBackward(
-            request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder);
-        var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
-        stopwatch.Stop();
-
-        logger.LogInformation("Backward completed: derivative={Value}, elapsed={ElapsedMs}ms",
-            result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
-
-        return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
-    }
-
-    public DifferentiationResponse SolveCentral(DifferentiationRequest request)
-    {
-        logger.LogInformation("Central: f={Expression}, x={QueryPoint}, h={StepSize}, order={Order}",
-            request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder);
-
-        var stopwatch = Stopwatch.StartNew();
-        var jsonEnvelope = env.Differentiation().SolveFiniteDiffCentral(
-            request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder);
-        var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
-        stopwatch.Stop();
-
-        logger.LogInformation("Central completed: derivative={Value}, elapsed={ElapsedMs}ms",
-            result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
+        logger.LogInformation("FiniteDiff ({Variant}) completed: derivative={Value}, elapsed={ElapsedMs}ms",
+            variant, result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
 
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }
@@ -104,14 +77,10 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
 
                 var jsonEnvelope = method switch
                 {
-                    DifferentiationComparisonMethod.Forward =>
-                        solver.SolveFiniteDiffForward(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
-                    DifferentiationComparisonMethod.Backward =>
-                        solver.SolveFiniteDiffBackward(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
-                    DifferentiationComparisonMethod.Central =>
-                        solver.SolveFiniteDiffCentral(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
-                    DifferentiationComparisonMethod.Lagrange =>
-                        solver.SolveLagrange(request.XNodes!, null, request.QueryPoint, request.FunctionExpression, request.DerivativeOrder),
+                    DifferentiationComparisonMethod.Forward  => solver.SolveFiniteDiffForward(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+                    DifferentiationComparisonMethod.Backward => solver.SolveFiniteDiffBackward(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+                    DifferentiationComparisonMethod.Central  => solver.SolveFiniteDiffCentral(request.FunctionExpression, request.QueryPoint, request.StepSize, request.DerivativeOrder),
+                    DifferentiationComparisonMethod.Lagrange => solver.SolveLagrange(request.XNodes!, null, request.QueryPoint, request.FunctionExpression, request.DerivativeOrder),
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 

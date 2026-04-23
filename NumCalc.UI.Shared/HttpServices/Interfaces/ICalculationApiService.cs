@@ -1,5 +1,6 @@
 ﻿using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
+using NumCalc.Shared.Enums.Differentiation;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.Integration.Requests;
@@ -31,9 +32,7 @@ public interface ICalculationApiService
     Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);
     Task<InterpolationComparisonResponse?> GetInterpolationComparisonAsync(InterpolationComparisonRequest request);
-    Task<DifferentiationResponse?> DifferentiateForwardAsync(DifferentiationRequest request);
-    Task<DifferentiationResponse?> DifferentiateBackwardAsync(DifferentiationRequest request);
-    Task<DifferentiationResponse?> DifferentiateCentralAsync(DifferentiationRequest request);
+    Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request, FiniteDiffVariant variant);
     Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request);
     Task<DifferentiationComparisonResponse?> GetDifferentiationComparisonAsync(DifferentiationComparisonRequest request);
     Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request);

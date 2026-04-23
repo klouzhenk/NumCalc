@@ -8,6 +8,7 @@ using NumCalc.UI.Shared.Components.Differentiation;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Enums.Roots;
+using FiniteDiffVariant = NumCalc.Shared.Enums.Differentiation.FiniteDiffVariant;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
@@ -93,14 +94,8 @@ public partial class Differentiation : BasePage<Differentiation>
 
         Func<Task<DifferentiationResponse?>> apiCall = _method switch
         {
-            DifferentiationMethod.FiniteDifferences => _variant switch
-            {
-                FiniteDiffVariant.Forward  => () => CalculationApiService.DifferentiateForwardAsync(request),
-                FiniteDiffVariant.Backward => () => CalculationApiService.DifferentiateBackwardAsync(request),
-                FiniteDiffVariant.Central  => () => CalculationApiService.DifferentiateCentralAsync(request),
-                _ => throw new ArgumentOutOfRangeException(nameof(_variant))
-            },
-            DifferentiationMethod.Lagrange => () => CalculationApiService.DifferentiateLagrangeAsync(request),
+            DifferentiationMethod.FiniteDifferences => () => CalculationApiService.DifferentiateFiniteDiffAsync(request, _variant),
+            DifferentiationMethod.Lagrange           => () => CalculationApiService.DifferentiateLagrangeAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 

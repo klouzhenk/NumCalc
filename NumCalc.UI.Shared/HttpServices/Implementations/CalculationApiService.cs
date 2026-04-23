@@ -1,5 +1,6 @@
 ﻿using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
+using NumCalc.Shared.Enums.Differentiation;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.Shared.Integration.Requests;
@@ -60,14 +61,8 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<InterpolationComparisonResponse?> GetInterpolationComparisonAsync(InterpolationComparisonRequest request)
         => await SendPostRequestAsync<InterpolationComparisonResponse>("api/interpolation/comparison", request);
 
-    public async Task<DifferentiationResponse?> DifferentiateForwardAsync(DifferentiationRequest request)
-        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/forward", request);
-
-    public async Task<DifferentiationResponse?> DifferentiateBackwardAsync(DifferentiationRequest request)
-        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/backward", request);
-
-    public async Task<DifferentiationResponse?> DifferentiateCentralAsync(DifferentiationRequest request)
-        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/central", request);
+    public async Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request, FiniteDiffVariant variant)
+        => await SendPostRequestAsync<DifferentiationResponse>($"api/differentiation/finite-diff?variant={variant}", request);
 
     public async Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request)
         => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/lagrange", request);
