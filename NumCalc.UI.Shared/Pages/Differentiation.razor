@@ -1,4 +1,5 @@
 @page "/differentiation"
+@using NumCalc.Shared.DTOs.Differentiation
 @using NumCalc.Shared.Enums.Differentiation
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Differentiation
@@ -95,18 +96,17 @@
             }
             else if (ComparisonResult?.Results is { Count: > 0 })
             {
-                <ul class="root-finding-result__list">
-                    @foreach (var item in ComparisonResult.Results)
-                    {
-                        <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
-                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                            <div class="root-finding-result__item-text">
-                                <span class="root-finding-result__item-subtitle">@(_lastDerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <ComparisonResultList TItem="DifferentiationBenchmarkResultDto"
+                                      Items="ComparisonResult.Results"
+                                      IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
+                    <ItemTemplate Context="item">
+                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            <span class="root-finding-result__item-subtitle">@(_lastDerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
             }
         </ResultContent>
     </ResultPanel>

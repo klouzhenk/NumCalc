@@ -1,6 +1,7 @@
 @page "/integration"
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Integration
+@using NumCalc.Shared.DTOs.Integration
 @using NumCalc.Shared.Enums.Integration
 @using NumCalc.UI.Shared.Enums.Integration
 @using NumCalc.UI.Shared.Enums.Roots
@@ -91,18 +92,17 @@
             }
             else if (ComparisonResult?.Results is { Count: > 0 })
             {
-                <ul class="root-finding-result__list">
-                    @foreach (var item in ComparisonResult.Results)
-                    {
-                        <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
-                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                            <div class="root-finding-result__item-text">
-                                <span class="root-finding-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <ComparisonResultList TItem="IntegrationBenchmarkResultDto"
+                                      Items="ComparisonResult.Results"
+                                      IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
+                    <ItemTemplate Context="item">
+                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            <span class="root-finding-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
             }
         </ResultContent>
     </ResultPanel>

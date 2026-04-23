@@ -1,4 +1,5 @@
-﻿@using NumCalc.Shared.Enums.RootFinding
+﻿@using NumCalc.Shared.DTOs.RootFinding
+@using NumCalc.Shared.Enums.RootFinding
 @using NumCalc.UI.Shared.Enums.Roots
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Utils
@@ -140,22 +141,21 @@
             }
             else if (ComparisonResult?.Results is { Count: > 0 })
             {
-                <ul class="root-finding-result__list">
-                    @foreach (var benchmarkResult in ComparisonResult.Results)
-                    {
-                        <li class="root-finding-result__item comparison-result__item @(benchmarkResult.Method == ComparisonResult.BestMethod ? "marked" : "")">
-                            <span class="root-finding-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
-                            <div class="root-finding-result__item-text">
-                                @{
-                                    var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
-                                }
-                                <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
-                                <span class="root-finding-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
-                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <ComparisonResultList TItem="BenchmarkResultDto"
+                                      Items="ComparisonResult.Results"
+                                      IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
+                    <ItemTemplate Context="benchmarkResult">
+                        <span class="root-finding-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            @{
+                                var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
+                            }
+                            <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
             }
         </ResultContent>
     </ResultPanel>

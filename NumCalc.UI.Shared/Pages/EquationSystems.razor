@@ -1,9 +1,10 @@
 @page "/equation-systems"
+@using NumCalc.Shared.DTOs.EquationSystems
+@using NumCalc.Shared.Enums.EquationSystems
 @using NumCalc.UI.Shared.Enums.EquationSystems
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.EquationSystems
 @using NumCalc.UI.Shared.Enums.Roots
-@using NumCalc.Shared.Enums.EquationSystems
 
 @inherits BasePage<EquationSystems>
 
@@ -103,41 +104,39 @@
             }
             else if (Category is EquationSystemCategory.Linear && LinearComparisonResult?.Results is { Count: > 0 })
             {
-                <ul class="root-finding-result__list">
-                    @foreach (var item in LinearComparisonResult.Results)
-                    {
-                        <li class="root-finding-result__item comparison-result__item @(item.Method == LinearComparisonResult.BestMethod ? "marked" : "")">
-                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                            <div class="root-finding-result__item-text">
-                                @if (item.Roots is { Count: > 0 })
-                                {
-                                    <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
-                                    <span> &nbsp;|&nbsp; </span>
-                                }
-                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <ComparisonResultList TItem="LinearSystemBenchmarkResultDto"
+                                      Items="LinearComparisonResult.Results"
+                                      IsBest="@(item => item.Method == LinearComparisonResult.BestMethod)">
+                    <ItemTemplate Context="item">
+                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            @if (item.Roots is { Count: > 0 })
+                            {
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span> &nbsp;|&nbsp; </span>
+                            }
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
             }
             else if (Category is EquationSystemCategory.NonLinear && NonLinearComparisonResult?.Results is { Count: > 0 })
             {
-                <ul class="root-finding-result__list">
-                    @foreach (var item in NonLinearComparisonResult.Results)
-                    {
-                        <li class="root-finding-result__item comparison-result__item @(item.Method == NonLinearComparisonResult.BestMethod ? "marked" : "")">
-                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                            <div class="root-finding-result__item-text">
-                                @if (item.Roots is { Count: > 0 })
-                                {
-                                    <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
-                                    <span> &nbsp;|&nbsp; </span>
-                                }
-                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <ComparisonResultList TItem="NonLinearSystemBenchmarkResultDto"
+                                      Items="NonLinearComparisonResult.Results"
+                                      IsBest="@(item => item.Method == NonLinearComparisonResult.BestMethod)">
+                    <ItemTemplate Context="item">
+                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="root-finding-result__item-text">
+                            @if (item.Roots is { Count: > 0 })
+                            {
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span> &nbsp;|&nbsp; </span>
+                            }
+                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
             }
         </ResultContent>
     </ResultPanel>
