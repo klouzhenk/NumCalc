@@ -1,0 +1,42 @@
+.comparison-result {
+    &__list {
+        flex: 1;
+        overflow: auto;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xs);
+
+        &-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        &-text {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        &-subtitle {
+            font-weight: 600;
+            color: var(--black-color);
+        }
+
+        &.marked {
+            position: relative;
+
+            &::after {
+                position: absolute;
+                content: '\1F3C6';
+                right: var(--dimension-l);
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 1.25rem;
+                color: transparent;
+                text-shadow: 0 0 0 var(--primary-color);
+            }
+        }
+    }
+}

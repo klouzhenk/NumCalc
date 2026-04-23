@@ -28,35 +28,4 @@
     }
 }
 
-.root-finding-result {
-    &__container, &__container--empty{
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: var(--dimension-m);
-        box-shadow:  var(--component-shadow);
-        border-radius: var(--border-radius-xl);
-    }
-
-    &__list{
-        flex: 1;
-        overflow: auto;
-    }
-}
-
-.comparison-result__item.marked {
-    position: relative;
-    
-    &::after{
-        position: absolute;
-        content: '\1F3C6';
-        right: var(--dimension-l);
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1.25rem;
-        color: transparent;
-        text-shadow: 0 0 0 var(--primary-color);
-    }
-}
 

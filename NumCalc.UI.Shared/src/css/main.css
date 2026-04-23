@@ -30,6 +30,7 @@
 @import "components/node-table.css";
 @import "components/solution-steps.css";
 @import "components/result-panel.css";
+@import "components/comparison-result-list.css";
 
 /* pages */
 @import "pages/page.css";

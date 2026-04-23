@@ -108,14 +108,14 @@
                                       Items="LinearComparisonResult.Results"
                                       IsBest="@(item => item.Method == LinearComparisonResult.BestMethod)">
                     <ItemTemplate Context="item">
-                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                        <div class="root-finding-result__item-text">
+                        <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
                                 <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>
@@ -126,14 +126,14 @@
                                       Items="NonLinearComparisonResult.Results"
                                       IsBest="@(item => item.Method == NonLinearComparisonResult.BestMethod)">
                     <ItemTemplate Context="item">
-                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                        <div class="root-finding-result__item-text">
+                        <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
                                 <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

@@ -41,7 +41,7 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison endpoint), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel), `InterpolationController` (Newton, Lagrange, Spline), `DifferentiationController` (finite-diff, Lagrange derivative), `IntegrationController` (rectangle, trapezoid, Simpson), `OptimizationController` (uniform-search, golden-section, gradient-descent), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard)
+- **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison)
 - **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
@@ -68,9 +68,11 @@ Scripts/
     newton_interp.py        — Newton divided differences polynomial
     lagrange.py             — Lagrange basis polynomial
     spline.py               — Cubic spline (SciPy)
-  differentiation/
-    finite_diff.py    — Forward, backward, central finite differences (1st and 2nd order)
-    diff_lagrange.py  — Derivative via Lagrange interpolation polynomial (symbolic diff)
+  differentiation_methods/
+    finite_diff_forward.py   — Forward finite difference (1st and 2nd order)
+    finite_diff_backward.py  — Backward finite difference (1st and 2nd order)
+    finite_diff_central.py   — Central finite difference (1st and 2nd order)
+    diff_lagrange.py         — Derivative via Lagrange interpolation polynomial (symbolic diff)
   integration/
     rectangle.py      — Left, right, midpoint rectangle rules (all 3 variants in one call)
     trapezoid.py      — Composite trapezoidal rule
@@ -120,7 +122,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 
 - **HTTP layer:** `BaseApiService` (abstract base) → `ICalculationApiService` / `CalculationApiService` (single concrete client covering all 7 topic areas)
 - **All page components** live in `NumCalc.UI.Shared/Pages/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`, `MainPage.razor`
-- **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
+- **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, `ComparisonResultList` (generic `@typeparam TItem` component for all benchmark result lists), per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
 - **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) — rendered from `Header.razor` via a switch on `NavigationItem`
 - **Services:** `IPdfExportService` / `PdfExportService`, `IOcrService` / `OcrService`, `IUiStateService` / `UiStateService`, `ICultureService`
 - **Layout:** `MainLayout.razor` in `Layouts/`
@@ -160,10 +162,10 @@ Currently working:
   - Cubic spline (SciPy)
   - Supports both Function mode (f(x) + x-nodes) and Raw Data mode (x[], y[])
 - Numerical differentiation — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
-  - Finite differences: forward, backward, central (1st and 2nd order)
+  - Finite differences: forward, backward, central (1st and 2nd order) — each in a separate Python file; variant passed as `?variant=` query param
   - Lagrange derivative (symbolic differentiation of the interpolation polynomial)
   - Chart renders f(x) curve + tangent line at x*
-  - Variant dropdown (Forward/Backward/Central) filters which step is displayed
+  - Single mode: method dropdown (FiniteDifferences / Lagrange) + variant sub-dropdown for finite diff
 - Numerical integration — fully implemented end-to-end (Python + API + HTTP client + Blazor UI):
   - Rectangle rule: left, right, midpoint (single endpoint; variant dropdown filters displayed step)
   - Trapezoidal rule
@@ -186,7 +188,6 @@ Currently working:
 - PDF export — fully implemented on all 7 result pages (QuestPDF + KaTeX + html2canvas)
 
 Not implemented yet:
-- Comparison feature for Interpolation, Integration, ODE, Differentiation, Optimization, Equation Systems pages (root finding comparison already done)
 - Full-featured backend for users/history
 - Complete MAUI UI
 
@@ -228,6 +229,11 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Fixed-point iteration method — implemented
 - Seidel method (Gauss-Seidel) — implemented
 
+#### Comparison — COMPLETED
+- Linear: `POST api/equationssystems/linear-comparison` (Cramer vs Gaussian) → `LinearSystemComparisonResponse`
+- Non-linear: `POST api/equationssystems/nonlinear-comparison` (Fixed-point vs Seidel) → `NonLinearSystemComparisonResponse`
+- Mode switch on UI selects Single or Benchmark per category; no method sub-select (always compares all 2 methods)
+
 ---
 
 ### Interpolation (Інтерполяція) — COMPLETED
@@ -258,7 +264,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 #### One-dimensional optimization
 - Uniform search (brute grid search) — implemented
 - Golden section search (Золотий перетин) — implemented
-- **Comparison** — PLANNED (compare Uniform search + Golden section; gradient descent excluded — different input shape; shared result fields: `MinimumValue`, `ArgMinX`, `ExecutionTimeMs`)
+- **Comparison** — COMPLETED (`POST api/optimization/comparison`; `OptimizationComparisonRequest` → `OptimizationComparisonResponse`; GradientDescent excluded — different input shape)
 
 #### Multi-dimensional optimization
 - Gradient descent method — implemented
@@ -309,13 +315,16 @@ Allows users to run multiple methods on the same input and compare results side-
 | Interpolation | Newton, Lagrange, Spline | COMPLETED |
 | ODE | Euler, Euler Improved, RK2, RK4 (Picard excluded) | COMPLETED |
 | Differentiation | Forward, Backward, Central, Lagrange | COMPLETED |
-| Optimization (1D) | Uniform search, Golden section (gradient descent excluded) | PLANNED |
-| Equation Systems | Linear: Cramer vs Gaussian / Non-linear: Fixed-point vs Seidel | PLANNED |
+| Optimization (1D) | Uniform search, Golden section (gradient descent excluded) | COMPLETED |
+| Equation Systems | Linear: Cramer vs Gaussian / Non-linear: Fixed-point vs Seidel | COMPLETED |
 
-### Method enums to add (NumCalc.Shared/Enums/)
-- `InterpolationMethod` — Newton, Lagrange, Spline
-- `IntegrationMethod` — RectangleLeft, RectangleRight, RectangleMid, Trapezoid, Simpson
-- `OdeMethod` — Euler, EulerImproved, RungeKutta2, RungeKutta4
+### UI pattern
+All comparison result lists use the generic `<ComparisonResultList TItem="...">` component (`Components/ComparisonResultList.razor`). It takes:
+- `Items` — the result list
+- `IsBest` — `Func<TItem, bool>` predicate (caller decides what "best" means)
+- `ItemTemplate` — `RenderFragment<TItem>` for domain-specific row content
+
+CSS lives in `src/css/components/comparison-result-list.css` under the `.comparison-result` BEM block.
 
 ---
 

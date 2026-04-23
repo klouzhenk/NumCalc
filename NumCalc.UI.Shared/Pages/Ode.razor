@@ -88,10 +88,10 @@
                                       Items="ComparisonResult.Results"
                                       IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
                     <ItemTemplate Context="item">
-                        <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
-                        <div class="root-finding-result__item-text">
-                            <span class="root-finding-result__item-subtitle">y(x*)</span>: @(item.FinalY?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                        <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
+                        <div class="comparison-result__item-text">
+                            <span class="comparison-result__item-subtitle">y(x*)</span>: @(item.FinalY?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

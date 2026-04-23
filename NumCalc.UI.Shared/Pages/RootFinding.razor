@@ -145,14 +145,14 @@
                                       Items="ComparisonResult.Results"
                                       IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
                     <ItemTemplate Context="benchmarkResult">
-                        <span class="root-finding-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
-                        <div class="root-finding-result__item-text">
+                        <span class="comparison-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
+                        <div class="comparison-result__item-text">
                             @{
                                 var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
                             }
-                            <span class="root-finding-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
-                            <span class="root-finding-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
-                            <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>
