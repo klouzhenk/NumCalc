@@ -31,8 +31,11 @@ public interface ICalculationApiService
     Task<InterpolationResponse?> InterpolateLagrangeAsync(InterpolationRequest request);
     Task<InterpolationResponse?> InterpolateSplineAsync(InterpolationRequest request);
     Task<InterpolationComparisonResponse?> GetInterpolationComparisonAsync(InterpolationComparisonRequest request);
-    Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request);
+    Task<DifferentiationResponse?> DifferentiateForwardAsync(DifferentiationRequest request);
+    Task<DifferentiationResponse?> DifferentiateBackwardAsync(DifferentiationRequest request);
+    Task<DifferentiationResponse?> DifferentiateCentralAsync(DifferentiationRequest request);
     Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request);
+    Task<DifferentiationComparisonResponse?> GetDifferentiationComparisonAsync(DifferentiationComparisonRequest request);
     Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request);
     Task<IntegrationResponse?> IntegrateTrapezoidAsync(IntegrationRequest request);
     Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request);

@@ -7,6 +7,7 @@ using NumCalc.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Components.Differentiation;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
@@ -22,13 +23,21 @@ public partial class Differentiation : BasePage<Differentiation>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
+    private AnalysisMode _mode = AnalysisMode.Single;
     private DifferentiationMethod _method = DifferentiationMethod.FiniteDifferences;
     private FiniteDiffVariant _variant = FiniteDiffVariant.Central;
-    private DifferentiationInputMode _mode = DifferentiationInputMode.Function;
+    private DifferentiationInputMode _inputMode = DifferentiationInputMode.Function;
+    private List<DifferentiationComparisonMethod> _benchmarkMethods = [];
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
+    private DifferentiationComparisonResponse? ComparisonResult { get; set; }
 
-    private void ResetResult() => Result = null;
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
+    }
+
     private double _queryPoint;
     private string? _lastExpression;
     private double _lastStepSize;
@@ -36,17 +45,10 @@ public partial class Differentiation : BasePage<Differentiation>
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
-    // Step indices: Forward=1, Backward=2, Central=3
-    private SolutionStep? SelectedStep => Result?.SolutionSteps?
-        .FirstOrDefault(s => s.StepIndex == (int)_variant + 1);
-
-    private IList<SolutionStep>? FilteredSteps => _method is DifferentiationMethod.FiniteDifferences
-        ? Result?.SolutionSteps?.Where(s => s.StepIndex == (int)_variant + 1).ToList()
-        : Result?.SolutionSteps;
-
     private async Task Calculate()
     {
         Result = null;
+        ComparisonResult = null;
 
         if (_input is null) return;
 
@@ -55,6 +57,28 @@ public partial class Differentiation : BasePage<Differentiation>
         _lastExpression = formData.FunctionExpression;
         _lastStepSize = formData.StepSize;
         _lastDerivativeOrder = formData.DerivativeOrder;
+
+        if (_mode is AnalysisMode.Benchmark)
+        {
+            if (_benchmarkMethods.Count == 0)
+            {
+                UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+                return;
+            }
+
+            var compRequest = new DifferentiationComparisonRequest
+            {
+                FunctionExpression = formData.FunctionExpression ?? string.Empty,
+                XNodes = formData.XNodes,
+                QueryPoint = formData.QueryPoint,
+                StepSize = formData.StepSize,
+                DerivativeOrder = formData.DerivativeOrder,
+                Methods = _benchmarkMethods
+            };
+
+            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetDifferentiationComparisonAsync(compRequest));
+            return;
+        }
 
         var request = new DifferentiationRequest
         {
@@ -69,8 +93,14 @@ public partial class Differentiation : BasePage<Differentiation>
 
         Func<Task<DifferentiationResponse?>> apiCall = _method switch
         {
-            DifferentiationMethod.FiniteDifferences => () => CalculationApiService.DifferentiateFiniteDiffAsync(request),
-            DifferentiationMethod.Lagrange          => () => CalculationApiService.DifferentiateLagrangeAsync(request),
+            DifferentiationMethod.FiniteDifferences => _variant switch
+            {
+                FiniteDiffVariant.Forward  => () => CalculationApiService.DifferentiateForwardAsync(request),
+                FiniteDiffVariant.Backward => () => CalculationApiService.DifferentiateBackwardAsync(request),
+                FiniteDiffVariant.Central  => () => CalculationApiService.DifferentiateCentralAsync(request),
+                _ => throw new ArgumentOutOfRangeException(nameof(_variant))
+            },
+            DifferentiationMethod.Lagrange => () => CalculationApiService.DifferentiateLagrangeAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 
@@ -93,7 +123,6 @@ public partial class Differentiation : BasePage<Differentiation>
 
         var xMin = chartData.Min(p => p[0]);
         var xMax = chartData.Max(p => p[0]);
-
         var nearest = chartData.MinBy(p => Math.Abs(p[0] - _queryPoint));
         var fAtXStar = nearest![1];
 
@@ -111,14 +140,13 @@ public partial class Differentiation : BasePage<Differentiation>
 
         if (_lastDerivativeOrder == 1)
         {
-            var slope = Result.DerivativeValue;
             series.Add(new ChartSeries
             {
                 Name = "Tangent at x*",
                 Data =
                 [
-                    [xMin, fAtXStar + slope * (xMin - _queryPoint)],
-                    [xMax, fAtXStar + slope * (xMax - _queryPoint)]
+                    [xMin, fAtXStar + Result!.DerivativeValue * (xMin - _queryPoint)],
+                    [xMax, fAtXStar + Result!.DerivativeValue * (xMax - _queryPoint)]
                 ],
                 Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 LineWidth = 1,
@@ -154,7 +182,7 @@ public partial class Differentiation : BasePage<Differentiation>
         await SafeExecuteAsync(async () =>
         {
             var steps = new List<StepExportItem>();
-            foreach (var step in FilteredSteps ?? [])
+            foreach (var step in Result.SolutionSteps ?? [])
             {
                 string? imageBase64 = null;
                 if (!string.IsNullOrWhiteSpace(step.LatexFormula))
@@ -166,27 +194,27 @@ public partial class Differentiation : BasePage<Differentiation>
                 ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
                 : null;
 
+            var methodLabel = _method is DifferentiationMethod.FiniteDifferences
+                ? $"Finite Differences ({_variant})"
+                : "Lagrange";
+
             var inputs = new Dictionary<string, string>
             {
-                ["Method"] = _method.ToString(),
+                ["Method"] = methodLabel,
                 ["Query Point"] = _queryPoint.ToString("G"),
                 ["Derivative Order"] = _lastDerivativeOrder.ToString()
             };
             if (!string.IsNullOrWhiteSpace(_lastExpression))
                 inputs["Expression"] = _lastExpression;
             if (_method is DifferentiationMethod.FiniteDifferences)
-            {
-                inputs["Variant"] = _variant.ToString();
                 inputs["Step Size"] = _lastStepSize.ToString("G");
-            }
 
-            var resultStr = _method is DifferentiationMethod.FiniteDifferences
-                ? SelectedStep?.Value ?? Result.DerivativeValue.ToString("G10")
-                : $"f'(x*) = {Result.DerivativeValue:G10}";
+            var order = _lastDerivativeOrder == 2 ? "f''" : "f'";
+            var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";
 
             var request = new PdfExportRequest
             {
-                MethodName = $"Differentiation — {_method}",
+                MethodName = $"Differentiation — {methodLabel}",
                 Inputs = inputs,
                 Result = resultStr,
                 Steps = steps,

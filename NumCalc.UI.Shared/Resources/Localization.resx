@@ -274,6 +274,18 @@
   <data name="Simpson" xml:space="preserve">
     <value>Simpson's 1/3</value>
   </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Forward Difference</value>
+  </data>
+  <data name="Backward" xml:space="preserve">
+    <value>Backward Difference</value>
+  </data>
+  <data name="Central" xml:space="preserve">
+    <value>Central Difference</value>
+  </data>
+  <data name="Lagrange" xml:space="preserve">
+    <value>Lagrange</value>
+  </data>
   <data name="Euler" xml:space="preserve">
     <value>Euler</value>
   </data>

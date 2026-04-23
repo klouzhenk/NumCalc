@@ -60,11 +60,20 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<InterpolationComparisonResponse?> GetInterpolationComparisonAsync(InterpolationComparisonRequest request)
         => await SendPostRequestAsync<InterpolationComparisonResponse>("api/interpolation/comparison", request);
 
-    public async Task<DifferentiationResponse?> DifferentiateFiniteDiffAsync(DifferentiationRequest request)
-        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/finite-diff", request);
+    public async Task<DifferentiationResponse?> DifferentiateForwardAsync(DifferentiationRequest request)
+        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/forward", request);
+
+    public async Task<DifferentiationResponse?> DifferentiateBackwardAsync(DifferentiationRequest request)
+        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/backward", request);
+
+    public async Task<DifferentiationResponse?> DifferentiateCentralAsync(DifferentiationRequest request)
+        => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/central", request);
 
     public async Task<DifferentiationResponse?> DifferentiateLagrangeAsync(DifferentiationRequest request)
         => await SendPostRequestAsync<DifferentiationResponse>("api/differentiation/lagrange", request);
+
+    public async Task<DifferentiationComparisonResponse?> GetDifferentiationComparisonAsync(DifferentiationComparisonRequest request)
+        => await SendPostRequestAsync<DifferentiationComparisonResponse>("api/differentiation/comparison", request);
 
     public async Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request)
         => await SendPostRequestAsync<IntegrationResponse>("api/integration/rectangle", request);

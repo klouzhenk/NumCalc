@@ -3,62 +3,83 @@
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Differentiation
 @using NumCalc.UI.Shared.Enums.Differentiation
+@using NumCalc.UI.Shared.Enums.Roots
 
 @inherits BasePage<Differentiation>
 
 <div class="page-wrapper page__differentiation">
     <div class="differentiation__form-wrapper">
         <div class="page__filters-container">
-            <Dropdown TItem="DifferentiationMethod"
-                      Label="Method"
-                      Data="@(Enum.GetValues<DifferentiationMethod>())"
-                      @bind-Value="_method"
-                      @bind-Value:after="ResetResult"
-                      TextField="@(item => item.ToString())"/>
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="_mode"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(item => item.ToString())"
+                    Label="@Localizer["AnalysisMode"]" />
 
-            @if (_method is DifferentiationMethod.FiniteDifferences)
+            @if (_mode is AnalysisMode.Single)
             {
-                <Dropdown TItem="FiniteDiffVariant"
-                          Label="Variant"
-                          Data="@(Enum.GetValues<FiniteDiffVariant>())"
-                          @bind-Value="_variant"
+                <Dropdown TItem="DifferentiationMethod"
+                          Label="Method"
+                          Data="@(Enum.GetValues<DifferentiationMethod>())"
+                          @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => item.ToString())" />
+
+                @if (_method is DifferentiationMethod.FiniteDifferences)
+                {
+                    <Dropdown TItem="FiniteDiffVariant"
+                              Label="Variant"
+                              Data="@(Enum.GetValues<FiniteDiffVariant>())"
+                              @bind-Value="_variant"
+                              @bind-Value:after="ResetResult"
+                              TextField="@(item => item.ToString())" />
+                }
+                else
+                {
+                    <Switch TItem="DifferentiationInputMode"
+                            Label="@Localizer["Mode"]"
+                            Data="@(Enum.GetValues<DifferentiationInputMode>())"
+                            @bind-Value="_inputMode"
+                            @bind-Value:after="ResetResult"
+                            TextField="@(item => item.ToString())" />
+                }
             }
             else
             {
-                <Switch TItem="DifferentiationInputMode"
-                        Label="@Localizer["Mode"]"
-                        Data="@(Enum.GetValues<DifferentiationInputMode>())"
-                        @bind-Value="_mode"
-                        @bind-Value:after="ResetResult"
-                        TextField="@(item => item.ToString())"/>
+                <Dropdown TItem="DifferentiationComparisonMethod"
+                          Label="Methods"
+                          Data="@(Enum.GetValues<DifferentiationComparisonMethod>())"
+                          MultiSelect="true"
+                          @bind-SelectedItems="_benchmarkMethods"
+                          @bind-SelectedItems:after="ResetResult"
+                          TextField="@(item => item.ToString())" />
             }
         </div>
 
         <div class="differentiation__form">
-            <DifferentiationInput Method="_method" Mode="_mode" @ref="_input" />
+            <DifferentiationInput Method="_method" Mode="_inputMode" @ref="_input" />
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">Calculate</button>
-                @if (Result is not null)
+                @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
             </div>
         </div>
     </div>
-    
-    <ResultPanel HasResult="Result is not null">
+
+    <ResultPanel HasResult="Result is not null || ComparisonResult is not null">
         <Header>
-            @if (_method is DifferentiationMethod.FiniteDifferences)
+            @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@SelectedStep?.Value</span>
+                <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
+                <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             }
             else
             {
-                <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
+                <span>@Localizer["Benchmark"]</span>
             }
-            <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
         </Header>
         <ChartContent>
             <div class="chart__container">
@@ -67,7 +88,25 @@
             </div>
         </ChartContent>
         <ResultContent>
-            <SolutionStepsList Steps="@FilteredSteps" />
+            @if (_mode is AnalysisMode.Single)
+            {
+                <SolutionStepsList Steps="Result?.SolutionSteps" />
+            }
+            else if (ComparisonResult?.Results is { Count: > 0 })
+            {
+                <ul class="root-finding-result__list">
+                    @foreach (var item in ComparisonResult.Results)
+                    {
+                        <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
+                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                            <div class="root-finding-result__item-text">
+                                <span class="root-finding-result__item-subtitle">@(_lastDerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
         </ResultContent>
     </ResultPanel>
 </div>
