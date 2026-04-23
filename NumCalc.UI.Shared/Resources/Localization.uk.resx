@@ -241,4 +241,31 @@
   <data name="ExpressionOnlyX" xml:space="preserve">
     <value>Вираз має містити лише змінну x.</value>
   </data>
+  <data name="Benchmark" xml:space="preserve">
+    <value>Порівняння</value>
+  </data>
+  <data name="Integral" xml:space="preserve">
+    <value>Інтеграл</value>
+  </data>
+  <data name="ExecutionTime" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="ms" xml:space="preserve">
+    <value>мс</value>
+  </data>
+  <data name="RectangleLeft" xml:space="preserve">
+    <value>Прямокутники (ліві)</value>
+  </data>
+  <data name="RectangleRight" xml:space="preserve">
+    <value>Прямокутники (праві)</value>
+  </data>
+  <data name="RectangleMidpoint" xml:space="preserve">
+    <value>Прямокутники (середні)</value>
+  </data>
+  <data name="Trapezoid" xml:space="preserve">
+    <value>Трапеції</value>
+  </data>
+  <data name="Simpson" xml:space="preserve">
+    <value>Метод Сімпсона</value>
+  </data>
 </root>

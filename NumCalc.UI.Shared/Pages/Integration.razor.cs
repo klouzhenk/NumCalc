@@ -6,6 +6,7 @@ using NumCalc.Shared.Integration.Requests;
 using NumCalc.Shared.Integration.Responses;
 using NumCalc.UI.Shared.Components.Integration;
 using NumCalc.UI.Shared.Enums.Integration;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
@@ -21,12 +22,19 @@ public partial class Integration : BasePage<Integration>
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
+    private AnalysisMode _mode = AnalysisMode.Single;
     private IntegrationMethod _method = IntegrationMethod.Rectangle;
     private RectangleVariant _rectangleVariant = RectangleVariant.Midpoint;
+    private List<IntegrationComparisonMethod> _benchmarkMethods = [];
     private IntegrationInput? _input;
     private IntegrationResponse? Result { get; set; }
+    private IntegrationComparisonResponse? ComparisonResult { get; set; }
 
-    private void ResetResult() => Result = null;
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
+    }
     private string? _lastExpression;
     private double _lastLowerBound;
     private double _lastUpperBound;
@@ -41,6 +49,7 @@ public partial class Integration : BasePage<Integration>
     private async Task Calculate()
     {
         Result = null;
+        ComparisonResult = null;
 
         if (_input is null) return;
 
@@ -49,6 +58,27 @@ public partial class Integration : BasePage<Integration>
         _lastLowerBound = formData.LowerBound;
         _lastUpperBound = formData.UpperBound;
         _lastIntervals = formData.Intervals;
+
+        if (_mode is AnalysisMode.Benchmark)
+        {
+            if (_benchmarkMethods.Count == 0)
+            {
+                UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+                return;
+            }
+
+            var compRequest = new IntegrationComparisonRequest
+            {
+                FunctionExpression = formData.FunctionExpression ?? string.Empty,
+                LowerBound = formData.LowerBound,
+                UpperBound = formData.UpperBound,
+                Intervals = formData.Intervals,
+                Methods = _benchmarkMethods
+            };
+
+            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetIntegrationComparisonAsync(compRequest));
+            return;
+        }
 
         var request = new IntegrationRequest
         {

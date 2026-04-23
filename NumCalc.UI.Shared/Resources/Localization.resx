@@ -247,4 +247,31 @@
   <data name="ExpressionOnlyX" xml:space="preserve">
     <value>The expression must contain only the variable x.</value>
   </data>
+  <data name="Benchmark" xml:space="preserve">
+    <value>Benchmark</value>
+  </data>
+  <data name="Integral" xml:space="preserve">
+    <value>Integral</value>
+  </data>
+  <data name="ExecutionTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ms" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="RectangleLeft" xml:space="preserve">
+    <value>Rectangle (Left)</value>
+  </data>
+  <data name="RectangleRight" xml:space="preserve">
+    <value>Rectangle (Right)</value>
+  </data>
+  <data name="RectangleMidpoint" xml:space="preserve">
+    <value>Rectangle (Midpoint)</value>
+  </data>
+  <data name="Trapezoid" xml:space="preserve">
+    <value>Trapezoid</value>
+  </data>
+  <data name="Simpson" xml:space="preserve">
+    <value>Simpson's 1/3</value>
+  </data>
 </root>

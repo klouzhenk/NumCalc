@@ -8,4 +8,5 @@ public interface IIntegrationService
     IntegrationResponse SolveRectangle(IntegrationRequest request);
     IntegrationResponse SolveTrapezoid(IntegrationRequest request);
     IntegrationResponse SolveSimpson(IntegrationRequest request);
+    IntegrationComparisonResponse Compare(IntegrationComparisonRequest request);
 }

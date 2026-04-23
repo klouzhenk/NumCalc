@@ -72,6 +72,9 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
     public async Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request)
         => await SendPostRequestAsync<IntegrationResponse>("api/integration/simpson", request);
 
+    public async Task<IntegrationComparisonResponse?> GetIntegrationComparisonAsync(IntegrationComparisonRequest request)
+        => await SendPostRequestAsync<IntegrationComparisonResponse>("api/integration/comparison", request);
+
     public async Task<OptimizationResponse?> OptimizeUniformSearchAsync(OptimizationRequest request)
         => await SendPostRequestAsync<OptimizationResponse>("api/optimization/uniform-search", request);
 

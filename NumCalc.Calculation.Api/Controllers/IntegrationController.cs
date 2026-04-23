@@ -36,4 +36,13 @@ public class IntegrationController(IIntegrationService integrationService) : Con
         var response = integrationService.SolveSimpson(request);
         return Ok(response);
     }
+
+    [HttpPost("comparison")]
+    [ProducesResponseType(typeof(IntegrationComparisonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult Compare([FromBody] IntegrationComparisonRequest request)
+    {
+        var response = integrationService.Compare(request);
+        return Ok(response);
+    }
 }

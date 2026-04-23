@@ -3,26 +3,46 @@
 @using NumCalc.UI.Shared.Components.Integration
 @using NumCalc.Shared.Enums.Integration
 @using NumCalc.UI.Shared.Enums.Integration
+@using NumCalc.UI.Shared.Enums.Roots
 
 @inherits BasePage<Integration>
 
 <div class="page-wrapper page__integration">
     <div class="integration__form-wrapper">
         <div class="page__filters-container">
-            <Dropdown TItem="IntegrationMethod"
-                      Label="Method"
-                      Data="@(Enum.GetValues<IntegrationMethod>())"
-                      @bind-Value="_method"
-                      @bind-Value:after="ResetResult"
-                      TextField="@(item => item.ToString())"/>
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="_mode"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(item => item.ToString())"/>
 
-            @if (_method is IntegrationMethod.Rectangle)
+            @if (_mode is AnalysisMode.Single)
             {
-                <Dropdown TItem="RectangleVariant"
-                          Label="Variant"
-                          Data="@(Enum.GetValues<RectangleVariant>())"
-                          @bind-Value="_rectangleVariant"
+                <Dropdown TItem="IntegrationMethod"
+                          Label="Method"
+                          Data="@(Enum.GetValues<IntegrationMethod>())"
+                          @bind-Value="_method"
                           @bind-Value:after="ResetResult"
+                          TextField="@(item => item.ToString())"/>
+
+                @if (_method is IntegrationMethod.Rectangle)
+                {
+                    <Dropdown TItem="RectangleVariant"
+                              Label="Variant"
+                              Data="@(Enum.GetValues<RectangleVariant>())"
+                              @bind-Value="_rectangleVariant"
+                              @bind-Value:after="ResetResult"
+                              TextField="@(item => item.ToString())"/>
+                }
+            }
+            else
+            {
+                <Dropdown TItem="IntegrationComparisonMethod"
+                          Label="Methods"
+                          Data="@(Enum.GetValues<IntegrationComparisonMethod>())"
+                          MultiSelect="true"
+                          @bind-SelectedItems="_benchmarkMethods"
+                          @bind-SelectedItems:after="ResetResult"
                           TextField="@(item => item.ToString())"/>
             }
         </div>
@@ -31,7 +51,7 @@
             <IntegrationInput @ref="_input" />
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">Calculate</button>
-                @if (Result is not null)
+                @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
@@ -39,15 +59,22 @@
         </div>
     </div>
 
-    <ResultPanel HasResult="Result is not null">
+    <ResultPanel HasResult="Result is not null || ComparisonResult is not null">
         <Header>
-            @if (_method is IntegrationMethod.Rectangle)
+            @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@SelectedStep?.Value</span>
+                @if (_method is IntegrationMethod.Rectangle)
+                {
+                    <span>@SelectedStep?.Value</span>
+                }
+                else
+                {
+                    <span>I = @Result!.IntegralValue.ToString("G6")</span>
+                }
             }
             else
             {
-                <span>I = @Result!.IntegralValue.ToString("G6")</span>
+                <span>@Localizer["Benchmark"]</span>
             }
         </Header>
         <ChartContent>
@@ -57,7 +84,25 @@
             </div>
         </ChartContent>
         <ResultContent>
-            <SolutionStepsList Steps="Result?.SolutionSteps" />
+            @if (_mode is AnalysisMode.Single)
+            {
+                <SolutionStepsList Steps="Result?.SolutionSteps" />
+            }
+            else if (ComparisonResult?.Results is { Count: > 0 })
+            {
+                <ul class="root-finding-result__list">
+                    @foreach (var item in ComparisonResult.Results)
+                    {
+                        <li class="root-finding-result__item comparison-result__item @(item.Method == ComparisonResult.BestMethod ? "marked" : "")">
+                            <span class="root-finding-result__item-title">@Localizer[item.Method.ToString()]</span>
+                            <div class="root-finding-result__item-text">
+                                <span class="root-finding-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G8") ?? "—") &nbsp;|&nbsp;
+                                <span class="root-finding-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
         </ResultContent>
     </ResultPanel>
 </div>

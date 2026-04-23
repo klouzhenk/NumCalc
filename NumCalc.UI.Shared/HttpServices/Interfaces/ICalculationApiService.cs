@@ -35,6 +35,7 @@ public interface ICalculationApiService
     Task<IntegrationResponse?> IntegrateRectangleAsync(IntegrationRequest request);
     Task<IntegrationResponse?> IntegrateTrapezoidAsync(IntegrationRequest request);
     Task<IntegrationResponse?> IntegrateSimpsonAsync(IntegrationRequest request);
+    Task<IntegrationComparisonResponse?> GetIntegrationComparisonAsync(IntegrationComparisonRequest request);
     Task<OptimizationResponse?> OptimizeUniformSearchAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGoldenSectionAsync(OptimizationRequest request);
     Task<OptimizationResponse?> OptimizeGradientDescentAsync(GradientDescentRequest request);

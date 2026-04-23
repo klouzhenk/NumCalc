@@ -61,34 +61,24 @@
             </div>
         </div>
     </div>
-
-    <section>
-        @if (Result?.Roots is { Count: > 0 })
-        {
-            <div class="equation-systems-result">
-                <div class="equation-systems-result__roots">
-                    @for (var i = 0; i < Result.Roots.Count; i++)
-                    {
-                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
-                    }
-                </div>
-
-                @if (Result.SolutionSteps is { Count: > 0 })
+    
+    <ResultPanel HasResult="Result is not null">
+        <Header>
+            <div class="equation-systems-result__roots">
+                @for (var i = 0; i < Result?.Roots?.Count; i++)
                 {
-                    <SolutionStepsList Steps="Result.SolutionSteps" />
+                    <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
                 }
             </div>
-        }
-        else
-        {
-            <div class="root-finding-result__container--empty">
-                <span class="remark">@Localizer["ClickCalculateToViewResult"]</span>
+        </Header>
+        <ChartContent>
+            <div class="chart__container">
+                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
-        }
-
-        <div class="chart__container">
-            <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-            <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
-        </div>
-    </section>
+        </ChartContent>
+        <ResultContent>
+            <SolutionStepsList Steps="Result?.SolutionSteps" />
+        </ResultContent>
+    </ResultPanel>
 </div>
