@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NumCalc.Shared.Enums.EquationSystems;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.UI.Shared.Components;
@@ -193,8 +194,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 {
                     Name = s.Label,
                     Data = s.Points
-                        .Where(p => p.X.HasValue && p.Y.HasValue && p.Z.HasValue)
-                        .Select(p => new double[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
+                        .Where(p => p is { X: not null, Y: not null, Z: not null })
+                        .Select(p => new[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
                         .ToList(),
                     Color = ColorUtils.GetSeriesColor(idx),
                     IsVisible = true
@@ -207,7 +208,7 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 {
                     Name = "Solution",
                     Data = [[Result.Roots[0], Result.Roots[1], Result.Roots[2]]],
-                    Type = Enums.Charts.ChartType.Scatter,
+                    Type = ChartType.Scatter,
                     Color = ColorUtils.GetColor(Enums.Color.Danger),
                     IsVisible = true,
                     Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
@@ -233,8 +234,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 {
                     Name = s.Label,
                     Data = s.Points
-                        .Where(p => p.X.HasValue && p.Y.HasValue)
-                        .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+                        .Where(p => p is { X: not null, Y: not null })
+                        .Select(p => new[] { p.X!.Value, p.Y!.Value })
                         .ToList(),
                     Color = ColorUtils.GetSeriesColor(idx),
                     LineWidth = 2,
@@ -248,7 +249,7 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 {
                     Name = "Solution",
                     Data = [[Result.Roots[0], Result.Roots[1]]],
-                    Type = Enums.Charts.ChartType.Scatter,
+                    Type = ChartType.Scatter,
                     Color = ColorUtils.GetColor(Enums.Color.Danger),
                     LineWidth = 0,
                     ZIndex = 5,

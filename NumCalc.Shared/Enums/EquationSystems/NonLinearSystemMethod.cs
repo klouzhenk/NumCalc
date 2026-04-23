@@ -1,4 +1,4 @@
-﻿namespace NumCalc.UI.Shared.Enums.EquationSystems;
+namespace NumCalc.Shared.Enums.EquationSystems;
 
 public enum NonLinearSystemMethod
 {

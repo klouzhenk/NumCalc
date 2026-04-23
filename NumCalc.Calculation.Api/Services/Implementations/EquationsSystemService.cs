@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using CSnakes.Runtime;
-using Microsoft.Extensions.Logging;
-using NumCalc.Calculation.Api.Entities;
 using NumCalc.Calculation.Api.Entities.EquationSystems;
 using NumCalc.Calculation.Api.Exceptions;
 using NumCalc.Calculation.Api.Services.Interfaces;
@@ -22,7 +20,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
             throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered equations list is empty");
 
         logger.LogInformation("Cramer: {Count} equations, variables={Variables}",
-            request.Equations.Count, string.Join(", ", request.Variables ?? []));
+            request.Equations.Count, string.Join(", ", request.Variables));
 
         var equationSystemSolver = env.EquationSystems();
         var jsonEnvelope = equationSystemSolver.SolveCramer(request.Equations, request.Variables);
@@ -44,7 +42,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
             throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered equations list is empty");
 
         logger.LogInformation("Gaussian: {Count} equations, variables={Variables}",
-            request.Equations.Count, string.Join(", ", request.Variables ?? []));
+            request.Equations.Count, string.Join(", ", request.Variables));
 
         var equationSystemSolver = env.EquationSystems();
         var jsonEnvelope = equationSystemSolver.SolveGaussian(request.Equations, request.Variables);
@@ -133,7 +131,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         sw.Stop();
         results.Add(new LinearSystemBenchmarkResultDto
         {
-            Method = LinearSystemComparisonMethod.Cramer,
+            Method = LinearSystemMethod.Cramer,
             Roots = cramerResult.Roots,
             ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
         });
@@ -143,7 +141,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         sw.Stop();
         results.Add(new LinearSystemBenchmarkResultDto
         {
-            Method = LinearSystemComparisonMethod.Gauss,
+            Method = LinearSystemMethod.Gauss,
             Roots = gaussResult.Roots,
             ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
         });
@@ -177,7 +175,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         sw.Stop();
         results.Add(new NonLinearSystemBenchmarkResultDto
         {
-            Method = NonLinearSystemComparisonMethod.FixedPoint,
+            Method = NonLinearSystemMethod.FixedPoint,
             Roots = fixedPointResult.Roots,
             ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
         });
@@ -187,7 +185,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
         sw.Stop();
         results.Add(new NonLinearSystemBenchmarkResultDto
         {
-            Method = NonLinearSystemComparisonMethod.Seidel,
+            Method = NonLinearSystemMethod.Seidel,
             Roots = seidelResult.Roots,
             ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
         });

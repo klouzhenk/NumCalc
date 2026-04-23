@@ -1,6 +1,6 @@
 namespace NumCalc.Shared.Enums.EquationSystems;
 
-public enum LinearSystemComparisonMethod
+public enum LinearSystemMethod
 {
     Cramer,
     Gauss
