@@ -1,37 +1,36 @@
 ﻿@using NumCalc.UI.Shared.Enums
 
 <header>
-    <div class="header__icon" @onclick="OnHeaderLogoClick">
-        <SvgIcon Name="calculator"/>
-        <span class="brand-icon"></span> NumCalc
+    <div class="header__logo" @onclick="OnHeaderLogoClick">
+        <SvgIcon Name="logos-logo-full" />
     </div>
 
     <div class="header__actions">
         @switch (CurrentNavItem)
         {
             case NavigationItem.Roots:
-                <RootFindingTopicInfo />
+                <RootFindingTopicInfo/>
                 break;
             case NavigationItem.EquationSystems:
-                <EquationSystemsTopicInfo />
+                <EquationSystemsTopicInfo/>
                 break;
             case NavigationItem.Interpolation:
-                <InterpolationTopicInfo />
+                <InterpolationTopicInfo/>
                 break;
             case NavigationItem.Differentiation:
-                <DifferentiationTopicInfo />
+                <DifferentiationTopicInfo/>
                 break;
             case NavigationItem.Integration:
-                <IntegrationTopicInfo />
+                <IntegrationTopicInfo/>
                 break;
             case NavigationItem.Optimization:
-                <OptimizationTopicInfo />
+                <OptimizationTopicInfo/>
                 break;
             case NavigationItem.Ode:
-                <OdeTopicInfo />
+                <OdeTopicInfo/>
                 break;
         }
-        
+
         <div class="language-switch">
             <button class="language-switch__button @(CultureService.CurrentCulture == "en" ? "active" : "")"
                     @onclick='() => SetCulture("en")'>EN</button>

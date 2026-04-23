@@ -186,6 +186,7 @@ Currently working:
 - PDF export — fully implemented on all 7 result pages (QuestPDF + KaTeX + html2canvas)
 
 Not implemented yet:
+- Comparison feature for Interpolation, Integration, ODE, Differentiation, Optimization, Equation Systems pages (root finding comparison already done)
 - Full-featured backend for users/history
 - Complete MAUI UI
 
@@ -213,6 +214,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Newton-Raphson method (Метод Ньютона)
 - Secant method (Метод січних)
 - Combined method (Newton + Secant / Brent-like hybrid)
+- **Comparison** — COMPLETED (`POST api/rootfinding/comparison`; `RootFindingComparisonRequest` → `RootFindingComparisonResponse` with `List<BenchmarkResultDto>` + `BestMethod`)
 
 ---
 
@@ -232,12 +234,14 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Newton interpolation polynomial — implemented
 - Lagrange interpolation polynomial — implemented
 - Spline interpolation (cubic splines, SciPy) — implemented
+- **Comparison** — IN PROGRESS (compare Newton, Lagrange, Spline; shared result fields: `InterpolatedValue`, `ExecutionTimeMs`)
 
 ---
 
 ### Numerical Differentiation (Чисельне диференціювання) — COMPLETED
 - Finite differences: forward, backward, central (1st and 2nd order) — implemented
 - Derivative via Lagrange interpolation — implemented
+- **Comparison** — PLANNED (compare Forward, Backward, Central finite diff + Lagrange; shared result fields: `DerivativeValue`, `ExecutionTimeMs`)
 
 ---
 
@@ -245,6 +249,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Rectangle rule (left, right, midpoint) — implemented
 - Trapezoidal rule — implemented
 - Simpson’s 1/3 rule — implemented
+- **Comparison** — IN PROGRESS (compare Rectangle left/right/mid, Trapezoid, Simpson; shared result fields: `IntegralValue`, `ExecutionTimeMs`)
 
 ---
 
@@ -253,6 +258,7 @@ All core methods are already implemented in Python + exposed via API + UI.
 #### One-dimensional optimization
 - Uniform search (brute grid search) — implemented
 - Golden section search (Золотий перетин) — implemented
+- **Comparison** — PLANNED (compare Uniform search + Golden section; gradient descent excluded — different input shape; shared result fields: `MinimumValue`, `ArgMinX`, `ExecutionTimeMs`)
 
 #### Multi-dimensional optimization
 - Gradient descent method — implemented
@@ -265,6 +271,51 @@ All core methods are already implemented in Python + exposed via API + UI.
 - Euler Improved (Heun) — implemented
 - Runge-Kutta 2nd order — implemented
 - Runge-Kutta 4th order — implemented
+- **Comparison** — IN PROGRESS (compare Euler, Euler Improved, RK2, RK4; Picard excluded — symbolic/different output; shared result fields: final `y` at targetX, `ExecutionTimeMs`)
+
+---
+
+## Method Comparison Feature
+
+Allows users to run multiple methods on the same input and compare results side-by-side. Modeled after the existing root finding comparison.
+
+### Pattern (from root finding reference implementation)
+
+**DTOs (NumCalc.Shared):**
+- Request: inherits from the domain's base request + adds `Methods` (e.g. `IEnumerable<InterpolationMethod>`)
+- Response: `Results` (`List<ComparisonResultDto>`) + `BestMethod` (selected by `ExecutionTimeMs`, then iteration count as tiebreaker)
+- `ComparisonResultDto` per domain: method enum + the scalar result (root / interpolated value / integral / etc.) + `Iterations` (0 for non-iterative methods) + `ExecutionTimeMs`
+
+**API (NumCalc.Calculation.Api):**
+- New `POST api/{domain}/comparison` endpoint in the existing controller
+- Service method iterates selected methods, calls existing Python solvers individually via `Stopwatch`, collects results
+- No new Python code needed — reuses existing per-method functions
+
+**HTTP client (NumCalc.UI.Shared):**
+- New method on `ICalculationApiService` / `CalculationApiService`, e.g. `GetInterpolationComparisonAsync()`
+
+**UI (NumCalc.UI.Shared/Pages/):**
+- Mode toggle ("Single" / "Compare") on the existing page
+- Multi-select for methods (checkboxes or multi-select dropdown)
+- Results table: one row per method, columns = method name + result value + iterations + time (ms)
+- Best method row highlighted with CSS class `marked`
+- No comparison chart needed for most domains (root finding overlays roots on chart — this is domain-specific)
+
+### Domain coverage plan
+| Domain | Methods compared | Status |
+|---|---|---|
+| Root Finding | Bisection, Simple Iter, Newton, Secant, Combined | COMPLETED |
+| Integration | Rectangle (L/R/M), Trapezoid, Simpson | IN PROGRESS |
+| Interpolation | Newton, Lagrange, Spline | IN PROGRESS |
+| ODE | Euler, Euler Improved, RK2, RK4 (Picard excluded) | IN PROGRESS |
+| Differentiation | Forward, Backward, Central, Lagrange | PLANNED |
+| Optimization (1D) | Uniform search, Golden section (gradient descent excluded) | PLANNED |
+| Equation Systems | Linear: Cramer vs Gaussian / Non-linear: Fixed-point vs Seidel | PLANNED |
+
+### Method enums to add (NumCalc.Shared/Enums/)
+- `InterpolationMethod` — Newton, Lagrange, Spline
+- `IntegrationMethod` — RectangleLeft, RectangleRight, RectangleMid, Trapezoid, Simpson
+- `OdeMethod` — Euler, EulerImproved, RungeKutta2, RungeKutta4
 
 ---
 

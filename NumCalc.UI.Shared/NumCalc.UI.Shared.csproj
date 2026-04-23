@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <Folder Include="src\fonts\" />
-      <Folder Include="src\images\" />
     </ItemGroup>
 
     <ItemGroup>

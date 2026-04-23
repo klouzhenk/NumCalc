@@ -6,8 +6,8 @@ import path from 'path';
 export default defineConfig({
     plugins: [
         createSvgIconsPlugin({
-            iconDirs: [normalizePath(path.resolve(process.cwd(), 'src/icons'))],
-            symbolId: 'icon-[name]',
+            iconDirs: [path.resolve(process.cwd(), 'src/icons')],
+            symbolId: 'icon-[dir]-[name]',
         }),
         ViteImageOptimizer({
             png: { quality: 80 },

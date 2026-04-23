@@ -24,20 +24,13 @@
         gap: var(--dimension-xxl);
     }
 
-    & .header__icon {
-        font-family: var(--font-heading), monospace;
-        font-size: var(--dimension-xl);
-        font-weight: 700;
-        color: var(--gray-light-color);
-        display: flex;
-        align-items: center;
-        gap: var(--dimension-s);
-        user-select: none;
+    & .header__logo {
+        margin: 0 var(--dimension-s);
         cursor: pointer;
-
-        & .brand-icon {
-            color: var(--primary-color);
-            font-size: var(--dimension-xxl);
+        
+        svg {
+            width: 120px;
+            height: fit-content;
         }
     }
 }
