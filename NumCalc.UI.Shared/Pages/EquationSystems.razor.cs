@@ -39,6 +39,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private NonLinearSystemComparisonResponse? NonLinearComparisonResult { get; set; }
     private List<string>? _lastEquations;
     private List<string>? _lastVariables;
+    private List<LinearSystemMethod>? _linearBenchmarkMethods;
+    private List<NonLinearSystemMethod>? _nonLinearBenchmarkMethods;
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
@@ -80,7 +82,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
         var request = new LinearSystemComparisonRequest
         {
             Equations = equations,
-            Variables = variables
+            Variables = variables,
+            Methods = _linearBenchmarkMethods
         };
 
         LinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetLinearComparisonAsync(request));
@@ -104,7 +107,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
             Variables = formData.Variables.ToList(),
             InitialGuess = formData.InitialGuess.ToList(),
             Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations
+            MaxIterations = formData.MaxIterations,
+            Methods = _nonLinearBenchmarkMethods
         };
 
         NonLinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetNonLinearComparisonAsync(request));

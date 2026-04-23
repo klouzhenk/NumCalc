@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using NumCalc.Shared.Enums.EquationSystems;
 
 namespace NumCalc.Shared.EquationsSystems.Requests;
 
@@ -20,4 +21,6 @@ public class NonLinearSystemComparisonRequest
 
     [Range(1, 10000)]
     public int MaxIterations { get; set; } = 500;
+
+    public IEnumerable<NonLinearSystemMethod>? Methods { get; set; }
 }

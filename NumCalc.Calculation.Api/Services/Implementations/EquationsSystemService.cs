@@ -124,27 +124,31 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
             Variables = request.Variables
         };
 
+        var solvers = new Dictionary<LinearSystemMethod, Func<SystemSolvingResponse>>
+        {
+            [LinearSystemMethod.Cramer] = () => SolveCramer(solverRequest),
+            [LinearSystemMethod.Gauss]  = () => SolveGaussian(solverRequest)
+        };
+
+        var methods = request.Methods?.ToList() is { Count: > 0 } m
+            ? m
+            : Enum.GetValues<LinearSystemMethod>().ToList();
+
         var results = new List<LinearSystemBenchmarkResultDto>();
+        var sw = new Stopwatch();
 
-        var sw = Stopwatch.StartNew();
-        var cramerResult = SolveCramer(solverRequest);
-        sw.Stop();
-        results.Add(new LinearSystemBenchmarkResultDto
+        foreach (var method in methods)
         {
-            Method = LinearSystemMethod.Cramer,
-            Roots = cramerResult.Roots,
-            ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-        });
-
-        sw.Restart();
-        var gaussResult = SolveGaussian(solverRequest);
-        sw.Stop();
-        results.Add(new LinearSystemBenchmarkResultDto
-        {
-            Method = LinearSystemMethod.Gauss,
-            Roots = gaussResult.Roots,
-            ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-        });
+            sw.Restart();
+            var result = solvers[method]();
+            sw.Stop();
+            results.Add(new LinearSystemBenchmarkResultDto
+            {
+                Method = method,
+                Roots = result.Roots,
+                ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
+            });
+        }
 
         var best = results.OrderBy(r => r.ExecutionTimeMs).FirstOrDefault();
 
@@ -168,27 +172,31 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
             MaxIterations = request.MaxIterations
         };
 
+        var solvers = new Dictionary<NonLinearSystemMethod, Func<SystemSolvingResponse>>
+        {
+            [NonLinearSystemMethod.FixedPoint] = () => SolveFixedPoint(solverRequest),
+            [NonLinearSystemMethod.Seidel]     = () => SolveSeidel(solverRequest)
+        };
+
+        var methods = request.Methods?.ToList() is { Count: > 0 } m
+            ? m
+            : Enum.GetValues<NonLinearSystemMethod>().ToList();
+
         var results = new List<NonLinearSystemBenchmarkResultDto>();
+        var sw = new Stopwatch();
 
-        var sw = Stopwatch.StartNew();
-        var fixedPointResult = SolveFixedPoint(solverRequest);
-        sw.Stop();
-        results.Add(new NonLinearSystemBenchmarkResultDto
+        foreach (var method in methods)
         {
-            Method = NonLinearSystemMethod.FixedPoint,
-            Roots = fixedPointResult.Roots,
-            ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-        });
-
-        sw.Restart();
-        var seidelResult = SolveSeidel(solverRequest);
-        sw.Stop();
-        results.Add(new NonLinearSystemBenchmarkResultDto
-        {
-            Method = NonLinearSystemMethod.Seidel,
-            Roots = seidelResult.Roots,
-            ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-        });
+            sw.Restart();
+            var result = solvers[method]();
+            sw.Stop();
+            results.Add(new NonLinearSystemBenchmarkResultDto
+            {
+                Method = method,
+                Roots = result.Roots,
+                ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
+            });
+        }
 
         var best = results.OrderBy(r => r.ExecutionTimeMs).FirstOrDefault();
 

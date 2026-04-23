@@ -46,6 +46,29 @@
                               TextField="@(item => item.ToString())"/>
                 }
             }
+            else
+            {
+                @if (Category is EquationSystemCategory.Linear)
+                {
+                    <Dropdown TItem="LinearSystemMethod"
+                              Label="Methods"
+                              Data="@(Enum.GetValues<LinearSystemMethod>())"
+                              MultiSelect="true"
+                              @bind-SelectedItems="_linearBenchmarkMethods"
+                              @bind-SelectedItems:after="ResetResult"
+                              TextField="@(item => item.ToString())"/>
+                }
+                else
+                {
+                    <Dropdown TItem="NonLinearSystemMethod"
+                              Label="Methods"
+                              Data="@(Enum.GetValues<NonLinearSystemMethod>())"
+                              MultiSelect="true"
+                              @bind-SelectedItems="_nonLinearBenchmarkMethods"
+                              @bind-SelectedItems:after="ResetResult"
+                              TextField="@(item => item.ToString())"/>
+                }
+            }
 
             <Dropdown TItem="int"
                       Label="Size"
