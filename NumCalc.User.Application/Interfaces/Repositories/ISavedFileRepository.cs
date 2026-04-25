@@ -2,12 +2,12 @@ using NumCalc.User.Domain.Entities;
 
 namespace NumCalc.User.Application.Interfaces.Repositories;
 
-public interface ICalculationHistoryRepository
+public interface ISavedFileRepository
 {
-    Task<CalculationHistoryRecord?> GetByIdAsync(Guid id);
-    Task<List<CalculationHistoryRecord>> GetByUserIdAsync(Guid userId);
+    Task<List<SavedFile>> GetFilesMetadataByUserIdAsync(Guid userId);
+    Task<SavedFile?> GetByIdAsync(Guid id);
     Task<int> CountByUserIdAsync(Guid userId);
-    Task AddAsync(CalculationHistoryRecord record);
+    Task AddAsync(SavedFile file);
     Task DeleteAsync(Guid id);
     Task DeleteOldestByUserIdAsync(Guid userId);
     Task SaveChangesAsync();

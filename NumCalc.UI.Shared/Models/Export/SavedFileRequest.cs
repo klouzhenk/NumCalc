@@ -1,6 +1,6 @@
 ﻿namespace NumCalc.UI.Shared.Models.Export;
 
-public class PdfExportRequest
+public class SavedFileRequest
 {
     public string MethodName { get; set; } = string.Empty;
     public Dictionary<string, string> Inputs { get; set; } = [];

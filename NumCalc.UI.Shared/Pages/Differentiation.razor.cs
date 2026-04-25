@@ -207,7 +207,7 @@ public partial class Differentiation : BasePage<Differentiation>
             var order = _lastDerivativeOrder == 2 ? "f''" : "f'";
             var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"Differentiation — {methodLabel}",
                 Inputs = inputs,

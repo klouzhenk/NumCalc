@@ -7,5 +7,5 @@ public class AppUser : BaseEntity
 
     public ICollection<CalculationHistoryRecord> History { get; set; } = [];
     public ICollection<SavedInput> SavedInputs { get; set; } = [];
-    public ICollection<SavedPdfExport> SavedPdfs { get; set; } = [];
+    public ICollection<SavedFile> SavedPdfs { get; set; } = [];
 }

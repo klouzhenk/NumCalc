@@ -8,7 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<AppUser> Users { get; set; }
     public DbSet<CalculationHistoryRecord> CalculationHistoryRecords { get; set; }
     public DbSet<SavedInput> SavedInputs { get; set; }
-    public DbSet<SavedPdfExport> SavedPdfExports { get; set; }
+    public DbSet<SavedFile> SavedFiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

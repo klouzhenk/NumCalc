@@ -2,7 +2,7 @@ using NumCalc.User.Domain.Enums;
 
 namespace NumCalc.User.Application.DTOs;
 
-public class SaveHistoryRequest
+public class SaveCalculationRecordRequest
 {
     public CalculationType Type { get; set; }
     public string MethodName { get; set; } = string.Empty;

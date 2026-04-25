@@ -208,7 +208,7 @@ public partial class Integration : BasePage<Integration>
                 ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G6}"
                 : $"I = {Result.IntegralValue:G6}";
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"Integration — {_method}",
                 Inputs = inputs,

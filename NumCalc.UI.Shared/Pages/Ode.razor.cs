@@ -191,7 +191,7 @@ public partial class Ode : BasePage<Ode>
                 ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
                 : "No solution";
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"ODE — {_method}",
                 Inputs = inputs,

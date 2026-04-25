@@ -268,7 +268,7 @@ public partial class Optimization : BasePage<Optimization>
             else if (Result.ArgMinPoint is { Count: > 0 })
                 resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"Optimization — {_method}",
                 Inputs = inputs,

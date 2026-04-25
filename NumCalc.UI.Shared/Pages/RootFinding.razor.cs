@@ -248,7 +248,7 @@ public partial class RootFinding : BasePage<RootFinding>
             if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
             inputs["Tolerance"] = _formData.Tolerance.ToString("G");
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"Root Finding — {_formData.Method}",
                 Inputs = inputs,

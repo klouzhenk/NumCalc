@@ -4,11 +4,11 @@ using NumCalc.User.Domain.Entities;
 
 namespace NumCalc.User.Infrastructure.Data.Configurations;
 
-public class SavedPdfExportConfiguration : IEntityTypeConfiguration<SavedPdfExport>
+public class SavedFileConfiguration : IEntityTypeConfiguration<SavedFile>
 {
-    public void Configure(EntityTypeBuilder<SavedPdfExport> builder)
+    public void Configure(EntityTypeBuilder<SavedFile> builder)
     {
-        builder.ToTable("SavedPdfExports");
+        builder.ToTable("SavedFiles");
 
         builder.HasKey(file => file.Id);
         builder.Property(file => file.Id)

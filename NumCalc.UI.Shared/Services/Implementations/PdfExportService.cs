@@ -23,7 +23,7 @@ public class PdfExportService : IPdfExportService
         QuestPDF.Settings.License = LicenseType.Community;
     }
 
-    public byte[] GeneratePdf(PdfExportRequest request)
+    public byte[] GeneratePdf(SavedFileRequest request)
     {
         return Document.Create(container =>
         {
@@ -61,7 +61,7 @@ public class PdfExportService : IPdfExportService
                     .FontSize(9).FontColor(ColorTextMuted);
             });
 
-    private static Action<IContainer> ComposeContent(PdfExportRequest request) =>
+    private static Action<IContainer> ComposeContent(SavedFileRequest request) =>
         container => container
             .PaddingVertical(20)
             .Column(col =>

@@ -1,12 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NumCalc.User.Application.Exceptions;
 using NumCalc.User.Application.Interfaces.Repositories;
 using NumCalc.User.Domain.Entities;
+using NumCalc.User.Domain.Enums;
 using NumCalc.User.Infrastructure.Data;
 
 namespace NumCalc.User.Infrastructure.Repositories;
 
 public class CalculationHistoryRepository(AppDbContext dbContext) : ICalculationHistoryRepository
 {
+    public async Task<CalculationHistoryRecord?> GetByIdAsync(Guid id)
+    {
+        return await dbContext.CalculationHistoryRecords.FindAsync(id);
+    }
+    
     public async Task<List<CalculationHistoryRecord>> GetByUserIdAsync(Guid userId)
     {
         return await dbContext.CalculationHistoryRecords
@@ -28,7 +35,10 @@ public class CalculationHistoryRepository(AppDbContext dbContext) : ICalculation
     public async Task DeleteAsync(Guid id)
     {
         var record = await dbContext.CalculationHistoryRecords.FindAsync(id);
-        if (record is null) throw new ArgumentNullException($"The record was not found by {id}");
+        
+        if (record is null) 
+            throw new CustomException(UserErrorCode.RecordNotFound, $"The record was not found by {id}", 404);
+        
         dbContext.CalculationHistoryRecords.Remove(record);
     }
 
@@ -38,7 +48,10 @@ public class CalculationHistoryRepository(AppDbContext dbContext) : ICalculation
             .Where(record => record.UserId == userId)
             .OrderBy(record => record.CreatedAt)
             .FirstOrDefaultAsync();
-        if (record is null) throw new ArgumentNullException($"The record was not found for the user with id: {userId}");
+
+        if (record is null)
+            throw new CustomException(UserErrorCode.RecordNotFound, $"The record was not found for the user with id: {userId}", 404);
+        
         dbContext.CalculationHistoryRecords.Remove(record);
     }
 

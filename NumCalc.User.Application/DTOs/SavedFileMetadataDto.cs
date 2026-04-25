@@ -2,7 +2,7 @@ using NumCalc.User.Domain.Enums;
 
 namespace NumCalc.User.Application.DTOs;
 
-public class SavedPdfMetaDto
+public class SavedFileMetadataDto
 {
     public Guid Id { get; set; }
     public string FileName { get; set; } = string.Empty;

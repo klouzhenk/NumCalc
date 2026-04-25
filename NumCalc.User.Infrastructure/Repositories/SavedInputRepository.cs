@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NumCalc.User.Application.Exceptions;
 using NumCalc.User.Application.Interfaces.Repositories;
 using NumCalc.User.Domain.Entities;
+using NumCalc.User.Domain.Enums;
 using NumCalc.User.Infrastructure.Data;
 
 namespace NumCalc.User.Infrastructure.Repositories;
@@ -27,7 +29,10 @@ public class SavedInputRepository(AppDbContext dbContext) : ISavedInputRepositor
     public async Task DeleteAsync(Guid id)
     {
         var record = await dbContext.SavedInputs.FindAsync(id);
-        if (record is null) throw new ArgumentNullException($"The saved input was not found by {id}");
+        
+        if (record is null)
+            throw new CustomException(UserErrorCode.RecordNotFound, $"The saved input was not found by {id}", 404);
+        
         dbContext.SavedInputs.Remove(record);
     }
 

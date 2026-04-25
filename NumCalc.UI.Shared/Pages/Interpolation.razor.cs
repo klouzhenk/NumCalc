@@ -172,7 +172,7 @@ public partial class Interpolation : BasePage<Interpolation>
             if (formData.XNodes is { Count: > 0 })
                 inputs["X Nodes"] = string.Join(", ", formData.XNodes);
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = $"Interpolation — {_method}",
                 Inputs = inputs,

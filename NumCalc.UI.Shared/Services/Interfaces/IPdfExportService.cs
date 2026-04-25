@@ -4,5 +4,5 @@ namespace NumCalc.UI.Shared.Services.Interfaces;
 
 public interface IPdfExportService
 {
-    byte[] GeneratePdf(PdfExportRequest request);
+    byte[] GeneratePdf(SavedFileRequest request);
 }

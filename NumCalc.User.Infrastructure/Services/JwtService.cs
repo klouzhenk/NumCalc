@@ -11,7 +11,9 @@ public class JwtService(IConfiguration configuration) : IJwtService
 {
     public string GenerateToken(Guid userId, string username)
     {
-        var secret = configuration["JWT:Secret"]!;
+        var secret = configuration["JWT:Secret"]
+            ?? throw new InvalidOperationException("JWT:Secret is not configured");
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -22,7 +24,8 @@ public class JwtService(IConfiguration configuration) : IJwtService
             new Claim(ClaimTypes.Name, username)
         };
         
-        var expiryDays = int.Parse(configuration["JWT:ExpiryDays"]!);
+        var expiryDays = int.Parse(configuration["JWT:ExpiryDays"] 
+            ?? throw new InvalidOperationException("JWT:ExpiryDays is not configured"));
 
         var token = new JwtSecurityToken(
             issuer: configuration["JWT:Issuer"],

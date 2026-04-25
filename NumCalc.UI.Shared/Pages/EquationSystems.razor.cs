@@ -315,7 +315,7 @@ public partial class EquationSystems : BasePage<EquationSystems>
                 ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
                 : null;
 
-            var request = new PdfExportRequest
+            var request = new SavedFileRequest
             {
                 MethodName = methodName,
                 Inputs = inputs,
