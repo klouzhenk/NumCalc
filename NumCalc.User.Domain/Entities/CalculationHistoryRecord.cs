@@ -2,7 +2,7 @@ using NumCalc.User.Domain.Enums;
 
 namespace NumCalc.User.Domain.Entities;
 
-public class CalculationHistory : BaseEntity
+public class CalculationHistoryRecord : BaseEntity
 {
     public Guid UserId { get; set; }
     public AppUser User { get; set; } = null!;

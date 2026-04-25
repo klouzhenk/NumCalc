@@ -4,9 +4,9 @@ namespace NumCalc.User.Application.Interfaces.Repositories;
 
 public interface ICalculationHistoryRepository
 {
-    Task<List<CalculationHistory>> GetByUserIdAsync(Guid userId);
+    Task<List<CalculationHistoryRecord>> GetByUserIdAsync(Guid userId);
     Task<int> CountByUserIdAsync(Guid userId);
-    Task AddAsync(CalculationHistory history);
+    Task AddAsync(CalculationHistoryRecord record);
     Task DeleteAsync(Guid id);
     Task DeleteOldestByUserIdAsync(Guid userId);
     Task SaveChangesAsync();
