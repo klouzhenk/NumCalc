@@ -1,6 +1,6 @@
 namespace NumCalc.User.Domain.Entities;
 
-public class User : BaseEntity
+public class AppUser : BaseEntity
 {
     public string Username { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;

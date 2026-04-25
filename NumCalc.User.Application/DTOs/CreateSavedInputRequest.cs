@@ -1,12 +1,9 @@
 using NumCalc.User.Domain.Enums;
 
-namespace NumCalc.User.Domain.Entities;
+namespace NumCalc.User.Application.DTOs;
 
-public class SavedInput : BaseEntity
+public class CreateSavedInputRequest
 {
-    public Guid UserId { get; set; }
-    public AppUser User { get; set; } = null!;
-
     public string Name { get; set; } = string.Empty;
     public CalculationType Type { get; set; }
     public string InputsJson { get; set; } = string.Empty;

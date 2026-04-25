@@ -1,6 +1,6 @@
 namespace NumCalc.User.Domain.Enums;
 
-public enum CalculationDomain
+public enum CalculationType
 {
     RootFinding,
     EquationSystems,
