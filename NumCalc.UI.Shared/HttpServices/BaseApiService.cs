@@ -7,15 +7,28 @@ namespace NumCalc.UI.Shared.HttpServices;
 
 public abstract class BaseApiService(HttpClient httpClient)
 {
+    protected readonly HttpClient HttpClient = httpClient;
+    
     protected async Task<TResponse?> SendPostRequestAsync<TResponse>(string endpoint, object requestData)
     {
-        var response = await httpClient.PostAsJsonAsync(endpoint, requestData);
+        var response = await HttpClient.PostAsJsonAsync(endpoint, requestData);
         
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<TResponse>() 
                    ?? throw new ApiException("EMPTY_SERVER_RESPONSE");
         }
+        
+        var errorMessage = await ExtractErrorMessageAsync(response);
+        throw new ApiException(errorMessage);
+    }
+    
+    protected async Task SendPostRequestAsync(string endpoint, object requestData)
+    {
+        var response = await HttpClient.PostAsJsonAsync(endpoint, requestData);
+        
+        if (response.IsSuccessStatusCode)
+            return;
         
         var errorMessage = await ExtractErrorMessageAsync(response);
         throw new ApiException(errorMessage);
@@ -29,7 +42,7 @@ public abstract class BaseApiService(HttpClient httpClient)
             endpoint += queryString.Value;
         }
         
-        var response = await httpClient.GetAsync(endpoint);
+        var response = await HttpClient.GetAsync(endpoint);
         
         if (response.IsSuccessStatusCode)
         {
@@ -49,7 +62,7 @@ public abstract class BaseApiService(HttpClient httpClient)
             endpoint += queryString.Value;
         }
         
-        var response = await httpClient.DeleteAsync(endpoint);
+        var response = await HttpClient.DeleteAsync(endpoint);
         
         if (response.IsSuccessStatusCode)
             return;
@@ -58,7 +71,7 @@ public abstract class BaseApiService(HttpClient httpClient)
         throw new ApiException(errorMessage);
     }
 
-    private static async Task<string> ExtractErrorMessageAsync(HttpResponseMessage response)
+    protected static async Task<string> ExtractErrorMessageAsync(HttpResponseMessage response)
     {
         var errorMessage = "UNKNOWN_SERVER_ERROR";
         var errorContent = await response.Content.ReadAsStringAsync();
