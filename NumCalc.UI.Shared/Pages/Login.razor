@@ -1,32 +1,46 @@
 ﻿@page "/login"
+@layout AuthLayout
 @using Microsoft.AspNetCore.Components.Forms
+@using NumCalc.UI.Shared.Layouts
+@using NumCalc.UI.Shared.Components
 @inherits BasePage<Login>
 
 <div class="page-wrapper page__auth">
     <div class="auth-form">
-        <h2 class="auth-form__title">@Localizer["Login"]</h2>
-
+        <div class="auth-form__header">
+            <div class="auth-form__logo">
+                <SvgIcon Name="logos-logo-full"/>
+            </div>
+            <LanguageSwitch/>
+        </div>
+        
         <EditForm Model="LoginModel" OnValidSubmit="OnLoginSubmit">
-            <DataAnnotationsValidator />
+            <DataAnnotationsValidator/>
 
             <div class="auth-form__field">
                 <label>@Localizer["Username"]</label>
-                <InputText @bind-Value="LoginModel.Username" class="input" placeholder="@Localizer["Username"]" />
-                <ValidationMessage For="@(() => LoginModel.Username)" />
+                <InputText @bind-Value="LoginModel.Username" type="text" class="input" placeholder="@Localizer["Username"]"/>
+                <ValidationMessage For="@(() => LoginModel.Username)"/>
             </div>
 
             <div class="auth-form__field">
                 <label>@Localizer["Password"]</label>
-                <InputText @bind-Value="LoginModel.Password" type="password" class="input" placeholder="@Localizer["Password"]" />
-                <ValidationMessage For="@(() => LoginModel.Password)" />
+                <InputText @bind-Value="LoginModel.Password" type="password" class="input" placeholder="@Localizer["Password"]"/>
+                <ValidationMessage For="@(() => LoginModel.Password)"/>
             </div>
 
             <button type="submit" class="button button--primary">@Localizer["Login"]</button>
         </EditForm>
 
-        <p class="auth-form__footer">
-            @Localizer["DoNotHaveAccount"]
-            <a href="/register">@Localizer["Register"]</a>
-        </p>
+        <div class="auth-form__footer">
+            <p>
+                @Localizer["DoNotHaveAccount"]
+                <a href="/register">@Localizer["Register"]</a>
+            </p>
+
+            <p>
+                <a href="/">@Localizer["ContinueAsGuest"]</a>
+            </p>
+        </div>
     </div>
 </div>

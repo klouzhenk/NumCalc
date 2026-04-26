@@ -1,0 +1,6 @@
+<div class="language-switch">
+    <button class="language-switch__button @(CultureService.CurrentCulture == "en" ? "active" : "")"
+            @onclick='() => SetCulture("en")'>EN</button>
+    <button class="language-switch__button @(CultureService.CurrentCulture == "uk" ? "active" : "")"
+            @onclick='() => SetCulture("uk")'>UK</button>
+</div>

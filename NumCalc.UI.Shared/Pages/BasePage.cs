@@ -11,7 +11,7 @@ using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public abstract class BasePage<TPageType> : ComponentBase
+public abstract class BasePage<TPageType> : ComponentBase, IDisposable
 {
     [Inject] protected IUiStateService UiService { get; set; } = null!;
     [Inject] protected IStringLocalizer<Localization> Localizer { get; set; } = null!;
@@ -24,6 +24,13 @@ public abstract class BasePage<TPageType> : ComponentBase
     [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
 
     protected bool IsAuthenticated => AuthStateService.IsAuthenticated;
+
+    protected override void OnInitialized()
+    {
+        AuthStateService.OnAuthChanged += OnAuthStateChanged;
+    }
+
+    private void OnAuthStateChanged() => InvokeAsync(StateHasChanged);
 
     private string? _lastSavedHash;
     
@@ -119,5 +126,10 @@ public abstract class BasePage<TPageType> : ComponentBase
         {
             UiService.HideLoader();
         }
+    }
+
+    public virtual void Dispose()
+    {
+        AuthStateService.OnAuthChanged -= OnAuthStateChanged;
     }
 }

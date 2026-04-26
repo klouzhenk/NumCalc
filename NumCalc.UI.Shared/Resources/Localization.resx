@@ -331,4 +331,7 @@
   <data name="NoSavedInputsForType" xml:space="preserve">
     <value>No saved inputs for this calculation type.</value>
   </data>
+  <data name="ContinueAsGuest" xml:space="preserve">
+    <value>Continue as guest</value>
+  </data>
 </root>

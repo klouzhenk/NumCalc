@@ -1,3 +1,11 @@
+.auth-layout {
+    > main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
 .page__auth {
     display: flex;
     align-items: center;
@@ -15,13 +23,24 @@
     border-radius: var(--border-radius-xl);
     box-shadow: var(--component-shadow);
     background-color: var(--layout-background);
+    
+    &__header {
+        display: flex;
+        justify-content: space-between;
 
-    &__title {
-        font-size: 1.5rem;
-        color: var(--primary-color);
-        text-align: center;
+        .auth-form__logo svg {
+            height: 32px;
+            max-width: 200px;
+            width: fit-content;
+        }
     }
-
+    
+    & form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-l);
+    }
+    
     &__field {
         display: flex;
         flex-direction: column;
@@ -48,9 +67,16 @@
     }
 
     &__footer {
+        display: flex;
+        flex-direction: column;
         text-align: center;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         color: var(--gray-color);
+        gap: var(--dimension-xs);
+        
+        p {
+            margin: 0;
+        }
 
         a {
             color: var(--primary-color);

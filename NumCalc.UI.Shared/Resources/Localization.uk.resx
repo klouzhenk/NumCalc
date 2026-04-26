@@ -325,4 +325,7 @@
   <data name="NoSavedInputsForType" xml:space="preserve">
     <value>Немає збережених даних для цього типу обчислень.</value>
   </data>
+  <data name="ContinueAsGuest" xml:space="preserve">
+    <value>Продовжити як гість</value>
+  </data>
 </root>
