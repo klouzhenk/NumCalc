@@ -30,13 +30,28 @@
                 <OdeTopicInfo/>
                 break;
         }
-
+        
         <div class="language-switch">
             <button class="language-switch__button @(CultureService.CurrentCulture == "en" ? "active" : "")"
                     @onclick='() => SetCulture("en")'>EN</button>
             <button class="language-switch__button @(CultureService.CurrentCulture == "uk" ? "active" : "")"
                     @onclick='() => SetCulture("uk")'>UK</button>
         </div>
+        
+        @if (AuthStateService.IsAuthenticated)
+        {
+            <span class="header__credentials">@AuthStateService.Username</span>
+     
+            <button class="button button--icon" @onclick="Logout">
+                <SvgIcon Name="logout" />
+            </button>
+        }
+        else
+        {
+            <button class="button button--icon" @onclick="Login">
+                <SvgIcon Name="login" />
+            </button>
+        }
     </div>
 </header>
 
