@@ -35,4 +35,12 @@ public partial class NodeTable : ComponentBase
 
     public List<double> GetXNodes() => [.. _xNodes];
     public List<double> GetYValues() => [.. _yValues];
+
+    public void SetValues(List<double> xNodes, List<double>? yValues = null)
+    {
+        _nodeCount = xNodes.Count;
+        _xNodes = [.. xNodes];
+        _yValues = yValues is not null ? [.. yValues] : new List<double>(Enumerable.Repeat(0.0, _nodeCount));
+        StateHasChanged();
+    }
 }

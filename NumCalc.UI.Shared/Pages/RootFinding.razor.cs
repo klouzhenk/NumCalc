@@ -30,10 +30,13 @@ public partial class RootFinding : BasePage<RootFinding>
     private List<RootFindingMethod> _benchmarkMethods = [];
     
     private readonly RootFindingFormData _formData = new();
-    
+
     private RootFindingResponse? Result { get; set; }
     private RootFindingComparisonResponse? ComparisonResult { get; set; }
     private MathInput? _mathInputComponent;
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
     private bool IsChartVisible => !string.IsNullOrWhiteSpace(_formData.FunctionExpression);
 
     private record ExpressionValidationResult(bool Valid, string[] Variables);
@@ -231,6 +234,31 @@ public partial class RootFinding : BasePage<RootFinding>
                 }
             ]
         };
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName)) return;
+        await TrySaveInputAsync(_saveInputName, CalculationType.RootFinding, JsonSerializer.Serialize(_formData));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        var data = JsonSerializer.Deserialize<RootFindingFormData>(json);
+        if (data is null) return;
+        _formData.StartPoint = data.StartPoint;
+        _formData.EndPoint = data.EndPoint;
+        _formData.Tolerance = data.Tolerance;
+        _formData.Method = data.Method;
+        _formData.FunctionExpression = data.FunctionExpression;
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInputComponent?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+        await UpdateChart();
     }
 
     private async Task ExportPdfAsync()

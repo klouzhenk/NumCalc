@@ -4,7 +4,9 @@ using NumCalc.Shared.Common;
 using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.Enums.Differentiation;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Differentiation;
+using NumCalc.UI.Shared.Models.Differentiation;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Enums.Roots;
@@ -35,6 +37,9 @@ public partial class Differentiation : BasePage<Differentiation>
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
     private DifferentiationComparisonResponse? ComparisonResult { get; set; }
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -198,6 +203,27 @@ public partial class Differentiation : BasePage<Differentiation>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        var data = await _input.GetFormData();
+        await TrySaveInputAsync(_saveInputName, CalculationType.Differentiation, JsonSerializer.Serialize(data));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        if (_input is null) return;
+        var data = JsonSerializer.Deserialize<DifferentiationFormData>(json);
+        if (data is null) return;
+        _inputMode = data.Mode;
+        StateHasChanged();
+        await _input.SetFormDataAsync(data);
     }
 
     private async Task ExportPdfAsync()

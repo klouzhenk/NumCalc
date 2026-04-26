@@ -21,6 +21,9 @@ public abstract class BasePage<TPageType> : ComponentBase
     [Inject] private IAuthStateService AuthStateService { get; set; } = null!;
     [Inject] private ICalculationHistoryApiService HistoryApiService { get; set; } = null!;
     [Inject] private ISavedFileApiService SavedFileApiService { get; set; } = null!;
+    [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
+
+    protected bool IsAuthenticated => AuthStateService.IsAuthenticated;
 
     private string? _lastSavedHash;
     
@@ -63,6 +66,21 @@ public abstract class BasePage<TPageType> : ComponentBase
             });
         }
         catch { /* silent — auto-save is best-effort */ }
+    }
+
+    protected async Task TrySaveInputAsync(string name, CalculationType type, string inputsJson)
+    {
+        if (!AuthStateService.IsAuthenticated) return;
+        try
+        {
+            await SavedInputApiService.CreateSavedInputAsync(new CreateSavedInputRequest
+            {
+                Name = name,
+                Type = type,
+                InputsJson = inputsJson
+            });
+        }
+        catch { /* silent — best-effort */ }
     }
 
     protected async Task TrySaveHistoryAsync(SaveCalculationRecordRequest record)

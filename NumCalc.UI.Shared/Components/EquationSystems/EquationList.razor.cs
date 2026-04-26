@@ -37,4 +37,15 @@ public partial class EquationList : ComponentBase
             MaxIterations = MaxIterations
         };
     }
+
+    public async Task SetFormDataAsync(NonLinearSystemFormData data)
+    {
+        InitialGuess = (double[])data.InitialGuess.Clone();
+        Tolerance = data.Tolerance;
+        MaxIterations = data.MaxIterations;
+        StateHasChanged();
+        for (var i = 0; i < Math.Min(Size, data.IterationFunctions.Length); i++)
+            if (MathInputs[i] is not null && !string.IsNullOrEmpty(data.IterationFunctions[i]))
+                await MathInputs[i].SetLatexValue(data.IterationFunctions[i]);
+    }
 }

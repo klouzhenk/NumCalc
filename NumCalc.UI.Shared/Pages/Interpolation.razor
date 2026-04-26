@@ -1,6 +1,7 @@
 @page "/interpolation"
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Interpolation
+@using NumCalc.UI.Shared.Models.User.Enums
 @using NumCalc.Shared.DTOs.Interpolation
 @using NumCalc.UI.Shared.Enums.Roots
 @using InterpolationMethod = NumCalc.Shared.Enums.Interpolation.InterpolationMethod
@@ -47,6 +48,19 @@
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
             </div>
+            @if (IsAuthenticated)
+            {
+                <SavedInputActions ShowSaveForm="_showSaveForm"
+                                   SaveName="@_saveInputName"
+                                   SaveNameChanged="@(v => _saveInputName = v)"
+                                   OnShowSave="@(() => _showSaveForm = true)"
+                                   OnHideSave="@(() => _showSaveForm = false)"
+                                   OnConfirmSave="ConfirmSaveAsync"
+                                   OnLoad="OpenPickerAsync" />
+                <SavedInputPickerModal @ref="_picker"
+                                       Type="CalculationType.Interpolation"
+                                       OnInputSelected="LoadFromJsonAsync" />
+            }
         </div>
     </div>
 

@@ -35,4 +35,16 @@ public partial class OdeInput : ComponentBase
             PicardOrder = Method is OdeMethod.Picard ? _picardOrder : null
         };
     }
+
+    public async Task SetFormDataAsync(OdeFormData data)
+    {
+        _initialX = data.InitialX;
+        _initialY = data.InitialY;
+        _targetX = data.TargetX;
+        _stepSize = data.StepSize;
+        if (data.PicardOrder.HasValue) _picardOrder = data.PicardOrder.Value;
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInput?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+    }
 }

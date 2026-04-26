@@ -1,0 +1,26 @@
+@using NumCalc.UI.Shared.Models.User
+
+<BaseModal @ref="_modal" Title="@Localizer["SavedInputsPickerTitle"]" CssClass="modal--picker">
+    <BodyContent>
+        @if (_items is null)
+        {
+            <p class="modal-state">@Localizer["Loading"]</p>
+        }
+        else if (_items.Count == 0)
+        {
+            <p class="modal-state">@Localizer["NoSavedInputsForType"]</p>
+        }
+        else
+        {
+            <ul class="saved-input-picker__list">
+                @foreach (var item in _items)
+                {
+                    <li class="saved-input-picker__item" @onclick="() => SelectAsync(item)">
+                        <span class="saved-input-picker__name">@item.Name</span>
+                        <span class="saved-input-picker__date">@item.CreatedAt.ToLocalTime().ToString("g")</span>
+                    </li>
+                }
+            </ul>
+        }
+    </BodyContent>
+</BaseModal>

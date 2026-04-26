@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.Interpolation;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Interpolation;
 using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
@@ -33,6 +34,9 @@ public partial class Interpolation : BasePage<Interpolation>
     private List<InterpolationMethod> _benchmarkMethods = [];
     private InterpolationResponse? Result { get; set; }
     private InterpolationComparisonResponse? ComparisonResult { get; set; }
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
     
     private bool IsChartVisible => Result?.ChartData is not null;
     
@@ -162,6 +166,25 @@ public partial class Interpolation : BasePage<Interpolation>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        var data = await _input.GetFormData();
+        await TrySaveInputAsync(_saveInputName, CalculationType.Interpolation, JsonSerializer.Serialize(data));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        if (_input is null) return;
+        var data = JsonSerializer.Deserialize<InterpolationFormData>(json);
+        if (data is null) return;
+        await _input.SetFormDataAsync(data);
     }
 
     private async Task ExportPdfAsync()

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NumCalc.User.Application.DTOs;
 using NumCalc.User.Application.Interfaces.Services;
+using NumCalc.User.Domain.Enums;
 
 namespace NumCalc.User.API.Controllers;
 
@@ -12,14 +13,17 @@ namespace NumCalc.User.API.Controllers;
 [Produces("application/json")]
 public class SavedInputController(ISavedInputService savedInputService) : AuthorizedControllerBase
 {
-    /// <summary>Returns all saved inputs for the current user.</summary>
+    /// <summary>Returns saved inputs for the current user, optionally filtered by calculation type.</summary>
+    /// <param name="type">Optional calculation type filter.</param>
     /// <returns>List of saved inputs.</returns>
     [HttpGet]
     [ProducesResponseType(typeof(List<SavedInputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] CalculationType? type = null)
     {
-        var result = await savedInputService.GetAllAsync(CurrentUserId);
+        var result = type.HasValue
+            ? await savedInputService.GetByTypeAsync(CurrentUserId, type.Value)
+            : await savedInputService.GetAllAsync(CurrentUserId);
         return Ok(result);
     }
 

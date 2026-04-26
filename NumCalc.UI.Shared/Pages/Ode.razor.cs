@@ -3,8 +3,10 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.ODE;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.ODE;
 using NumCalc.UI.Shared.Enums;
+using NumCalc.UI.Shared.Models.ODE;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
@@ -32,6 +34,9 @@ public partial class Ode : BasePage<Ode>
     private OdeInput? _input;
     private OdeResponse? Result { get; set; }
     private OdeComparisonResponse? ComparisonResult { get; set; }
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -184,6 +189,25 @@ public partial class Ode : BasePage<Ode>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        var data = await _input.GetFormData();
+        await TrySaveInputAsync(_saveInputName, CalculationType.Ode, JsonSerializer.Serialize(data));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        if (_input is null) return;
+        var data = JsonSerializer.Deserialize<OdeFormData>(json);
+        if (data is null) return;
+        await _input.SetFormDataAsync(data);
     }
 
     private async Task ExportPdfAsync()

@@ -12,8 +12,17 @@ public class SavedInputService(ISavedInputRepository inputRepository) : ISavedIn
     public async Task<List<SavedInputDto>> GetAllAsync(Guid userId)
     {
         var inputData = await inputRepository.GetByUserIdAsync(userId);
-        
-        return inputData
+        return MapToDto(inputData);
+    }
+
+    public async Task<List<SavedInputDto>> GetByTypeAsync(Guid userId, CalculationType type)
+    {
+        var inputData = await inputRepository.GetByUserIdAndTypeAsync(userId, type);
+        return MapToDto(inputData);
+    }
+
+    private static List<SavedInputDto> MapToDto(List<SavedInput> inputData) =>
+        inputData
             .Select(input => new SavedInputDto
             {
                 Id = input.Id,
@@ -23,7 +32,6 @@ public class SavedInputService(ISavedInputRepository inputRepository) : ISavedIn
                 CreatedAt = input.CreatedAt
             })
             .ToList();
-    }
 
     public async Task<SavedInputDto> CreateAsync(Guid userId, CreateSavedInputRequest request)
     {

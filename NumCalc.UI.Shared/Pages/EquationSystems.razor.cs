@@ -5,6 +5,7 @@ using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
+using NumCalc.UI.Shared.Models.EquationSystems;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
@@ -44,6 +45,9 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private List<string>? _lastVariables;
     private List<LinearSystemMethod>? _linearBenchmarkMethods;
     private List<NonLinearSystemMethod>? _nonLinearBenchmarkMethods;
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
@@ -315,6 +319,64 @@ public partial class EquationSystems : BasePage<EquationSystems>
             config.Series.AddRange(series);
 
             await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+        }
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName)) return;
+        string json;
+        if (Category is EquationSystemCategory.Linear && _linearInput is not null)
+        {
+            var size = _linearInput.Coefficients.GetLength(0);
+            var rows = Enumerable.Range(0, size)
+                .Select(i => Enumerable.Range(0, size).Select(j => _linearInput.Coefficients[i, j]).ToArray())
+                .ToArray();
+            json = JsonSerializer.Serialize(new { Category = "Linear", Size = size, Coefficients = rows, Rhs = _linearInput.Rhs });
+        }
+        else if (_equationList is not null)
+        {
+            var data = await _equationList.GetFormData();
+            json = JsonSerializer.Serialize(new { Category = "NonLinear", Size = data.IterationFunctions.Length, NonLinear = data });
+        }
+        else return;
+
+        await TrySaveInputAsync(_saveInputName, CalculationType.EquationSystems, json);
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+        var categoryStr = root.GetProperty("Category").GetString();
+
+        if (categoryStr == "Linear" && _linearInput is not null)
+        {
+            Category = EquationSystemCategory.Linear;
+            var size = root.GetProperty("Size").GetInt32();
+            Size = size;
+            StateHasChanged();
+            await Task.Yield();
+
+            var coefficients = root.GetProperty("Coefficients").Deserialize<double[][]>() ?? [];
+            var rhs = root.GetProperty("Rhs").Deserialize<double[]>() ?? [];
+            _linearInput.SetValues(coefficients, rhs);
+        }
+        else if (categoryStr == "NonLinear" && _equationList is not null)
+        {
+            Category = EquationSystemCategory.NonLinear;
+            var size = root.GetProperty("Size").GetInt32();
+            Size = size;
+            StateHasChanged();
+            await Task.Yield();
+
+            var data = root.GetProperty("NonLinear").Deserialize<NonLinearSystemFormData>();
+            if (data is not null)
+                await _equationList.SetFormDataAsync(data);
         }
     }
 

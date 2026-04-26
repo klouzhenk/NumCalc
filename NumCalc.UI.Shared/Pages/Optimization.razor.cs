@@ -3,7 +3,9 @@ using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.Optimization;
 using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Optimization;
+using NumCalc.UI.Shared.Models.Optimization;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Enums.Roots;
@@ -32,6 +34,9 @@ public partial class Optimization : BasePage<Optimization>
     private OptimizationInput? _input;
     private OptimizationResponse? Result { get; set; }
     private OptimizationComparisonResponse? ComparisonResult { get; set; }
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -257,6 +262,25 @@ public partial class Optimization : BasePage<Optimization>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config);
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        var data = await _input.GetFormData();
+        await TrySaveInputAsync(_saveInputName, CalculationType.Optimization, JsonSerializer.Serialize(data));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        if (_input is null) return;
+        var data = JsonSerializer.Deserialize<OptimizationFormData>(json);
+        if (data is null) return;
+        await _input.SetFormDataAsync(data);
     }
 
     private async Task ExportPdfAsync()

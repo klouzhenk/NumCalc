@@ -3,6 +3,7 @@
 @using NumCalc.Shared.Enums.Optimization
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Components.Optimization
+@using NumCalc.UI.Shared.Models.User.Enums
 @using NumCalc.UI.Shared.Enums.Optimization
 @using NumCalc.UI.Shared.Enums.Roots
 
@@ -55,6 +56,19 @@
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
             </div>
+            @if (IsAuthenticated)
+            {
+                <SavedInputActions ShowSaveForm="_showSaveForm"
+                                   SaveName="@_saveInputName"
+                                   SaveNameChanged="@(v => _saveInputName = v)"
+                                   OnShowSave="@(() => _showSaveForm = true)"
+                                   OnHideSave="@(() => _showSaveForm = false)"
+                                   OnConfirmSave="ConfirmSaveAsync"
+                                   OnLoad="OpenPickerAsync" />
+                <SavedInputPickerModal @ref="_picker"
+                                       Type="CalculationType.Optimization"
+                                       OnInputSelected="LoadFromJsonAsync" />
+            }
         </div>
     </div>
 

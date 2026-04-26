@@ -310,4 +310,19 @@
   <data name="Seidel" xml:space="preserve">
     <value>Метод Зейделя</value>
   </data>
+  <data name="SaveInputs" xml:space="preserve">
+    <value>Зберегти дані</value>
+  </data>
+  <data name="LoadInputs" xml:space="preserve">
+    <value>Завантажити дані</value>
+  </data>
+  <data name="SaveInputName" xml:space="preserve">
+    <value>Назва набору</value>
+  </data>
+  <data name="SavedInputsPickerTitle" xml:space="preserve">
+    <value>Оберіть збережені дані</value>
+  </data>
+  <data name="NoSavedInputsForType" xml:space="preserve">
+    <value>Немає збережених даних для цього типу обчислень.</value>
+  </data>
 </root>

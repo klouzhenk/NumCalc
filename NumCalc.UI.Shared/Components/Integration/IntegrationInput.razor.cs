@@ -22,4 +22,14 @@ public partial class IntegrationInput : ComponentBase
             Intervals = _intervals
         };
     }
+
+    public async Task SetFormDataAsync(IntegrationFormData data)
+    {
+        _lowerBound = data.LowerBound;
+        _upperBound = data.UpperBound;
+        _intervals = data.Intervals;
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInput?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+    }
 }

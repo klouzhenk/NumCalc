@@ -4,7 +4,9 @@ using NumCalc.Shared.Common;
 using NumCalc.Shared.Enums.Integration;
 using NumCalc.Shared.Integration.Requests;
 using NumCalc.Shared.Integration.Responses;
+using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Integration;
+using NumCalc.UI.Shared.Models.Integration;
 using NumCalc.UI.Shared.Enums.Integration;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
@@ -33,6 +35,9 @@ public partial class Integration : BasePage<Integration>
     private IntegrationInput? _input;
     private IntegrationResponse? Result { get; set; }
     private IntegrationComparisonResponse? ComparisonResult { get; set; }
+    private SavedInputPickerModal? _picker;
+    private bool _showSaveForm;
+    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -193,6 +198,25 @@ public partial class Integration : BasePage<Integration>
         };
 
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
+
+    private async Task ConfirmSaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        var data = await _input.GetFormData();
+        await TrySaveInputAsync(_saveInputName, CalculationType.Integration, JsonSerializer.Serialize(data));
+        _saveInputName = string.Empty;
+        _showSaveForm = false;
+    }
+
+    private async Task LoadFromJsonAsync(string json)
+    {
+        if (_input is null) return;
+        var data = JsonSerializer.Deserialize<IntegrationFormData>(json);
+        if (data is null) return;
+        await _input.SetFormDataAsync(data);
     }
 
     private async Task ExportPdfAsync()
