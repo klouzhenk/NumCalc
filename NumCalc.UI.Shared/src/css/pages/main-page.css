@@ -212,3 +212,106 @@ section.main-how-it-works {
         flex: 0 0 auto;
     }
 }
+
+.main-user-data {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-l);
+    width: 100%;
+
+    &__title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--black-color);
+        margin: 0;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--dimension-xl);
+
+        @media (max-width: 900px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-m);
+        padding: var(--dimension-xl);
+        border-radius: var(--border-radius-l);
+        border: var(--default-border);
+        box-shadow: var(--component-shadow);
+    }
+
+    &__card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--black-color);
+        }
+    }
+
+    &__view-all {
+        font-size: 0.75rem;
+        color: var(--primary-color);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-s);
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: var(--dimension-s) 0;
+        border-bottom: 1px solid var(--border-color);
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__item-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--black-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__item-meta {
+        font-size: 0.75rem;
+        color: var(--gray-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__empty {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+        margin: 0;
+        text-align: center;
+        padding: var(--dimension-l) 0;
+    }
+}

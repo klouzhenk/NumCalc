@@ -23,6 +23,16 @@ public class CalculationHistoryController(ICalculationHistoryService calculation
         return Ok(result);
     }
 
+    /// <summary>Returns the last N calculation history records for the current user.</summary>
+    /// <param name="count">Number of records to return (default 5).</param>
+    [HttpGet("last")]
+    [ProducesResponseType(typeof(List<CalculationHistoryDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLast([FromQuery] int count = 5)
+    {
+        var result = await calculationHistoryService.GetLastAsync(CurrentUserId, count);
+        return Ok(result);
+    }
+
     /// <summary>Saves a new calculation history record for the current user.</summary>
     /// <param name="request">Calculation record data to save.</param>
     [HttpPost]

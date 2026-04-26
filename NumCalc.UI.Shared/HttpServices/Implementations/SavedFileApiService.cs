@@ -1,13 +1,18 @@
 ﻿using NumCalc.UI.Shared.Exceptions;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.HttpServices.Implementations;
 
-public class SavedFileApiService(HttpClient httpClient) : BaseApiService(httpClient), ISavedFileApiService
+public class SavedFileApiService(HttpClient httpClient, IAuthStateService authStateService)
+    : BaseUserApiService(httpClient, authStateService), ISavedFileApiService
 {
     public async Task<List<SavedFileMetadataDto>?> GetSavedFilesAsync() =>
         await SendGetRequestAsync<List<SavedFileMetadataDto>>("api/saved-files");
+
+    public async Task<List<SavedFileMetadataDto>?> GetLastAsync(int count) =>
+        await SendGetRequestAsync<List<SavedFileMetadataDto>>($"api/saved-files/last?count={count}");
 
     public async Task<byte[]?> DownloadFileAsync(Guid id)
     {

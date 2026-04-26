@@ -30,7 +30,7 @@ public abstract class BasePage<TPageType> : ComponentBase, IDisposable
         AuthStateService.OnAuthChanged += OnAuthStateChanged;
     }
 
-    private void OnAuthStateChanged() => InvokeAsync(StateHasChanged);
+    protected virtual void OnAuthStateChanged() => InvokeAsync(StateHasChanged);
 
     private string? _lastSavedHash;
     

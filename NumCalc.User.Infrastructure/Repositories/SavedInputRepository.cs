@@ -16,6 +16,15 @@ public class SavedInputRepository(AppDbContext dbContext) : ISavedInputRepositor
             .ToListAsync();
     }
 
+    public async Task<List<SavedInput>> GetLastByUserIdAsync(Guid userId, int count)
+    {
+        return await dbContext.SavedInputs
+            .Where(record => record.UserId == userId)
+            .OrderByDescending(record => record.CreatedAt)
+            .Take(count)
+            .ToListAsync();
+    }
+
     public async Task<List<SavedInput>> GetByUserIdAndTypeAsync(Guid userId, CalculationType type)
     {
         return await dbContext.SavedInputs

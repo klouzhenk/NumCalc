@@ -5,6 +5,7 @@ namespace NumCalc.UI.Shared.HttpServices.Interfaces;
 public interface ISavedFileApiService
 {
     Task<List<SavedFileMetadataDto>?> GetSavedFilesAsync();
+    Task<List<SavedFileMetadataDto>?> GetLastAsync(int count);
     Task<byte[]?> DownloadFileAsync(Guid id);
     Task SaveFileAsync(SaveFileRequest request);
     Task DeleteFileAsync(Guid id);

@@ -27,6 +27,23 @@ public class CalculationHistoryService(ICalculationHistoryRepository calculation
             .ToList();
     }
 
+    public async Task<List<CalculationHistoryDto>> GetLastAsync(Guid userId, int count)
+    {
+        var records = await calculationHistoryRepository.GetLastByUserIdAsync(userId, count);
+        return records
+            .Select(record => new CalculationHistoryDto
+            {
+                Id = record.Id,
+                Type = record.Type,
+                MethodName = record.MethodName,
+                InputsJson = record.InputsJson,
+                ResultSummary = record.ResultSummary,
+                ExecutionTimeMs = record.ExecutionTimeMs,
+                CreatedAt = record.CreatedAt
+            })
+            .ToList();
+    }
+
     public async Task SaveAsync(Guid userId, SaveCalculationRecordRequest request)
     {
         var record = new CalculationHistoryRecord

@@ -334,4 +334,22 @@
   <data name="ContinueAsGuest" xml:space="preserve">
     <value>Continue as guest</value>
   </data>
+  <data name="MyData" xml:space="preserve">
+    <value>My Data</value>
+  </data>
+  <data name="CalculationHistory" xml:space="preserve">
+    <value>Calculation History</value>
+  </data>
+  <data name="SavedInputs" xml:space="preserve">
+    <value>Saved Inputs</value>
+  </data>
+  <data name="SavedFiles" xml:space="preserve">
+    <value>Saved Files</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>No records yet.</value>
+  </data>
 </root>

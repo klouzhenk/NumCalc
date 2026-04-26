@@ -48,6 +48,81 @@
         </div>
     </section>
 
+    @if (IsAuthenticated)
+    {
+        <section class="main-user-data">
+            <h2 class="main-user-data__title">@Localizer["MyData"]</h2>
+            <div class="main-user-data__grid">
+                <div class="main-user-data__card">
+                    <div class="main-user-data__card-header">
+                        <h3>@Localizer["CalculationHistory"]</h3>
+                        <a href="/history" class="main-user-data__view-all">@Localizer["ViewAll"]</a>
+                    </div>
+                    @if (_lastHistory is { Count: > 0 })
+                    {
+                        <ul class="main-user-data__list">
+                            @foreach (var item in _lastHistory)
+                            {
+                                <li class="main-user-data__item">
+                                    <span class="main-user-data__item-name">@item.MethodName</span>
+                                    <span class="main-user-data__item-meta">@item.ResultSummary</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="main-user-data__empty">@Localizer["NoData"]</p>
+                    }
+                </div>
+                <div class="main-user-data__card">
+                    <div class="main-user-data__card-header">
+                        <h3>@Localizer["SavedInputs"]</h3>
+                        <a href="/saved-inputs" class="main-user-data__view-all">@Localizer["ViewAll"]</a>
+                    </div>
+                    @if (_lastInputs is { Count: > 0 })
+                    {
+                        <ul class="main-user-data__list">
+                            @foreach (var item in _lastInputs)
+                            {
+                                <li class="main-user-data__item">
+                                    <span class="main-user-data__item-name">@item.Name</span>
+                                    <span class="main-user-data__item-meta">@item.Type</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="main-user-data__empty">@Localizer["NoData"]</p>
+                    }
+                </div>
+                <div class="main-user-data__card">
+                    <div class="main-user-data__card-header">
+                        <h3>@Localizer["SavedFiles"]</h3>
+                        <a href="/saved-files" class="main-user-data__view-all">@Localizer["ViewAll"]</a>
+                    </div>
+                    @if (_lastFiles is { Count: > 0 })
+                    {
+                        <ul class="main-user-data__list">
+                            @foreach (var item in _lastFiles)
+                            {
+                                <li class="main-user-data__item">
+                                    <span class="main-user-data__item-name">@item.FileName</span>
+                                    <span class="main-user-data__item-meta">@item.MethodName</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="main-user-data__empty">@Localizer["NoData"]</p>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
     <section class="main-cards">
         @foreach (var card in Categories)
         {

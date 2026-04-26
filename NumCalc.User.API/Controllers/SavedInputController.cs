@@ -27,6 +27,16 @@ public class SavedInputController(ISavedInputService savedInputService) : Author
         return Ok(result);
     }
 
+    /// <summary>Returns the last N saved inputs for the current user.</summary>
+    /// <param name="count">Number of records to return (default 5).</param>
+    [HttpGet("last")]
+    [ProducesResponseType(typeof(List<SavedInputDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLast([FromQuery] int count = 5)
+    {
+        var result = await savedInputService.GetLastAsync(CurrentUserId, count);
+        return Ok(result);
+    }
+
     /// <summary>Saves a new calculation input.</summary>
     /// <param name="request">Input data to save.</param>
     /// <returns>The created saved input.</returns>

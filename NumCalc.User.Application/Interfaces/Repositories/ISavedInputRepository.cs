@@ -6,6 +6,7 @@ namespace NumCalc.User.Application.Interfaces.Repositories;
 public interface ISavedInputRepository
 {
     Task<List<SavedInput>> GetByUserIdAsync(Guid userId);
+    Task<List<SavedInput>> GetLastByUserIdAsync(Guid userId, int count);
     Task<List<SavedInput>> GetByUserIdAndTypeAsync(Guid userId, CalculationType type);
     Task<SavedInput?> GetByIdAsync(Guid id);
     Task AddAsync(SavedInput input);

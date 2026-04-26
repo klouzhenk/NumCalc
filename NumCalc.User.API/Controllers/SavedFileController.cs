@@ -23,6 +23,16 @@ public class SavedFileController(ISavedFileService savedFileService) : Authorize
         return Ok(result);
     }
 
+    /// <summary>Returns metadata for the last N saved files of the current user.</summary>
+    /// <param name="count">Number of records to return (default 5).</param>
+    [HttpGet("last")]
+    [ProducesResponseType(typeof(List<SavedFileMetadataDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLastMeta([FromQuery] int count = 5)
+    {
+        var result = await savedFileService.GetLastMetaAsync(CurrentUserId, count);
+        return Ok(result);
+    }
+
     /// <summary>Downloads a saved file by ID.</summary>
     /// <param name="id">The ID of the file to download.</param>
     /// <returns>File bytes as application/octet-stream.</returns>

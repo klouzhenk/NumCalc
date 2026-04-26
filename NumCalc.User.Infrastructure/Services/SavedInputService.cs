@@ -15,6 +15,12 @@ public class SavedInputService(ISavedInputRepository inputRepository) : ISavedIn
         return MapToDto(inputData);
     }
 
+    public async Task<List<SavedInputDto>> GetLastAsync(Guid userId, int count)
+    {
+        var inputs = await inputRepository.GetLastByUserIdAsync(userId, count);
+        return MapToDto(inputs);
+    }
+
     public async Task<List<SavedInputDto>> GetByTypeAsync(Guid userId, CalculationType type)
     {
         var inputData = await inputRepository.GetByUserIdAndTypeAsync(userId, type);

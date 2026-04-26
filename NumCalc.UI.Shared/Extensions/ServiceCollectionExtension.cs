@@ -1,7 +1,6 @@
 ﻿using Cropper.Blazor.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NumCalc.UI.Shared.HttpServices;
 using NumCalc.UI.Shared.HttpServices.Implementations;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Services.Implementations;
@@ -61,29 +60,28 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddUserApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAuthStateService, AuthStateService>();
-        services.AddTransient<AuthorizationHandler>();
-        
+
         const string baseApiUrl = "http://localhost:5230";      // TODO : setup all APIs IP in the configuration
-        
+
         services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);
         });
-        
+
         services.AddHttpClient<ICalculationHistoryApiService, CalculationHistoryApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);
-        }).AddHttpMessageHandler<AuthorizationHandler>();
-        
+        });
+
         services.AddHttpClient<ISavedInputApiService, SavedInputApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);
-        }).AddHttpMessageHandler<AuthorizationHandler>();
-        
+        });
+
         services.AddHttpClient<ISavedFileApiService, SavedFileApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);
-        }).AddHttpMessageHandler<AuthorizationHandler>();
+        });
 
         return services;
     }

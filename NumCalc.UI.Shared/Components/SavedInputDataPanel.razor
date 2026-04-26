@@ -1,0 +1,13 @@
+@if (AuthStateService.IsAuthenticated)
+{
+    <SavedInputDataActions ShowSaveForm="_showSaveForm"
+                       SaveName="@_saveInputName"
+                       SaveNameChanged="@(v => _saveInputName = v)"
+                       OnShowSave="@(() => _showSaveForm = true)"
+                       OnHideSave="@(() => _showSaveForm = false)"
+                       OnConfirmSave="ConfirmAsync"
+                       OnLoad="OpenPickerAsync" />
+    <SavedInputDataPickerModal @ref="_picker"
+                           Type="Type"
+                           OnInputSelected="OnLoad" />
+}

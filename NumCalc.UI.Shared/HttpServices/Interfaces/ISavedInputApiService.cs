@@ -6,6 +6,7 @@ namespace NumCalc.UI.Shared.HttpServices.Interfaces;
 public interface ISavedInputApiService
 {
     Task<List<SavedInputDto>?> GetSavedInputsAsync();
+    Task<List<SavedInputDto>?> GetLastAsync(int count);
     Task<List<SavedInputDto>?> GetByTypeAsync(CalculationType type);
     Task<SavedInputDto?> CreateSavedInputAsync(CreateSavedInputRequest request);
     Task DeleteSavedInputAsync(Guid id);

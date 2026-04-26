@@ -25,6 +25,24 @@ public class SavedFileRepository(AppDbContext dbContext) : ISavedFileRepository
             .ToListAsync();
     }
 
+    public async Task<List<SavedFile>> GetLastMetadataByUserIdAsync(Guid userId, int count)
+    {
+        return await dbContext.SavedFiles
+            .Where(file => file.UserId == userId)
+            .OrderByDescending(file => file.CreatedAt)
+            .Take(count)
+            .Select(file => new SavedFile
+            {
+                Id = file.Id,
+                UserId = file.UserId,
+                FileName = file.FileName,
+                Type = file.Type,
+                MethodName = file.MethodName,
+                CreatedAt = file.CreatedAt
+            })
+            .ToListAsync();
+    }
+
     public async Task<SavedFile?> GetByIdAsync(Guid id)
     {
         return await dbContext.SavedFiles.FindAsync(id);

@@ -1,9 +1,55 @@
 using Microsoft.AspNetCore.Components;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.Models.User;
 
 namespace NumCalc.UI.Shared.Pages;
 
 public partial class MainPage : BasePage<MainPage>
 {
+    [Inject] private ICalculationHistoryApiService HistoryApiService { get; set; } = null!;
+    [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
+    [Inject] private ISavedFileApiService SavedFileApiService { get; set; } = null!;
+
+    private List<CalculationHistoryDto>? _lastHistory;
+    private List<SavedInputDto>? _lastInputs;
+    private List<SavedFileMetadataDto>? _lastFiles;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender && IsAuthenticated)
+            await LoadUserDataAsync();
+    }
+
+    protected override async void OnAuthStateChanged()
+    {
+        if (IsAuthenticated)
+            await LoadUserDataAsync();
+        else
+        {
+            _lastHistory = null;
+            _lastInputs = null;
+            _lastFiles = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task LoadUserDataAsync()
+    {
+        var historyTask = HistoryApiService.GetLastAsync(5);
+        var inputsTask = SavedInputApiService.GetLastAsync(5);
+        var filesTask = SavedFileApiService.GetLastAsync(5);
+
+        await Task.WhenAll(historyTask, inputsTask, filesTask);
+
+        _lastHistory = historyTask.Result;
+        _lastInputs = inputsTask.Result;
+        _lastFiles = filesTask.Result;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
     private record CategoryCard(string Icon, string TitleKey, string DescKey, string Route, string[] Methods);
 
     private static readonly List<CategoryCard> Categories =

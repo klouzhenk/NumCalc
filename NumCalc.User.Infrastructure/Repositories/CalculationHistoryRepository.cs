@@ -21,6 +21,15 @@ public class CalculationHistoryRepository(AppDbContext dbContext) : ICalculation
             .ToListAsync();
     }
 
+    public async Task<List<CalculationHistoryRecord>> GetLastByUserIdAsync(Guid userId, int count)
+    {
+        return await dbContext.CalculationHistoryRecords
+            .Where(record => record.UserId == userId)
+            .OrderByDescending(record => record.CreatedAt)
+            .Take(count)
+            .ToListAsync();
+    }
+
     public async Task<int> CountByUserIdAsync(Guid userId)
     {
         return await dbContext.CalculationHistoryRecords

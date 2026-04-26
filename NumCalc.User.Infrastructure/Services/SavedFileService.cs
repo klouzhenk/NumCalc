@@ -25,6 +25,21 @@ public class SavedFileService(ISavedFileRepository fileRepository) : ISavedFileS
             .ToList();
     }
 
+    public async Task<List<SavedFileMetadataDto>> GetLastMetaAsync(Guid userId, int count)
+    {
+        var files = await fileRepository.GetLastMetadataByUserIdAsync(userId, count);
+        return files
+            .Select(metadata => new SavedFileMetadataDto
+            {
+                Id = metadata.Id,
+                FileName = metadata.FileName,
+                Type = metadata.Type,
+                MethodName = metadata.MethodName,
+                CreatedAt = metadata.CreatedAt
+            })
+            .ToList();
+    }
+
     public async Task<byte[]> DownloadAsync(Guid userId, Guid fileId)
     {
         var file = await fileRepository.GetByIdAsync(fileId);
