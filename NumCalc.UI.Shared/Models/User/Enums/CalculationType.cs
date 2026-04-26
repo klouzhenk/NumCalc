@@ -1,4 +1,4 @@
-namespace NumCalc.Shared.User.Enums;
+namespace NumCalc.UI.Shared.Models.User.Enums;
 
 public enum CalculationType
 {

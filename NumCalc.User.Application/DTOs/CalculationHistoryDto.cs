@@ -1,15 +1,14 @@
 using NumCalc.User.Domain.Enums;
 
-namespace NumCalc.User.Domain.Entities;
+namespace NumCalc.User.Application.DTOs;
 
-public class CalculationHistoryRecord : BaseEntity
+public class CalculationHistoryDto
 {
-    public Guid UserId { get; set; }
-    public AppUser User { get; set; } = null!;
-
+    public Guid Id { get; set; }
     public CalculationType Type { get; set; }
     public string MethodName { get; set; } = string.Empty;
     public string InputsJson { get; set; } = string.Empty;
     public string ResultSummary { get; set; } = string.Empty;
     public double ExecutionTimeMs { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

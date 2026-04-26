@@ -1,4 +1,4 @@
-namespace NumCalc.Shared.User.Responses;
+namespace NumCalc.UI.Shared.Models.User;
 
 public class AuthResponse
 {

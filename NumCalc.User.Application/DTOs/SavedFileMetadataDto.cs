@@ -1,6 +1,6 @@
-using NumCalc.Shared.User.Enums;
+using NumCalc.User.Domain.Enums;
 
-namespace NumCalc.Shared.User.DTOs;
+namespace NumCalc.User.Application.DTOs;
 
 public class SavedFileMetadataDto
 {

@@ -1,6 +1,6 @@
-using NumCalc.Shared.User.Enums;
+using NumCalc.UI.Shared.Models.User.Enums;
 
-namespace NumCalc.Shared.User.DTOs;
+namespace NumCalc.UI.Shared.Models.User;
 
 public class CalculationHistoryDto
 {

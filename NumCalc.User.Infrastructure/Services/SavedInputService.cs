@@ -1,5 +1,4 @@
-﻿using NumCalc.Shared.User.DTOs;
-using NumCalc.Shared.User.Requests;
+﻿using NumCalc.User.Application.DTOs;
 using NumCalc.User.Application.Exceptions;
 using NumCalc.User.Application.Interfaces.Repositories;
 using NumCalc.User.Application.Interfaces.Services;

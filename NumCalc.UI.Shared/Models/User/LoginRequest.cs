@@ -1,4 +1,4 @@
-namespace NumCalc.Shared.User.Requests;
+namespace NumCalc.UI.Shared.Models.User;
 
 public class LoginRequest
 {

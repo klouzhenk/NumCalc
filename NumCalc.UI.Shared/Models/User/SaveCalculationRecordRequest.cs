@@ -1,12 +1,9 @@
-using NumCalc.User.Domain.Enums;
+using NumCalc.UI.Shared.Models.User.Enums;
 
-namespace NumCalc.User.Domain.Entities;
+namespace NumCalc.UI.Shared.Models.User;
 
-public class CalculationHistoryRecord : BaseEntity
+public class SaveCalculationRecordRequest
 {
-    public Guid UserId { get; set; }
-    public AppUser User { get; set; } = null!;
-
     public CalculationType Type { get; set; }
     public string MethodName { get; set; } = string.Empty;
     public string InputsJson { get; set; } = string.Empty;

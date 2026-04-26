@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NumCalc.Shared.User.DTOs;
-using NumCalc.Shared.User.Requests;
+using NumCalc.User.Application.DTOs;
 using NumCalc.User.Application.Interfaces.Services;
 
 namespace NumCalc.User.API.Controllers;
