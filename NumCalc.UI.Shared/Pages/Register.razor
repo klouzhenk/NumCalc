@@ -1,0 +1,38 @@
+@page "/register"
+@using Microsoft.AspNetCore.Components.Forms
+@inherits BasePage<Register>
+
+<div class="page-wrapper page__auth">
+    <div class="auth-form">
+        <h2 class="auth-form__title">@Localizer["Register"]</h2>
+
+        <EditForm Model="RegisterForm" OnValidSubmit="OnRegistrationSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="auth-form__field">
+                <label>@Localizer["Username"]</label>
+                <InputText @bind-Value="RegisterForm.Username" class="input" placeholder="@Localizer["Username"]" />
+                <ValidationMessage For="@(() => RegisterForm.Username)" />
+            </div>
+
+            <div class="auth-form__field">
+                <label>@Localizer["Password"]</label>
+                <InputText @bind-Value="RegisterForm.Password" type="password" class="input" placeholder="@Localizer["Password"]" />
+                <ValidationMessage For="@(() => RegisterForm.Password)" />
+            </div>
+
+            <div class="auth-form__field">
+                <label>@Localizer["ConfirmPassword"]</label>
+                <InputText @bind-Value="RegisterForm.ConfirmPassword" type="password" class="input" placeholder="@Localizer["ConfirmPassword"]" />
+                <ValidationMessage For="@(() => RegisterForm.ConfirmPassword)" />
+            </div>
+
+            <button type="submit" class="button button--primary">@Localizer["Register"]</button>
+        </EditForm>
+
+        <p class="auth-form__footer">
+            @Localizer["AlreadyHaveAccount"]
+            <a href="/login">@Localizer["Login"]</a>
+        </p>
+    </div>
+</div>

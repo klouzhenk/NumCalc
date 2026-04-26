@@ -1,0 +1,32 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Forms
+@inherits BasePage<Login>
+
+<div class="page-wrapper page__auth">
+    <div class="auth-form">
+        <h2 class="auth-form__title">@Localizer["Login"]</h2>
+
+        <EditForm Model="LoginModel" OnValidSubmit="OnLoginSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="auth-form__field">
+                <label>@Localizer["Username"]</label>
+                <InputText @bind-Value="LoginModel.Username" class="input" placeholder="@Localizer["Username"]" />
+                <ValidationMessage For="@(() => LoginModel.Username)" />
+            </div>
+
+            <div class="auth-form__field">
+                <label>@Localizer["Password"]</label>
+                <InputText @bind-Value="LoginModel.Password" type="password" class="input" placeholder="@Localizer["Password"]" />
+                <ValidationMessage For="@(() => LoginModel.Password)" />
+            </div>
+
+            <button type="submit" class="button button--primary">@Localizer["Login"]</button>
+        </EditForm>
+
+        <p class="auth-form__footer">
+            @Localizer["DoNotHaveAccount"]
+            <a href="/register">@Localizer["Register"]</a>
+        </p>
+    </div>
+</div>
