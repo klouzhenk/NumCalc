@@ -34,9 +34,6 @@ public partial class RootFinding : BasePage<RootFinding>
     private RootFindingResponse? Result { get; set; }
     private RootFindingComparisonResponse? ComparisonResult { get; set; }
     private MathInput? _mathInputComponent;
-    private SavedInputPickerModal? _picker;
-    private bool _showSaveForm;
-    private string _saveInputName = string.Empty;
     private bool IsChartVisible => !string.IsNullOrWhiteSpace(_formData.FunctionExpression);
 
     private record ExpressionValidationResult(bool Valid, string[] Variables);
@@ -236,14 +233,9 @@ public partial class RootFinding : BasePage<RootFinding>
         };
     }
 
-    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
-
-    private async Task ConfirmSaveAsync()
+    private async Task SaveInputAsync(string name)
     {
-        if (string.IsNullOrWhiteSpace(_saveInputName)) return;
-        await TrySaveInputAsync(_saveInputName, CalculationType.RootFinding, JsonSerializer.Serialize(_formData));
-        _saveInputName = string.Empty;
-        _showSaveForm = false;
+        await TrySaveInputAsync(name, CalculationType.RootFinding, JsonSerializer.Serialize(_formData));
     }
 
     private async Task LoadFromJsonAsync(string json)

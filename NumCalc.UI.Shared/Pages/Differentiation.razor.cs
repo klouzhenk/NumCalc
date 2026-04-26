@@ -37,9 +37,6 @@ public partial class Differentiation : BasePage<Differentiation>
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
     private DifferentiationComparisonResponse? ComparisonResult { get; set; }
-    private SavedInputPickerModal? _picker;
-    private bool _showSaveForm;
-    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -205,15 +202,11 @@ public partial class Differentiation : BasePage<Differentiation>
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
 
-    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
-
-    private async Task ConfirmSaveAsync()
+    private async Task SaveInputAsync(string name)
     {
-        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        if (_input is null) return;
         var data = await _input.GetFormData();
-        await TrySaveInputAsync(_saveInputName, CalculationType.Differentiation, JsonSerializer.Serialize(data));
-        _saveInputName = string.Empty;
-        _showSaveForm = false;
+        await TrySaveInputAsync(name, CalculationType.Differentiation, JsonSerializer.Serialize(data));
     }
 
     private async Task LoadFromJsonAsync(string json)

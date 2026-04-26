@@ -4,7 +4,7 @@ using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components;
 
-public partial class SavedInputActions : ComponentBase
+public partial class SavedInputDataActions : ComponentBase
 {
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 

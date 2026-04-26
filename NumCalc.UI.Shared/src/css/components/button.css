@@ -6,10 +6,6 @@
     letter-spacing: 0.5px;
     font-weight: 700;
     flex: 1;
-    
-    &:hover{
-        box-shadow: var(--component-shadow);
-    }
 
     &--icon{
         flex: 0 0 auto;
@@ -36,8 +32,13 @@
         background-color: var(--primary-color);
         max-height: fit-content;
 
+        svg {
+            fill: var(--white-color);
+        }
+        
         &:hover{
             background-color: var(--primary-dark-color);
+            box-shadow: var(--component-shadow);
         }
     }
 
@@ -48,6 +49,7 @@
 
         &:hover{
             background-color: var(--secondary-dark-color);
+            box-shadow: var(--component-shadow);
         }
     }
     
@@ -58,6 +60,7 @@
 
         &:hover{
             background-color: var(--danger-dark-color);
+            box-shadow: var(--component-shadow);
         }
     }
     
@@ -68,6 +71,7 @@
         
         &:hover{
             background-color: var(--success-dark-color);
+            box-shadow: var(--component-shadow);
         }
     }
     
@@ -79,21 +83,11 @@
 
         &:hover{
             background-color: var(--primary-dark-color);
+            box-shadow: var(--component-shadow);
         }
 
         svg {
             fill: var(--white-color);
-        }
-    }
-
-    &--ghost {
-        color: var(--primary-color);
-        background-color: transparent;
-        border-color: var(--primary-color);
-        max-height: fit-content;
-
-        &:hover {
-            background-color: var(--primary-background);
         }
     }
 }

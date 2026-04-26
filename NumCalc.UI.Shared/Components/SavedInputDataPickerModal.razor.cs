@@ -7,7 +7,7 @@ using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components;
 
-public partial class SavedInputPickerModal : ComponentBase
+public partial class SavedInputDataPickerModal : ComponentBase
 {
     [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;

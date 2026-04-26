@@ -96,19 +96,6 @@
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
                 }
             </div>
-            @if (IsAuthenticated)
-            {
-                <SavedInputActions ShowSaveForm="_showSaveForm"
-                                   SaveName="@_saveInputName"
-                                   SaveNameChanged="@(v => _saveInputName = v)"
-                                   OnShowSave="@(() => _showSaveForm = true)"
-                                   OnHideSave="@(() => _showSaveForm = false)"
-                                   OnConfirmSave="ConfirmSaveAsync"
-                                   OnLoad="OpenPickerAsync" />
-                <SavedInputPickerModal @ref="_picker"
-                                       Type="CalculationType.EquationSystems"
-                                       OnInputSelected="LoadFromJsonAsync" />
-            }
         </div>
     </div>
 
@@ -178,3 +165,7 @@
         </ResultContent>
     </ResultPanel>
 </div>
+
+<SavedInputDataPanel Type="CalculationType.EquationSystems"
+                     OnSave="SaveInputAsync"
+                     OnLoad="LoadFromJsonAsync" />

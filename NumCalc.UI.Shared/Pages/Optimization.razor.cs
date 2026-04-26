@@ -34,9 +34,6 @@ public partial class Optimization : BasePage<Optimization>
     private OptimizationInput? _input;
     private OptimizationResponse? Result { get; set; }
     private OptimizationComparisonResponse? ComparisonResult { get; set; }
-    private SavedInputPickerModal? _picker;
-    private bool _showSaveForm;
-    private string _saveInputName = string.Empty;
 
     private void ResetResult()
     {
@@ -264,15 +261,11 @@ public partial class Optimization : BasePage<Optimization>
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config);
     }
 
-    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
-
-    private async Task ConfirmSaveAsync()
+    private async Task SaveInputAsync(string name)
     {
-        if (string.IsNullOrWhiteSpace(_saveInputName) || _input is null) return;
+        if (_input is null) return;
         var data = await _input.GetFormData();
-        await TrySaveInputAsync(_saveInputName, CalculationType.Optimization, JsonSerializer.Serialize(data));
-        _saveInputName = string.Empty;
-        _showSaveForm = false;
+        await TrySaveInputAsync(name, CalculationType.Optimization, JsonSerializer.Serialize(data));
     }
 
     private async Task LoadFromJsonAsync(string json)

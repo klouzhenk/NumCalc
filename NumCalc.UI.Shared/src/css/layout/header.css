@@ -46,7 +46,6 @@
         font-size: 0.8rem;
         color: var(--primary-color);
         white-space: nowrap;
-        margin-left: var(--dimension-l);
         line-height: 1;
     }
 }

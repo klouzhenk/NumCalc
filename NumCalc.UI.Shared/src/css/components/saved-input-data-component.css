@@ -1,0 +1,124 @@
+﻿.save-input-actions {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    display: inline-flex;
+    align-items: center;
+    z-index: 95;
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: var(--default-border);
+        background-color: var(--layout-background);
+        cursor: pointer;
+        transition: var(--default-transition);
+        padding: var(--dimension-m);
+
+        svg {
+            fill: var(--primary-dark-color);
+            transition: var(--default-transition);
+        }
+
+        &:hover {
+            background-color: var(--primary-color);
+            svg { 
+                fill: var(--white-color);
+            }
+        }
+    }
+
+    &__popover {
+        position: absolute;
+        bottom: calc(100% + var(--dimension-s));
+        left: 50%;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-l);
+        min-width: 200px;
+        padding: var(--dimension-m);
+        background-color: var(--layout-background);
+        border: var(--default-border);
+        border-radius: var(--border-radius-m);
+        box-shadow: var(--component-shadow);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--default-transition);
+
+        .button {
+            font-size: 0.85rem;
+            text-align: left;
+            display: flex;
+            justify-content: flex-start;
+            gap: var(--dimension-m);
+        }
+
+        .input-group__input {
+            width: 100%;
+        }
+    }
+
+    &__popover-buttons {
+        display: flex;
+        gap: var(--dimension-s);
+
+        .button { flex: 1; }
+    }
+
+    &:hover &__popover,
+    &--active &__popover {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &--active &__badge {
+        border-color: var(--primary-color);
+        background-color: var(--primary-background);
+
+        svg { fill: var(--primary-color); }
+    }
+}
+
+.saved-input-picker__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-s);
+}
+
+.saved-input-picker__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--dimension-m) var(--dimension-l);
+    border-radius: var(--border-radius-m);
+    border: var(--default-border);
+    cursor: pointer;
+    transition: var(--default-transition);
+
+    &:hover {
+        background-color: var(--primary-background);
+        border-color: var(--primary-color);
+    }
+}
+
+.saved-input-picker__name {
+    font-weight: 600;
+    color: var(--gray-color);
+}
+
+.saved-input-picker__date {
+    font-size: 0.8rem;
+    color: var(--gray-color);
+}
+
+.modal-state {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+    padding: var(--dimension-l) 0;
+}

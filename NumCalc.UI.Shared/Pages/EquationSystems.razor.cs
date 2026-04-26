@@ -45,9 +45,6 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private List<string>? _lastVariables;
     private List<LinearSystemMethod>? _linearBenchmarkMethods;
     private List<NonLinearSystemMethod>? _nonLinearBenchmarkMethods;
-    private SavedInputPickerModal? _picker;
-    private bool _showSaveForm;
-    private string _saveInputName = string.Empty;
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
@@ -322,11 +319,8 @@ public partial class EquationSystems : BasePage<EquationSystems>
         }
     }
 
-    private Task OpenPickerAsync() => _picker?.ShowAsync() ?? Task.CompletedTask;
-
-    private async Task ConfirmSaveAsync()
+    private async Task SaveInputAsync(string name)
     {
-        if (string.IsNullOrWhiteSpace(_saveInputName)) return;
         string json;
         if (Category is EquationSystemCategory.Linear && _linearInput is not null)
         {
@@ -343,9 +337,7 @@ public partial class EquationSystems : BasePage<EquationSystems>
         }
         else return;
 
-        await TrySaveInputAsync(_saveInputName, CalculationType.EquationSystems, json);
-        _saveInputName = string.Empty;
-        _showSaveForm = false;
+        await TrySaveInputAsync(name, CalculationType.EquationSystems, json);
     }
 
     private async Task LoadFromJsonAsync(string json)

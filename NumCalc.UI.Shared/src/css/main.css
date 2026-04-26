@@ -3,6 +3,7 @@
 
 @import "utils/variables.css";
 @import "utils/reset.css";
+@import "utils/animations.css";
 
 @import "layout/hamburger-menu.css";
 @import "layout/header.css";
@@ -31,6 +32,7 @@
 @import "components/solution-steps.css";
 @import "components/result-panel.css";
 @import "components/comparison-result-list.css";
+@import "components/saved-input-data-component.css";
 
 /* pages */
 @import "pages/page.css";
