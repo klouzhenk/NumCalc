@@ -5,6 +5,7 @@ using Microsoft.JSInterop;
 using NumCalc.UI.Shared.Exceptions;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Resources;
 using NumCalc.UI.Shared.Services.Interfaces;
 
@@ -19,6 +20,7 @@ public abstract class BasePage<TPageType> : ComponentBase
     [Inject] protected ILogger<TPageType> Logger { get; set; } = null!;
     [Inject] private IAuthStateService AuthStateService { get; set; } = null!;
     [Inject] private ICalculationHistoryApiService HistoryApiService { get; set; } = null!;
+    [Inject] private ISavedFileApiService SavedFileApiService { get; set; } = null!;
 
     private string? _lastSavedHash;
     
@@ -45,6 +47,22 @@ public abstract class BasePage<TPageType> : ComponentBase
         {
             UiService.HideLoader();
         }
+    }
+
+    protected async Task TrySaveFileAsync(string fileName, byte[] fileData, CalculationType type, string methodName)
+    {
+        if (!AuthStateService.IsAuthenticated) return;
+        try
+        {
+            await SavedFileApiService.SaveFileAsync(new SaveFileRequest
+            {
+                FileName = fileName,
+                FileData = fileData,
+                Type = type,
+                MethodName = methodName
+            });
+        }
+        catch { /* silent — auto-save is best-effort */ }
     }
 
     protected async Task TrySaveHistoryAsync(SaveCalculationRecordRequest record)

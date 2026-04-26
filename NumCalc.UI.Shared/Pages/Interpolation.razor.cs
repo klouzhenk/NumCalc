@@ -207,9 +207,10 @@ public partial class Interpolation : BasePage<Interpolation>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"interpolation-{_method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Interpolation, $"Interpolation — {_method}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"interpolation-{_method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }

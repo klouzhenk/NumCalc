@@ -232,9 +232,10 @@ public partial class Ode : BasePage<Ode>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"ode-{_method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Ode, $"ODE — {_method}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"ode-{_method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }

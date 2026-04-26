@@ -279,9 +279,10 @@ public partial class RootFinding : BasePage<RootFinding>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"root-finding-{_formData.Method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.RootFinding, $"Root Finding — {_formData.Method}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"root-finding-{_formData.Method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }

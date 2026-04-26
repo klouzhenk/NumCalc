@@ -243,9 +243,10 @@ public partial class Integration : BasePage<Integration>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"integration-{_method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Integration, $"Integration — {_method}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"integration-{_method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }

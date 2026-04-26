@@ -368,10 +368,10 @@ public partial class EquationSystems : BasePage<EquationSystems>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.EquationSystems, methodName);
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf",
-                "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 

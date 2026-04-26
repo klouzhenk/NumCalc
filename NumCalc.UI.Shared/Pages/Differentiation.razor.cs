@@ -246,9 +246,10 @@ public partial class Differentiation : BasePage<Differentiation>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"differentiation-{_method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Differentiation, $"Differentiation — {methodLabel}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"differentiation-{_method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }

@@ -315,9 +315,10 @@ public partial class Optimization : BasePage<Optimization>
             };
 
             var pdfBytes = PdfExportService.GeneratePdf(request);
+            var fileName = $"optimization-{_method}.pdf";
+            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Optimization, $"Optimization — {_method}");
             var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile",
-                $"optimization-{_method}.pdf", "application/pdf", base64);
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
         });
     }
 }
