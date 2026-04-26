@@ -12,6 +12,9 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -140,7 +143,26 @@ public partial class EquationSystems : BasePage<EquationSystems>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string> { ["Method"] = LinearMethod.ToString() };
+            for (var i = 0; i < equations.Count; i++)
+                inputs[$"Equation {i + 1}"] = equations[i];
+            inputs["Variables"] = string.Join(", ", variables);
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.EquationSystems,
+                MethodName = LinearMethod.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = Result.Roots is { Count: > 0 }
+                    ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
+                    : "No solution"
+                
+                // TODO : implement exceution time
+            });
+
             await UpdateChart();
+        }
     }
 
     private async Task CalculateNonLinear()
@@ -177,7 +199,28 @@ public partial class EquationSystems : BasePage<EquationSystems>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string> { ["Method"] = NonLinearMethod.ToString() };
+            for (var i = 0; i < formData.IterationFunctions.Count(); i++)
+                inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions.ElementAt(i);
+            inputs["Variables"] = string.Join(", ", formData.Variables);
+            inputs["Initial Guess"] = string.Join(", ", formData.InitialGuess);
+            inputs["Tolerance"] = formData.Tolerance.ToString("G");
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.EquationSystems,
+                MethodName = NonLinearMethod.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = Result.Roots is { Count: > 0 }
+                    ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
+                    : "No solution"
+                
+                // TODO : implement exceution time
+            });
+
             await UpdateChart();
+        }
     }
 
     private async Task UpdateChart()

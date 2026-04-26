@@ -12,6 +12,9 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.Integration;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -94,7 +97,29 @@ public partial class Integration : BasePage<Integration>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Expression"] = formData.FunctionExpression ?? string.Empty,
+                ["Lower Bound"] = formData.LowerBound.ToString("G"),
+                ["Upper Bound"] = formData.UpperBound.ToString("G"),
+                ["Intervals"] = formData.Intervals.ToString()
+            };
+            if (_method is IntegrationMethod.Rectangle)
+                inputs["Variant"] = _rectangleVariant.ToString();
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.Integration,
+                MethodName = _method.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = $"I = {Result.IntegralValue:G10}",
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
             await UpdateChart(formData);
+        }
     }
 
     private async Task UpdateChart(IntegrationFormData data)

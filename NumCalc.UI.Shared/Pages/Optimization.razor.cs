@@ -11,6 +11,9 @@ using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -112,7 +115,41 @@ public partial class Optimization : BasePage<Optimization>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Expression"] = formData.FunctionExpression,
+                ["Goal"] = _maximize ? "Maximize" : "Minimize",
+                ["Tolerance"] = formData.Tolerance.ToString("G")
+            };
+            if (_method is OptimizationMethod.GradientDescent)
+            {
+                inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint)})";
+                inputs["Learning Rate"] = formData.LearningRate.ToString("G");
+                inputs["Max Iterations"] = formData.MaxIterations.ToString();
+            }
+            else
+            {
+                inputs["Lower Bound"] = formData.LowerBound.ToString("G");
+                inputs["Upper Bound"] = formData.UpperBound.ToString("G");
+            }
+
+            var resultSummary = $"f(x*) = {Result.MinimumValue:G10}";
+            if (Result.ArgMinX.HasValue)
+                resultSummary += $", x* = {Result.ArgMinX.Value:G10}";
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.Optimization,
+                MethodName = _method.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = resultSummary,
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
             await UpdateChart();
+        }
     }
 
     private async Task UpdateChart()

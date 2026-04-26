@@ -11,6 +11,9 @@ using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 using OdeMethod = NumCalc.Shared.Enums.ODE.OdeMethod;
 
@@ -106,7 +109,35 @@ public partial class Ode : BasePage<Ode>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["f(x, y)"] = formData.FunctionExpression,
+                ["x₀"] = formData.InitialX.ToString("G"),
+                ["y₀"] = formData.InitialY.ToString("G"),
+                ["Target x"] = formData.TargetX.ToString("G"),
+                ["Step Size h"] = formData.StepSize.ToString("G")
+            };
+            if (_method is OdeMethod.Picard)
+                inputs["Picard Order"] = (formData.PicardOrder ?? 4).ToString();
+
+            var lastPoint = Result.SolutionPoints?.LastOrDefault();
+            var resultSummary = lastPoint is not null
+                ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
+                : "No solution";
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.Ode,
+                MethodName = _method.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = resultSummary,
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
             await UpdateChart();
+        }
     }
 
     private async Task UpdateChart()

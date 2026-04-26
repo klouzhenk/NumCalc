@@ -13,6 +13,9 @@ using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -102,7 +105,33 @@ public partial class Differentiation : BasePage<Differentiation>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var methodLabel = _method is DifferentiationMethod.FiniteDifferences
+                ? $"Finite Differences ({_variant})"
+                : "Lagrange";
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = methodLabel,
+                ["Query Point"] = formData.QueryPoint.ToString("G"),
+                ["Derivative Order"] = formData.DerivativeOrder.ToString()
+            };
+            if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+                inputs["Expression"] = formData.FunctionExpression;
+            if (_method is DifferentiationMethod.FiniteDifferences)
+                inputs["Step Size"] = formData.StepSize.ToString("G");
+
+            var order = formData.DerivativeOrder == 2 ? "f''" : "f'";
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.Differentiation,
+                MethodName = methodLabel,
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = $"{order}(x*) = {Result.DerivativeValue:G10}",
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
             await UpdateChart();
+        }
     }
 
     private async Task UpdateChart()

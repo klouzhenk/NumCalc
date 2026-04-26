@@ -12,6 +12,9 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.RootFinding;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
 namespace NumCalc.UI.Shared.Pages;
@@ -107,7 +110,23 @@ public partial class RootFinding : BasePage<RootFinding>
         };
 
         Result = await SafeExecuteAsync(apiCall);
-        
+
+        if (Result is not null)
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.RootFinding,
+                MethodName = _formData.Method.ToString(),
+                InputsJson = JsonSerializer.Serialize(new Dictionary<string, string>
+                {
+                    ["Expression"] = _formData.FunctionExpression ?? string.Empty,
+                    ["Start"] = _formData.StartPoint.ToString("G"),
+                    ["End"] = _formData.EndPoint.ToString("G"),
+                    ["Tolerance"] = _formData.Tolerance.ToString("G")
+                }),
+                ResultSummary = Result.Root.HasValue ? $"Root: {Result.Root.Value:G10}" : "No root found",
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
         await UpdateChart();
     }
 

@@ -12,6 +12,9 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.Interpolation;
 using NumCalc.UI.Shared.Services.Interfaces;
+using System.Text.Json;
+using NumCalc.UI.Shared.Models.User;
+using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 using InterpolationMethod = NumCalc.Shared.Enums.Interpolation.InterpolationMethod;
 
@@ -88,7 +91,29 @@ public partial class Interpolation : BasePage<Interpolation>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
+        {
+            var inputs = new Dictionary<string, string>
+            {
+                ["Method"] = _method.ToString(),
+                ["Mode"] = formData.Mode.ToString(),
+                ["Query Point"] = formData.QueryPoint.ToString("G")
+            };
+            if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+                inputs["Expression"] = formData.FunctionExpression;
+            if (formData.XNodes is { Count: > 0 })
+                inputs["X Nodes"] = string.Join(", ", formData.XNodes);
+
+            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
+            {
+                Type = CalculationType.Interpolation,
+                MethodName = _method.ToString(),
+                InputsJson = JsonSerializer.Serialize(inputs),
+                ResultSummary = $"P(x*) = {Result.InterpolatedValue:G10}",
+                ExecutionTimeMs = Result.ExecutionTimeMs
+            });
+
             await UpdateChart(formData);
+        }
     }
 
     private async Task UpdateChart(InterpolationFormData data)
