@@ -1,4 +1,4 @@
-namespace NumCalc.User.Application.DTOs;
+namespace NumCalc.Shared.User.Responses;
 
 public class AuthResponse
 {

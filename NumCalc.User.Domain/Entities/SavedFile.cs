@@ -1,4 +1,4 @@
-using NumCalc.User.Domain.Enums;
+using NumCalc.Shared.User.Enums;
 
 namespace NumCalc.User.Domain.Entities;
 

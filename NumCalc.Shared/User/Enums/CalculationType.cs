@@ -1,4 +1,4 @@
-namespace NumCalc.User.Domain.Enums;
+namespace NumCalc.Shared.User.Enums;
 
 public enum CalculationType
 {

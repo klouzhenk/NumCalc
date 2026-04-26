@@ -1,4 +1,5 @@
-using NumCalc.User.Application.DTOs;
+using NumCalc.Shared.User.DTOs;
+using NumCalc.Shared.User.Requests;
 
 namespace NumCalc.User.Application.Interfaces.Services;
 

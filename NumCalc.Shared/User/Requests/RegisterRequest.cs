@@ -1,6 +1,6 @@
-namespace NumCalc.User.Application.DTOs;
+namespace NumCalc.Shared.User.Requests;
 
-public class LoginRequest
+public class RegisterRequest
 {
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
