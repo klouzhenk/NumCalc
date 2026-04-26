@@ -1,0 +1,65 @@
+.page__auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dimension-xl);
+    width: 100%;
+    max-width: 420px;
+    padding: var(--dimension-xxl);
+    border: var(--default-border);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--component-shadow);
+    background-color: var(--layout-background);
+
+    &__title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        text-align: center;
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dimension-xs);
+
+        label {
+            font-family: var(--font-heading), monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-left: var(--dimension-s);
+        }
+
+        .validation-message {
+            font-size: 0.75rem;
+            color: var(--danger-color);
+            margin-left: var(--dimension-s);
+        }
+    }
+
+    & .button--primary {
+        width: 100%;
+        text-align: center;
+        margin-top: var(--dimension-s);
+    }
+
+    &__footer {
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--gray-color);
+
+        a {
+            color: var(--primary-color);
+            font-weight: 700;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

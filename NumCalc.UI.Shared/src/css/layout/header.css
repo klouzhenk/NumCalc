@@ -27,10 +27,19 @@
     & .header__logo {
         margin: 0 var(--dimension-s);
         cursor: pointer;
-        
+
         svg {
             width: 120px;
             height: fit-content;
         }
+    }
+
+    & .header__credentials {
+        font-family: var(--font-heading), monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        white-space: nowrap;
+        margin-left: var(--dimension-l);
     }
 }
