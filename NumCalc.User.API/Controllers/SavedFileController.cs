@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NumCalc.User.Application.DTOs;
@@ -11,7 +10,7 @@ namespace NumCalc.User.API.Controllers;
 [Authorize]
 [Route("api/saved-files")]
 [Produces("application/json")]
-public class SavedFileController(ISavedFileService savedFileService) : ControllerBase
+public class SavedFileController(ISavedFileService savedFileService) : AuthorizedControllerBase
 {
     /// <summary>Returns metadata for all saved files of the current user.</summary>
     /// <returns>List of saved file metadata.</returns>
@@ -20,9 +19,7 @@ public class SavedFileController(ISavedFileService savedFileService) : Controlle
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllMeta()
     {
-        // TODO : move the userId extraction to another reusable method
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        var result = await savedFileService.GetAllMetaAsync(userId);
+        var result = await savedFileService.GetAllMetaAsync(CurrentUserId);
         return Ok(result);
     }
 
@@ -36,8 +33,7 @@ public class SavedFileController(ISavedFileService savedFileService) : Controlle
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Download(Guid id)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        var fileData = await savedFileService.DownloadAsync(userId, id);
+        var fileData = await savedFileService.DownloadAsync(CurrentUserId, id);
         return File(fileData, "application/octet-stream");
     }
 
@@ -48,8 +44,7 @@ public class SavedFileController(ISavedFileService savedFileService) : Controlle
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Save([FromBody] SaveFileRequest request)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        await savedFileService.SaveAsync(userId, request);
+        await savedFileService.SaveAsync(CurrentUserId, request);
         return NoContent();
     }
 
@@ -62,8 +57,7 @@ public class SavedFileController(ISavedFileService savedFileService) : Controlle
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        await savedFileService.DeleteAsync(userId, id);
+        await savedFileService.DeleteAsync(CurrentUserId, id);
         return NoContent();
     }
 }

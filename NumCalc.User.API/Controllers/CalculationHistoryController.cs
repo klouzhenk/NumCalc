@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NumCalc.User.Application.DTOs;
@@ -11,7 +10,7 @@ namespace NumCalc.User.API.Controllers;
 [Authorize]
 [Route("api/calculation-history")]
 [Produces("application/json")]
-public class CalculationHistoryController(ICalculationHistoryService calculationHistoryService) : ControllerBase
+public class CalculationHistoryController(ICalculationHistoryService calculationHistoryService) : AuthorizedControllerBase
 {
     /// <summary>Returns all calculation history records for the current user.</summary>
     /// <returns>List of calculation history records.</returns>
@@ -20,8 +19,7 @@ public class CalculationHistoryController(ICalculationHistoryService calculation
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCalculationHistory()
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        var result = await calculationHistoryService.GetCalculationHistoryAsync(userId);
+        var result = await calculationHistoryService.GetCalculationHistoryAsync(CurrentUserId);
         return Ok(result);
     }
 
@@ -34,8 +32,7 @@ public class CalculationHistoryController(ICalculationHistoryService calculation
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteCalculationHistoryRecord(Guid id)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        await calculationHistoryService.DeleteAsync(userId, id);
+        await calculationHistoryService.DeleteAsync(CurrentUserId, id);
         return NoContent();
     }
 }

@@ -4,7 +4,7 @@ using NumCalc.User.Application.Exceptions;
 
 namespace NumCalc.User.API.Middlewares;
 
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -12,10 +12,12 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         if (exception is CustomException customException)
         {
+            logger.LogWarning("Client error: {Message}. Code: {Code}", exception.Message, customException.ErrorCode);
             FillClientProblemDetails(problemDetails, customException);
         }
         else
         {
+            logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
             FillServerProblemDetails(problemDetails);
         }
 

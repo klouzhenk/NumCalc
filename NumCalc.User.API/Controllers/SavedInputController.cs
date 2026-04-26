@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NumCalc.User.Application.DTOs;
@@ -11,7 +10,7 @@ namespace NumCalc.User.API.Controllers;
 [Authorize]
 [Route("api/saved-inputs")]
 [Produces("application/json")]
-public class SavedInputController(ISavedInputService savedInputService) : ControllerBase
+public class SavedInputController(ISavedInputService savedInputService) : AuthorizedControllerBase
 {
     /// <summary>Returns all saved inputs for the current user.</summary>
     /// <returns>List of saved inputs.</returns>
@@ -20,8 +19,7 @@ public class SavedInputController(ISavedInputService savedInputService) : Contro
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        var result = await savedInputService.GetAllAsync(userId);
+        var result = await savedInputService.GetAllAsync(CurrentUserId);
         return Ok(result);
     }
 
@@ -33,8 +31,7 @@ public class SavedInputController(ISavedInputService savedInputService) : Contro
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Create([FromBody] CreateSavedInputRequest request)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        var result = await savedInputService.CreateAsync(userId, request);
+        var result = await savedInputService.CreateAsync(CurrentUserId, request);
         return CreatedAtAction(nameof(GetAll), result);
     }
 
@@ -47,8 +44,7 @@ public class SavedInputController(ISavedInputService savedInputService) : Contro
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
-        await savedInputService.DeleteAsync(userId, id);
+        await savedInputService.DeleteAsync(CurrentUserId, id);
         return NoContent();
     }
 }
