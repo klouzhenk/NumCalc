@@ -10,30 +10,18 @@ using WebUI.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLocalization();
+builder.Services.AddScoped<ICultureService, CultureService>();
+builder.Services.AddNumCalcUiSharedServices()
+    .AddSharedLogging("Logs/web-log-.txt");
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddHubOptions(options => options.MaximumReceiveMessageSize = 10 * 1024 * 1024);
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICultureService, CultureService>();
+builder.Services.AddCalculationApiServices(builder.Configuration);
+builder.Services.AddUserApiServices(builder.Configuration);
 
-const string baseApiUrl = "http://localhost:5229";
-builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
-{
-    client.BaseAddress = new Uri(baseApiUrl);
-});
-builder.Services.AddHttpClient<IOcrService, OcrService>(client =>
-{
-    client.BaseAddress = new Uri(baseApiUrl);
-});
-
-builder.Services.AddScoped<IUiStateService, UiStateService>();
-builder.Services.AddScoped<IPdfExportService, PdfExportService>();
-
-builder.Services.AddNumCalcUiShared()
-    .AddSharedLogging("Logs/web-log-.txt");
 
 var app = builder.Build();
 
@@ -44,16 +32,13 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures);
 app.UseRequestLocalization(localizationOptions);
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 app.MapGet("/set-culture", (string culture, string redirectUri, HttpContext context) =>
@@ -68,7 +53,6 @@ app.MapGet("/set-culture", (string culture, string redirectUri, HttpContext cont
 });
 
 app.MapStaticAssets();
-
 
 app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(MainLayout).Assembly)
