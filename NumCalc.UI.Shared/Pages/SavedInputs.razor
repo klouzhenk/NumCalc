@@ -1,0 +1,43 @@
+@page "/saved-inputs"
+@inherits BasePage<SavedInputs>
+
+<div class="page-wrapper page__saved-inputs">
+    <h2>@Localizer["SavedInputs"]</h2>
+
+    @if (SavedInputsData is null)
+    {
+        <p>@Localizer["Loading"]</p>
+    }
+    else if (SavedInputsData.Count == 0)
+    {
+        <p>@Localizer["NoRecords"]</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>@Localizer["Name"]</th>
+                    <th>@Localizer["Type"]</th>
+                    <th>@Localizer["Date"]</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var input in SavedInputsData)
+                {
+                    <tr>
+                        <td>@input.Name</td>
+                        <td>@input.Type</td>
+                        <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
+                        <td>
+                            <button class="button button--danger" @onclick="() => DeleteAsync(input.Id)">
+                                @Localizer["Delete"]
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
