@@ -1,0 +1,47 @@
+@page "/history"
+@inherits BasePage<CalculationHistory>
+
+<div class="page-wrapper page__history">
+    <h2>@Localizer["CalculationHistory"]</h2>
+
+    @if (Records is null)
+    {
+        <p>@Localizer["Loading"]</p>
+    }
+    else if (Records.Count == 0)
+    {
+        <p>@Localizer["NoRecords"]</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>@Localizer["Type"]</th>
+                    <th>@Localizer["Method"]</th>
+                    <th>@Localizer["Result"]</th>
+                    <th>@Localizer["ExecutionTime"]</th>
+                    <th>@Localizer["Date"]</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Records)
+                {
+                    <tr>
+                        <td>@record.Type</td>
+                        <td>@record.MethodName</td>
+                        <td>@record.ResultSummary</td>
+                        <td>@record.ExecutionTimeMs ms</td>
+                        <td>@record.CreatedAt.ToLocalTime().ToString("g")</td>
+                        <td>
+                            <button class="button button--danger" @onclick="() => DeleteAsync(record.Id)">
+                                @Localizer["Delete"]
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -23,6 +23,17 @@ public class CalculationHistoryController(ICalculationHistoryService calculation
         return Ok(result);
     }
 
+    /// <summary>Saves a new calculation history record for the current user.</summary>
+    /// <param name="request">Calculation record data to save.</param>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> SaveRecord([FromBody] SaveCalculationRecordRequest request)
+    {
+        await calculationHistoryService.SaveAsync(CurrentUserId, request);
+        return NoContent();
+    }
+
     /// <summary>Deletes a specific calculation history record.</summary>
     /// <param name="id">The ID of the record to delete.</param>
     [HttpDelete("{id}")]
