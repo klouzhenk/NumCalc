@@ -18,14 +18,16 @@
         }
         else
         {
-            <button class="button button--primary" @onclick="OnShowSave">
-                <SvgIcon Name="save-disk"></SvgIcon>
-                @Localizer["SaveInputs"]
-            </button>
-            <button class="button button--primary" @onclick="OnLoad">
-                <SvgIcon Name="eye"></SvgIcon>
-                @Localizer["LoadInputs"]
-            </button>
+            <ul class="save-input-actions__list hoverable">
+                <li class="save-input-actions__item" @onclick="OnShowSave">
+                    <SvgIcon Name="save-disk" />
+                    @Localizer["SaveInputs"]
+                </li>
+                <li class="save-input-actions__item" @onclick="OnLoad">
+                    <SvgIcon Name="eye" />
+                    @Localizer["LoadInputs"]
+                </li>
+            </ul>
         }
     </div>
 </div>
