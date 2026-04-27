@@ -38,8 +38,6 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     private SystemSolvingResponse? Result { get; set; }
     private LinearSystemComparisonResponse? LinearComparisonResult { get; set; }
     private NonLinearSystemComparisonResponse? NonLinearComparisonResult { get; set; }
-    private List<string>? _lastEquations;
-    private List<string>? _lastVariables;
     private List<LinearSystemMethod>? _linearBenchmarkMethods;
     private List<NonLinearSystemMethod>? _nonLinearBenchmarkMethods;
 
@@ -122,8 +120,6 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
 
         var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
-        _lastEquations = equations;
-        _lastVariables = variables;
 
         var request = new SystemSolvingRequest
         {
@@ -156,7 +152,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
                     ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
                     : "No solution"
                 
-                // TODO : implement exceution time
+                // TODO : implement execution time
             });
 
             await UpdateChart();
@@ -174,9 +170,6 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             UiService.ShowError(Localizer["ExpressionRequired"]);
             return;
         }
-
-        _lastEquations = formData.IterationFunctions.ToList();
-        _lastVariables = formData.Variables.ToList();
 
         var request = new NonLinearSystemRequest
         {
@@ -214,7 +207,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
                     ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
                     : "No solution"
                 
-                // TODO : implement exceution time
+                // TODO : implement execution time
             });
 
             await UpdateChart();
@@ -225,14 +218,18 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     {
         if (Result?.ChartSeries is not { Count: > 0 }) return;
 
-        var x1Name = _lastVariables?.ElementAtOrDefault(0) ?? "x\u2081";
-        var x2Name = _lastVariables?.ElementAtOrDefault(1) ?? "x\u2082";
+        var currentVariables = Category is EquationSystemCategory.Linear
+            ? Enumerable.Range(1, Size).Select(i => $"x{i}").ToList()
+            : _equationList is not null ? (await _equationList.GetFormData()).Variables.ToList() : [];
+
+        var x1Name = currentVariables.ElementAtOrDefault(0) ?? "x\u2081";
+        var x2Name = currentVariables.ElementAtOrDefault(1) ?? "x\u2082";
 
         var is3D = Result.ChartSeries.Any(s => s.Points.Any(p => p.Z.HasValue));
 
         if (is3D)
         {
-            var x3Name = _lastVariables?.ElementAtOrDefault(2) ?? "x\u2083";
+            var x3Name = currentVariables.ElementAtOrDefault(2) ?? "x\u2083";
 
             var series3d = Result.ChartSeries
                 .Select((s, idx) => new ChartSeries
@@ -382,14 +379,22 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             ["Category"] = Category.ToString(),
             ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
         };
-        if (_lastEquations is { Count: > 0 })
+        
+        if (Category is EquationSystemCategory.Linear && _linearInput is not null)
         {
-            var label = Category is EquationSystemCategory.Linear ? "Equation" : "Iteration Function";
-            for (var i = 0; i < _lastEquations.Count; i++)
-                inputs[$"{label} {i + 1}"] = _lastEquations[i];
+            var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
+            var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
+            for (var i = 0; i < equations.Count; i++)
+                inputs[$"Equation {i + 1}"] = equations[i];
+            inputs["Variables"] = string.Join(", ", variables);
         }
-        if (_lastVariables is { Count: > 0 })
-            inputs["Variables"] = string.Join(", ", _lastVariables);
+        else if (_equationList is not null)
+        {
+            var formData = await _equationList.GetFormData();
+            for (var i = 0; i < formData.IterationFunctions.Length; i++)
+                inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions[i];
+            inputs["Variables"] = string.Join(", ", formData.Variables);
+        }
 
         var resultStr = Result.Roots is { Count: > 0 }
             ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))

@@ -36,13 +36,6 @@ public partial class Ode : CalculationPage<Ode>
         ComparisonResult = null;
     }
 
-    private double _initialX;
-    private string? _lastExpression;
-    private double _lastInitialY;
-    private double _lastTargetX;
-    private double _lastStepSize;
-    private int _lastPicardOrder;
-
     private bool IsChartVisible => Result?.SolutionPoints is { Count: > 0 };
 
     private async Task Calculate()
@@ -76,13 +69,6 @@ public partial class Ode : CalculationPage<Ode>
             return;
         }
 
-        _initialX = formData.InitialX;
-        _lastExpression = formData.FunctionExpression;
-        _lastInitialY = formData.InitialY;
-        _lastTargetX = formData.TargetX;
-        _lastStepSize = formData.StepSize;
-        _lastPicardOrder = formData.PicardOrder ?? 4;
-
         var request = new OdeRequest
         {
             FunctionExpression = formData.FunctionExpression,
@@ -110,7 +96,7 @@ public partial class Ode : CalculationPage<Ode>
             var inputs = new Dictionary<string, string>
             {
                 ["Method"] = _method.ToString(),
-                ["f(x, y)"] = formData.FunctionExpression,
+                ["f(x, y)"] = formData.FunctionExpression ?? string.Empty,
                 ["x₀"] = formData.InitialX.ToString("G"),
                 ["y₀"] = formData.InitialY.ToString("G"),
                 ["Target x"] = formData.TargetX.ToString("G"),
@@ -139,11 +125,12 @@ public partial class Ode : CalculationPage<Ode>
 
     private async Task UpdateChart()
     {
-        if (Result?.SolutionPoints is not { Count: > 0 }) return;
+        if (Result?.SolutionPoints is not { Count: > 0 } || _input is null) return;
 
+        var formData = await _input.GetFormData();
         var chartData = Result.SolutionPoints
-            .Where(p => p.X.HasValue && p.Y.HasValue)
-            .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+            .Where(p => p is { X: not null, Y: not null })
+            .Select(p => new[] { p.X!.Value, p.Y!.Value })
             .ToList();
 
         if (chartData.Count == 0) return;
@@ -154,7 +141,7 @@ public partial class Ode : CalculationPage<Ode>
         {
             xAxisPlotLines.Add(new PlotLine
             {
-                Value = _initialX,
+                Value = formData.InitialX,
                 Color = ColorUtils.GetColor(Color.SuccessLight),
                 Width = 1,
                 DashStyle = LineStyle.Dash
@@ -200,20 +187,22 @@ public partial class Ode : CalculationPage<Ode>
 
     private async Task ExportPdfAsync()
     {
-        if (Result is null) return;
+        if (Result is null || _input is null) return;
 
+        var formData = await _input.GetFormData();
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = _method.ToString(),
-            ["x₀"] = _initialX.ToString("G"),
-            ["y₀"] = _lastInitialY.ToString("G"),
-            ["Target x"] = _lastTargetX.ToString("G"),
-            ["Step Size h"] = _lastStepSize.ToString("G")
+            ["x₀"] = formData.InitialX.ToString("G"),
+            ["y₀"] = formData.InitialY.ToString("G"),
+            ["Target x"] = formData.TargetX.ToString("G"),
+            ["Step Size h"] = formData.StepSize.ToString("G")
         };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["f(x, y)"] = _lastExpression;
+
+        if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            inputs["f(x, y)"] = formData.FunctionExpression;
         if (_method is OdeMethod.Picard)
-            inputs["Picard Order"] = _lastPicardOrder.ToString();
+            inputs["Picard Order"] = formData.PicardOrder?.ToString() ?? string.Empty;
 
         var lastPoint = Result.SolutionPoints?.LastOrDefault();
         var resultStr = lastPoint is not null

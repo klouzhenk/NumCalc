@@ -32,17 +32,16 @@ public partial class Differentiation : CalculationPage<Differentiation>
     private DifferentiationInput? _input;
     private DifferentiationResponse? Result { get; set; }
     private DifferentiationComparisonResponse? ComparisonResult { get; set; }
+    private DifferentiationFormData? FormDataSnapshot { get; set; }
 
     private void ResetResult()
     {
         Result = null;
         ComparisonResult = null;
+        FormDataSnapshot = null;
     }
 
     private double _queryPoint;
-    private string? _lastExpression;
-    private double _lastStepSize;
-    private int _lastDerivativeOrder;
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
@@ -53,11 +52,8 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
         if (_input is null) return;
 
-        var formData = await _input.GetFormData();
-        _queryPoint = formData.QueryPoint;
-        _lastExpression = formData.FunctionExpression;
-        _lastStepSize = formData.StepSize;
-        _lastDerivativeOrder = formData.DerivativeOrder;
+        FormDataSnapshot = await _input.GetFormData();
+        _queryPoint = FormDataSnapshot.QueryPoint;
 
         if (_mode is AnalysisMode.Benchmark)
         {
@@ -69,11 +65,11 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
             var compRequest = new DifferentiationComparisonRequest
             {
-                FunctionExpression = formData.FunctionExpression ?? string.Empty,
-                XNodes = formData.XNodes,
-                QueryPoint = formData.QueryPoint,
-                StepSize = formData.StepSize,
-                DerivativeOrder = formData.DerivativeOrder,
+                FunctionExpression = FormDataSnapshot.FunctionExpression ?? string.Empty,
+                XNodes = FormDataSnapshot.XNodes,
+                QueryPoint = FormDataSnapshot.QueryPoint,
+                StepSize = FormDataSnapshot.StepSize,
+                DerivativeOrder = FormDataSnapshot.DerivativeOrder,
                 Methods = _benchmarkMethods
             };
 
@@ -83,13 +79,13 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
         var request = new DifferentiationRequest
         {
-            Mode = formData.Mode,
-            FunctionExpression = formData.FunctionExpression,
-            XNodes = formData.XNodes,
-            YValues = formData.YValues,
-            QueryPoint = formData.QueryPoint,
-            StepSize = formData.StepSize,
-            DerivativeOrder = formData.DerivativeOrder
+            Mode = FormDataSnapshot.Mode,
+            FunctionExpression = FormDataSnapshot.FunctionExpression,
+            XNodes = FormDataSnapshot.XNodes,
+            YValues = FormDataSnapshot.YValues,
+            QueryPoint = FormDataSnapshot.QueryPoint,
+            StepSize = FormDataSnapshot.StepSize,
+            DerivativeOrder = FormDataSnapshot.DerivativeOrder
         };
 
         Func<Task<DifferentiationResponse?>> apiCall = _method switch
@@ -109,15 +105,15 @@ public partial class Differentiation : CalculationPage<Differentiation>
             var inputs = new Dictionary<string, string>
             {
                 ["Method"] = methodLabel,
-                ["Query Point"] = formData.QueryPoint.ToString("G"),
-                ["Derivative Order"] = formData.DerivativeOrder.ToString()
+                ["Query Point"] = FormDataSnapshot.QueryPoint.ToString("G"),
+                ["Derivative Order"] = FormDataSnapshot.DerivativeOrder.ToString()
             };
-            if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
-                inputs["Expression"] = formData.FunctionExpression;
+            if (!string.IsNullOrWhiteSpace(FormDataSnapshot.FunctionExpression))
+                inputs["Expression"] = FormDataSnapshot.FunctionExpression;
             if (_method is DifferentiationMethod.FiniteDifferences)
-                inputs["Step Size"] = formData.StepSize.ToString("G");
+                inputs["Step Size"] = FormDataSnapshot.StepSize.ToString("G");
 
-            var order = formData.DerivativeOrder == 2 ? "f''" : "f'";
+            var order = FormDataSnapshot.DerivativeOrder == 2 ? "f''" : "f'";
             await TrySaveHistoryAsync(new SaveCalculationRecordRequest
             {
                 Type = CalculationType.Differentiation,
@@ -133,11 +129,11 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
     private async Task UpdateChart()
     {
-        if (Result?.ChartData is null) return;
+        if (FormDataSnapshot is null || Result?.ChartData is null) return;
 
         var chartData = Result.ChartData
-            .Where(p => p.X.HasValue && p.Y.HasValue)
-            .Select(p => new double[] { p.X!.Value, p.Y!.Value })
+            .Where(p => p is { X: not null, Y: not null })
+            .Select(p => new[] { p.X!.Value, p.Y!.Value })
             .ToList();
 
         if (chartData.Count == 0) return;
@@ -159,7 +155,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
             }
         };
 
-        if (_lastDerivativeOrder == 1)
+        if (FormDataSnapshot.DerivativeOrder == 1)
         {
             series.Add(new ChartSeries
             {
@@ -216,7 +212,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
     private async Task ExportPdfAsync()
     {
-        if (Result is null) return;
+        if (Result is null || FormDataSnapshot is null) return;
 
         var methodLabel = _method is DifferentiationMethod.FiniteDifferences
             ? $"Finite Differences ({_variant})"
@@ -226,14 +222,14 @@ public partial class Differentiation : CalculationPage<Differentiation>
         {
             ["Method"] = methodLabel,
             ["Query Point"] = _queryPoint.ToString("G"),
-            ["Derivative Order"] = _lastDerivativeOrder.ToString()
+            ["Derivative Order"] = FormDataSnapshot.DerivativeOrder.ToString()
         };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
+        if (!string.IsNullOrWhiteSpace(FormDataSnapshot.FunctionExpression))
+            inputs["Expression"] = FormDataSnapshot.FunctionExpression;
         if (_method is DifferentiationMethod.FiniteDifferences)
-            inputs["Step Size"] = _lastStepSize.ToString("G");
+            inputs["Step Size"] = FormDataSnapshot.StepSize.ToString("G");
 
-        var order = _lastDerivativeOrder == 2 ? "f''" : "f'";
+        var order = FormDataSnapshot.DerivativeOrder == 2 ? "f''" : "f'";
         var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";
 
         await ExportPdfCoreAsync(

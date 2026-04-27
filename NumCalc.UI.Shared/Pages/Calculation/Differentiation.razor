@@ -76,7 +76,7 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@(_lastDerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
+                <span>@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
                 <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             }
             else
@@ -103,7 +103,7 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@(_lastDerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
                             <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                         </div>
                     </ItemTemplate>
