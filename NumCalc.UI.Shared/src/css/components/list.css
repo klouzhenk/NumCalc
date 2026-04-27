@@ -12,7 +12,6 @@
         color: var(--black-color);
         font-size: var(--dimension-l);
         letter-spacing: 0;
-        cursor: pointer;
         border-bottom: var(--default-border);
         margin: 0 var(--dimension-m);
 
