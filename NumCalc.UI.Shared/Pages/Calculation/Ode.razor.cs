@@ -1,32 +1,27 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumCalc.Shared.Enums.ODE;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
-using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.ODE;
 using NumCalc.UI.Shared.Enums;
-using NumCalc.UI.Shared.Models.ODE;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
+using NumCalc.UI.Shared.Models.ODE;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 using OdeMethod = NumCalc.Shared.Enums.ODE.OdeMethod;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class Ode : BasePage<Ode>
+public partial class Ode : CalculationPage<Ode>
 {
     private const string ChartContainerId = "chart--ode";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
@@ -206,53 +201,32 @@ public partial class Ode : BasePage<Ode>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+
+        var inputs = new Dictionary<string, string>
         {
-            var steps = new List<StepExportItem>();
-            foreach (var step in Result.SolutionSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-            }
+            ["Method"] = _method.ToString(),
+            ["x₀"] = _initialX.ToString("G"),
+            ["y₀"] = _lastInitialY.ToString("G"),
+            ["Target x"] = _lastTargetX.ToString("G"),
+            ["Step Size h"] = _lastStepSize.ToString("G")
+        };
+        if (!string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["f(x, y)"] = _lastExpression;
+        if (_method is OdeMethod.Picard)
+            inputs["Picard Order"] = _lastPicardOrder.ToString();
 
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
+        var lastPoint = Result.SolutionPoints?.LastOrDefault();
+        var resultStr = lastPoint is not null
+            ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
+            : "No solution";
 
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _method.ToString(),
-                ["x₀"] = _initialX.ToString("G"),
-                ["y₀"] = _lastInitialY.ToString("G"),
-                ["Target x"] = _lastTargetX.ToString("G"),
-                ["Step Size h"] = _lastStepSize.ToString("G")
-            };
-            if (!string.IsNullOrWhiteSpace(_lastExpression))
-                inputs["f(x, y)"] = _lastExpression;
-            if (_method is OdeMethod.Picard)
-                inputs["Picard Order"] = _lastPicardOrder.ToString();
-
-            var lastPoint = Result.SolutionPoints?.LastOrDefault();
-            var resultStr = lastPoint is not null
-                ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
-                : "No solution";
-
-            var request = new SavedFileRequest
-            {
-                MethodName = $"ODE — {_method}",
-                Inputs = inputs,
-                Result = resultStr,
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"ode-{_method}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Ode, $"ODE — {_method}");
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: $"ODE — {_method}",
+            inputs: inputs,
+            result: resultStr,
+            steps: Result.SolutionSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"ode-{_method}.pdf",
+            type: CalculationType.Ode);
     }
 }

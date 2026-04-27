@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.EquationSystems;
@@ -5,25 +6,21 @@ using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
-using NumCalc.UI.Shared.Models.EquationSystems;
+using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
-using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
+using NumCalc.UI.Shared.Models.EquationSystems;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class EquationSystems : BasePage<EquationSystems>
+public partial class EquationSystems : CalculationPage<EquationSystems>
 {
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private EquationSystemCategory Category { get; set; } = EquationSystemCategory.Linear;
@@ -375,58 +372,37 @@ public partial class EquationSystems : BasePage<EquationSystems>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+
+        var methodName = Category is EquationSystemCategory.Linear
+            ? $"Equation Systems — {LinearMethod}"
+            : $"Equation Systems — {NonLinearMethod}";
+
+        var inputs = new Dictionary<string, string>
         {
-            var steps = new List<StepExportItem>();
-            foreach (var step in Result.SolutionSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-            }
+            ["Category"] = Category.ToString(),
+            ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
+        };
+        if (_lastEquations is { Count: > 0 })
+        {
+            var label = Category is EquationSystemCategory.Linear ? "Equation" : "Iteration Function";
+            for (var i = 0; i < _lastEquations.Count; i++)
+                inputs[$"{label} {i + 1}"] = _lastEquations[i];
+        }
+        if (_lastVariables is { Count: > 0 })
+            inputs["Variables"] = string.Join(", ", _lastVariables);
 
-            var methodName = Category is EquationSystemCategory.Linear
-                ? $"Equation Systems — {LinearMethod}"
-                : $"Equation Systems — {NonLinearMethod}";
+        var resultStr = Result.Roots is { Count: > 0 }
+            ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
+            : "No solution found";
 
-            var inputs = new Dictionary<string, string>
-            {
-                ["Category"] = Category.ToString(),
-                ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
-            };
-            if (_lastEquations is { Count: > 0 })
-            {
-                var label = Category is EquationSystemCategory.Linear ? "Equation" : "Iteration Function";
-                for (var i = 0; i < _lastEquations.Count; i++)
-                    inputs[$"{label} {i + 1}"] = _lastEquations[i];
-            }
-            if (_lastVariables is { Count: > 0 })
-                inputs["Variables"] = string.Join(", ", _lastVariables);
-
-            var resultStr = Result.Roots is { Count: > 0 }
-                ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
-                : "No solution found";
-
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
-
-            var request = new SavedFileRequest
-            {
-                MethodName = methodName,
-                Inputs = inputs,
-                Result = resultStr,
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.EquationSystems, methodName);
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: methodName,
+            inputs: inputs,
+            result: resultStr,
+            steps: Result.SolutionSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf",
+            type: CalculationType.EquationSystems);
     }
 
     private static List<string> BuildEquationStrings(double[,] coefficients, double[] rhs, List<string> variables)

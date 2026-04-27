@@ -35,7 +35,7 @@ public partial class SavedFiles : BasePage<SavedFiles>
         {
             var bytes = await SavedFileApiService.DownloadFileAsync(id);
             if (bytes is null) return;
-            await JsRuntime.InvokeVoidAsync("NumCalc.downloadFile", fileName, Convert.ToBase64String(bytes));
+            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", bytes);
         });
     }
 

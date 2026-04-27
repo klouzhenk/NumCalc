@@ -1,33 +1,28 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumCalc.Shared.Common;
 using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.Enums.Differentiation;
-using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Differentiation;
-using NumCalc.UI.Shared.Models.Differentiation;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Enums.Roots;
-using FiniteDiffVariant = NumCalc.Shared.Enums.Differentiation.FiniteDiffVariant;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
+using NumCalc.UI.Shared.Models.Differentiation;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
+using FiniteDiffVariant = NumCalc.Shared.Enums.Differentiation.FiniteDiffVariant;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class Differentiation : BasePage<Differentiation>
+public partial class Differentiation : CalculationPage<Differentiation>
 {
     private const string ChartContainerId = "chart--differentiation";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private DifferentiationMethod _method = DifferentiationMethod.FiniteDifferences;
@@ -222,53 +217,32 @@ public partial class Differentiation : BasePage<Differentiation>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+
+        var methodLabel = _method is DifferentiationMethod.FiniteDifferences
+            ? $"Finite Differences ({_variant})"
+            : "Lagrange";
+
+        var inputs = new Dictionary<string, string>
         {
-            var steps = new List<StepExportItem>();
-            foreach (var step in Result.SolutionSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-            }
+            ["Method"] = methodLabel,
+            ["Query Point"] = _queryPoint.ToString("G"),
+            ["Derivative Order"] = _lastDerivativeOrder.ToString()
+        };
+        if (!string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["Expression"] = _lastExpression;
+        if (_method is DifferentiationMethod.FiniteDifferences)
+            inputs["Step Size"] = _lastStepSize.ToString("G");
 
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
+        var order = _lastDerivativeOrder == 2 ? "f''" : "f'";
+        var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";
 
-            var methodLabel = _method is DifferentiationMethod.FiniteDifferences
-                ? $"Finite Differences ({_variant})"
-                : "Lagrange";
-
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = methodLabel,
-                ["Query Point"] = _queryPoint.ToString("G"),
-                ["Derivative Order"] = _lastDerivativeOrder.ToString()
-            };
-            if (!string.IsNullOrWhiteSpace(_lastExpression))
-                inputs["Expression"] = _lastExpression;
-            if (_method is DifferentiationMethod.FiniteDifferences)
-                inputs["Step Size"] = _lastStepSize.ToString("G");
-
-            var order = _lastDerivativeOrder == 2 ? "f''" : "f'";
-            var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";
-
-            var request = new SavedFileRequest
-            {
-                MethodName = $"Differentiation — {methodLabel}",
-                Inputs = inputs,
-                Result = resultStr,
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"differentiation-{_method}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Differentiation, $"Differentiation — {methodLabel}");
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: $"Differentiation — {methodLabel}",
+            inputs: inputs,
+            result: resultStr,
+            steps: Result.SolutionSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"differentiation-{_method}.pdf",
+            type: CalculationType.Differentiation);
     }
 }

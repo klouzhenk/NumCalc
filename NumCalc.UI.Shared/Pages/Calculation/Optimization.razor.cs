@@ -1,31 +1,27 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.Optimization;
 using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
-using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Optimization;
-using NumCalc.UI.Shared.Models.Optimization;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
+using NumCalc.UI.Shared.Models.Optimization;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class Optimization : BasePage<Optimization>
+public partial class Optimization : CalculationPage<Optimization>
 {
     private const string ChartContainerId = "chart--optimization";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
@@ -279,63 +275,42 @@ public partial class Optimization : BasePage<Optimization>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+
+        var inputs = new Dictionary<string, string>
         {
-            var steps = new List<StepExportItem>();
-            foreach (var step in Result.SolutionSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-                steps.Add(new StepExportItem { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-            }
+            ["Method"] = _method.ToString(),
+            ["Goal"] = _maximize ? "Maximize" : "Minimize",
+            ["Tolerance"] = _lastTolerance.ToString("G")
+        };
+        if (!string.IsNullOrWhiteSpace(_lastExpression))
+            inputs["Expression"] = _lastExpression;
 
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
+        if (_method is OptimizationMethod.GradientDescent)
+        {
+            if (_lastInitialPoint is { Count: > 0 })
+                inputs["Initial Point"] = $"({string.Join(", ", _lastInitialPoint)})";
+            inputs["Learning Rate"] = _lastLearningRate.ToString("G");
+            inputs["Max Iterations"] = _lastMaxIterations.ToString();
+        }
+        else
+        {
+            inputs["Lower Bound"] = _lastLowerBound.ToString("G");
+            inputs["Upper Bound"] = _lastUpperBound.ToString("G");
+        }
 
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _method.ToString(),
-                ["Goal"] = _maximize ? "Maximize" : "Minimize",
-                ["Tolerance"] = _lastTolerance.ToString("G")
-            };
-            if (!string.IsNullOrWhiteSpace(_lastExpression))
-                inputs["Expression"] = _lastExpression;
+        var resultStr = $"f(x*) = {Result.MinimumValue:G10}";
+        if (Result.ArgMinX.HasValue)
+            resultStr += $", x* = {Result.ArgMinX.Value:G10}";
+        else if (Result.ArgMinPoint is { Count: > 0 })
+            resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
 
-            if (_method is OptimizationMethod.GradientDescent)
-            {
-                if (_lastInitialPoint is { Count: > 0 })
-                    inputs["Initial Point"] = $"({string.Join(", ", _lastInitialPoint)})";
-                inputs["Learning Rate"] = _lastLearningRate.ToString("G");
-                inputs["Max Iterations"] = _lastMaxIterations.ToString();
-            }
-            else
-            {
-                inputs["Lower Bound"] = _lastLowerBound.ToString("G");
-                inputs["Upper Bound"] = _lastUpperBound.ToString("G");
-            }
-
-            var resultStr = $"f(x*) = {Result.MinimumValue:G10}";
-            if (Result.ArgMinX.HasValue)
-                resultStr += $", x* = {Result.ArgMinX.Value:G10}";
-            else if (Result.ArgMinPoint is { Count: > 0 })
-                resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
-
-            var request = new SavedFileRequest
-            {
-                MethodName = $"Optimization — {_method}",
-                Inputs = inputs,
-                Result = resultStr,
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"optimization-{_method}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Optimization, $"Optimization — {_method}");
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: $"Optimization — {_method}",
+            inputs: inputs,
+            result: resultStr,
+            steps: Result.SolutionSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"optimization-{_method}.pdf",
+            type: CalculationType.Optimization);
     }
 }

@@ -6,11 +6,10 @@
 
     @if (Records is null)
     {
-        <p>@Localizer["Loading"]</p>
     }
     else if (Records.Count == 0)
     {
-        <p>@Localizer["NoRecords"]</p>
+        <p>@Localizer["NoData"]</p>
     }
     else
     {

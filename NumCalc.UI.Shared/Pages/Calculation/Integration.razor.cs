@@ -1,32 +1,27 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Common;
 using NumCalc.Shared.Enums.Integration;
 using NumCalc.Shared.Integration.Requests;
 using NumCalc.Shared.Integration.Responses;
-using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.Integration;
-using NumCalc.UI.Shared.Models.Integration;
 using NumCalc.UI.Shared.Enums.Integration;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.Integration;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class Integration : BasePage<Integration>
+public partial class Integration : CalculationPage<Integration>
 {
     private const string ChartContainerId = "chart--integration";
 
     [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private IntegrationMethod _method = IntegrationMethod.Rectangle;
@@ -215,55 +210,33 @@ public partial class Integration : BasePage<Integration>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+        if (_input is null) return;
+
+        var formData = await _input.GetFormData();
+
+        var inputs = new Dictionary<string, string>
         {
-            if (_input is null) throw new NullReferenceException();
-            var formData = await _input.GetFormData(); 
+            ["Method"] = _method.ToString(),
+            ["Lower Bound"] = formData.LowerBound.ToString("G"),
+            ["Upper Bound"] = formData.UpperBound.ToString("G"),
+            ["Intervals"] = formData.Intervals.ToString()
+        };
+        if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            inputs["Expression"] = formData.FunctionExpression;
+        if (_method is IntegrationMethod.Rectangle)
+            inputs["Variant"] = _rectangleVariant.ToString();
 
-            var steps = new List<StepExportItem>();
-            foreach (var step in FilteredSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
-                steps.Add(new StepExportItem
-                    { Description = step.Description, ImageBase64 = imageBase64, Value = step.Value });
-            }
+        var resultStr = _method is IntegrationMethod.Rectangle
+            ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G6}"
+            : $"I = {Result.IntegralValue:G6}";
 
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
-
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _method.ToString(),
-                ["Lower Bound"] = formData.LowerBound.ToString("G"),
-                ["Upper Bound"] = formData.UpperBound.ToString("G"),
-                ["Intervals"] = formData.Intervals.ToString()
-            };
-            if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
-                inputs["Expression"] = formData.FunctionExpression;
-            if (_method is IntegrationMethod.Rectangle)
-                inputs["Variant"] = _rectangleVariant.ToString();
-
-            var resultStr = _method is IntegrationMethod.Rectangle
-                ? SelectedStep?.Value ?? $"I = {Result.IntegralValue:G6}"
-                : $"I = {Result.IntegralValue:G6}";
-
-            var request = new SavedFileRequest
-            {
-                MethodName = $"Integration — {_method}",
-                Inputs = inputs,
-                Result = resultStr,
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"integration-{_method}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.Integration, $"Integration — {_method}");
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: $"Integration — {_method}",
+            inputs: inputs,
+            result: resultStr,
+            steps: FilteredSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"integration-{_method}.pdf",
+            type: CalculationType.Integration);
     }
 }

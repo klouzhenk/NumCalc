@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.RootFinding;
 using NumCalc.Shared.RootFinding.Requests;
@@ -9,22 +10,18 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.Charts;
-using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.RootFinding;
-using NumCalc.UI.Shared.Services.Interfaces;
-using System.Text.Json;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
 
-namespace NumCalc.UI.Shared.Pages;
+namespace NumCalc.UI.Shared.Pages.Calculation;
 
-public partial class RootFinding : BasePage<RootFinding>
+public partial class RootFinding : CalculationPage<RootFinding>
 {
     private const string ChartContainerId = "chart--root-finding";
 
     [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
-    [Inject] public IPdfExportService PdfExportService { get; set; } = null!;
     
     private AnalysisMode Mode { get; set; }
     private List<RootFindingMethod> _benchmarkMethods = [];
@@ -256,53 +253,28 @@ public partial class RootFinding : BasePage<RootFinding>
     private async Task ExportPdfAsync()
     {
         if (Result is null) return;
-        await SafeExecuteAsync(async () =>
+
+        var isNewton = _formData.Method is RootFindingMethod.Newton;
+        var inputs = new Dictionary<string, string>
         {
-            var steps = new List<StepExportItem>();
-            foreach (var step in Result.SolutionSteps ?? [])
-            {
-                string? imageBase64 = null;
-                if (!string.IsNullOrWhiteSpace(step.LatexFormula))
-                    imageBase64 = await JsRuntime.InvokeAsync<string>("PdfHelper.renderLatexToPng", step.LatexFormula);
+            ["Method"] = _formData.Method.ToString(),
+            ["Expression"] = _formData.FunctionExpression ?? string.Empty,
+            [isNewton ? "Initial Guess" : "Start"] = _formData.StartPoint.ToString("G"),
+        };
+        if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
+        inputs["Tolerance"] = _formData.Tolerance.ToString("G");
 
-                steps.Add(new StepExportItem
-                {
-                    Description = step.Description,
-                    ImageBase64 = imageBase64,
-                    Value = step.Value
-                });
-            }
+        var resultStr = Result.Root.HasValue
+            ? $"Root: {Result.Root.Value:G10}    Iterations: {Result.Iterations}"
+            : "No root found";
 
-            var chartImage = IsChartVisible
-                ? await JsRuntime.InvokeAsync<string>("PdfHelper.getChartImage", ChartContainerId)
-                : null;
-
-            var isNewton = _formData.Method is RootFindingMethod.Newton;
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _formData.Method.ToString(),
-                ["Expression"] = _formData.FunctionExpression ?? string.Empty,
-                [isNewton ? "Initial Guess" : "Start"] = _formData.StartPoint.ToString("G"),
-            };
-            if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
-            inputs["Tolerance"] = _formData.Tolerance.ToString("G");
-
-            var request = new SavedFileRequest
-            {
-                MethodName = $"Root Finding — {_formData.Method}",
-                Inputs = inputs,
-                Result = Result.Root.HasValue
-                    ? $"Root: {Result.Root.Value:G10}    Iterations: {Result.Iterations}"
-                    : "No root found",
-                Steps = steps,
-                ChartImage = chartImage
-            };
-
-            var pdfBytes = PdfExportService.GeneratePdf(request);
-            var fileName = $"root-finding-{_formData.Method}.pdf";
-            await TrySaveFileAsync(fileName, pdfBytes, CalculationType.RootFinding, $"Root Finding — {_formData.Method}");
-            var base64 = Convert.ToBase64String(pdfBytes);
-            await JsRuntime.InvokeVoidAsync("PdfHelper.downloadFile", fileName, "application/pdf", base64);
-        });
+        await ExportPdfCoreAsync(
+            methodName: $"Root Finding — {_formData.Method}",
+            inputs: inputs,
+            result: resultStr,
+            steps: Result.SolutionSteps,
+            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            fileName: $"root-finding-{_formData.Method}.pdf",
+            type: CalculationType.RootFinding);
     }
 }

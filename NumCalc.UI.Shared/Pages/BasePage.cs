@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using NumCalc.Shared.Common;
 using NumCalc.UI.Shared.Exceptions;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.Models.Export;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Resources;
@@ -18,10 +20,7 @@ public abstract class BasePage<TPageType> : ComponentBase, IDisposable
     [Inject] protected IJSRuntime JsRuntime { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     [Inject] protected ILogger<TPageType> Logger { get; set; } = null!;
-    [Inject] private IAuthStateService AuthStateService { get; set; } = null!;
-    [Inject] private ICalculationHistoryApiService HistoryApiService { get; set; } = null!;
-    [Inject] private ISavedFileApiService SavedFileApiService { get; set; } = null!;
-    [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
+    [Inject] protected IAuthStateService AuthStateService { get; set; } = null!;
 
     protected bool IsAuthenticated => AuthStateService.IsAuthenticated;
 
@@ -31,8 +30,6 @@ public abstract class BasePage<TPageType> : ComponentBase, IDisposable
     }
 
     protected virtual void OnAuthStateChanged() => InvokeAsync(StateHasChanged);
-
-    private string? _lastSavedHash;
     
     protected async Task<T?> SafeExecuteAsync<T>(Func<Task<T>> action, T? defaultValue = default)
     {
@@ -57,52 +54,6 @@ public abstract class BasePage<TPageType> : ComponentBase, IDisposable
         {
             UiService.HideLoader();
         }
-    }
-
-    protected async Task TrySaveFileAsync(string fileName, byte[] fileData, CalculationType type, string methodName)
-    {
-        if (!AuthStateService.IsAuthenticated) return;
-        try
-        {
-            await SavedFileApiService.SaveFileAsync(new SaveFileRequest
-            {
-                FileName = fileName,
-                FileData = fileData,
-                Type = type,
-                MethodName = methodName
-            });
-        }
-        catch { /* silent — auto-save is best-effort */ }
-    }
-
-    protected async Task TrySaveInputAsync(string name, CalculationType type, string inputsJson)
-    {
-        if (!AuthStateService.IsAuthenticated) return;
-        try
-        {
-            await SavedInputApiService.CreateSavedInputAsync(new CreateSavedInputRequest
-            {
-                Name = name,
-                Type = type,
-                InputsJson = inputsJson
-            });
-        }
-        catch { /* silent — best-effort */ }
-    }
-
-    protected async Task TrySaveHistoryAsync(SaveCalculationRecordRequest record)
-    {
-        if (!AuthStateService.IsAuthenticated) return;
-
-        var hash = $"{record.MethodName}|{record.InputsJson}";
-        if (hash == _lastSavedHash) return;
-
-        try
-        {
-            await HistoryApiService.SaveHistoryAsync(record);
-            _lastSavedHash = hash;
-        }
-        catch { /* silent — auto-save is best-effort */ }
     }
 
     protected async Task SafeExecuteAsync(Func<Task> action)

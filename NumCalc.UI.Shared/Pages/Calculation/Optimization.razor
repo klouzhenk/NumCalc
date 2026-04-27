@@ -1,16 +1,16 @@
-@page "/integration"
+@page "/optimization"
+@using NumCalc.Shared.DTOs.Optimization
+@using NumCalc.Shared.Enums.Optimization
 @using NumCalc.UI.Shared.Components
-@using NumCalc.UI.Shared.Components.Integration
+@using NumCalc.UI.Shared.Components.Optimization
 @using NumCalc.UI.Shared.Models.User.Enums
-@using NumCalc.Shared.DTOs.Integration
-@using NumCalc.Shared.Enums.Integration
-@using NumCalc.UI.Shared.Enums.Integration
+@using NumCalc.UI.Shared.Enums.Optimization
 @using NumCalc.UI.Shared.Enums.Roots
 
-@inherits BasePage<Integration>
+@inherits CalculationPage<Optimization>
 
-<div class="page-wrapper page__integration">
-    <div class="integration__form-wrapper">
+<div class="page-wrapper page__optimization">
+    <div class="optimization__form-wrapper">
         <div class="page__filters-container">
             <Switch TItem="AnalysisMode"
                     Data="@(Enum.GetValues<AnalysisMode>())"
@@ -21,37 +21,34 @@
 
             @if (_mode is AnalysisMode.Single)
             {
-                <Dropdown TItem="IntegrationMethod"
+                <Dropdown TItem="OptimizationMethod"
                           Label="Method"
-                          Data="@(Enum.GetValues<IntegrationMethod>())"
+                          Data="@(Enum.GetValues<OptimizationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
-
-                @if (_method is IntegrationMethod.Rectangle)
-                {
-                    <Dropdown TItem="RectangleVariant"
-                              Label="Variant"
-                              Data="@(Enum.GetValues<RectangleVariant>())"
-                              @bind-Value="_rectangleVariant"
-                              @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
-                }
+                          TextField="@(item => item.ToString())" />
             }
             else
             {
-                <Dropdown TItem="IntegrationComparisonMethod"
+                <Dropdown TItem="OptimizationComparisonMethod"
                           Label="Methods"
-                          Data="@(Enum.GetValues<IntegrationComparisonMethod>())"
+                          Data="@(Enum.GetValues<OptimizationComparisonMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => item.ToString())" />
             }
+
+            <Switch TItem="bool"
+                    Label="Goal"
+                    Data="@(new[] { false, true })"
+                    @bind-Value="_maximize"
+                    @bind-Value:after="ResetResult"
+                    TextField="@(b => b ? "Maximize" : "Minimize")" />
         </div>
 
-        <div class="integration__form">
-            <IntegrationInput @ref="_input" />
+        <div class="optimization__form">
+            <OptimizationInput Method="_method" @ref="_input" />
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">Calculate</button>
                 @if (_mode is AnalysisMode.Single && Result is not null)
@@ -66,13 +63,14 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                @if (_method is IntegrationMethod.Rectangle)
+                <span>f(x*) = @Result!.MinimumValue.ToString("G6") (@(_maximize ? "max" : "min"))</span>
+                @if (Result.ArgMinX.HasValue)
                 {
-                    <span>@SelectedStep?.Value</span>
+                    <span>x* = @Result.ArgMinX.Value.ToString("G6")</span>
                 }
-                else
+                @if (Result.ArgMinPoint is { Count: > 0 })
                 {
-                    <span>I = @Result!.IntegralValue.ToString("G6")</span>
+                    <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G6"))))</span>
                 }
             }
             else
@@ -83,23 +81,28 @@
         <ChartContent>
             <div class="chart__container">
                 <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">Click Calculate to view result</span>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
         </ChartContent>
         <ResultContent>
             @if (_mode is AnalysisMode.Single)
             {
-                <SolutionStepsList Steps="Result?.SolutionSteps" />
+                <SolutionStepsList Steps="@Result!.SolutionSteps" />
             }
             else if (ComparisonResult?.Results is { Count: > 0 })
             {
-                <ComparisonResultList TItem="IntegrationBenchmarkResultDto"
+                <ComparisonResultList TItem="OptimizationBenchmarkResultDto"
                                       Items="ComparisonResult.Results"
                                       IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">f(x*)</span>: @(item.MinimumValue?.ToString("G6") ?? "—")
+                            @if (item.ArgMinX.HasValue)
+                            {
+                                <span> &nbsp;|&nbsp; <span class="comparison-result__item-subtitle">x*</span>: @item.ArgMinX.Value.ToString("G6")</span>
+                            }
+                            &nbsp;|&nbsp;
                             <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
                         </div>
                     </ItemTemplate>
@@ -109,7 +112,6 @@
     </ResultPanel>
 </div>
 
-<SavedInputDataPanel Type="CalculationType.Integration"
+<SavedInputDataPanel Type="CalculationType.Optimization"
                      OnSave="SaveInputAsync"
                      OnLoad="LoadFromJsonAsync" />
-                     
