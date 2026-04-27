@@ -2,6 +2,7 @@
 
 public enum NavigationItem
 {
+    Dashboard,
     Roots,
     EquationSystems,
     Integration,

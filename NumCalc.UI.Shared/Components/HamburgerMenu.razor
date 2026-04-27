@@ -1,4 +1,6 @@
-﻿@using NumCalc.UI.Shared.Utils
+﻿@using NumCalc.UI.Shared.Enums
+@using NumCalc.UI.Shared.Utils
+
 <button class="hamburger @(_isMenuOpen ? "hamburger--active" : "")" @onclick="ToggleMenu">
     <span class="bar"></span>
     <span class="bar"></span>
@@ -9,6 +11,12 @@
 
 <aside class="hamburger-menu @(_isMenuOpen ? "open" : "")">
     <ul class="hamburger-menu__list hoverable">
+        @if (AuthStateService.IsAuthenticated)
+        {
+            <li @onclick="@(() => NavigationManager.NavigateTo("/dashboard"))">
+                @Localizer[nameof(NavigationItem.Dashboard)]
+            </li>
+        }
         @foreach (var item in NavigationUtils.NavigationItems)
         {
             <li @onclick="() => OnListItemClick(item.Key)">

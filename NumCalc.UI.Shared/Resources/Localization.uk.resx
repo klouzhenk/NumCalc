@@ -73,6 +73,9 @@
   <data name="FeatureCharts" xml:space="preserve">
     <value>Інтерактивні графіки</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Мій кабінет</value>
+  </data>
   <data name="Roots" xml:space="preserve">
     <value>Корені рівнянь</value>
   </data>
@@ -330,6 +333,9 @@
   </data>
   <data name="MyData" xml:space="preserve">
     <value>Мої дані</value>
+  </data>
+  <data name="DashboardDesc" xml:space="preserve">
+    <value>Огляд ваших останніх обчислень, збережених даних та експортованих файлів.</value>
   </data>
   <data name="CalculationHistory" xml:space="preserve">
     <value>Історія обчислень</value>

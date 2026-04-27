@@ -1,0 +1,93 @@
+@page "/dashboard"
+@inherits BasePage<UserDashboard>
+
+@if (IsAuthenticated)
+{
+    <div class="page-wrapper page__dashboard">
+        <section class="user-dashboard__intro">
+            <h2>@Localizer["MyData"]</h2>
+            <p class="user-dashboard__desc">@Localizer["DashboardDesc"]</p>
+        </section>
+
+        <section class="user-dashboard__history">
+            <div class="user-dashboard__card">
+                <div class="user-dashboard__card-header">
+                    <h3>@Localizer["CalculationHistory"]</h3>
+                    <a href="/history" class="user-dashboard__view-all link-underline">@Localizer["ViewAll"]</a>
+                </div>
+                @if (LastCalculationHistoryRecords is { Count: > 0 })
+                {
+                    <ul class="user-dashboard__list">
+                        @foreach (var item in LastCalculationHistoryRecords)
+                        {
+                            <li class="user-dashboard__item user-dashboard__item--grid">
+                                <span class="user-dashboard__item-name">@item.MethodName</span>
+                                <span class="user-dashboard__item-meta">@item.Type</span>
+                                <span class="user-dashboard__item-meta">@item.ResultSummary</span>
+                                <span class="user-dashboard__item-date">@($"{item.ExecutionTimeMs:F1} ms")</span>
+                                <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="user-dashboard__empty">@Localizer["NoData"]</p>
+                }
+            </div>
+        </section>
+
+        <section class="user-dashboard__secondary">
+            <div class="user-dashboard__card">
+                <div class="user-dashboard__card-header">
+                    <h3>@Localizer["SavedFiles"]</h3>
+                    <a href="/saved-files" class="user-dashboard__view-all link-underline">@Localizer["ViewAll"]</a>
+                </div>
+                @if (LastDownloadedFiles is { Count: > 0 })
+                {
+                    <ul class="user-dashboard__list">
+                        @foreach (var item in LastDownloadedFiles)
+                        {
+                            <li class="user-dashboard__item">
+                                <div class="user-dashboard__item-row">
+                                    <span class="user-dashboard__item-name">@item.FileName</span>
+                                    <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                                </div>
+                                <span class="user-dashboard__item-meta">@item.Type · @item.MethodName</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="user-dashboard__empty">@Localizer["NoData"]</p>
+                }
+            </div>
+            <div class="user-dashboard__card">
+                <div class="user-dashboard__card-header">
+                    <h3>@Localizer["SavedInputs"]</h3>
+                    <a href="/saved-inputs" class="user-dashboard__view-all link-underline">@Localizer["ViewAll"]</a>
+                </div>
+                @if (LastSavedInputsData is { Count: > 0 })
+                {
+                    <ul class="user-dashboard__list">
+                        @foreach (var item in LastSavedInputsData)
+                        {
+                            <li class="user-dashboard__item">
+                                <div class="user-dashboard__item-row">
+                                    <span class="user-dashboard__item-name">@item.Name</span>
+                                    <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                                </div>
+                                <span class="user-dashboard__item-meta">@item.Type</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="user-dashboard__empty">@Localizer["NoData"]</p>
+                }
+            </div>
+        </section>
+    </div>
+}

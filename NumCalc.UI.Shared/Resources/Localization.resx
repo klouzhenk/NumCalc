@@ -79,6 +79,9 @@
   <data name="FeatureCharts" xml:space="preserve">
     <value>Interactive charts</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>My Dashboard</value>
+  </data>
   <data name="Roots" xml:space="preserve">
     <value>Root Finding</value>
   </data>
@@ -336,6 +339,9 @@
   </data>
   <data name="MyData" xml:space="preserve">
     <value>My Data</value>
+  </data>
+  <data name="DashboardDesc" xml:space="preserve">
+    <value>Overview of your recent calculations, saved inputs, and exported files.</value>
   </data>
   <data name="CalculationHistory" xml:space="preserve">
     <value>Calculation History</value>
