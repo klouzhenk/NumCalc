@@ -1,4 +1,5 @@
 @page "/saved-inputs"
+@using NumCalc.UI.Shared.Components
 @inherits BasePage<SavedInputs>
 
 <div class="page-wrapper page__saved-inputs">
@@ -6,38 +7,40 @@
 
     @if (SavedInputsData is null)
     {
-        <p>@Localizer["Loading"]</p>
+        <div class="center-container"><span>@Localizer["Loading"]</span></div>
     }
     else if (SavedInputsData.Count == 0)
     {
-        <p>@Localizer["NoRecords"]</p>
+        <div class="center-container"><span>@Localizer["NoRecords"]</span></div>
     }
     else
     {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>@Localizer["Name"]</th>
-                    <th>@Localizer["Type"]</th>
-                    <th>@Localizer["Date"]</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var input in SavedInputsData)
-                {
+        <div class="data-table__wrap">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td>@input.Name</td>
-                        <td>@input.Type</td>
-                        <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
-                        <td>
-                            <button class="button button--danger" @onclick="() => DeleteAsync(input.Id)">
-                                @Localizer["Delete"]
-                            </button>
-                        </td>
+                        <th>@Localizer["Name"]</th>
+                        <th>@Localizer["Type"]</th>
+                        <th>@Localizer["Date"]</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var input in SavedInputsData)
+                    {
+                        <tr>
+                            <td>@input.Name</td>
+                            <td>@input.Type</td>
+                            <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
+                            <td class="data-table__actions">
+                                <button class="button button--icon" @onclick="() => DeleteAsync(input.Id)">
+                                    <SvgIcon Name="trash" />
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>

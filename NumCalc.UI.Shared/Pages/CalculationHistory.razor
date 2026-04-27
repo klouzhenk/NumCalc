@@ -6,41 +6,44 @@
 
     @if (Records is null)
     {
+        <div class="center-container"><span>@Localizer["Loading"]</span></div>
     }
     else if (Records.Count == 0)
     {
-        <p>@Localizer["NoData"]</p>
+        <div class="center-container"><span>@Localizer["NoData"]</span></div>
     }
     else
     {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>@Localizer["Type"]</th>
-                    <th>@Localizer["Method"]</th>
-                    <th>@Localizer["Result"]</th>
-                    <th>@Localizer["ExecutionTime"]</th>
-                    <th>@Localizer["Date"]</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var record in Records)
-                {
+        <div class="data-table__wrap">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td>@record.Type</td>
-                        <td>@record.MethodName</td>
-                        <td>@record.ResultSummary</td>
-                        <td>@record.ExecutionTimeMs ms</td>
-                        <td>@record.CreatedAt.ToLocalTime().ToString("g")</td>
-                        <td>
-                            <button class="button button--danger" @onclick="() => DeleteAsync(record.Id)">
-                                @Localizer["Delete"]
-                            </button>
-                        </td>
+                        <th>@Localizer["Type"]</th>
+                        <th>@Localizer["Method"]</th>
+                        <th>@Localizer["Result"]</th>
+                        <th>@Localizer["ExecutionTime"]</th>
+                        <th>@Localizer["Date"]</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var record in Records)
+                    {
+                        <tr>
+                            <td>@record.Type</td>
+                            <td>@record.MethodName</td>
+                            <td>@record.ResultSummary</td>
+                            <td>@($"{record.ExecutionTimeMs:F1} ms")</td>
+                            <td>@record.CreatedAt.ToLocalTime().ToString("g")</td>
+                            <td class="data-table__actions">
+                                <button class="button button--icon" @onclick="() => DeleteAsync(record.Id)">
+                                    <SvgIcon Name="trash" />
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
