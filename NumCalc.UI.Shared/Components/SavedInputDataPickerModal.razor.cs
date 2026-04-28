@@ -18,7 +18,7 @@ public partial class SavedInputDataPickerModal : ComponentBase
     private BaseModal? _modal;
     private List<SavedInputDto>? _items;
 
-    public async Task ShowAsync()
+    public async Task Show()
     {
         _items = null;
         _modal?.Show();
@@ -26,9 +26,10 @@ public partial class SavedInputDataPickerModal : ComponentBase
         StateHasChanged();
     }
 
-    private async Task SelectAsync(SavedInputDto item)
+    private async Task Select(SavedInputDto item)
     {
-        await _modal!.Close();
+        if (_modal is null) return;
+        await _modal.Close();
         await OnInputSelected.InvokeAsync(item.InputsJson);
     }
 }

@@ -1,12 +1,12 @@
-﻿.save-input-actions {
+﻿.saved-input-panel {
     position: fixed;
     bottom: 40px;
     left: 40px;
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    gap: var(--dimension-s);
     z-index: 95;
 
-    &__badge {
+    &__button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -24,75 +24,14 @@
 
         &:hover {
             background-color: var(--primary-color);
-            svg { 
-                fill: var(--white-color);
-            }
+            svg { fill: var(--white-color); }
         }
     }
+}
 
-    &__popover {
-        position: absolute;
-        bottom: calc(100% + var(--dimension-s));
-        left: 50%;
-        z-index: 50;
-        display: flex;
-        flex-direction: column;
-        gap: var(--dimension-l);
-        min-width: 200px;
-        padding: var(--dimension-s);
-        background-color: var(--layout-background);
-        border: var(--default-border);
-        border-radius: var(--border-radius-m);
-        box-shadow: var(--component-shadow);
-        opacity: 0;
-        visibility: hidden;
-        transition: var(--default-transition);
-
-        .input-group__input {
-            width: 100%;
-        }
-    }
-
-    &__list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        background-color: transparent;
-        box-shadow: none;
-    }
-
-    &__item {
-        display: flex;
-        align-items: center;
-        gap: var(--dimension-s);
-        color: var(--black-color);
-
-        svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--primary-color);
-            flex-shrink: 0;
-        }
-    }
-
-    &__popover-buttons {
-        display: flex;
-        gap: var(--dimension-s);
-
-        .button { flex: 1; }
-    }
-
-    &:hover &__popover,
-    &--active &__popover {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    &--active &__badge {
-        border-color: var(--primary-color);
-        background-color: var(--primary-background);
-
-        svg { fill: var(--primary-color); }
+.modal--save-input {
+    .modal__footer {
+        button { flex: 1; }
     }
 }
 
@@ -109,26 +48,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--dimension-m) var(--dimension-l);
-    border-radius: var(--border-radius-m);
-    border: var(--default-border);
     cursor: pointer;
     transition: var(--default-transition);
+    color: var(--gray-light-color);
 
     &:hover {
-        background-color: var(--primary-background);
-        border-color: var(--primary-color);
+        color: var(--primary-color);
     }
 }
 
 .saved-input-picker__name {
     font-weight: 600;
-    color: var(--gray-color);
 }
 
 .saved-input-picker__date {
     font-size: 0.8rem;
-    color: var(--gray-color);
 }
 
 .modal-state {

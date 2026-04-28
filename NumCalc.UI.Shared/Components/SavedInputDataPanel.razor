@@ -1,13 +1,13 @@
 @if (AuthStateService.IsAuthenticated)
 {
-    <SavedInputDataActions ShowSaveForm="_showSaveForm"
-                       SaveName="@_saveInputName"
-                       SaveNameChanged="@(v => _saveInputName = v)"
-                       OnShowSave="@(() => _showSaveForm = true)"
-                       OnHideSave="@(() => _showSaveForm = false)"
-                       OnConfirmSave="ConfirmAsync"
-                       OnLoad="OpenPickerAsync" />
-    <SavedInputDataPickerModal @ref="_picker"
-                           Type="Type"
-                           OnInputSelected="OnLoad" />
+    <div class="saved-input-panel">
+        <button class="saved-input-panel__button" title="@Localizer["SaveInputs"]" @onclick="OpenSaveModal">
+            <SvgIcon Name="save-disk" />
+        </button>
+        <button class="saved-input-panel__button" title="@Localizer["LoadInputs"]" @onclick="OpenPicker">
+            <SvgIcon Name="eye" />
+        </button>
+    </div>
+    <SavedInputDataSaveModal @ref="_saveModal" OnSave="OnSave" />
+    <SavedInputDataPickerModal @ref="_picker" Type="Type" OnInputSelected="OnLoad" />
 }

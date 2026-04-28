@@ -13,7 +13,7 @@
             <ul class="saved-input-picker__list">
                 @foreach (var item in _items)
                 {
-                    <li class="saved-input-picker__item" @onclick="() => SelectAsync(item)">
+                    <li class="saved-input-picker__item" @onclick="() => Select(item)">
                         <span class="saved-input-picker__name">@item.Name</span>
                         <span class="saved-input-picker__date">@item.CreatedAt.ToLocalTime().ToString("g")</span>
                     </li>
