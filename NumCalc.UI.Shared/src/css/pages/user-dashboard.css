@@ -96,7 +96,7 @@
 
         &--grid {
             display: grid;
-            grid-template-columns: 2fr 1.5fr 3fr auto auto;
+            grid-template-columns: 1.75fr 1.5fr 3fr 0.75fr 0.75fr;
             align-items: center;
             gap: var(--dimension-m);
         }

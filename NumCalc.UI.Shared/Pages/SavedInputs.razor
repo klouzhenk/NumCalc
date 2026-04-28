@@ -29,7 +29,7 @@
                     @foreach (var input in SavedInputsData)
                     {
                         <tr>
-                            <td>@input.Name</td>
+                            <td><button class="link-underline" @onclick="() => OpenPreview(input)">@input.Name</button></td>
                             <td>@input.Type</td>
                             <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
                             <td class="data-table__actions">
@@ -44,3 +44,26 @@
         </div>
     }
 </div>
+
+@if (_previewItem is not null)
+{
+    <BaseModal @ref="_previewModal"
+               Title="@_previewItem.Name"
+               Subtitle="@($"{_previewItem.Type} · {_previewItem.CreatedAt.ToLocalTime():g}")">
+        <BodyContent>
+            <div class="data-table__wrap">
+                <table class="data-table">
+                    <tbody>
+                        @foreach (var (key, value) in _previewFields)
+                        {
+                            <tr>
+                                <td class="data-table__label">@Localizer[key]</td>
+                                <td>@value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </BodyContent>
+    </BaseModal>
+}

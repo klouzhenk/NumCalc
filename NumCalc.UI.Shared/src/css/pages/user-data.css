@@ -66,6 +66,13 @@
         }
     }
 
+    &__label {
+        color: var(--gray-color);
+        font-size: 0.85rem;
+        white-space: nowrap;
+        width: 1%;
+    }
+
     &__actions {
         display: flex;
         gap: var(--dimension-s);

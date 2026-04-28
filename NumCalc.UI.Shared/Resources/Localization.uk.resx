@@ -376,4 +376,85 @@
   <data name="Download" xml:space="preserve">
     <value>Завантажити</value>
   </data>
+  <data name="FunctionExpression" xml:space="preserve">
+    <value>Функція</value>
+  </data>
+  <data name="StartPoint" xml:space="preserve">
+    <value>Початок відрізку</value>
+  </data>
+  <data name="EndPoint" xml:space="preserve">
+    <value>Кінець відрізку</value>
+  </data>
+  <data name="Tolerance" xml:space="preserve">
+    <value>Точність</value>
+  </data>
+  <data name="XNodes" xml:space="preserve">
+    <value>Вузли X</value>
+  </data>
+  <data name="YValues" xml:space="preserve">
+    <value>Значення Y</value>
+  </data>
+  <data name="QueryPoint" xml:space="preserve">
+    <value>Точка запиту</value>
+  </data>
+  <data name="StepSize" xml:space="preserve">
+    <value>Крок</value>
+  </data>
+  <data name="DerivativeOrder" xml:space="preserve">
+    <value>Порядок похідної</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="LowerBound" xml:space="preserve">
+    <value>Нижня межа</value>
+  </data>
+  <data name="UpperBound" xml:space="preserve">
+    <value>Верхня межа</value>
+  </data>
+  <data name="Intervals" xml:space="preserve">
+    <value>Інтервали</value>
+  </data>
+  <data name="InitialX" xml:space="preserve">
+    <value>Початкове X</value>
+  </data>
+  <data name="InitialY" xml:space="preserve">
+    <value>Початкове Y</value>
+  </data>
+  <data name="TargetX" xml:space="preserve">
+    <value>Цільове X</value>
+  </data>
+  <data name="PicardOrder" xml:space="preserve">
+    <value>Порядок Пікара</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Точки</value>
+  </data>
+  <data name="InitialPoint" xml:space="preserve">
+    <value>Початкова точка</value>
+  </data>
+  <data name="LearningRate" xml:space="preserve">
+    <value>Швидкість навчання</value>
+  </data>
+  <data name="MaxIterations" xml:space="preserve">
+    <value>Макс. ітерацій</value>
+  </data>
+  <data name="IsGradientDescent" xml:space="preserve">
+    <value>Градієнтний спуск</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Максимізація</value>
+  </data>
+  <data name="Equations" xml:space="preserve">
+    <value>Рівняння</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Змінні</value>
+  </data>
+  <data name="IterationFunctions" xml:space="preserve">
+    <value>Функції ітерацій</value>
+  </data>
+  <data name="InitialGuess" xml:space="preserve">
+    <value>Початкове наближення</value>
+  </data>
 </root>
