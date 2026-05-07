@@ -1,12 +1,12 @@
-﻿.saved-input-panel {
+.save-input-actions {
     position: fixed;
     bottom: 40px;
     left: 40px;
-    display: flex;
-    gap: var(--dimension-s);
+    display: inline-flex;
+    align-items: center;
     z-index: 95;
 
-    &__button {
+    &__badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -26,6 +26,37 @@
             background-color: var(--primary-color);
             svg { fill: var(--white-color); }
         }
+    }
+
+    &__popover {
+        position: absolute;
+        bottom: calc(100% + var(--dimension-s));
+        left: 0;
+        z-index: 50;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(var(--dimension-s));
+        transition: var(--default-transition);
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: var(--dimension-s);
+
+        svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary-color);
+            flex-shrink: 0;
+        }
+    }
+
+    &:hover &__popover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
     }
 }
 

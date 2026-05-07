@@ -1,13 +1,6 @@
 @if (AuthStateService.IsAuthenticated)
 {
-    <div class="saved-input-panel">
-        <button class="saved-input-panel__button" title="@Localizer["SaveInputs"]" @onclick="OpenSaveModal">
-            <SvgIcon Name="save-disk" />
-        </button>
-        <button class="saved-input-panel__button" title="@Localizer["LoadInputs"]" @onclick="OpenPicker">
-            <SvgIcon Name="eye" />
-        </button>
-    </div>
+    <SavedInputDataActions OnSave="OpenSaveModal" OnLoad="OpenPicker" />
     <SavedInputDataSaveModal @ref="_saveModal" OnSave="OnSave" />
     <SavedInputDataPickerModal @ref="_picker" Type="Type" OnInputSelected="OnLoad" />
 }

@@ -1,0 +1,18 @@
+<div class="save-input-actions">
+    <div class="save-input-actions__badge pulse-button">
+        <SvgIcon Name="bookmark" />
+    </div>
+
+    <div class="save-input-actions__popover">
+        <ul class="save-input-actions__list hoverable">
+            <li class="save-input-actions__item" @onclick="OnSave">
+                <SvgIcon Name="save-disk" />
+                @Localizer["SaveInputs"]
+            </li>
+            <li class="save-input-actions__item" @onclick="OnLoad">
+                <SvgIcon Name="eye" />
+                @Localizer["LoadInputs"]
+            </li>
+        </ul>
+    </div>
+</div>
