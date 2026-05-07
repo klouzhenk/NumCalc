@@ -12,10 +12,13 @@ public partial class MainLayout : LayoutComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender) return;
+
+        try
         {
             var (token, username) = await TokenStorage.LoadAsync();
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(username)) return;
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(username)) 
+                return;
 
             if (IsTokenExpired(token))
             {
@@ -23,8 +26,11 @@ public partial class MainLayout : LayoutComponentBase
                 return;
             }
 
-            var authResponse = new AuthResponse { Token = token, Username = username };
-            AuthStateService.SetAuth(authResponse);
+            AuthStateService.SetAuth(new AuthResponse { Token = token, Username = username });
+        }
+        finally
+        {
+            AuthStateService.MarkInitialized();
             StateHasChanged();
         }
     }

@@ -1,51 +1,53 @@
 @page "/saved-files"
 @using NumCalc.UI.Shared.Components
-@inherits BasePage<SavedFiles>
+@inherits AuthorizedPage<SavedFiles>
 
-<div class="page-wrapper page__saved-files">
-    <h2>@Localizer["SavedFiles"]</h2>
+<AuthGuard>
+    <div class="page-wrapper page__saved-files">
+        <h2>@Localizer["SavedFiles"]</h2>
 
-    @if (Files is null)
-    {
-        <div class="center-container"><span>@Localizer["Loading"]</span></div>
-    }
-    else if (Files.Count == 0)
-    {
-        <div class="center-container"><span>@Localizer["NoRecords"]</span></div>
-    }
-    else
-    {
-        <div class="data-table__wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>@Localizer["FileName"]</th>
-                        <th>@Localizer["Type"]</th>
-                        <th>@Localizer["Method"]</th>
-                        <th>@Localizer["Date"]</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var file in Files)
-                    {
+        @if (Files is null)
+        {
+            <div class="center-container"><span>@Localizer["Loading"]</span></div>
+        }
+        else if (Files.Count == 0)
+        {
+            <div class="center-container"><span>@Localizer["NoRecords"]</span></div>
+        }
+        else
+        {
+            <div class="data-table__wrap">
+                <table class="data-table">
+                    <thead>
                         <tr>
-                            <td>@file.FileName</td>
-                            <td>@file.Type</td>
-                            <td>@file.MethodName</td>
-                            <td>@file.CreatedAt.ToLocalTime().ToString("g")</td>
-                            <td class="data-table__actions">
-                                <button class="button button--icon" @onclick="() => DownloadAsync(file.Id, file.FileName)">
-                                    <SvgIcon Name="download" />
-                                </button>
-                                <button class="button button--icon" @onclick="() => DeleteAsync(file.Id)">
-                                    <SvgIcon Name="trash" />
-                                </button>
-                            </td>
+                            <th>@Localizer["FileName"]</th>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["Method"]</th>
+                            <th>@Localizer["Date"]</th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-</div>
+                    </thead>
+                    <tbody>
+                        @foreach (var file in Files)
+                        {
+                            <tr>
+                                <td>@file.FileName</td>
+                                <td>@file.Type</td>
+                                <td>@file.MethodName</td>
+                                <td>@file.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="data-table__actions">
+                                    <button class="button button--icon" @onclick="() => DownloadAsync(file.Id, file.FileName)">
+                                        <SvgIcon Name="download" />
+                                    </button>
+                                    <button class="button button--icon" @onclick="() => DeleteAsync(file.Id)">
+                                        <SvgIcon Name="trash" />
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</AuthGuard>

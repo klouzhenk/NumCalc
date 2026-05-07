@@ -1,0 +1,14 @@
+<BaseModal @ref="_modal" Title="@Localizer["SaveInputs"]" CssClass="modal--save-input">
+    <BodyContent>
+        <input type="text" class="input-group__input"
+               @bind="_name"
+               @bind:event="oninput"
+               placeholder="@Localizer["SaveInputName"]"
+               @onkeydown="HandleKeyDown"
+               autofocus />
+    </BodyContent>
+    <FooterContent>
+        <button class="button" @onclick="CloseModal">@Localizer["Cancel"]</button>
+        <button class="button button--secondary" @onclick="ConfirmAsync" disabled="@(string.IsNullOrWhiteSpace(_name))">@Localizer["Save"]</button>
+    </FooterContent>
+</BaseModal>

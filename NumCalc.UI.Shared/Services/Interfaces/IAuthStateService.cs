@@ -7,9 +7,11 @@ public interface IAuthStateService
     string? Token { get; }
     string? Username { get; }
     bool IsAuthenticated { get; }
+    bool IsInitialized { get; }
 
     event Action OnAuthChanged;
 
     void SetAuth(AuthResponse auth);
     void ClearAuth();
+    void MarkInitialized();
 }

@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Json;
+using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using NumCalc.UI.Shared.Exceptions;
@@ -9,13 +9,19 @@ public abstract class BaseApiService(HttpClient httpClient)
 {
     protected readonly HttpClient HttpClient = httpClient;
     
+    protected virtual void ConfigureRequest(HttpRequestMessage request) { }
+    
     protected async Task<TResponse?> SendPostRequestAsync<TResponse>(string endpoint, object requestData)
     {
-        var response = await HttpClient.PostAsJsonAsync(endpoint, requestData);
+        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+        request.Content = JsonContent.Create(requestData);
+        ConfigureRequest(request);
+
+        var response = await HttpClient.SendAsync(request);
         
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<TResponse>() 
+            return await response.Content.ReadFromJsonAsync<TResponse>()
                    ?? throw new ApiException("EMPTY_SERVER_RESPONSE");
         }
         
@@ -25,7 +31,11 @@ public abstract class BaseApiService(HttpClient httpClient)
     
     protected async Task SendPostRequestAsync(string endpoint, object requestData)
     {
-        var response = await HttpClient.PostAsJsonAsync(endpoint, requestData);
+        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+        request.Content = JsonContent.Create(requestData);
+        ConfigureRequest(request);
+
+        var response = await HttpClient.SendAsync(request);
         
         if (response.IsSuccessStatusCode)
             return;
@@ -36,19 +46,22 @@ public abstract class BaseApiService(HttpClient httpClient)
     
     protected async Task<TResponse?> SendGetRequestAsync<TResponse>(string endpoint, Dictionary<string, string>? queryParams = null)
     {
-        if (queryParams is { Count: > 0})
+        if (queryParams is { Count: > 0 })
         {
             var queryString = QueryString.Create(queryParams!);
             endpoint += queryString.Value;
         }
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        ConfigureRequest(request);
         
-        var response = await HttpClient.GetAsync(endpoint);
+        var response = await HttpClient.SendAsync(request);
         
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<TResponse>() 
                 ?? throw new ApiException("EMPTY_SERVER_RESPONSE");
-        }        
+        }
         
         var errorMessage = await ExtractErrorMessageAsync(response);
         throw new ApiException(errorMessage);
@@ -56,13 +69,16 @@ public abstract class BaseApiService(HttpClient httpClient)
     
     protected async Task SendDeleteRequestAsync(string endpoint, Dictionary<string, string>? queryParams = null)
     {
-        if (queryParams is { Count: > 0})
+        if (queryParams is { Count: > 0 })
         {
             var queryString = QueryString.Create(queryParams!);
             endpoint += queryString.Value;
         }
         
-        var response = await HttpClient.DeleteAsync(endpoint);
+        using var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
+        ConfigureRequest(request);
+        
+        var response = await HttpClient.SendAsync(request);
         
         if (response.IsSuccessStatusCode)
             return;

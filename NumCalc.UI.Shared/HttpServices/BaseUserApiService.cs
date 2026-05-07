@@ -3,13 +3,12 @@ using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.HttpServices;
 
-public abstract class BaseUserApiService : BaseApiService
+public abstract class BaseUserApiService(HttpClient httpClient, IAuthStateService authStateService)
+    : BaseApiService(httpClient)
 {
-    protected BaseUserApiService(HttpClient httpClient, IAuthStateService authStateService)
-        : base(httpClient)
+    protected override void ConfigureRequest(HttpRequestMessage request)
     {
         if (authStateService.IsAuthenticated)
-            httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", authStateService.Token);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authStateService.Token);
     }
 }

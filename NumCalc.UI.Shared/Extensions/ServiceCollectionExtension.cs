@@ -1,4 +1,5 @@
 ﻿using Cropper.Blazor.Extensions;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NumCalc.UI.Shared.HttpServices.Implementations;
@@ -59,7 +60,9 @@ public static class ServiceCollectionExtension
     
     public static IServiceCollection AddUserApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAuthorizationCore();
         services.AddScoped<IAuthStateService, AuthStateService>();
+        services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
         const string baseApiUrl = "http://localhost:5230";      // TODO : setup all APIs IP in the configuration
 

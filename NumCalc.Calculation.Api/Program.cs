@@ -76,3 +76,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// TODO : separate to the different projects
+// TODO : also move OcrService to the Calculation project

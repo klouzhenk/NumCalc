@@ -1,0 +1,11 @@
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>@ChildContent</Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+    <Authorizing>
+        <div class="center-container"><span>Loading…</span></div>
+    </Authorizing>
+</AuthorizeView>

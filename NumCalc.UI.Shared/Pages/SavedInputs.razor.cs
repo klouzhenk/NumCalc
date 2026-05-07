@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Components;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.User;
-using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public partial class SavedInputs : BasePage<SavedInputs>
+public partial class SavedInputs : AuthorizedPage<SavedInputs>
 {
     [Inject] private ISavedInputApiService SavedInputApiService { get; set; } = null!;
-    [Inject] private new IAuthStateService AuthStateService { get; set; } = null!;
 
     private List<SavedInputDto>? SavedInputsData { get; set; }
 
@@ -18,16 +16,7 @@ public partial class SavedInputs : BasePage<SavedInputs>
     private SavedInputDto? _previewItem;
     private IReadOnlyList<(string Key, string Value)> _previewFields = [];
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (!AuthStateService.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/login");
-            return;
-        }
-
-        await LoadAsync();
-    }
+    protected override Task OnAuthenticatedInitAsync() => LoadAsync();
 
     private async Task LoadAsync()
     {

@@ -16,11 +16,14 @@ public class SavedFileApiService(HttpClient httpClient, IAuthStateService authSt
 
     public async Task<byte[]?> DownloadFileAsync(Guid id)
     {
-        var response = await HttpClient.GetAsync($"api/saved-files/{id}/download");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/saved-files/{id}/download");
+        ConfigureRequest(request);
+
+        var response = await HttpClient.SendAsync(request);
         
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadAsByteArrayAsync() 
+            return await response.Content.ReadAsByteArrayAsync()
                 ?? throw new ApiException("EMPTY_SERVER_RESPONSE");
         }
         

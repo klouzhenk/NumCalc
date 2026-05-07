@@ -2,27 +2,16 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Models.User;
-using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Pages;
 
-public partial class SavedFiles : BasePage<SavedFiles>
+public partial class SavedFiles : AuthorizedPage<SavedFiles>
 {
     [Inject] private ISavedFileApiService SavedFileApiService { get; set; } = null!;
-    [Inject] private IAuthStateService AuthStateService { get; set; } = null!;
 
     private List<SavedFileMetadataDto>? Files { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (!AuthStateService.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/login");
-            return;
-        }
-
-        await LoadAsync();
-    }
+    protected override Task OnAuthenticatedInitAsync() => LoadAsync();
 
     private async Task LoadAsync()
     {

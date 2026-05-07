@@ -1,69 +1,71 @@
 @page "/saved-inputs"
 @using NumCalc.UI.Shared.Components
-@inherits BasePage<SavedInputs>
+@inherits AuthorizedPage<SavedInputs>
 
-<div class="page-wrapper page__saved-inputs">
-    <h2>@Localizer["SavedInputs"]</h2>
+<AuthGuard>
+    <div class="page-wrapper page__saved-inputs">
+        <h2>@Localizer["SavedInputs"]</h2>
 
-    @if (SavedInputsData is null)
-    {
-        <div class="center-container"><span>@Localizer["Loading"]</span></div>
-    }
-    else if (SavedInputsData.Count == 0)
-    {
-        <div class="center-container"><span>@Localizer["NoRecords"]</span></div>
-    }
-    else
-    {
-        <div class="data-table__wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>@Localizer["Name"]</th>
-                        <th>@Localizer["Type"]</th>
-                        <th>@Localizer["Date"]</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var input in SavedInputsData)
-                    {
-                        <tr>
-                            <td><button class="link-underline" @onclick="() => OpenPreview(input)">@input.Name</button></td>
-                            <td>@input.Type</td>
-                            <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
-                            <td class="data-table__actions">
-                                <button class="button button--icon" @onclick="() => DeleteAsync(input.Id)">
-                                    <SvgIcon Name="trash" />
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-</div>
-
-@if (_previewItem is not null)
-{
-    <BaseModal @ref="_previewModal"
-               Title="@_previewItem.Name"
-               Subtitle="@($"{_previewItem.Type} · {_previewItem.CreatedAt.ToLocalTime():g}")">
-        <BodyContent>
+        @if (SavedInputsData is null)
+        {
+            <div class="center-container"><span>@Localizer["Loading"]</span></div>
+        }
+        else if (SavedInputsData.Count == 0)
+        {
+            <div class="center-container"><span>@Localizer["NoRecords"]</span></div>
+        }
+        else
+        {
             <div class="data-table__wrap">
                 <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Name"]</th>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["Date"]</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        @foreach (var (key, value) in _previewFields)
+                        @foreach (var input in SavedInputsData)
                         {
                             <tr>
-                                <td class="data-table__label">@Localizer[key]</td>
-                                <td>@value</td>
+                                <td><button class="link-underline" @onclick="() => OpenPreview(input)">@input.Name</button></td>
+                                <td>@input.Type</td>
+                                <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="data-table__actions">
+                                    <button class="button button--icon" @onclick="() => DeleteAsync(input.Id)">
+                                        <SvgIcon Name="trash" />
+                                    </button>
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-        </BodyContent>
-    </BaseModal>
-}
+        }
+    </div>
+
+    @if (_previewItem is not null)
+    {
+        <BaseModal @ref="_previewModal"
+                   Title="@_previewItem.Name"
+                   Subtitle="@($"{_previewItem.Type} · {_previewItem.CreatedAt.ToLocalTime():g}")">
+            <BodyContent>
+                <div class="data-table__wrap">
+                    <table class="data-table">
+                        <tbody>
+                            @foreach (var (key, value) in _previewFields)
+                            {
+                                <tr>
+                                    <td class="data-table__label">@Localizer[key]</td>
+                                    <td>@value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </BodyContent>
+        </BaseModal>
+    }
+</AuthGuard>
