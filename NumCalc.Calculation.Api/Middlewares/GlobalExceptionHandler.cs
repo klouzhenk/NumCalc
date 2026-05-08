@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using NumCalc.Calculation.Api.Exceptions;
+using NumCalc.Calculation.Business.Exceptions;
 
 namespace NumCalc.Calculation.Api.Middlewares;
 

@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumCalc.User.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumCalc.User.Infrastructure", "NumCalc.User.Infrastructure\NumCalc.User.Infrastructure.csproj", "{1D1CFE3A-2CC3-4D82-A3C6-4C1A86C9CFE1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NumCalc.Calculation", "NumCalc.Calculation", "{4C21F781-D5BE-493C-834B-05CAE6CE8C79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumCalc.Calculation.Business", "NumCalc.Calculation.Business\NumCalc.Calculation.Business.csproj", "{17F7738B-624F-4140-AF5E-292181CCE4E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,10 @@ Global
 		{1D1CFE3A-2CC3-4D82-A3C6-4C1A86C9CFE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D1CFE3A-2CC3-4D82-A3C6-4C1A86C9CFE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D1CFE3A-2CC3-4D82-A3C6-4C1A86C9CFE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17F7738B-624F-4140-AF5E-292181CCE4E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17F7738B-624F-4140-AF5E-292181CCE4E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17F7738B-624F-4140-AF5E-292181CCE4E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17F7738B-624F-4140-AF5E-292181CCE4E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,5 +93,7 @@ Global
 		{1258F052-39B5-454D-9DE6-97CFFCBF0753} = {D9D90B84-AC3B-4A21-B88A-DA46F5D8C8AA}
 		{94B3B341-4427-4167-A8B5-09487998EC97} = {D9D90B84-AC3B-4A21-B88A-DA46F5D8C8AA}
 		{1D1CFE3A-2CC3-4D82-A3C6-4C1A86C9CFE1} = {D9D90B84-AC3B-4A21-B88A-DA46F5D8C8AA}
+		{8C0C0A28-DDAF-4F3D-B04A-39512FB41D74} = {4C21F781-D5BE-493C-834B-05CAE6CE8C79}
+		{17F7738B-624F-4140-AF5E-292181CCE4E5} = {4C21F781-D5BE-493C-834B-05CAE6CE8C79}
 	EndGlobalSection
 EndGlobal

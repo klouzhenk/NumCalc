@@ -1,8 +1,8 @@
 using CSnakes.Runtime;
-using NumCalc.Calculation.Api.HostedServices;
 using NumCalc.Calculation.Api.Middlewares;
-using NumCalc.Calculation.Api.Services.Implementations;
-using NumCalc.Calculation.Api.Services.Interfaces;
+using NumCalc.Calculation.Business.HostedServices;
+using NumCalc.Calculation.Business.Services.Implementations;
+using NumCalc.Calculation.Business.Services.Interfaces;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

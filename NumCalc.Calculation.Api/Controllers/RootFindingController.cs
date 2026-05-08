@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NumCalc.Calculation.Api.Services.Interfaces;
+using NumCalc.Calculation.Business.Services.Interfaces;
 using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
 

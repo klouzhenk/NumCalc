@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using NumCalc.Calculation.Api.Services.Interfaces;
+using NumCalc.Calculation.Business.Services.Interfaces;
 using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.Enums.Differentiation;

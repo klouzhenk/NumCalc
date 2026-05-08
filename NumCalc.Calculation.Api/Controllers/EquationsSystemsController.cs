@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NumCalc.Calculation.Api.Services.Interfaces;
+using NumCalc.Calculation.Business.Services.Interfaces;
 using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 
