@@ -22,15 +22,30 @@
         display: flex;
         align-items: center;
         gap: var(--dimension-xxl);
+        
+        svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary-dark-color);
+        }
     }
 
     & .header__logo {
         margin: 0 var(--dimension-s);
         cursor: pointer;
-        
+
         svg {
             width: 120px;
             height: fit-content;
         }
+    }
+
+    & .header__credentials {
+        font-family: var(--font-heading), monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        white-space: nowrap;
+        line-height: 1;
     }
 }

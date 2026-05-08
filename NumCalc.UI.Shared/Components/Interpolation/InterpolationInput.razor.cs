@@ -33,4 +33,14 @@ public partial class InterpolationInput : ComponentBase
 
         return formData;
     }
+
+    public async Task SetFormDataAsync(InterpolationFormData data)
+    {
+        _mode = data.Mode;
+        _queryPoint = data.QueryPoint;
+        _nodeTable?.SetValues(data.XNodes, data.YValues);
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInput?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+    }
 }

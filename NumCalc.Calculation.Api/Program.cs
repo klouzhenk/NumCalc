@@ -17,7 +17,8 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();builder.Services.AddSwaggerGen(options =>
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
     {
@@ -75,3 +76,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// TODO : separate to the different projects
+// TODO : also move OcrService to the Calculation project

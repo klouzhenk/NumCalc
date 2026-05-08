@@ -48,4 +48,19 @@ public partial class OptimizationInput : ComponentBase
             IsGradientDescent = Method is OptimizationMethod.GradientDescent
         };
     }
+
+    public async Task SetFormDataAsync(OptimizationFormData data)
+    {
+        _lowerBound = data.LowerBound;
+        _upperBound = data.UpperBound;
+        _points = data.Points;
+        _tolerance = data.Tolerance;
+        _initialPoint.Clear();
+        _initialPoint.AddRange(data.InitialPoint);
+        _learningRate = data.LearningRate;
+        _maxIterations = data.MaxIterations;
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInput?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+    }
 }

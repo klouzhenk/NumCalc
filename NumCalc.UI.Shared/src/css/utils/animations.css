@@ -1,0 +1,38 @@
+﻿.pulse-button {
+    position: relative;
+    z-index: 1;
+}
+
+.pulse-button::before,
+.pulse-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+    animation: wave 2.5s infinite;
+}
+
+.pulse-button::after {
+    animation-delay: 1.2s;
+}
+
+@keyframes wave {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+        box-shadow: 0 0 0 0 var(--primary-ultra-light-color);
+    }
+
+    70% {
+        transform: scale(1.3);
+        opacity: 0.2;
+        box-shadow: 0 0 0 10px var(--primary-light-color);
+    }
+
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+        box-shadow: 0 0 0 15px transparent;
+    }
+}

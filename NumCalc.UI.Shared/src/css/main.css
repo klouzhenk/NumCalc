@@ -3,12 +3,14 @@
 
 @import "utils/variables.css";
 @import "utils/reset.css";
+@import "utils/animations.css";
 
 @import "layout/hamburger-menu.css";
 @import "layout/header.css";
 @import "layout/main-layout.css";
 
 /* components */
+@import "components/link.css";
 @import "components/language-selector.css";
 @import "components/divider.css";
 @import "components/chart.css";
@@ -31,6 +33,7 @@
 @import "components/solution-steps.css";
 @import "components/result-panel.css";
 @import "components/comparison-result-list.css";
+@import "components/saved-input-data-component.css";
 
 /* pages */
 @import "pages/page.css";
@@ -42,3 +45,6 @@
 @import "pages/integration.css";
 @import "pages/optimization.css";
 @import "pages/ode.css";
+@import "pages/auth.css";
+@import "pages/user-data.css";
+@import "pages/user-dashboard.css";

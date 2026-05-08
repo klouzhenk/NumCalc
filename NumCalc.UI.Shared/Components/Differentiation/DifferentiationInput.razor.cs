@@ -38,4 +38,15 @@ public partial class DifferentiationInput : ComponentBase
 
         return formData;
     }
+
+    public async Task SetFormDataAsync(DifferentiationFormData data)
+    {
+        _queryPoint = data.QueryPoint;
+        _stepSize = data.StepSize;
+        _derivativeOrder = data.DerivativeOrder;
+        _nodeTable?.SetValues(data.XNodes, data.YValues);
+        StateHasChanged();
+        if (!string.IsNullOrEmpty(data.FunctionExpression))
+            await (_mathInput?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+    }
 }

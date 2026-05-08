@@ -79,6 +79,9 @@
   <data name="FeatureCharts" xml:space="preserve">
     <value>Interactive charts</value>
   </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>My Dashboard</value>
+  </data>
   <data name="Roots" xml:space="preserve">
     <value>Root Finding</value>
   </data>
@@ -315,5 +318,149 @@
   </data>
   <data name="Seidel" xml:space="preserve">
     <value>Gauss-Seidel</value>
+  </data>
+  <data name="SaveInputs" xml:space="preserve">
+    <value>Save inputs</value>
+  </data>
+  <data name="LoadInputs" xml:space="preserve">
+    <value>Load inputs</value>
+  </data>
+  <data name="SaveInputName" xml:space="preserve">
+    <value>Input set name</value>
+  </data>
+  <data name="SavedInputsPickerTitle" xml:space="preserve">
+    <value>Select saved inputs</value>
+  </data>
+  <data name="NoSavedInputsForType" xml:space="preserve">
+    <value>No saved inputs for this calculation type.</value>
+  </data>
+  <data name="ContinueAsGuest" xml:space="preserve">
+    <value>Continue as guest</value>
+  </data>
+  <data name="MyData" xml:space="preserve">
+    <value>My Data</value>
+  </data>
+  <data name="DashboardDesc" xml:space="preserve">
+    <value>Overview of your recent calculations, saved inputs, and exported files.</value>
+  </data>
+  <data name="CalculationHistory" xml:space="preserve">
+    <value>Calculation History</value>
+  </data>
+  <data name="SavedInputs" xml:space="preserve">
+    <value>Saved Inputs</value>
+  </data>
+  <data name="SavedFiles" xml:space="preserve">
+    <value>Saved Files</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>No records yet.</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Method" xml:space="preserve">
+    <value>Method</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="FunctionExpression" xml:space="preserve">
+    <value>Function expression</value>
+  </data>
+  <data name="StartPoint" xml:space="preserve">
+    <value>Start point</value>
+  </data>
+  <data name="EndPoint" xml:space="preserve">
+    <value>End point</value>
+  </data>
+  <data name="Tolerance" xml:space="preserve">
+    <value>Tolerance</value>
+  </data>
+  <data name="XNodes" xml:space="preserve">
+    <value>X nodes</value>
+  </data>
+  <data name="YValues" xml:space="preserve">
+    <value>Y values</value>
+  </data>
+  <data name="QueryPoint" xml:space="preserve">
+    <value>Query point</value>
+  </data>
+  <data name="StepSize" xml:space="preserve">
+    <value>Step size</value>
+  </data>
+  <data name="DerivativeOrder" xml:space="preserve">
+    <value>Derivative order</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="LowerBound" xml:space="preserve">
+    <value>Lower bound</value>
+  </data>
+  <data name="UpperBound" xml:space="preserve">
+    <value>Upper bound</value>
+  </data>
+  <data name="Intervals" xml:space="preserve">
+    <value>Intervals</value>
+  </data>
+  <data name="InitialX" xml:space="preserve">
+    <value>Initial X</value>
+  </data>
+  <data name="InitialY" xml:space="preserve">
+    <value>Initial Y</value>
+  </data>
+  <data name="TargetX" xml:space="preserve">
+    <value>Target X</value>
+  </data>
+  <data name="PicardOrder" xml:space="preserve">
+    <value>Picard order</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Points</value>
+  </data>
+  <data name="InitialPoint" xml:space="preserve">
+    <value>Initial point</value>
+  </data>
+  <data name="LearningRate" xml:space="preserve">
+    <value>Learning rate</value>
+  </data>
+  <data name="MaxIterations" xml:space="preserve">
+    <value>Max iterations</value>
+  </data>
+  <data name="IsGradientDescent" xml:space="preserve">
+    <value>Gradient descent</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Equations" xml:space="preserve">
+    <value>Equations</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="IterationFunctions" xml:space="preserve">
+    <value>Iteration functions</value>
+  </data>
+  <data name="InitialGuess" xml:space="preserve">
+    <value>Initial guess</value>
   </data>
 </root>

@@ -1,0 +1,167 @@
+﻿@using NumCalc.Shared.DTOs.RootFinding
+@using NumCalc.Shared.Enums.RootFinding
+@using NumCalc.UI.Shared.Enums.Roots
+@using NumCalc.UI.Shared.Components
+@using NumCalc.UI.Shared.Models.User.Enums
+@using NumCalc.UI.Shared.Utils
+
+@inherits CalculationPage<RootFinding>
+
+@page "/root-finding"
+
+<div class="page-wrapper page__root-finding">
+    <div class="root-finding__form-wrapper">
+        <div class="page__filters-container">
+            <Switch TItem="AnalysisMode"
+                    Data="@(Enum.GetValues<AnalysisMode>())"
+                    @bind-Value="Mode"
+                    @bind-Value:after="OnParametersChanged"
+                    TextField="@(item => item.ToString())"
+                    Label="@Localizer["AnalysisMode"]" />
+
+            @switch (Mode)
+            {
+                case AnalysisMode.Single:
+                    <Dropdown TItem="RootFindingMethod"
+                              Data="@(Enum.GetValues<RootFindingMethod>())"
+                              @bind-Value="_formData.Method"
+                              @bind-Value:after="OnParametersChanged"
+                              TextField="@(item => item.ToString())"
+                              Label="@Localizer["Method"]"/>
+                    break;
+                case AnalysisMode.Benchmark:
+                    <Dropdown TItem="RootFindingMethod"
+                              Data="@(Enum.GetValues<RootFindingMethod>())"
+                              MultiSelect="true"
+                              @bind-SelectedItems="_benchmarkMethods"
+                              @bind-SelectedItems:after="OnParametersChanged"
+                              TextField="@(item => item.ToString())"
+                              Label="@Localizer["Method"]"/>
+                    break;
+                default:
+                    <span>ThereIsNoDropdownForThisMode</span>
+                    break;
+            }
+        </div>
+        <div class="root-finding__form">
+            <div class="input-section__wrapper">
+                <MathInput Label="@Localizer["Expression"]"
+                           @bind-Value="_formData.FunctionExpression"
+                           @ref="_mathInputComponent"
+                           OnInput="OnParametersChanged"/>
+            </div >
+            <div class="input-section__wrapper">
+                <Tooltip>
+                    <Content>
+                        <div class="input-group">
+                            <label class="input-group__label">
+                                @(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton
+                                    ? Localizer["InitialGuess"]
+                                    : Localizer["StartPoint"])
+                            </label>
+                            <input type="number" class="input-group__input" step="any"
+                                   @bind="_formData.StartPoint"
+                                   @bind:event="oninput"
+                                   @bind:after="OnParametersChanged" />
+                        </div>
+                    </Content>
+                    <Hint>
+                        @if (Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton)
+                        {
+                            <span>Initial guess x₀ for Newton-Raphson. Choose a value close to the expected root.</span>
+                        }
+                        else
+                        {
+                            <span>Left endpoint a of the search interval [a, b]. Must satisfy f(a)·f(b) &lt; 0 for bracketing methods.</span>
+                        }
+                    </Hint>
+                </Tooltip>
+
+                @if (!(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton))
+                {
+                    <Tooltip>
+                        <Content>
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["EndPoint"]</label>
+                                <input type="number" class="input-group__input" step="any"
+                                       @bind="_formData.EndPoint"
+                                       @bind:event="oninput"
+                                       @bind:after="OnParametersChanged" />
+                            </div>
+                        </Content>
+                        <Hint>Right endpoint b of the search interval [a, b].</Hint>
+                    </Tooltip>
+                }
+
+                <Tooltip>
+                    <Content>
+                        <div class="input-group">
+                            <label class="input-group__label">@Localizer["Tolerance"]</label>
+                            <input type="number" class="input-group__group" step="0.00001"
+                               @bind="_formData.Tolerance"
+                               @bind:event="oninput"
+                               @bind:after="OnParametersChanged" />
+                        </div>
+                    </Content>
+                    <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>
+                </Tooltip>
+            </div>
+            <div class="form-actions">
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
+                @if (Mode is AnalysisMode.Single && Result is not null)
+                {
+                    <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <ResultPanel HasResult="Result is not null || ComparisonResult is not null">
+        <Header>
+            @if (Mode is AnalysisMode.Single && Result is not null)
+            {
+                <span>@Localizer["Root"] = @Result.Root?.ToString("G6")</span>
+                <span>@Localizer["ExecutionTime"] = @Result.ExecutionTimeMs @Localizer["ms"]</span>
+                <span>@Localizer["Iterations"] = @Result.Iterations</span>
+            }
+            else
+            {
+                <span>@Localizer["Benchmark"]</span>
+            }
+        </Header>
+        <ChartContent>
+            <div class="chart__container">
+                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "block");">@Localizer["ClickCalculateToViewResult"]</span>
+            </div>
+        </ChartContent>
+        <ResultContent>
+            @if (Mode is AnalysisMode.Single)
+            {
+                <SolutionStepsList Steps="Result?.SolutionSteps" />
+            }
+            else if (ComparisonResult?.Results is { Count: > 0 })
+            {
+                <ComparisonResultList TItem="BenchmarkResultDto"
+                                      Items="ComparisonResult.Results"
+                                      IsBest="@(item => item.Method == ComparisonResult.BestMethod)">
+                    <ItemTemplate Context="benchmarkResult">
+                        <span class="comparison-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
+                        <div class="comparison-result__item-text">
+                            @{
+                                var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
+                            }
+                            <span class="comparison-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                        </div>
+                    </ItemTemplate>
+                </ComparisonResultList>
+            }
+        </ResultContent>
+    </ResultPanel>
+</div>
+
+<SavedInputDataPanel Type="CalculationType.RootFinding"
+                     OnSave="SaveInputAsync"
+                     OnLoad="LoadFromJsonAsync" />
