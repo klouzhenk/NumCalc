@@ -5,5 +5,6 @@ public enum UserErrorCode
     UsernameAlreadyExists,
     InvalidCredentials,
     RecordNotFound,
-    AccessForbidden
+    AccessForbidden,
+    EmailAlreadyExists
 }

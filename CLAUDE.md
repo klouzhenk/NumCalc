@@ -41,8 +41,8 @@ NumCalc.Core            — Minimal, mostly unused
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison), `OcrController` (recognize endpoint, Gemini provider via `IOcrProvider`)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes. `IOcrService` orchestrates OCR (parsing + LaTeX cleanup) and delegates the actual recognition to `IOcrProvider` (currently `GeminiOcrProvider`).
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
@@ -124,7 +124,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **All page components** live in `NumCalc.UI.Shared/Pages/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`, `MainPage.razor`
 - **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, `ComparisonResultList` (generic `@typeparam TItem` component for all benchmark result lists), per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
 - **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) — rendered from `Header.razor` via a switch on `NavigationItem`
-- **Services:** `IPdfExportService` / `PdfExportService`, `IOcrService` / `OcrService`, `IUiStateService` / `UiStateService`, `ICultureService`
+- **Services:** `IPdfExportService` / `PdfExportService`, `IUiStateService` / `UiStateService`, `ICultureService` (OCR is no longer a UI service — it's exposed by the Calculation API at `POST api/ocr/recognize` and called via `ICalculationApiService.RecognizeExpressionAsync`)
 - **Layout:** `MainLayout.razor` in `Layouts/`
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
 - Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
@@ -143,6 +143,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **Error handling:** All exceptions surface through `GlobalExceptionHandler`; numerical errors use typed `ErrorCodes` rather than raw exceptions.
 - **Localization:** All user-visible strings go in `NumCalc.UI.Shared/Localization/Localization.resx` (and `.uk.resx`). Do not hard-code display text in components.
 - **Shared UI components:** New reusable Blazor components belong in `NumCalc.UI.Shared`, not in `NumCalc.UI.Web`, so they can be reused by MAUI.
+- **OCR provider pattern:** OCR is exposed via `POST api/ocr/recognize`. The Gemini-specific code lives in `GeminiOcrProvider : IOcrProvider`; `OcrService` orchestrates input parsing + LaTeX cleanup. Swap providers by registering a different `IOcrProvider` impl in `Program.cs` — no other code changes. The Gemini API key is configured per-developer via user-secrets (`OcrSettings:GeminiApiKey`); never commit it to `appsettings.json`.
 - **Logging:** Serilog is configured at the host level (`builder.Host.UseSerilog()`) in `NumCalc.Calculation.Api/Program.cs`. All 7 API services inject `ILogger<T>` via primary constructor and log method entry + completion with key parameters. `GlobalExceptionHandler` logs warnings/errors. UI pages log via `BasePage<T>.Logger`. `PythonWarmingUpService` logs warmup start/completion.
 
 ## Current State (CRITICAL)

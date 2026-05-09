@@ -15,6 +15,10 @@ public class AuthService(IUserRepository userRepository, IJwtService jwtService)
         if (existedUser is not null)
             throw new CustomException(UserErrorCode.UsernameAlreadyExists, "The user already exists by this username", 409);
 
+        existedUser = await userRepository.GetByEmailAsync(request.Email);
+        if (existedUser is not null)
+            throw new CustomException(UserErrorCode.EmailAlreadyExists, "The user already exists by this email", 409);
+
         var user = CreateUser(request);
         await userRepository.AddAsync(user);
         await userRepository.SaveChangesAsync();
@@ -43,7 +47,8 @@ public class AuthService(IUserRepository userRepository, IJwtService jwtService)
         {
             Id = Guid.NewGuid(),
             Username = request.Username,
-            PasswordHash = passwordHash
+            PasswordHash = passwordHash,
+            Email = request.Email
         };
     }
 

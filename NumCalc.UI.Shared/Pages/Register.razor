@@ -22,6 +22,12 @@
                 <InputText @bind-Value="RegisterForm.Username" type="text" class="input" placeholder="@Localizer["Username"]"/>
                 <ValidationMessage For="@(() => RegisterForm.Username)"/>
             </div>
+            
+            <div class="auth-form__field">
+                <label>@Localizer["Email"]</label>
+                <InputText @bind-Value="RegisterForm.Email" type="email" class="input" placeholder="@Localizer["Email"]"/>
+                <ValidationMessage For="@(() => RegisterForm.Email)"/>
+            </div>
 
             <div class="auth-form__field">
                 <label>@Localizer["Password"]</label>
