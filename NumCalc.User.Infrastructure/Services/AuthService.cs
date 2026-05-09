@@ -1,4 +1,7 @@
-﻿using NumCalc.User.Application.DTOs;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using NumCalc.User.Application.DTOs;
 using NumCalc.User.Application.Exceptions;
 using NumCalc.User.Application.Interfaces.Repositories;
 using NumCalc.User.Application.Interfaces.Services;
@@ -59,5 +62,15 @@ public class AuthService(IUserRepository userRepository, IJwtService jwtService)
             Token = jwtService.GenerateToken(userId, username),
             Username = username
         };
+    }
+    
+    private static (string RawToken, string Hash) GenerateResetToken()
+    {
+        var bytes = RandomNumberGenerator.GetBytes(32);
+        var raw = Base64UrlEncoder.Encode(bytes);
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(raw));
+        var hash = Convert.ToHexString(hashBytes);
+
+        return (raw, hash);
     }
 }

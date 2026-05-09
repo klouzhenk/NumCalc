@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<ISavedInputRepository, SavedInputRepository>();
         services.AddScoped<ISavedFileRepository, SavedFileRepository>();
         services.AddScoped<ICalculationHistoryRepository, CalculationHistoryRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
 
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
