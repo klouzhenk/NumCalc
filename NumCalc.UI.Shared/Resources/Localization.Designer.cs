@@ -60,11 +60,155 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About this topic.
+        /// </summary>
+        public static string AboutThisTopic {
+            get {
+                return ResourceManager.GetString("AboutThisTopic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backward Difference.
+        /// </summary>
+        public static string Backward {
+            get {
+                return ResourceManager.GetString("Backward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benchmark.
+        /// </summary>
+        public static string Benchmark {
+            get {
+                return ResourceManager.GetString("Benchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculation History.
+        /// </summary>
+        public static string CalculationHistory {
+            get {
+                return ResourceManager.GetString("CalculationHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Central Difference.
+        /// </summary>
+        public static string Central {
+            get {
+                return ResourceManager.GetString("Central", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue as guest.
+        /// </summary>
+        public static string ContinueAsGuest {
+            get {
+                return ResourceManager.GetString("ContinueAsGuest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cramer&apos;s Rule.
+        /// </summary>
+        public static string Cramer {
+            get {
+                return ResourceManager.GetString("Cramer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Dashboard.
+        /// </summary>
+        public static string Dashboard {
+            get {
+                return ResourceManager.GetString("Dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview of your recent calculations, saved inputs, and exported files..
+        /// </summary>
+        public static string DashboardDesc {
+            get {
+                return ResourceManager.GetString("DashboardDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string Date {
+            get {
+                return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Derivative order.
+        /// </summary>
+        public static string DerivativeOrder {
+            get {
+                return ResourceManager.GetString("DerivativeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dichotomy method.
         /// </summary>
         public static string DICHOTOMY_METHOD {
             get {
                 return ResourceManager.GetString("DICHOTOMY_METHOD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Differentiation.
+        /// </summary>
+        public static string Differentiation {
+            get {
+                return ResourceManager.GetString("Differentiation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Numerically compute first and second derivatives of functions..
+        /// </summary>
+        public static string DifferentiationDesc {
+            get {
+                return ResourceManager.GetString("DifferentiationDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string Download {
+            get {
+                return ResourceManager.GetString("Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End point.
+        /// </summary>
+        public static string EndPoint {
+            get {
+                return ResourceManager.GetString("EndPoint", resourceCulture);
             }
         }
         
@@ -78,6 +222,861 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Equations.
+        /// </summary>
+        public static string Equations {
+            get {
+                return ResourceManager.GetString("Equations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Equation Systems.
+        /// </summary>
+        public static string EquationSystems {
+            get {
+                return ResourceManager.GetString("EquationSystems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solve linear and non-linear systems of equations..
+        /// </summary>
+        public static string EquationSystemsDesc {
+            get {
+                return ResourceManager.GetString("EquationSystemsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Euler.
+        /// </summary>
+        public static string Euler {
+            get {
+                return ResourceManager.GetString("Euler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Euler Improved (Heun).
+        /// </summary>
+        public static string EulerImproved {
+            get {
+                return ResourceManager.GetString("EulerImproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string ExecutionTime {
+            get {
+                return ResourceManager.GetString("ExecutionTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export PDF.
+        /// </summary>
+        public static string ExportPdf {
+            get {
+                return ResourceManager.GetString("ExportPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression contains a syntax error..
+        /// </summary>
+        public static string ExpressionInvalid {
+            get {
+                return ResourceManager.GetString("ExpressionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression must contain only the variable x..
+        /// </summary>
+        public static string ExpressionOnlyX {
+            get {
+                return ResourceManager.GetString("ExpressionOnlyX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a function expression..
+        /// </summary>
+        public static string ExpressionRequired {
+            get {
+                return ResourceManager.GetString("ExpressionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactive charts.
+        /// </summary>
+        public static string FeatureCharts {
+            get {
+                return ResourceManager.GetString("FeatureCharts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PDF export.
+        /// </summary>
+        public static string FeaturePdf {
+            get {
+                return ResourceManager.GetString("FeaturePdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step-by-step solutions.
+        /// </summary>
+        public static string FeatureStepByStep {
+            get {
+                return ResourceManager.GetString("FeatureStepByStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name.
+        /// </summary>
+        public static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed-Point Iteration.
+        /// </summary>
+        public static string FixedPoint {
+            get {
+                return ResourceManager.GetString("FixedPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward Difference.
+        /// </summary>
+        public static string Forward {
+            get {
+                return ResourceManager.GetString("Forward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function expression.
+        /// </summary>
+        public static string FunctionExpression {
+            get {
+                return ResourceManager.GetString("FunctionExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gaussian Elimination.
+        /// </summary>
+        public static string Gauss {
+            get {
+                return ResourceManager.GetString("Gauss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Golden Section.
+        /// </summary>
+        public static string GoldenSection {
+            get {
+                return ResourceManager.GetString("GoldenSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order of the derivative to compute: 1 for f&apos;(x), 2 for f&apos;&apos;(x)..
+        /// </summary>
+        public static string Hint_DerivativeOrder {
+            get {
+                return ResourceManager.GetString("Hint_DerivativeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting point x₀ for the iterative method. Choose a value close to the expected root or solution for faster convergence..
+        /// </summary>
+        public static string Hint_InitialGuess {
+            get {
+                return ResourceManager.GetString("Hint_InitialGuess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step multiplier α for gradient descent. Too large causes divergence; too small causes slow convergence. Typical range: 0.001 – 0.1..
+        /// </summary>
+        public static string Hint_LearningRate {
+            get {
+                return ResourceManager.GetString("Hint_LearningRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left endpoint a of the search interval [a, b]. Must be less than the upper bound..
+        /// </summary>
+        public static string Hint_LowerBound {
+            get {
+                return ResourceManager.GetString("Hint_LowerBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum number of iterations allowed before stopping. Increase if the method has not yet converged within the tolerance..
+        /// </summary>
+        public static string Hint_MaxIterations {
+            get {
+                return ResourceManager.GetString("Hint_MaxIterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of successive approximation steps k in Picard&apos;s method. Higher values are more accurate near x₀ but diverge further away..
+        /// </summary>
+        public static string Hint_PicardOrder {
+            get {
+                return ResourceManager.GetString("Hint_PicardOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The point x* at which to evaluate the interpolated or differentiated value..
+        /// </summary>
+        public static string Hint_QueryPoint {
+            get {
+                return ResourceManager.GetString("Hint_QueryPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step size h used in finite-difference formulas. Smaller h reduces truncation error but increases round-off error. Default 0.001 is a safe starting point..
+        /// </summary>
+        public static string Hint_StepSize {
+            get {
+                return ResourceManager.GetString("Hint_StepSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum allowed error between successive iterations. Smaller values give more precise results but require more iterations (e.g. 0.0001)..
+        /// </summary>
+        public static string Hint_Tolerance {
+            get {
+                return ResourceManager.GetString("Hint_Tolerance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right endpoint b of the search interval [a, b]. Must be greater than the lower bound..
+        /// </summary>
+        public static string Hint_UpperBound {
+            get {
+                return ResourceManager.GetString("Hint_UpperBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interpolation nodes xᵢ — the x-coordinates of the known data points. Must be distinct and sorted in ascending order..
+        /// </summary>
+        public static string Hint_XNodes {
+            get {
+                return ResourceManager.GetString("Hint_XNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type your function or paste data points into the input field..
+        /// </summary>
+        public static string HowItWorksStep1Desc {
+            get {
+                return ResourceManager.GetString("HowItWorksStep1Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter expression.
+        /// </summary>
+        public static string HowItWorksStep1Title {
+            get {
+                return ResourceManager.GetString("HowItWorksStep1Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the numerical algorithm that fits your problem..
+        /// </summary>
+        public static string HowItWorksStep2Desc {
+            get {
+                return ResourceManager.GetString("HowItWorksStep2Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a method.
+        /// </summary>
+        public static string HowItWorksStep2Title {
+            get {
+                return ResourceManager.GetString("HowItWorksStep2Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Explore step-by-step solutions, interactive charts, and export to PDF..
+        /// </summary>
+        public static string HowItWorksStep3Desc {
+            get {
+                return ResourceManager.GetString("HowItWorksStep3Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View results &amp; export.
+        /// </summary>
+        public static string HowItWorksStep3Title {
+            get {
+                return ResourceManager.GetString("HowItWorksStep3Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How it works.
+        /// </summary>
+        public static string HowItWorksTitle {
+            get {
+                return ResourceManager.GetString("HowItWorksTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial guess.
+        /// </summary>
+        public static string InitialGuess {
+            get {
+                return ResourceManager.GetString("InitialGuess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial point.
+        /// </summary>
+        public static string InitialPoint {
+            get {
+                return ResourceManager.GetString("InitialPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial X.
+        /// </summary>
+        public static string InitialX {
+            get {
+                return ResourceManager.GetString("InitialX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial Y.
+        /// </summary>
+        public static string InitialY {
+            get {
+                return ResourceManager.GetString("InitialY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integral.
+        /// </summary>
+        public static string Integral {
+            get {
+                return ResourceManager.GetString("Integral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integration.
+        /// </summary>
+        public static string Integration {
+            get {
+                return ResourceManager.GetString("Integration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculate definite integrals using rectangle, trapezoid, or Simpson rules..
+        /// </summary>
+        public static string IntegrationDesc {
+            get {
+                return ResourceManager.GetString("IntegrationDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interpolation.
+        /// </summary>
+        public static string Interpolation {
+            get {
+                return ResourceManager.GetString("Interpolation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Estimate f(x) between known data points using polynomials or splines..
+        /// </summary>
+        public static string InterpolationDesc {
+            get {
+                return ResourceManager.GetString("InterpolationDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Intervals.
+        /// </summary>
+        public static string Intervals {
+            get {
+                return ResourceManager.GetString("Intervals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gradient descent.
+        /// </summary>
+        public static string IsGradientDescent {
+            get {
+                return ResourceManager.GetString("IsGradientDescent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Iteration functions.
+        /// </summary>
+        public static string IterationFunctions {
+            get {
+                return ResourceManager.GetString("IterationFunctions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lagrange.
+        /// </summary>
+        public static string Lagrange {
+            get {
+                return ResourceManager.GetString("Lagrange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learning rate.
+        /// </summary>
+        public static string LearningRate {
+            get {
+                return ResourceManager.GetString("LearningRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load inputs.
+        /// </summary>
+        public static string LoadInputs {
+            get {
+                return ResourceManager.GetString("LoadInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lower bound.
+        /// </summary>
+        public static string LowerBound {
+            get {
+                return ResourceManager.GetString("LowerBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numerical methods computation platform for root finding, interpolation, integration, and more..
+        /// </summary>
+        public static string MainHeroSubtitle {
+            get {
+                return ResourceManager.GetString("MainHeroSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Numerical Methods Calculator.
+        /// </summary>
+        public static string MainHeroTitle {
+            get {
+                return ResourceManager.GetString("MainHeroTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximize.
+        /// </summary>
+        public static string Maximize {
+            get {
+                return ResourceManager.GetString("Maximize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max iterations.
+        /// </summary>
+        public static string MaxIterations {
+            get {
+                return ResourceManager.GetString("MaxIterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method.
+        /// </summary>
+        public static string Method {
+            get {
+                return ResourceManager.GetString("Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bisection.
+        /// </summary>
+        public static string Method_Bisection {
+            get {
+                return ResourceManager.GetString("Method_Bisection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combined (Brent).
+        /// </summary>
+        public static string Method_Combined {
+            get {
+                return ResourceManager.GetString("Method_Combined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cramer&apos;s Rule.
+        /// </summary>
+        public static string Method_Cramer {
+            get {
+                return ResourceManager.GetString("Method_Cramer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Spline.
+        /// </summary>
+        public static string Method_CubicSpline {
+            get {
+                return ResourceManager.GetString("Method_CubicSpline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Euler.
+        /// </summary>
+        public static string Method_Euler {
+            get {
+                return ResourceManager.GetString("Method_Euler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Euler Improved (Heun).
+        /// </summary>
+        public static string Method_EulerImproved {
+            get {
+                return ResourceManager.GetString("Method_EulerImproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finite Differences.
+        /// </summary>
+        public static string Method_FiniteDiff {
+            get {
+                return ResourceManager.GetString("Method_FiniteDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed-point Iteration.
+        /// </summary>
+        public static string Method_FixedPoint {
+            get {
+                return ResourceManager.GetString("Method_FixedPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gaussian Elimination.
+        /// </summary>
+        public static string Method_Gaussian {
+            get {
+                return ResourceManager.GetString("Method_Gaussian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gauss-Seidel.
+        /// </summary>
+        public static string Method_GaussSeidel {
+            get {
+                return ResourceManager.GetString("Method_GaussSeidel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Golden Section.
+        /// </summary>
+        public static string Method_GoldenSection {
+            get {
+                return ResourceManager.GetString("Method_GoldenSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gradient Descent.
+        /// </summary>
+        public static string Method_GradientDescent {
+            get {
+                return ResourceManager.GetString("Method_GradientDescent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lagrange Derivative.
+        /// </summary>
+        public static string Method_LagrangeDeriv {
+            get {
+                return ResourceManager.GetString("Method_LagrangeDeriv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lagrange Polynomial.
+        /// </summary>
+        public static string Method_LagrangePoly {
+            get {
+                return ResourceManager.GetString("Method_LagrangePoly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newton-Raphson.
+        /// </summary>
+        public static string Method_Newton {
+            get {
+                return ResourceManager.GetString("Method_Newton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newton Polynomial.
+        /// </summary>
+        public static string Method_NewtonPoly {
+            get {
+                return ResourceManager.GetString("Method_NewtonPoly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Picard.
+        /// </summary>
+        public static string Method_Picard {
+            get {
+                return ResourceManager.GetString("Method_Picard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangle Rule.
+        /// </summary>
+        public static string Method_Rectangle {
+            get {
+                return ResourceManager.GetString("Method_Rectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runge-Kutta 2.
+        /// </summary>
+        public static string Method_RK2 {
+            get {
+                return ResourceManager.GetString("Method_RK2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runge-Kutta 4.
+        /// </summary>
+        public static string Method_RK4 {
+            get {
+                return ResourceManager.GetString("Method_RK4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secant.
+        /// </summary>
+        public static string Method_Secant {
+            get {
+                return ResourceManager.GetString("Method_Secant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simple Iteration.
+        /// </summary>
+        public static string Method_SimpleIteration {
+            get {
+                return ResourceManager.GetString("Method_SimpleIteration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simpson&apos;s 1/3 Rule.
+        /// </summary>
+        public static string Method_Simpson {
+            get {
+                return ResourceManager.GetString("Method_Simpson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trapezoid Rule.
+        /// </summary>
+        public static string Method_Trapezoid {
+            get {
+                return ResourceManager.GetString("Method_Trapezoid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uniform Search.
+        /// </summary>
+        public static string Method_UniformSearch {
+            get {
+                return ResourceManager.GetString("Method_UniformSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string Mode {
+            get {
+                return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ms.
+        /// </summary>
+        public static string ms {
+            get {
+                return ResourceManager.GetString("ms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Data.
+        /// </summary>
+        public static string MyData {
+            get {
+                return ResourceManager.GetString("MyData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No records yet..
+        /// </summary>
+        public static string NoData {
+            get {
+                return ResourceManager.GetString("NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved inputs for this calculation type..
+        /// </summary>
+        public static string NoSavedInputsForType {
+            get {
+                return ResourceManager.GetString("NoSavedInputsForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not supported format.
+        /// </summary>
+        public static string NotSupportedFormat {
+            get {
+                return ResourceManager.GetString("NotSupportedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Differential Equations.
+        /// </summary>
+        public static string Ode {
+            get {
+                return ResourceManager.GetString("Ode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solve ordinary differential equations step by step with initial conditions..
+        /// </summary>
+        public static string OdeDesc {
+            get {
+                return ResourceManager.GetString("OdeDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optimization.
+        /// </summary>
+        public static string Optimization {
+            get {
+                return ResourceManager.GetString("Optimization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find the minimum of a function in one or multiple dimensions..
+        /// </summary>
+        public static string OptimizationDesc {
+            get {
+                return ResourceManager.GetString("OptimizationDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Picard order.
+        /// </summary>
+        public static string PicardOrder {
+            get {
+                return ResourceManager.GetString("PicardOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select at least one method for benchmarking.
         /// </summary>
         public static string PleaseSelectAtLeastOneMethodForBenchmarking {
@@ -87,11 +1086,317 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Points.
+        /// </summary>
+        public static string Points {
+            get {
+                return ResourceManager.GetString("Points", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query point.
+        /// </summary>
+        public static string QueryPoint {
+            get {
+                return ResourceManager.GetString("QueryPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangle (Left).
+        /// </summary>
+        public static string RectangleLeft {
+            get {
+                return ResourceManager.GetString("RectangleLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangle (Midpoint).
+        /// </summary>
+        public static string RectangleMidpoint {
+            get {
+                return ResourceManager.GetString("RectangleMidpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangle (Right).
+        /// </summary>
+        public static string RectangleRight {
+            get {
+                return ResourceManager.GetString("RectangleRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result.
+        /// </summary>
+        public static string Result {
+            get {
+                return ResourceManager.GetString("Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Root Finding.
+        /// </summary>
+        public static string Roots {
+            get {
+                return ResourceManager.GetString("Roots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find where f(x) = 0 using iterative numerical methods..
+        /// </summary>
+        public static string RootsDesc {
+            get {
+                return ResourceManager.GetString("RootsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runge-Kutta 2.
+        /// </summary>
+        public static string RungeKutta2 {
+            get {
+                return ResourceManager.GetString("RungeKutta2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runge-Kutta 4.
+        /// </summary>
+        public static string RungeKutta4 {
+            get {
+                return ResourceManager.GetString("RungeKutta4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved Files.
+        /// </summary>
+        public static string SavedFiles {
+            get {
+                return ResourceManager.GetString("SavedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved Inputs.
+        /// </summary>
+        public static string SavedInputs {
+            get {
+                return ResourceManager.GetString("SavedInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select saved inputs.
+        /// </summary>
+        public static string SavedInputsPickerTitle {
+            get {
+                return ResourceManager.GetString("SavedInputsPickerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input set name.
+        /// </summary>
+        public static string SaveInputName {
+            get {
+                return ResourceManager.GetString("SaveInputName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save inputs.
+        /// </summary>
+        public static string SaveInputs {
+            get {
+                return ResourceManager.GetString("SaveInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gauss-Seidel.
+        /// </summary>
+        public static string Seidel {
+            get {
+                return ResourceManager.GetString("Seidel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select at least one method..
+        /// </summary>
+        public static string SelectAtLeastOneMethod {
+            get {
+                return ResourceManager.GetString("SelectAtLeastOneMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simpson&apos;s 1/3.
+        /// </summary>
+        public static string Simpson {
+            get {
+                return ResourceManager.GetString("Simpson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start point must be less than end point..
+        /// </summary>
+        public static string StartMustBeLessThanEnd {
+            get {
+                return ResourceManager.GetString("StartMustBeLessThanEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start point.
+        /// </summary>
+        public static string StartPoint {
+            get {
+                return ResourceManager.GetString("StartPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        public static string StatCategories {
+            get {
+                return ResourceManager.GetString("StatCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string StatExport {
+            get {
+                return ResourceManager.GetString("StatExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Methods.
+        /// </summary>
+        public static string StatMethods {
+            get {
+                return ResourceManager.GetString("StatMethods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step size.
+        /// </summary>
+        public static string StepSize {
+            get {
+                return ResourceManager.GetString("StepSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target X.
+        /// </summary>
+        public static string TargetX {
+            get {
+                return ResourceManager.GetString("TargetX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tolerance.
+        /// </summary>
+        public static string Tolerance {
+            get {
+                return ResourceManager.GetString("Tolerance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ToleranceMustBeReasonable.
         /// </summary>
         public static string ToleranceMustBeReasonable {
             get {
                 return ResourceManager.GetString("ToleranceMustBeReasonable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trapezoid.
+        /// </summary>
+        public static string Trapezoid {
+            get {
+                return ResourceManager.GetString("Trapezoid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uniform Search.
+        /// </summary>
+        public static string UniformSearch {
+            get {
+                return ResourceManager.GetString("UniformSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upper bound.
+        /// </summary>
+        public static string UpperBound {
+            get {
+                return ResourceManager.GetString("UpperBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variables.
+        /// </summary>
+        public static string Variables {
+            get {
+                return ResourceManager.GetString("Variables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View all.
+        /// </summary>
+        public static string ViewAll {
+            get {
+                return ResourceManager.GetString("ViewAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X nodes.
+        /// </summary>
+        public static string XNodes {
+            get {
+                return ResourceManager.GetString("XNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y values.
+        /// </summary>
+        public static string YValues {
+            get {
+                return ResourceManager.GetString("YValues", resourceCulture);
             }
         }
     }

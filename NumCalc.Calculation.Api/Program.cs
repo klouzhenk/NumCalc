@@ -55,6 +55,8 @@ builder.Services.AddScoped<IDifferentiationService, DifferentiationService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<IOptimizationService, OptimizationService>();
 builder.Services.AddScoped<IOdeService, OdeService>();
+builder.Services.AddScoped<IOcrService, OcrService>();
+builder.Services.AddHttpClient<IOcrProvider, GeminiOcrProvider>();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -76,6 +78,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// TODO : separate to the different projects
-// TODO : also move OcrService to the Calculation project

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Localization;
-using Microsoft.VisualBasic;
+using NumCalc.Shared.OCR.Requests;
 using NumCalc.UI.Shared.Components.Modals;
+using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.Resources;
-using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Components;
@@ -12,7 +12,7 @@ namespace NumCalc.UI.Shared.Components;
 public partial class OcrInput : ComponentBase
 {
     [Parameter] public EventCallback<string> OnInputContentRecognize { get; set; }
-    [Inject] private IOcrService OcrService { get; set; } = null!;
+    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
@@ -56,7 +56,7 @@ public partial class OcrInput : ComponentBase
                 _cropImageModal?.Show();
                 break;
             default:
-                break;
+                throw new ArgumentOutOfRangeException(nameof(type), Localization.NotSupportedFormat);
         }
     }
     
@@ -73,7 +73,7 @@ public partial class OcrInput : ComponentBase
                 await _cropImageModal.Close();
                 break;
             default:
-                break;
+                throw new ArgumentOutOfRangeException("");
         }
     }
 
@@ -85,16 +85,13 @@ public partial class OcrInput : ComponentBase
         {
             UiStateService.ShowLoader();
             
-            var latexText = await OcrService.RecognizeExpression(imageBase64);
-            
-            if (string.IsNullOrWhiteSpace(latexText))
-            {
-                UiStateService.ShowError(Localizer["TEXT_NOT_RECOGNIZED"]);
-                return;
-            }
+            var request = new OcrRequest { ImageBase64DataUrl = imageBase64 };
+            var response = await CalculationApiService.RecognizeExpressionAsync(request);
+            if (string.IsNullOrWhiteSpace(response?.Latex))
+                throw new Exception("TEXT_NOT_RECOGNIZED");
                 
             if (OnInputContentRecognize.HasDelegate)
-                await OnInputContentRecognize.InvokeAsync(latexText);
+                await OnInputContentRecognize.InvokeAsync(response.Latex);
 
             ClearImageData();
             await CloseAllOcrModals();

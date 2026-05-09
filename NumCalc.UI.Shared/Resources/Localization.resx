@@ -463,4 +463,7 @@
   <data name="InitialGuess" xml:space="preserve">
     <value>Initial guess</value>
   </data>
+  <data name="NotSupportedFormat" xml:space="preserve">
+    <value>Not supported format</value>
+  </data>
 </root>

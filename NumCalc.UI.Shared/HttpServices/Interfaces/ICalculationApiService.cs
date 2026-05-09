@@ -9,6 +9,8 @@ using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
+using NumCalc.Shared.OCR.Requests;
+using NumCalc.Shared.OCR.Responses;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
 using NumCalc.Shared.RootFinding.Requests;
@@ -51,4 +53,5 @@ public interface ICalculationApiService
     Task<OdeResponse?> SolveRungeKutta4(OdeRequest request);
     Task<OdeResponse?> SolvePicard(OdeRequest request);
     Task<OdeComparisonResponse?> GetOdeComparisonAsync(OdeComparisonRequest request);
+    Task<OcrResponse?> RecognizeExpressionAsync(OcrRequest request);
 }

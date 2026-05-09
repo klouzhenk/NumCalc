@@ -27,5 +27,11 @@ public enum NumCalcErrorCode
     EmptyResponse,
     
     [JsonStringEnumMemberName("NOT_IMPLEMENTED")]
-    NotImplemented
+    NotImplemented,
+    
+    [JsonStringEnumMemberName("EMPTY_DATA")]
+    EmptyData,
+    
+    [JsonStringEnumMemberName("INVALID_DATA")]
+    InvalidData
 }

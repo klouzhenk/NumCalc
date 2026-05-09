@@ -9,6 +9,8 @@ using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.Shared.Interpolation.Requests;
 using NumCalc.Shared.Interpolation.Responses;
+using NumCalc.Shared.OCR.Requests;
+using NumCalc.Shared.OCR.Responses;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
 using NumCalc.Shared.RootFinding.Requests;
@@ -117,4 +119,7 @@ public class CalculationApiService(HttpClient httpClient) : BaseApiService(httpC
 
     public async Task<OdeComparisonResponse?> GetOdeComparisonAsync(OdeComparisonRequest request)
         => await SendPostRequestAsync<OdeComparisonResponse>("api/ode/comparison", request);
+
+    public async Task<OcrResponse?> RecognizeExpressionAsync(OcrRequest request)
+        => await SendPostRequestAsync<OcrResponse>("api/ocr/recognize", request);
 }

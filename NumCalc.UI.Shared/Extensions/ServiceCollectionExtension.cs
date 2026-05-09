@@ -50,10 +50,6 @@ public static class ServiceCollectionExtension
         {
             client.BaseAddress = new Uri(baseApiUrl);
         });
-        services.AddHttpClient<IOcrService, OcrService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
 
         return services;
     }
