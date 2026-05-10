@@ -76,6 +76,28 @@ public class AuthService(
         await emailSender.SendAsync(BuildResetEmail(user.Email, rawToken), ct);
     }
 
+    public async Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct)
+    {
+        var hash = HashToken(request.Token);
+        var token = await passwordResetTokenRepository.GetByHashAsync(hash, ct);
+        if (token is null)
+            throw new CustomException(UserErrorCode.InvalidResetToken, "Invalid reset token", 400);
+        
+        if (token.ExpiresAt < DateTimeOffset.UtcNow)
+        {
+            passwordResetTokenRepository.Delete(token);
+            await passwordResetTokenRepository.SaveChangesAsync();
+            throw new CustomException(UserErrorCode.ExpiredResetToken, "Reset token expired", 400);
+        }
+        
+        var user = await userRepository.GetByIdAsync(token.UserId)
+            ?? throw new CustomException(UserErrorCode.InvalidResetToken, "User not found", 400);
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        passwordResetTokenRepository.Delete(token);
+        await userRepository.SaveChangesAsync();
+    }
+
     private static AppUser CreateUser(RegisterRequest request)
     {
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -102,10 +124,13 @@ public class AuthService(
     {
         var bytes = RandomNumberGenerator.GetBytes(32);
         var raw = Base64UrlEncoder.Encode(bytes);
+        return (raw, HashToken(raw));
+    }
+    
+    private static string HashToken(string raw)
+    {
         var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(raw));
-        var hash = Convert.ToHexString(hashBytes);
-
-        return (raw, hash);
+        return Convert.ToHexString(hashBytes);
     }
     
     private EmailMessage BuildResetEmail(string toEmail, string rawToken)

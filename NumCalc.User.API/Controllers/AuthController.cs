@@ -46,4 +46,16 @@ public class AuthController(IAuthService authService) : ControllerBase
         await authService.RequestPasswordResetAsync(request, ct);
         return Ok();
     }
+    
+    /// <summary>Resets the password using a reset token from the email link.</summary>
+    /// <remarks>Returns 400 if the token is invalid or expired.</remarks>
+    [HttpPost("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        await authService.ResetPasswordAsync(request, ct);
+        return Ok();
+    }
 }

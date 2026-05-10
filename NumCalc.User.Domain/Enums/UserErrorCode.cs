@@ -6,5 +6,7 @@ public enum UserErrorCode
     InvalidCredentials,
     RecordNotFound,
     AccessForbidden,
-    EmailAlreadyExists
+    EmailAlreadyExists,
+    InvalidResetToken,
+    ExpiredResetToken
 }

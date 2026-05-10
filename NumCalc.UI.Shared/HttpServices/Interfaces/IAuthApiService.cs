@@ -7,4 +7,5 @@ public interface IAuthApiService
     Task<AuthResponse?> RegisterAsync(RegisterRequest request);
     Task<AuthResponse?> LoginAsync(LoginRequest request);
     Task ForgotPasswordAsync(ForgotPasswordRequest request);
+    Task ResetPasswordAsync(ResetPasswordRequest request);
 }

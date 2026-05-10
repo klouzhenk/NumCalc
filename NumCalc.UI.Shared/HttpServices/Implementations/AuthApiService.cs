@@ -16,4 +16,7 @@ public class AuthApiService(HttpClient httpClient) : BaseApiService(httpClient),
     
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request) =>
         await SendPostRequestAsync("api/auth/forgot-password", request);
+
+    public async Task ResetPasswordAsync(ResetPasswordRequest request) =>
+        await SendPostRequestAsync("api/auth/reset-password", request);
 }
