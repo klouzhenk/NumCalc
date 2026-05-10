@@ -466,4 +466,28 @@
   <data name="NotSupportedFormat" xml:space="preserve">
     <value>Not supported format</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email is required</value>
+  </data>
+  <data name="EmailIsNotValid" xml:space="preserve">
+    <value>Email is not valid</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Forgot password?</value>
+  </data>
+  <data name="ForgotPasswordIntro" xml:space="preserve">
+    <value>Enter the email associated with your account and we will send you a link to reset your password.</value>
+  </data>
+  <data name="ForgotPasswordSubmittedNotice" xml:space="preserve">
+    <value>If an account with that email exists, we have sent a link to reset your password. The link expires in 30 minutes.</value>
+  </data>
+  <data name="SendResetLink" xml:space="preserve">
+    <value>Send reset link</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>Back to login</value>
+  </data>
 </root>

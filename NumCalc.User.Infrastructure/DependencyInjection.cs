@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ICalculationHistoryService, CalculationHistoryService>();
         
         services.Configure<SmtpSettings>(configuration.GetSection("EmailSettings:Smtp"));
+        services.Configure<WebAppSettings>(configuration.GetSection("WebApp"));
         services.AddScoped<IEmailSender, SmtpEmailSender>();
         
         return services;

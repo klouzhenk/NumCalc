@@ -20,6 +20,8 @@ public class SmtpEmailSender(IOptions<SmtpSettings> options) : IEmailSender
         using var mail = new MailMessage();
         mail.From = new MailAddress(_settings.FromAddress, _settings.FromName);
         mail.Subject = message.Subject;
+        mail.Body = message.HtmlBody;
+        mail.IsBodyHtml = true;
         mail.To.Add(message.To);
 
         await client.SendMailAsync(mail, ct);
