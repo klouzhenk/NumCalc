@@ -3,9 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NumCalc.User.Application.Interfaces.Repositories;
 using NumCalc.User.Application.Interfaces.Services;
+using NumCalc.User.Infrastructure.Configuration;
 using NumCalc.User.Infrastructure.Data;
 using NumCalc.User.Infrastructure.Repositories;
 using NumCalc.User.Infrastructure.Services;
+using NumCalc.User.Infrastructure.Services.EmailSenders;
 
 namespace NumCalc.User.Infrastructure;
 
@@ -20,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<ISavedInputRepository, SavedInputRepository>();
         services.AddScoped<ISavedFileRepository, SavedFileRepository>();
         services.AddScoped<ICalculationHistoryRepository, CalculationHistoryRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
 
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
@@ -27,7 +30,11 @@ public static class DependencyInjection
         services.AddScoped<ISavedInputService, SavedInputService>();
         services.AddScoped<ISavedFileService, SavedFileService>();
         services.AddScoped<ICalculationHistoryService, CalculationHistoryService>();
-
+        
+        services.Configure<SmtpSettings>(configuration.GetSection("EmailSettings:Smtp"));
+        services.Configure<WebAppSettings>(configuration.GetSection("WebApp"));
+        services.AddScoped<IEmailSender, SmtpEmailSender>();
+        
         return services;
     }
 }

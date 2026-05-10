@@ -35,17 +35,30 @@ NumCalc.UI.Web (Blazor Server)
 NumCalc.Shared          — DTOs and contracts shared across all projects
 NumCalc.UI.Shared       — Reusable Blazor components and HTTP service abstractions
 NumCalc.UI.MAUI         — Mobile UI (in progress)
-NumCalc.User.API        — Placeholder, not functional yet
+NumCalc.User.API        — Auth (register/login/password-reset), backed by EF Core + SQL Server
 NumCalc.Core            — Minimal, mostly unused
 ```
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
-- **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes
+- **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison), `OcrController` (recognize endpoint, Gemini provider via `IOcrProvider`)
+- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes. `IOcrService` orchestrates OCR (parsing + LaTeX cleanup) and delegates the actual recognition to `IOcrProvider` (currently `GeminiOcrProvider`).
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
+
+### User API (`NumCalc.User.API`)
+
+- **Architecture:** Clean layout — `NumCalc.User.Domain` (entities, enums) → `NumCalc.User.Application` (DTOs, interfaces, exceptions) → `NumCalc.User.Infrastructure` (EF Core, repositories, services). API project depends on Infrastructure for DI registration.
+- **Persistence:** EF Core 9 + SQL Server (LocalDB in dev). Entities: `AppUser` (Username, Email unique, PasswordHash), `PasswordResetToken` (one-to-one with `AppUser`, unique `TokenHash`), plus `CalculationHistoryRecord`, `SavedInput`, `SavedFile` for non-auth domains.
+- **Controllers:** `AuthController` (register, login, forgot-password, reset-password), plus `CalculationHistoryController`, `SavedInputController`, `SavedFileController` for non-auth domains.
+- **Auth:** JWT bearer tokens via `JwtService`. BCrypt for password hashing.
+- **Password reset flow:** `POST /api/auth/forgot-password` (always returns 200; silent if email unknown) → email contains link to `{WebApp:BaseUrl}/reset-password?token=<raw>`; `POST /api/auth/reset-password` (400 on invalid/expired token). Token is 32 random bytes → base64url; only the SHA-256 hash is stored. 30-min expiry. One active reset per user (DB-enforced via unique index on `UserId`).
+- **Email infrastructure:** `IEmailSender` abstraction (mirrors `IOcrProvider`). `SmtpEmailSender` impl using `System.Net.Mail.SmtpClient` + `IOptions<SmtpSettings>`. Gmail SMTP from a dedicated project inbox; credentials in user-secrets (`EmailSettings:Smtp:*`).
+- **Configuration:** `WebAppSettings { BaseUrl }` bound from `WebApp` section — used to build reset-password links pointing at the Web UI (`http://localhost:5183` in dev).
+- **Logging:** `AuthService` injects `ILogger<AuthService>` and logs register/login/reset-request/reset-confirm outcomes. Unknown-email reset attempts log a warning. Passwords and raw tokens are never logged.
+- **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging.
+- Swagger/OpenAPI enabled in development at `/swagger`.
 
 ### Python Scripts (`Scripts/`)
 
@@ -124,7 +137,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **All page components** live in `NumCalc.UI.Shared/Pages/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`, `MainPage.razor`
 - **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, `ComparisonResultList` (generic `@typeparam TItem` component for all benchmark result lists), per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
 - **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) — rendered from `Header.razor` via a switch on `NavigationItem`
-- **Services:** `IPdfExportService` / `PdfExportService`, `IOcrService` / `OcrService`, `IUiStateService` / `UiStateService`, `ICultureService`
+- **Services:** `IPdfExportService` / `PdfExportService`, `IUiStateService` / `UiStateService`, `ICultureService` (OCR is no longer a UI service — it's exposed by the Calculation API at `POST api/ocr/recognize` and called via `ICalculationApiService.RecognizeExpressionAsync`)
 - **Layout:** `MainLayout.razor` in `Layouts/`
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
 - Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
@@ -143,6 +156,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **Error handling:** All exceptions surface through `GlobalExceptionHandler`; numerical errors use typed `ErrorCodes` rather than raw exceptions.
 - **Localization:** All user-visible strings go in `NumCalc.UI.Shared/Localization/Localization.resx` (and `.uk.resx`). Do not hard-code display text in components.
 - **Shared UI components:** New reusable Blazor components belong in `NumCalc.UI.Shared`, not in `NumCalc.UI.Web`, so they can be reused by MAUI.
+- **OCR provider pattern:** OCR is exposed via `POST api/ocr/recognize`. The Gemini-specific code lives in `GeminiOcrProvider : IOcrProvider`; `OcrService` orchestrates input parsing + LaTeX cleanup. Swap providers by registering a different `IOcrProvider` impl in `Program.cs` — no other code changes. The Gemini API key is configured per-developer via user-secrets (`OcrSettings:GeminiApiKey`); never commit it to `appsettings.json`.
 - **Logging:** Serilog is configured at the host level (`builder.Host.UseSerilog()`) in `NumCalc.Calculation.Api/Program.cs`. All 7 API services inject `ILogger<T>` via primary constructor and log method entry + completion with key parameters. `GlobalExceptionHandler` logs warnings/errors. UI pages log via `BasePage<T>.Logger`. `PythonWarmingUpService` logs warmup start/completion.
 
 ## Current State (CRITICAL)
@@ -187,8 +201,12 @@ Currently working:
 - Blazor UI for root finding, equation systems, interpolation, differentiation, integration, optimization, and ODE
 - PDF export — fully implemented on all 7 result pages (QuestPDF + KaTeX + html2canvas)
 
+Currently working (User API):
+- Register / Login (JWT, BCrypt)
+- Password reset (email + token, 30-min expiry, DB-enforced one active token per user)
+- Calculation history, saved inputs, saved files — fully integrated (entities + repos + services + API + UI pages: `CalculationHistory.razor`, `SavedInputs.razor`, `SavedFiles.razor`, `UserDashboard.razor`)
+
 Not implemented yet:
-- Full-featured backend for users/history
 - Complete MAUI UI
 
 IMPORTANT:

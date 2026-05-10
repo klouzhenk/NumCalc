@@ -9,7 +9,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<CalculationHistoryRecord> CalculationHistoryRecords { get; set; }
     public DbSet<SavedInput> SavedInputs { get; set; }
     public DbSet<SavedFile> SavedFiles { get; set; }
-
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

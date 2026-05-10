@@ -35,4 +35,27 @@ public class AuthController(IAuthService authService) : ControllerBase
         var response = await authService.LoginAsync(request);
         return Ok(response);
     }
+    
+    /// <summary>Initiates a password reset for the given email address.</summary>
+    /// <remarks>Always returns 200 to avoid leaking whether the email is registered.</remarks>
+    [HttpPost("forgot-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await authService.RequestPasswordResetAsync(request, ct);
+        return Ok();
+    }
+    
+    /// <summary>Resets the password using a reset token from the email link.</summary>
+    /// <remarks>Returns 400 if the token is invalid or expired.</remarks>
+    [HttpPost("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        await authService.ResetPasswordAsync(request, ct);
+        return Ok();
+    }
 }

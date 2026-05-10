@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NumCalc.User.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using NumCalc.User.Infrastructure.Data;
 namespace NumCalc.User.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509211737_AddUserEmail")]
+    partial class AddUserEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,39 +101,6 @@ namespace NumCalc.User.Infrastructure.Migrations
                     b.ToTable("CalculationHistoryRecords", (string)null);
                 });
 
-            modelBuilder.Entity("NumCalc.User.Domain.Entities.PasswordResetToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTimeOffset>("ExpiresAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("TokenHash")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TokenHash")
-                        .IsUnique();
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("PasswordResetTokens", (string)null);
-                });
-
             modelBuilder.Entity("NumCalc.User.Domain.Entities.SavedFile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -206,17 +176,6 @@ namespace NumCalc.User.Infrastructure.Migrations
                     b.HasOne("NumCalc.User.Domain.Entities.AppUser", "User")
                         .WithMany("History")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("NumCalc.User.Domain.Entities.PasswordResetToken", b =>
-                {
-                    b.HasOne("NumCalc.User.Domain.Entities.AppUser", "User")
-                        .WithOne()
-                        .HasForeignKey("NumCalc.User.Domain.Entities.PasswordResetToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

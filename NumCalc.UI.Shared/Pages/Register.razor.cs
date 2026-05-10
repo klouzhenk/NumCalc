@@ -8,7 +8,6 @@ namespace NumCalc.UI.Shared.Pages;
 
 public partial class Register : BasePage<Register>
 {
-    [Inject] private IAuthStateService AuthStateService { get; set; } = null!;
     [Inject] private IAuthApiService AuthApiService { get; set; } = null!;
     [Inject] private ITokenStorage TokenStorage { get; set; } = null!;
 
@@ -21,7 +20,8 @@ public partial class Register : BasePage<Register>
             var response = await AuthApiService.RegisterAsync(new RegisterRequest
             {
                 Username = RegisterForm.Username,
-                Password = RegisterForm.Password
+                Password = RegisterForm.Password,
+                Email = RegisterForm.Email
             });
 
             if (response is null) return;

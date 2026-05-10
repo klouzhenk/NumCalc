@@ -6,6 +6,10 @@ public class RegisterFormModel : IValidatableObject
 {
     [Required(ErrorMessage = "UsernameRequired")]
     public string Username { get; set; } = string.Empty;
+    
+    [Required(ErrorMessage = "EmailRequired")]
+    [EmailAddress(ErrorMessage = "EmailIsNotValid")]
+    public string Email { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "PasswordRequired")]
     public string Password { get; set; } = string.Empty;

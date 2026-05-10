@@ -457,4 +457,55 @@
   <data name="InitialGuess" xml:space="preserve">
     <value>Початкове наближення</value>
   </data>
+  <data name="NotSupportedFormat" xml:space="preserve">
+    <value>Непідтримуваний формат</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Електронна пошта</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Електронна пошта обов'язкова</value>
+  </data>
+  <data name="EmailIsNotValid" xml:space="preserve">
+    <value>Некоректна електронна пошта</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Забули пароль?</value>
+  </data>
+  <data name="ForgotPasswordIntro" xml:space="preserve">
+    <value>Введіть електронну пошту, прив'язану до вашого облікового запису, і ми надішлемо посилання для скидання пароля.</value>
+  </data>
+  <data name="ForgotPasswordSubmittedNotice" xml:space="preserve">
+    <value>Якщо обліковий запис з такою електронною поштою існує, ми надіслали посилання для скидання пароля. Посилання дійсне 30 хвилин.</value>
+  </data>
+  <data name="SendResetLink" xml:space="preserve">
+    <value>Надіслати посилання</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>Повернутися до входу</value>
+  </data>
+  <data name="ResetPasswordIntro" xml:space="preserve">
+    <value>Виберіть новий пароль для вашого облікового запису.</value>
+  </data>
+  <data name="ResetTokenMissing" xml:space="preserve">
+    <value>Посилання для скидання пароля недійсне. Запросіть новий лист.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Новий пароль</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Підтвердьте новий пароль</value>
+  </data>
+  <data name="ResetPasswordSubmit" xml:space="preserve">
+    <value>Скинути пароль</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Пароль обов'язковий</value>
+  </data>
+  <data name="ConfirmPasswordRequired" xml:space="preserve">
+    <value>Підтвердьте ваш пароль</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Паролі не співпадають</value>
+  </data>
 </root>
