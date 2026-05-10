@@ -74,15 +74,45 @@ public abstract class BaseApiService(HttpClient httpClient)
             var queryString = QueryString.Create(queryParams!);
             endpoint += queryString.Value;
         }
-        
+
         using var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
         ConfigureRequest(request);
-        
+
         var response = await HttpClient.SendAsync(request);
-        
+
         if (response.IsSuccessStatusCode)
             return;
-        
+
+        var errorMessage = await ExtractErrorMessageAsync(response);
+        throw new ApiException(errorMessage);
+    }
+
+    protected async Task SendDeleteRequestAsync(string endpoint, object requestData)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
+        request.Content = JsonContent.Create(requestData);
+        ConfigureRequest(request);
+
+        var response = await HttpClient.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+            return;
+
+        var errorMessage = await ExtractErrorMessageAsync(response);
+        throw new ApiException(errorMessage);
+    }
+
+    protected async Task SendPatchRequestAsync(string endpoint, object requestData)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Patch, endpoint);
+        request.Content = JsonContent.Create(requestData);
+        ConfigureRequest(request);
+
+        var response = await HttpClient.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+            return;
+
         var errorMessage = await ExtractErrorMessageAsync(response);
         throw new ApiException(errorMessage);
     }

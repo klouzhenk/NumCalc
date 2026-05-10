@@ -1,10 +1,20 @@
 @using NumCalc.UI.Shared.Components
+@using Microsoft.Extensions.Localization
+@using NumCalc.UI.Shared.Resources
 @inherits LayoutComponentBase
+@inject IStringLocalizer<Localization> Localizer
 
 <div class="main-container auth-layout">
     <main>
         @Body
     </main>
+
+    <a href="/" class="guest-escape" aria-label="@Localizer["ContinueAsGuest"]">
+        <span class="floating-badge pulse-button">
+            <SvgIcon Name="login"/>
+        </span>
+        <span class="guest-escape__label">@Localizer["ContinueAsGuest"]</span>
+    </a>
 </div>
 
 <GlobalLoader />

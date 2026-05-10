@@ -6,6 +6,38 @@
     }
 }
 
+.guest-escape {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    display: inline-flex;
+    align-items: center;
+    z-index: 95;
+    text-decoration: none;
+    color: var(--primary-dark-color);
+
+    &__label {
+        margin-left: var(--dimension-s);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(calc(-1 * var(--dimension-s)));
+        transition: var(--default-transition);
+        white-space: nowrap;
+        font-weight: 600;
+    }
+
+    &:hover .floating-badge {
+        background-color: var(--primary-color);
+        svg { fill: var(--white-color); }
+    }
+
+    &:hover &__label {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+}
+
 .page__auth {
     display: flex;
     align-items: center;

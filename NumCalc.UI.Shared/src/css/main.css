@@ -33,6 +33,7 @@
 @import "components/solution-steps.css";
 @import "components/result-panel.css";
 @import "components/comparison-result-list.css";
+@import "components/floating-badge.css";
 @import "components/saved-input-data-component.css";
 
 /* pages */
@@ -48,3 +49,4 @@
 @import "pages/auth.css";
 @import "pages/user-data.css";
 @import "pages/user-dashboard.css";
+@import "pages/account-settings.css";

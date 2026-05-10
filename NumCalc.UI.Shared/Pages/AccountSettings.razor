@@ -1,0 +1,148 @@
+@page "/account-settings"
+@using Microsoft.AspNetCore.Components.Forms
+@using NumCalc.UI.Shared.Components
+@inherits AuthorizedPage<AccountSettings>
+
+@if (IsAuthenticated)
+{
+    <div class="page-wrapper page__account">
+        <div class="account-settings__intro">
+            <h2>@Localizer["AccountSettings"]</h2>
+            <p class="account-settings__desc">@Localizer["AccountSettingsDesc"]</p>
+        </div>
+
+        <section>
+            <div class="account-settings__card">
+                <div class="account-settings__card-header">
+                    <h3>
+                        <SvgIcon Name="user"/>
+                        @Localizer["ProfileInformation"]
+                    </h3>
+                    @if (HasChanges)
+                    {
+                        <span class="account-settings__dirty-tag">@Localizer["UnsavedChanges"]</span>
+                    }
+                </div>
+
+                <EditForm Model="FormModel" OnValidSubmit="OnSaveSubmit">
+                    <DataAnnotationsValidator/>
+
+                    <div class="input-section__wrapper">
+                        <div class="input-section__wrapper">
+                            <div class="input-group input-group--username">
+                                <div class="input-group__label-row">
+                                    <label class="input-group__label">@Localizer["Username"]</label>
+                                    @if (IsUsernameDirty)
+                                    {
+                                        <button type="button" class="button button--icon" @onclick="ResetUsername" title="@Localizer["RevertChange"]">
+                                            <SvgIcon Name="reset"/>
+                                        </button>
+                                    }
+                                </div>
+                                <InputText @bind-Value="FormModel.Username" type="text" class="input-group__input"/>
+                                <ValidationMessage For="@(() => FormModel.Username)"/>
+                            </div>
+
+                            <div class="input-group input-group--email">
+                                <div class="input-group__label-row">
+                                    <label class="input-group__label">@Localizer["Email"]</label>
+                                    @if (IsEmailDirty)
+                                    {
+                                        <button type="button" class="button button--icon" @onclick="ResetEmail" title="@Localizer["RevertChange"]">
+                                            <SvgIcon Name="reset"/>
+                                        </button>
+                                    }
+                                </div>
+                                <InputText @bind-Value="FormModel.Email" type="email" class="input-group__input"/>
+                                <ValidationMessage For="@(() => FormModel.Email)"/>
+                            </div>
+                        </div>
+                        
+                        <Divider Text="@Localizer["Password"]"/>
+
+                        <div class="input-section__wrapper">
+                            <div class="input-group">
+                                <div class="input-group__label-row">
+                                    <label class="input-group__label">@Localizer["NewPassword"]</label>
+                                    @if (IsPasswordDirty)
+                                    {
+                                        <button type="button" class="button button--icon" @onclick="ResetPassword" title="@Localizer["RevertChange"]">
+                                            <SvgIcon Name="reset"/>
+                                        </button>
+                                    }
+                                </div>
+                                <InputText @bind-Value="FormModel.NewPassword" type="password" class="input-group__input" placeholder="@Localizer["NewPasswordOptional"]"/>
+                                <ValidationMessage For="@(() => FormModel.NewPassword)"/>
+                            </div>
+
+                            <div class="input-group">
+                                <label class="input-group__label">@Localizer["ConfirmNewPassword"]</label>
+                                <InputText @bind-Value="FormModel.ConfirmNewPassword" type="password" class="input-group__input" disabled="@(!IsPasswordDirty)"/>
+                                <ValidationMessage For="@(() => FormModel.ConfirmNewPassword)"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-section__wrapper">
+                        <button type="submit" class="button button--primary" disabled="@(!HasChanges)">@Localizer["SaveChanges"]</button>
+                    </div>
+                </EditForm>
+            </div>
+
+            <div class="account-settings__card">
+                <div class="account-settings__card-header">
+                    <h3 class="account-settings__danger-title">
+                        <SvgIcon Name="trash"/>
+                        @Localizer["DeleteAccount"]
+                    </h3>
+                </div>
+                <p class="account-settings__danger-desc">@Localizer["DeleteAccountDesc"]</p>
+                <div class="account-settings__actions">
+                    <button class="button button--danger" @onclick="OpenDeleteModal">@Localizer["DeleteAccount"]</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <BaseModal @ref="_saveModal"
+               Title="@Localizer["ConfirmChanges"]"
+               Subtitle="@Localizer["ConfirmChangesDesc"]"
+               CssClass="modal--user-account-confirmation">
+        <BodyContent>
+            <EditForm Model="SaveConfirmForm" OnValidSubmit="OnSaveConfirm">
+                <DataAnnotationsValidator/>
+
+                <div class="input-group">
+                    <label class="input-group__label">@Localizer["CurrentPassword"]</label>
+                    <InputText @bind-Value="SaveConfirmForm.CurrentPassword" type="password" class="input-group__input"/>
+                    <ValidationMessage For="@(() => SaveConfirmForm.CurrentPassword)"/>
+                </div>
+
+                <div class="account-settings__actions">
+                    <button type="submit" class="button button--primary">@Localizer["SaveChanges"]</button>
+                </div>
+            </EditForm>
+        </BodyContent>
+    </BaseModal>
+
+    <BaseModal @ref="_deleteModal"
+               Title="@Localizer["DeleteAccount"]"
+               Subtitle="@Localizer["DeleteAccountConfirmDesc"]"
+               CssClass="modal--danger modal--user-account-confirmation">
+        <BodyContent>
+            <EditForm Model="DeleteConfirmForm" OnValidSubmit="OnDeleteConfirm">
+                <DataAnnotationsValidator/>
+
+                <div class="input-group">
+                    <label class="input-group__label">@Localizer["CurrentPassword"]</label>
+                    <InputText @bind-Value="DeleteConfirmForm.CurrentPassword" type="password" class="input-group__input"/>
+                    <ValidationMessage For="@(() => DeleteConfirmForm.CurrentPassword)"/>
+                </div>
+
+                <div class="account-settings__actions">
+                    <button type="submit" class="button button--danger">@Localizer["DeleteAccountConfirm"]</button>
+                </div>
+            </EditForm>
+        </BodyContent>
+    </BaseModal>
+}

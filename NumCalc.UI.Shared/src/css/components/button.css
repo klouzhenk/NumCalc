@@ -3,8 +3,9 @@
     padding: var(--dimension-m) var(--dimension-xl);
     border-radius: var(--border-radius-l);
     border: var(--border-m) solid var(--gray-ultra-light-color);
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     font-weight: 700;
+    font-size: 0.85rem;
     flex: 1;
 
     &--icon{

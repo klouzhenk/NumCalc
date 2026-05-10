@@ -35,8 +35,11 @@
         
         @if (AuthStateService.IsAuthenticated)
         {
-            <span class="header__credentials">@AuthStateService.Username</span>
-     
+            <a href="/account-settings" class="header__credentials link-underline">
+                <SvgIcon Name="user"/>
+                <span>@AuthStateService.Username</span>
+            </a>
+
             <button class="button button--icon" @onclick="Logout">
                 <SvgIcon Name="logout" />
             </button>
