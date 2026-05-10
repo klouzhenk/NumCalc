@@ -24,7 +24,7 @@ public class AuthService(
     private static readonly TimeSpan TokenLifetime = TimeSpan.FromMinutes(30);
     
     private readonly WebAppSettings _webApp = webAppOptions.Value;
-    
+
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
         var existedUser = await userRepository.GetByUsernameAsync(request.Username);

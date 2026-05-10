@@ -8,5 +8,6 @@ public enum UserErrorCode
     AccessForbidden,
     EmailAlreadyExists,
     InvalidResetToken,
-    ExpiredResetToken
+    ExpiredResetToken,
+    UserNotFound
 }

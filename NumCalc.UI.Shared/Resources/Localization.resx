@@ -514,4 +514,70 @@
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>Passwords do not match</value>
   </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UsernameRequired" xml:space="preserve">
+    <value>Username is required</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="DoNotHaveAccount" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="AlreadyHaveAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="AccountSettings" xml:space="preserve">
+    <value>Account settings</value>
+  </data>
+  <data name="AccountSettingsDesc" xml:space="preserve">
+    <value>Manage your profile, change your password, or delete your account.</value>
+  </data>
+  <data name="ProfileInformation" xml:space="preserve">
+    <value>Profile information</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="NewPasswordOptional" xml:space="preserve">
+    <value>Leave empty to keep current</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="RevertChange" xml:space="preserve">
+    <value>Revert change</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Delete account</value>
+  </data>
+  <data name="DeleteAccountDesc" xml:space="preserve">
+    <value>Permanently delete your account along with your history, saved inputs and exported files. This action cannot be undone.</value>
+  </data>
+  <data name="DeleteAccountConfirmDesc" xml:space="preserve">
+    <value>Enter your current password to confirm account deletion.</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>Delete my account</value>
+  </data>
+  <data name="ConfirmChanges" xml:space="preserve">
+    <value>Confirm changes</value>
+  </data>
+  <data name="ConfirmChangesDesc" xml:space="preserve">
+    <value>Enter your current password to apply the changes.</value>
+  </data>
 </root>

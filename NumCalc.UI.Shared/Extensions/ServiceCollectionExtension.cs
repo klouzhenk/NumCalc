@@ -67,6 +67,11 @@ public static class ServiceCollectionExtension
             client.BaseAddress = new Uri(baseApiUrl);
         });
 
+        services.AddHttpClient<IUserApiService, UserApiService>(client =>
+        {
+            client.BaseAddress = new Uri(baseApiUrl);
+        });
+
         services.AddHttpClient<ICalculationHistoryApiService, CalculationHistoryApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);

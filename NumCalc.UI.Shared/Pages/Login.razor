@@ -32,18 +32,13 @@
             <button type="submit" class="button button--primary">@Localizer["Login"]</button>
         </EditForm>
         
-        <div class="auth-form__forgot">
-            <a href="/forgot-password">@Localizer["ForgotPassword"]</a>
-        </div>
-
         <div class="auth-form__footer">
+            <p>
+                <a href="/forgot-password">@Localizer["ForgotPassword"]</a>
+            </p>
             <p>
                 @Localizer["DoNotHaveAccount"]
                 <a href="/register">@Localizer["Register"]</a>
-            </p>
-
-            <p>
-                <a href="/">@Localizer["ContinueAsGuest"]</a>
             </p>
         </div>
     </div>
