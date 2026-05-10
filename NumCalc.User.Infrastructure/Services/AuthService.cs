@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NumCalc.User.Application.DTOs;
@@ -17,7 +18,8 @@ public class AuthService(
     IJwtService jwtService,
     IPasswordResetTokenRepository passwordResetTokenRepository,
     IEmailSender emailSender,
-    IOptions<WebAppSettings> webAppOptions) : IAuthService
+    IOptions<WebAppSettings> webAppOptions,
+    ILogger<AuthService> logger) : IAuthService
 {
     private static readonly TimeSpan TokenLifetime = TimeSpan.FromMinutes(30);
     
@@ -37,6 +39,7 @@ public class AuthService(
         await userRepository.AddAsync(user);
         await userRepository.SaveChangesAsync();
 
+        logger.LogInformation("User {Username} registered with id {UserId}", user.Username, user.Id);
         return GetAuthResponse(user.Id, user.Username);
     }
 
@@ -44,24 +47,35 @@ public class AuthService(
     {
         var existedUser = await userRepository.GetByUsernameAsync(request.Username);
         if (existedUser is null)
+        {
+            logger.LogWarning("Login failed — unknown username {Username}", request.Username);
             throw new CustomException(UserErrorCode.InvalidCredentials, "Invalid credentials", 401);
+        }
 
         var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, existedUser.PasswordHash);
         if (!isPasswordValid)
+        {
+            logger.LogWarning("Login failed — bad password for {Username}", request.Username);
             throw new CustomException(UserErrorCode.InvalidCredentials, "Invalid credentials", 401);
+        }
 
+        logger.LogInformation("User {Username} logged in", existedUser.Username);
         return GetAuthResponse(existedUser.Id, existedUser.Username);
     }
 
     public async Task RequestPasswordResetAsync(ForgotPasswordRequest request, CancellationToken ct)
     {
         var user = await userRepository.GetByEmailAsync(request.Email);
-        if (user is null) return;
-        
+        if (user is null)
+        {
+            logger.LogWarning("Password reset requested for unknown email {Email}", request.Email);
+            return;
+        }
+
         var existingToken = await passwordResetTokenRepository.GetByUserIdAsync(user.Id, ct);
         if (existingToken is not null)
             passwordResetTokenRepository.Delete(existingToken);
-        
+
         var (rawToken, hash) = GenerateResetToken();
 
         await passwordResetTokenRepository.AddAsync(new PasswordResetToken
@@ -74,6 +88,7 @@ public class AuthService(
         await passwordResetTokenRepository.SaveChangesAsync();
 
         await emailSender.SendAsync(BuildResetEmail(user.Email, rawToken), ct);
+        logger.LogInformation("Password reset email sent to user {UserId}", user.Id);
     }
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct)
@@ -81,21 +96,27 @@ public class AuthService(
         var hash = HashToken(request.Token);
         var token = await passwordResetTokenRepository.GetByHashAsync(hash, ct);
         if (token is null)
+        {
+            logger.LogWarning("Password reset attempted with invalid token");
             throw new CustomException(UserErrorCode.InvalidResetToken, "Invalid reset token", 400);
-        
+        }
+
         if (token.ExpiresAt < DateTimeOffset.UtcNow)
         {
             passwordResetTokenRepository.Delete(token);
             await passwordResetTokenRepository.SaveChangesAsync();
+            logger.LogWarning("Password reset attempted with expired token for user {UserId}", token.UserId);
             throw new CustomException(UserErrorCode.ExpiredResetToken, "Reset token expired", 400);
         }
-        
+
         var user = await userRepository.GetByIdAsync(token.UserId)
             ?? throw new CustomException(UserErrorCode.InvalidResetToken, "User not found", 400);
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         passwordResetTokenRepository.Delete(token);
         await userRepository.SaveChangesAsync();
+
+        logger.LogInformation("Password reset completed for user {UserId}", user.Id);
     }
 
     private static AppUser CreateUser(RegisterRequest request)

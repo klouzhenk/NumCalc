@@ -484,4 +484,28 @@
   <data name="BackToLogin" xml:space="preserve">
     <value>Повернутися до входу</value>
   </data>
+  <data name="ResetPasswordIntro" xml:space="preserve">
+    <value>Виберіть новий пароль для вашого облікового запису.</value>
+  </data>
+  <data name="ResetTokenMissing" xml:space="preserve">
+    <value>Посилання для скидання пароля недійсне. Запросіть новий лист.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Новий пароль</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Підтвердьте новий пароль</value>
+  </data>
+  <data name="ResetPasswordSubmit" xml:space="preserve">
+    <value>Скинути пароль</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Пароль обов'язковий</value>
+  </data>
+  <data name="ConfirmPasswordRequired" xml:space="preserve">
+    <value>Підтвердьте ваш пароль</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Паролі не співпадають</value>
+  </data>
 </root>

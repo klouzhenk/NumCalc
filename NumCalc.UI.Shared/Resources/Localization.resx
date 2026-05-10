@@ -490,4 +490,28 @@
   <data name="BackToLogin" xml:space="preserve">
     <value>Back to login</value>
   </data>
+  <data name="ResetPasswordIntro" xml:space="preserve">
+    <value>Choose a new password for your account.</value>
+  </data>
+  <data name="ResetTokenMissing" xml:space="preserve">
+    <value>The reset link is invalid. Please request a new password reset email.</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="ResetPasswordSubmit" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="ConfirmPasswordRequired" xml:space="preserve">
+    <value>Please confirm your password</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
 </root>

@@ -35,7 +35,7 @@ NumCalc.UI.Web (Blazor Server)
 NumCalc.Shared          — DTOs and contracts shared across all projects
 NumCalc.UI.Shared       — Reusable Blazor components and HTTP service abstractions
 NumCalc.UI.MAUI         — Mobile UI (in progress)
-NumCalc.User.API        — Placeholder, not functional yet
+NumCalc.User.API        — Auth (register/login/password-reset), backed by EF Core + SQL Server
 NumCalc.Core            — Minimal, mostly unused
 ```
 
@@ -46,6 +46,19 @@ NumCalc.Core            — Minimal, mostly unused
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
 - **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
+
+### User API (`NumCalc.User.API`)
+
+- **Architecture:** Clean layout — `NumCalc.User.Domain` (entities, enums) → `NumCalc.User.Application` (DTOs, interfaces, exceptions) → `NumCalc.User.Infrastructure` (EF Core, repositories, services). API project depends on Infrastructure for DI registration.
+- **Persistence:** EF Core 9 + SQL Server (LocalDB in dev). Entities: `AppUser` (Username, Email unique, PasswordHash), `PasswordResetToken` (one-to-one with `AppUser`, unique `TokenHash`), plus `CalculationHistoryRecord`, `SavedInput`, `SavedFile` for non-auth domains.
+- **Controllers:** `AuthController` (register, login, forgot-password, reset-password), plus `CalculationHistoryController`, `SavedInputController`, `SavedFileController` for non-auth domains.
+- **Auth:** JWT bearer tokens via `JwtService`. BCrypt for password hashing.
+- **Password reset flow:** `POST /api/auth/forgot-password` (always returns 200; silent if email unknown) → email contains link to `{WebApp:BaseUrl}/reset-password?token=<raw>`; `POST /api/auth/reset-password` (400 on invalid/expired token). Token is 32 random bytes → base64url; only the SHA-256 hash is stored. 30-min expiry. One active reset per user (DB-enforced via unique index on `UserId`).
+- **Email infrastructure:** `IEmailSender` abstraction (mirrors `IOcrProvider`). `SmtpEmailSender` impl using `System.Net.Mail.SmtpClient` + `IOptions<SmtpSettings>`. Gmail SMTP from a dedicated project inbox; credentials in user-secrets (`EmailSettings:Smtp:*`).
+- **Configuration:** `WebAppSettings { BaseUrl }` bound from `WebApp` section — used to build reset-password links pointing at the Web UI (`http://localhost:5183` in dev).
+- **Logging:** `AuthService` injects `ILogger<AuthService>` and logs register/login/reset-request/reset-confirm outcomes. Unknown-email reset attempts log a warning. Passwords and raw tokens are never logged.
+- **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging.
+- Swagger/OpenAPI enabled in development at `/swagger`.
 
 ### Python Scripts (`Scripts/`)
 
@@ -188,8 +201,12 @@ Currently working:
 - Blazor UI for root finding, equation systems, interpolation, differentiation, integration, optimization, and ODE
 - PDF export — fully implemented on all 7 result pages (QuestPDF + KaTeX + html2canvas)
 
+Currently working (User API):
+- Register / Login (JWT, BCrypt)
+- Password reset (email + token, 30-min expiry, DB-enforced one active token per user)
+- Calculation history, saved inputs, saved files — fully integrated (entities + repos + services + API + UI pages: `CalculationHistory.razor`, `SavedInputs.razor`, `SavedFiles.razor`, `UserDashboard.razor`)
+
 Not implemented yet:
-- Full-featured backend for users/history
 - Complete MAUI UI
 
 IMPORTANT:
