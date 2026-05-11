@@ -1,41 +1,81 @@
-﻿<TopicInfo Title="Equation Systems" Subtitle="Solve linear and non-linear systems">
+@inherits TopicInfoComponentBase
+
+<TopicInfo Title="@Localize("Equation Systems", "Системи рівнянь")"
+           Subtitle="@Localize("Solve linear and non-linear systems", "Розв'язання лінійних і нелінійних систем")">
     <p class="topic-info__overview">
-        A system of $n$ equations in $n$ unknowns. Linear systems have a unique
-        solution when the coefficient matrix is non-singular. Non-linear systems
-        require iterative methods starting from an initial guess.
+        @Localize(
+            "A system of $n$ equations in $n$ unknowns. Linear systems have a unique solution when the coefficient matrix is non-singular. Non-linear systems require iterative methods starting from an initial guess.",
+            "Система з $n$ рівнянь і $n$ невідомими. Лінійні системи мають єдиний розв'язок, якщо матриця коефіцієнтів невироджена. Нелінійні системи потребують ітераційних методів з початковим наближенням."
+        )
     </p>
 
     <div class="topic-info__cards">
         <div class="topic-info__card">
-            <h3>Cramer's Rule</h3>
+            <h3>@Localize("Cramer's Rule", "Правило Крамера")</h3>
             <div class="topic-info__formula">$$x_i = \frac{\det(A_i)}{\det(A)}$$</div>
-            <p>Expresses each unknown as a ratio of determinants. Exact for small systems
-            but $O(n!)$ complexity makes it impractical beyond $n \approx 4$.</p>
-            <p class="topic-info__limitation">Fails when $\det(A) = 0$ (singular matrix).</p>
+            <p>
+                @Localize(
+                    "Expresses each unknown as a ratio of determinants. Exact for small systems but $O(n!)$ complexity makes it impractical beyond $n \\approx 4$.",
+                    "Виражає кожну невідому як відношення визначників. Точний для невеликих систем, але складність $O(n!)$ робить його непрактичним при $n \\approx 4$ і більше."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Fails when $\\det(A) = 0$ (singular matrix).",
+                    "Не працює, якщо $\\det(A) = 0$ (вироджена матриця)."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Gaussian Elimination</h3>
+            <h3>@Localize("Gaussian Elimination", "Метод Гаусса")</h3>
             <div class="topic-info__formula">$$A\mathbf{x} = \mathbf{b} \xrightarrow{\text{row ops}} U\mathbf{x} = \mathbf{c}$$</div>
-            <p>Reduces the augmented matrix $[A|\mathbf{b}]$ to upper-triangular form with
-            partial pivoting, then back-substitutes. $O(n^3)$ — the standard workhorse.</p>
-            <p class="topic-info__limitation">Numerical instability without pivoting; fails on singular systems.</p>
+            <p>
+                @Localize(
+                    "Reduces the augmented matrix $[A|\\mathbf{b}]$ to upper-triangular form with partial pivoting, then back-substitutes. $O(n^3)$ — the standard workhorse.",
+                    "Зводить розширену матрицю $[A|\\mathbf{b}]$ до верхньотрикутного вигляду з частковим вибором головного елемента, потім виконує зворотну підстановку. $O(n^3)$ — стандартний робочий метод."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Numerical instability without pivoting; fails on singular systems.",
+                    "Чисельно нестійкий без вибору головного елемента; не працює для вироджених систем."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Fixed-Point Iteration</h3>
+            <h3>@Localize("Fixed-Point Iteration", "Метод простих ітерацій")</h3>
             <div class="topic-info__formula">$$\mathbf{x}^{(k+1)} = \mathbf{g}(\mathbf{x}^{(k)})$$</div>
-            <p>Rewrites each equation as $x_i = g_i(\mathbf{x})$ and iterates from an
-            initial guess. Converges when the spectral radius $\rho(J_g) &lt; 1$.</p>
-            <p class="topic-info__limitation">Convergence is not guaranteed; sensitive to initial guess and formulation.</p>
+            <p>
+                @Localize(
+                    "Rewrites each equation as $x_i = g_i(\\mathbf{x})$ and iterates from an initial guess. Converges when the spectral radius $\\rho(J_g) < 1$.",
+                    "Переписує кожне рівняння у вигляді $x_i = g_i(\\mathbf{x})$ та ітерує від початкового наближення. Збігається, якщо спектральний радіус $\\rho(J_g) < 1$."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Convergence is not guaranteed; sensitive to initial guess and formulation.",
+                    "Збіжність не гарантована; чутливий до початкового наближення та форми запису."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Gauss-Seidel</h3>
+            <h3>@Localize("Gauss-Seidel", "Метод Зейделя")</h3>
             <div class="topic-info__formula">$$x_i^{(k+1)} = g_i\!\left(x_1^{(k+1)},\ldots,x_{i-1}^{(k+1)},x_i^{(k)},\ldots\right)$$</div>
-            <p>Like fixed-point but immediately uses freshly computed values within each
-            sweep. Typically converges faster than Jacobi-style fixed-point iteration.</p>
-            <p class="topic-info__limitation">Convergence not guaranteed for all systems; requires diagonally dominant or similar structure.</p>
+            <p>
+                @Localize(
+                    "Like fixed-point but immediately uses freshly computed values within each sweep. Typically converges faster than Jacobi-style fixed-point iteration.",
+                    "Схожий на метод простих ітерацій, але одразу використовує щойно обчислені значення в межах кроку. Зазвичай збігається швидше, ніж класичні прості ітерації."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Convergence not guaranteed for all systems; requires diagonally dominant or similar structure.",
+                    "Збіжність гарантована не для всіх систем; потребує діагональної переваги або подібної структури."
+                )
+            </p>
         </div>
     </div>
 </TopicInfo>

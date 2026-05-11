@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Models.Differentiation;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.Differentiation;
 
@@ -9,6 +11,7 @@ public partial class DifferentiationInput : ComponentBase
 {
     [Parameter] public DifferentiationMethod Method { get; set; }
     [Parameter] public DifferentiationInputMode Mode { get; set; }
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private MathInput? _mathInput;
     private NodeTable? _nodeTable;

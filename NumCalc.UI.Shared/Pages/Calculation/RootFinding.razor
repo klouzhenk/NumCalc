@@ -16,7 +16,7 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="Mode"
                     @bind-Value:after="OnParametersChanged"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @switch (Mode)
@@ -26,7 +26,7 @@
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               @bind-Value="_formData.Method"
                               @bind-Value:after="OnParametersChanged"
-                              TextField="@(item => item.ToString())"
+                              TextField="@(item => Localizer[item.ToString()])"
                               Label="@Localizer["Method"]"/>
                     break;
                 case AnalysisMode.Benchmark:
@@ -35,7 +35,7 @@
                               MultiSelect="true"
                               @bind-SelectedItems="_benchmarkMethods"
                               @bind-SelectedItems:after="OnParametersChanged"
-                              TextField="@(item => item.ToString())"
+                              TextField="@(item => Localizer[item.ToString()])"
                               Label="@Localizer["Method"]"/>
                     break;
                 default:
@@ -68,11 +68,11 @@
                     <Hint>
                         @if (Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton)
                         {
-                            <span>Initial guess x₀ for Newton-Raphson. Choose a value close to the expected root.</span>
+                            <span>@Localizer["Hint_InitialGuess"]</span>
                         }
                         else
                         {
-                            <span>Left endpoint a of the search interval [a, b]. Must satisfy f(a)·f(b) &lt; 0 for bracketing methods.</span>
+                            <span>@Localizer["Hint_BracketingLowerBound"]</span>
                         }
                     </Hint>
                 </Tooltip>
@@ -89,7 +89,7 @@
                                        @bind:after="OnParametersChanged" />
                             </div>
                         </Content>
-                        <Hint>Right endpoint b of the search interval [a, b].</Hint>
+                        <Hint>@Localizer["Hint_UpperBound"]</Hint>
                     </Tooltip>
                 }
 
@@ -103,7 +103,7 @@
                                @bind:after="OnParametersChanged" />
                         </div>
                     </Content>
-                    <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>
+                    <Hint>@Localizer["Hint_RootTolerance"]</Hint>
                 </Tooltip>
             </div>
             <div class="form-actions">
@@ -120,8 +120,8 @@
         <Header>
             @if (Mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@Localizer["Root"] = @Result.Root?.ToString("G6")</span>
-                <span>@Localizer["ExecutionTime"] = @Result.ExecutionTimeMs @Localizer["ms"]</span>
+                <span>@Localizer["Root"] = @Result.Root.FormatResult(_formData.Tolerance)</span>
+                <span>@Localizer["ExecutionTime"] = @Result.ExecutionTimeMs.FormatResult() @Localizer["ms"]</span>
                 <span>@Localizer["Iterations"] = @Result.Iterations</span>
             }
             else
@@ -149,11 +149,11 @@
                         <span class="comparison-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
                             @{
-                                var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
+                                var root = benchmarkResult.Root.FormatResult(_formData.Tolerance);
                             }
                             <span class="comparison-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
                             <span class="comparison-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

@@ -17,13 +17,13 @@
                     Data="@(Enum.GetValues<EquationSystemCategory>())"
                     @bind-Value="Category"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"/>
+                    TextField="@(item => Localizer[item.ToString()])"/>
 
             <Switch TItem="AnalysisMode"
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
@@ -31,20 +31,20 @@
                 @if (Category is EquationSystemCategory.Linear)
                 {
                     <Dropdown TItem="LinearSystemMethod"
-                              Label="Method"
+                              Label="@Localizer["Method"]"
                               Data="@(Enum.GetValues<LinearSystemMethod>())"
                               @bind-Value="LinearMethod"
                               @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
                 else
                 {
                     <Dropdown TItem="NonLinearSystemMethod"
-                              Label="Method"
+                              Label="@Localizer["Method"]"
                               Data="@(Enum.GetValues<NonLinearSystemMethod>())"
                               @bind-Value="NonLinearMethod"
                               @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
             }
             else
@@ -52,27 +52,27 @@
                 @if (Category is EquationSystemCategory.Linear)
                 {
                     <Dropdown TItem="LinearSystemMethod"
-                              Label="Methods"
+                              Label="@Localizer["Methods"]"
                               Data="@(Enum.GetValues<LinearSystemMethod>())"
                               MultiSelect="true"
                               @bind-SelectedItems="_linearBenchmarkMethods"
                               @bind-SelectedItems:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
                 else
                 {
                     <Dropdown TItem="NonLinearSystemMethod"
-                              Label="Methods"
+                              Label="@Localizer["Methods"]"
                               Data="@(Enum.GetValues<NonLinearSystemMethod>())"
                               MultiSelect="true"
                               @bind-SelectedItems="_nonLinearBenchmarkMethods"
                               @bind-SelectedItems:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
             }
 
             <Dropdown TItem="int"
-                      Label="Size"
+                      Label="@Localizer["Size"]"
                       Data="@_sizes"
                       @bind-Value="Size"
                       @bind-Value:after="ResetResult"
@@ -106,7 +106,7 @@
                 <div class="equation-systems-result__roots">
                     @for (var i = 0; i < Result?.Roots?.Count; i++)
                     {
-                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].FormatResult(_equationList?.Tolerance)</span>
                     }
                 </div>
             }
@@ -136,10 +136,10 @@
                         <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
-                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r.FormatResult()}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>
@@ -154,10 +154,10 @@
                         <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
-                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r.FormatResult(_equationList?.Tolerance)}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

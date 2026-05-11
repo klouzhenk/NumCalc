@@ -175,10 +175,11 @@ public partial class Integration : CalculationPage<Integration>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis
             {
                 Title = "x",
-                PlotLines = 
+                PlotLines =
                 [
                     ChartUtils.CreateZeroLine(),
                     ChartUtils.CreateConstant(data.LowerBound),

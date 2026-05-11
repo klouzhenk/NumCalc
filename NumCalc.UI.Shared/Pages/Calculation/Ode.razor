@@ -15,7 +15,7 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
@@ -23,35 +23,31 @@
                 <Tooltip>
                     <Content>
                         <Dropdown TItem="OdeMethod"
-                                  Label="Method"
+                                  Label="@Localizer["Method"]"
                                   Data="@(Enum.GetValues<OdeMethod>())"
                                   @bind-Value="_method"
                                   @bind-Value:after="ResetResult"
-                                  TextField="@(item => item.ToString())"/>
+                                  TextField="@(item => Localizer[item.ToString()])"/>
                     </Content>
-                    <Hint>
-                        Picard's method is symbolic and converges only near x₀. Keep |x_target − x₀| small (typically &lt; 1).
-                        <br/><br/>
-                        Higher approximation order on wide intervals will diverge or be very slow.
-                    </Hint>
+                    <Hint>@((MarkupString)Localizer["Hint_PicardWarning"].Value)</Hint>
                 </Tooltip>
             }
             else
             {
                 <Dropdown TItem="OdeMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<OdeMethod>().Where(method => method is not OdeMethod.Picard))"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
         </div>
 
         <div class="ode__form">
             <OdeInput Method="_method" @ref="_input" />
             <div class="form-actions">
-                <button class="button button--primary" @onclick="Calculate">Calculate</button>
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
                 @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
@@ -64,7 +60,7 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>y(@(Result!.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?")) ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
+                <span>y(@(Result!.SolutionPoints?.LastOrDefault()?.X.FormatResult() ?? "?")) ≈ @Result.SolutionPoints?.LastOrDefault()?.Y.FormatResult()</span>
                 <LatexDisplay Latex="@Result.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             }
             else
@@ -91,8 +87,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">y(x*)</span>: @(item.FinalY?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">y(x*)</span>: @(item.FinalY.HasValue ? item.FinalY.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

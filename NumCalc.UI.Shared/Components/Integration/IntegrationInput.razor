@@ -3,7 +3,7 @@
         <Content>
             <MathInput Label="f(x)" @ref="_mathInput" />
         </Content>
-        <Hint>Integrand f(x). The definite integral ∫f(x)dx is computed numerically over [a, b].</Hint>
+        <Hint>@Localizer["Hint_Integrand"]</Hint>
     </Tooltip>
 </div>
 
@@ -15,7 +15,7 @@
                 <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
             </div>
         </Content>
-        <Hint>Left endpoint a of the integration interval [a, b].</Hint>
+        <Hint>@Localizer["Hint_LowerBound"]</Hint>
     </Tooltip>
     <Tooltip>
         <Content>
@@ -24,7 +24,7 @@
                 <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
             </div>
         </Content>
-        <Hint>Right endpoint b of the integration interval [a, b].</Hint>
+        <Hint>@Localizer["Hint_UpperBound"]</Hint>
     </Tooltip>
     <Tooltip>
         <Content>
@@ -33,6 +33,6 @@
                 <input type="number" min="1" max="10000" class="input-group__input" @bind="_intervals" />
             </div>
         </Content>
-        <Hint>Number of sub-intervals n. More intervals improve accuracy at the cost of computation time.</Hint>
+        <Hint>@Localizer["Hint_Intervals"]</Hint>
     </Tooltip>
 </div>

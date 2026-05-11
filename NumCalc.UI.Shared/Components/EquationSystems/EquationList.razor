@@ -13,7 +13,7 @@
                     <Content>
                         <MathInput @ref="MathInputs[index]" Placeholder="@($"e.g. {(index % 2 == 0 ? "cos" : "sin")}(x{((index + 1) % Size) + 1})")" />
                     </Content>
-                    <Hint>Iteration function g<sub>@(index + 1)</sub>(x). Rewrite f<sub>@(index + 1)</sub>(x) = 0 as x<sub>@(index + 1)</sub> = g<sub>@(index + 1)</sub>(x) for fixed-point / Seidel iteration.</Hint>
+                    <Hint>@((MarkupString)string.Format(Localizer["Hint_IterationFunction"].Value, index + 1))</Hint>
                 </Tooltip>
 
                 <Tooltip>
@@ -25,7 +25,7 @@
                                    @onchange="e => { if (double.TryParse(e.Value?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v)) InitialGuess[index] = v; }" />
                         </div>
                     </Content>
-                    <Hint>Initial guess for x<sub>@(index + 1)</sub>. Choose a value close to the expected solution.</Hint>
+                    <Hint>@((MarkupString)string.Format(Localizer["Hint_SystemInitialGuess"].Value, index + 1))</Hint>
                 </Tooltip>
             </div>
         }
@@ -39,7 +39,7 @@
                                @bind="Tolerance" />
                     </div>
                 </Content>
-                <Hint>Maximum allowed error between iterations (e.g. 0.000001).</Hint>
+                <Hint>@Localizer["Hint_Tolerance"]</Hint>
             </Tooltip>
 
             <Tooltip>

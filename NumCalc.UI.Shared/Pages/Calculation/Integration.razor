@@ -16,37 +16,37 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
             {
                 <Dropdown TItem="IntegrationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<IntegrationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
 
                 @if (_method is IntegrationMethod.Rectangle)
                 {
                     <Dropdown TItem="RectangleVariant"
-                              Label="Variant"
+                              Label="@Localizer["Variant"]"
                               Data="@(Enum.GetValues<RectangleVariant>())"
                               @bind-Value="_rectangleVariant"
                               @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
             }
             else
             {
                 <Dropdown TItem="IntegrationComparisonMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<IntegrationComparisonMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
         </div>
 
@@ -72,7 +72,7 @@
                 }
                 else
                 {
-                    <span>I = @Result!.IntegralValue.ToString("G6")</span>
+                    <span>I = @Result!.IntegralValue.FormatResult()</span>
                 }
             }
             else
@@ -99,8 +99,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["Integral"]</span>: @(item.IntegralValue.HasValue ? item.IntegralValue.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

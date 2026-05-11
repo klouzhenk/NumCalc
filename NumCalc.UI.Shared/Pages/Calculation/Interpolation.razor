@@ -15,27 +15,27 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_analysisMode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
             
             @if (_analysisMode is AnalysisMode.Single)
             {
                 <Dropdown TItem="InterpolationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<InterpolationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
             else
             {
                 <Dropdown TItem="InterpolationMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<InterpolationMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
         </div>
 
@@ -55,7 +55,7 @@
         <Header>
             @if (_analysisMode is AnalysisMode.Single && Result is not null)
             {
-                <span>x* = @Result!.InterpolatedValue.ToString("G6")</span>
+                <span>x* = @Result!.InterpolatedValue.FormatResult()</span>
                 <LatexDisplay Latex="@Result?.PolynomialLatex" Prefix="P(x) = " AdditionalCssClass="result-panel__formula"/>
             }
             else
@@ -82,8 +82,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@Localizer["InterpolatedValue"]</span>: @(item.InterpolatedValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["InterpolatedValue"]</span>: @(item.InterpolatedValue.HasValue ? item.InterpolatedValue.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

@@ -17,26 +17,26 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
             {
                 <Dropdown TItem="DifferentiationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<DifferentiationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => Localizer[item.ToString()])" />
 
                 @if (_method is DifferentiationMethod.FiniteDifferences)
                 {
                     <Dropdown TItem="FiniteDiffVariant"
-                              Label="Variant"
+                              Label="@Localizer["Variant"]"
                               Data="@(Enum.GetValues<FiniteDiffVariant>())"
                               @bind-Value="_variant"
                               @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())" />
+                              TextField="@(item => Localizer[item.ToString()])" />
                 }
                 else
                 {
@@ -45,25 +45,25 @@
                             Data="@(Enum.GetValues<DifferentiationInputMode>())"
                             @bind-Value="_inputMode"
                             @bind-Value:after="ResetResult"
-                            TextField="@(item => item.ToString())" />
+                            TextField="@(item => Localizer[item.ToString()])" />
                 }
             }
             else
             {
                 <Dropdown TItem="DifferentiationComparisonMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<DifferentiationComparisonMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => Localizer[item.ToString()])" />
             }
         </div>
 
         <div class="differentiation__form">
             <DifferentiationInput Method="_method" Mode="_inputMode" @ref="_input" />
             <div class="form-actions">
-                <button class="button button--primary" @onclick="Calculate">Calculate</button>
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
                 @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
@@ -76,7 +76,7 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.ToString("G6")</span>
+                <span>@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''(x*)" : "f'(x*)") = @Result!.DerivativeValue.FormatResult()</span>
                 <LatexDisplay Latex="@Result!.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             }
             else
@@ -103,8 +103,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@(FormDataSnapshot?.DerivativeOrder == 2 ? "f''" : "f'")(x*)</span>: @(item.DerivativeValue.HasValue ? item.DerivativeValue.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

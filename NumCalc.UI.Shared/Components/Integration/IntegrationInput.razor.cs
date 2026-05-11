@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.UI.Shared.Models.Integration;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.Integration;
 
 public partial class IntegrationInput : ComponentBase
 {
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
+    
     private MathInput? _mathInput;
     private double _lowerBound;
     private double _upperBound = 1;

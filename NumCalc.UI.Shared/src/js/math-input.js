@@ -16,9 +16,12 @@ export const MathHelper = {
     },
 
     drawPlot: (config) => {
-        const { containerId, title, xAxis, yAxis, series, showLegend, tooltipSuffix } = config;
+        const { containerId, title, xAxis, yAxis, series, showLegend, tooltipSuffix, decimals } = config;
         const container = document.getElementById(containerId);
         if (!container) return;
+
+        const tooltipDecimals = (decimals != null && decimals >= 0) ? decimals : 5;
+        const formatNumber = (v) => Number(v).toFixed(tooltipDecimals).replace(/\.?0+$/, '');
 
         const generatedSeries = series
             .filter(s => s.isVisible)
@@ -47,9 +50,16 @@ export const MathHelper = {
             },
 
             tooltip: {
-                valueSuffix: tooltipSuffix || '',
-                valueDecimals: 6,
-                shared: true
+                shared: true,
+                useHTML: true,
+                formatter: function () {
+                    const suffix = tooltipSuffix || '';
+                    const x = formatNumber(this.x);
+                    const rows = this.points.map(p =>
+                        `<span style="color:${p.color}">●</span> ${p.series.name}: <b>${formatNumber(p.y)}${suffix}</b>`
+                    ).join('<br/>');
+                    return `<small>x = ${x}</small><br/>${rows}`;
+                }
             },
 
             legend: { enabled: showLegend },
@@ -126,7 +136,7 @@ export const MathHelper = {
             xAxis: { title: { text: xAxis?.title || null } },
             yAxis: { title: { text: yAxis?.title || null } },
             zAxis: { title: { text: zAxis?.title || null } },
-            tooltip: { valueDecimals: 4 },
+            tooltip: { valueDecimals: (config.decimals != null && config.decimals >= 0) ? config.decimals : 4 },
             legend: { enabled: showLegend },
             credits: { enabled: false },
             series: generatedSeries

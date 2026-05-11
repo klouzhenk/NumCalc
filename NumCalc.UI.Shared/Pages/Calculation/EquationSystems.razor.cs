@@ -43,6 +43,12 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
+    protected override void OnInitialized()
+    {
+        _linearBenchmarkMethods = Enum.GetValues<LinearSystemMethod>().ToList();
+        _nonLinearBenchmarkMethods = Enum.GetValues<NonLinearSystemMethod>().ToList();
+    }
+
     private void ResetResult()
     {
         Result = null;
@@ -218,9 +224,15 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     {
         if (Result?.ChartSeries is not { Count: > 0 }) return;
 
+        var nonLinearFormData = Category is EquationSystemCategory.NonLinear && _equationList is not null
+            ? await _equationList.GetFormData()
+            : null;
+
         var currentVariables = Category is EquationSystemCategory.Linear
             ? Enumerable.Range(1, Size).Select(i => $"x{i}").ToList()
-            : _equationList is not null ? (await _equationList.GetFormData()).Variables.ToList() : [];
+            : nonLinearFormData?.Variables.ToList() ?? [];
+
+        var decimals = MathUtils.DecimalsFromTolerance(nonLinearFormData?.Tolerance);
 
         var x1Name = currentVariables.ElementAtOrDefault(0) ?? "x\u2081";
         var x2Name = currentVariables.ElementAtOrDefault(1) ?? "x\u2082";
@@ -261,6 +273,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             {
                 ContainerId = ChartContainerId,
                 ShowLegend = true,
+                Decimals = decimals,
                 XAxis = new ChartAxis { Title = x1Name },
                 YAxis = new ChartAxis { Title = x2Name },
                 ZAxis = new ChartAxis { Title = x3Name }
@@ -304,6 +317,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             {
                 ContainerId = ChartContainerId,
                 ShowLegend = true,
+                Decimals = decimals,
                 XAxis = new ChartAxis { Title = x1Name, PlotLines = [ChartUtils.CreateZeroLine()] },
                 YAxis = new ChartAxis { Title = x2Name, PlotLines = [ChartUtils.CreateZeroLine()] }
             };

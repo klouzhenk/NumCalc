@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Enums.ODE;
 using NumCalc.UI.Shared.Models.ODE;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.ODE;
 
 public partial class OdeInput : ComponentBase
 {
     [Parameter] public OdeMethod Method { get; set; }
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private MathInput? _mathInput;
 

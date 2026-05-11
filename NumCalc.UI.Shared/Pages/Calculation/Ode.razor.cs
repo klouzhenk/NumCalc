@@ -107,7 +107,7 @@ public partial class Ode : CalculationPage<Ode>
 
             var lastPoint = Result.SolutionPoints?.LastOrDefault();
             var resultSummary = lastPoint is not null
-                ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
+                ? $"y({lastPoint.X.FormatResult()}) ≈ {lastPoint.Y.FormatResult()}"
                 : "No solution";
 
             await TrySaveHistoryAsync(new SaveCalculationRecordRequest
@@ -152,6 +152,7 @@ public partial class Ode : CalculationPage<Ode>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis { Title = "x", PlotLines = xAxisPlotLines },
             YAxis = new ChartAxis { Title = "y(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series =

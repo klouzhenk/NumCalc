@@ -1,50 +1,100 @@
-﻿<TopicInfo Title="Root Finding" Subtitle="Find x such that f(x) = 0">
+@inherits TopicInfoComponentBase
+
+<TopicInfo Title="@Localize("Root Finding", "Корені рівнянь")"
+           Subtitle="@Localize("Find x such that f(x) = 0", "Знайти x, при якому f(x) = 0")">
     <p class="topic-info__overview">
-        Root-finding algorithms locate values of $x$ where $f(x) = 0$.
-        All methods require a continuous function. Iterative methods
-        additionally require a proper initial interval or initial guess.
+        @Localize(
+            "Root-finding algorithms locate values of $x$ where $f(x) = 0$. All methods require a continuous function. Iterative methods additionally require a proper initial interval or initial guess.",
+            "Алгоритми пошуку коренів знаходять значення $x$, при яких $f(x) = 0$. Усі методи потребують неперервної функції. Ітераційні методи також потребують відповідного початкового інтервалу або початкового наближення."
+        )
     </p>
 
     <div class="topic-info__cards">
         <div class="topic-info__card">
-            <h3>Bisection (Dichotomy)</h3>
+            <h3>@Localize("Bisection (Dichotomy)", "Метод дихотомії")</h3>
             <div class="topic-info__formula">$$x_{mid} = \frac{a + b}{2}$$</div>
-            <p>Repeatedly halves an interval $[a, b]$ where $f(a) \cdot f(b) &lt; 0$.
-            Guaranteed to converge but requires a sign change. Convergence is linear.</p>
-            <p class="topic-info__limitation">Fails if $f(a)$ and $f(b)$ have the same sign or the root has even multiplicity.</p>
+            <p>
+                @Localize(
+                    "Repeatedly halves an interval $[a, b]$ where $f(a) \\cdot f(b) < 0$. Guaranteed to converge but requires a sign change. Convergence is linear.",
+                    "Послідовно ділить інтервал $[a, b]$ навпіл за умови $f(a) \\cdot f(b) < 0$. Гарантовано збігається, але потребує зміни знаку. Швидкість збіжності — лінійна."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Fails if $f(a)$ and $f(b)$ have the same sign or the root has even multiplicity.",
+                    "Не працює, якщо $f(a)$ і $f(b)$ мають однаковий знак або корінь має парну кратність."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Newton-Raphson</h3>
+            <h3>@Localize("Newton-Raphson", "Метод Ньютона")</h3>
             <div class="topic-info__formula">$$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$$</div>
-            <p>Uses the tangent line at the current point to produce the next approximation.
-            Quadratic convergence near a simple root. Requires a good initial guess $x_0$.</p>
-            <p class="topic-info__limitation">Diverges if $f'(x_n) \approx 0$ or the initial guess is far from the root.</p>
+            <p>
+                @Localize(
+                    "Uses the tangent line at the current point to produce the next approximation. Quadratic convergence near a simple root. Requires a good initial guess $x_0$.",
+                    "Використовує дотичну в поточній точці для наступного наближення. Квадратична збіжність поблизу простого кореня. Потребує гарного початкового наближення $x_0$."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Diverges if $f'(x_n) \\approx 0$ or the initial guess is far from the root.",
+                    "Розбігається, якщо $f'(x_n) \\approx 0$ або початкове наближення далеко від кореня."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Secant Method</h3>
+            <h3>@Localize("Secant Method", "Метод січних")</h3>
             <div class="topic-info__formula">$$x_{n+1} = x_n - f(x_n) \cdot \frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$$</div>
-            <p>Approximates the derivative using two previous iterates. Superlinear
-            convergence (order $\approx 1.618$). Does not require evaluating $f'$.</p>
-            <p class="topic-info__limitation">Can diverge if $f(x_n) \approx f(x_{n-1})$ (nearly horizontal secant).</p>
+            <p>
+                @Localize(
+                    "Approximates the derivative using two previous iterates. Superlinear convergence (order $\\approx 1.618$). Does not require evaluating $f'$.",
+                    "Наближає похідну за двома попередніми ітераціями. Суперлінійна збіжність (порядок $\\approx 1.618$). Не потребує обчислення $f'$."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Can diverge if $f(x_n) \\approx f(x_{n-1})$ (nearly horizontal secant).",
+                    "Може розбігатися, якщо $f(x_n) \\approx f(x_{n-1})$ (січна майже горизонтальна)."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Simple Iteration</h3>
+            <h3>@Localize("Simple Iteration", "Прості ітерації")</h3>
             <div class="topic-info__formula">$$x_{n+1} = \varphi(x_n), \quad f(x) = 0 \Rightarrow x = \varphi(x)$$</div>
-            <p>Rewrites $f(x)=0$ as a fixed-point equation $x = \varphi(x)$ and iterates.
-            Converges when $|\varphi'(x)| &lt; 1$ in a neighbourhood of the root.</p>
-            <p class="topic-info__limitation">Choice of $\varphi$ is critical; wrong rearrangement diverges.</p>
+            <p>
+                @Localize(
+                    "Rewrites $f(x)=0$ as a fixed-point equation $x = \\varphi(x)$ and iterates. Converges when $|\\varphi'(x)| < 1$ in a neighbourhood of the root.",
+                    "Переписує $f(x)=0$ як рівняння нерухомої точки $x = \\varphi(x)$ та виконує ітерації. Збігається, якщо $|\\varphi'(x)| < 1$ в околі кореня."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Choice of $\\varphi$ is critical; wrong rearrangement diverges.",
+                    "Вибір $\\varphi$ є критичним; невдале перетворення призводить до розбіжності."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Combined (Chords & Tangents)</h3>
+            <h3>@Localize("Combined (Newton + Secant)", "Комбінований (Ньютон + січні)")</h3>
             <div class="topic-info__formula">
-                $$x_{tangent} = x_n - \frac{f(x_n)}{f'(x_n)}, \quad x_{chord} = x_k - \frac{f(x_k)(x_k - x_n)}{f(x_k) - f(x_n)}$$
+                $$x_{newton} = x_n - \frac{f(x_n)}{f'(x_n)}, \quad x_{secant} = x_k - \frac{f(x_k)(x_k - x_n)}{f(x_k) - f(x_n)}$$
             </div>
-            <p>This method approaches the root from both sides simultaneously. It uses the Fourier condition ($f(x) \cdot f''(x) > 0$) to determine which endpoint uses the Newton step (tangent) and which uses the Chord step.</p>
-            <p class="topic-info__limitation">Requires the function to be twice differentiable ($f''$) and have a constant sign of $f'$ and $f''$ on the interval.</p>
+            <p>
+                @Localize(
+                    "Combines the Newton step (using $f'$) with the Secant step (using two previous iterates) and approaches the root from both sides simultaneously. The hybrid strategy keeps Newton's near-quadratic convergence while staying robust when the derivative behaves poorly.",
+                    "Поєднує крок Ньютона (з використанням $f'$) із кроком методу січних (за двома попередніми наближеннями), наближаючись до кореня з обох боків одночасно. Така гібридна стратегія зберігає майже квадратичну швидкість Ньютона і залишається стійкою, коли похідна поводиться погано."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Requires $f'$ to be available for the Newton step and inherits the stability conditions of both underlying methods.",
+                    "Потребує наявності $f'$ для кроку Ньютона та успадковує умови стійкості обох вихідних методів."
+                )
+            </p>
         </div>
     </div>
 </TopicInfo>
