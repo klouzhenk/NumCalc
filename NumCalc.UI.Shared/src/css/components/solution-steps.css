@@ -20,11 +20,11 @@
     
     &__item {
         padding: var(--dimension-l) var(--dimension-xs);
+        gap: var(--dimension-xs);
 
         @media (--tablet) {
             display: flex;
             flex-direction: column;
-            gap: var(--dimension-xs);
         }
     }
     
@@ -35,10 +35,11 @@
     }
     
     &__item-text {
+        gap: var(--dimension-xs);
+        
         @media (--tablet) {
             display: flex;
             flex-direction: column;
-            gap: var(--dimension-xs);
             font-size: 0.9rem;
         }
     }

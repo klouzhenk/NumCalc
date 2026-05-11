@@ -42,12 +42,11 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-.input-section__wrapper{
+.input-section__wrapper {
     display: flex;
     flex-direction: row;
     gap: var(--dimension-m) var(--dimension-xl);
     flex-wrap: wrap;
-    align-items: flex-end;
     
     @media (--laptop) {
     }

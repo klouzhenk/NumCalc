@@ -60,9 +60,13 @@
         vertical-align: middle;
     }
 
-    tbody tr {
-        &:last-child td {
-            border-bottom: none;
+    tbody {
+        overflow-y: auto;
+        
+        tr {
+            &:last-child td {
+                border-bottom: none;
+            }
         }
     }
 

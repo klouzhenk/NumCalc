@@ -263,9 +263,9 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
                     Name = "Solution",
                     Data = [[Result.Roots[0], Result.Roots[1], Result.Roots[2]]],
                     Type = ChartType.Scatter,
-                    Color = ColorUtils.GetColor(Enums.Color.Danger),
+                    Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                     IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
                 });
             }
 
@@ -305,11 +305,11 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
                     Name = "Solution",
                     Data = [[Result.Roots[0], Result.Roots[1]]],
                     Type = ChartType.Scatter,
-                    Color = ColorUtils.GetColor(Enums.Color.Danger),
+                    Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                     LineWidth = 0,
                     ZIndex = 5,
                     IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
+                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
                 });
             }
 

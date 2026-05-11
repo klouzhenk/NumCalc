@@ -59,7 +59,7 @@
 
 .tooltip__wrapper:has([class*="label"]) {
     & .tooltip__icon {
-        margin-top: var(--dimension-l);
+        margin-top: calc(var(--dimension-l) + var(--dimension-xs));
     }
 }
 
