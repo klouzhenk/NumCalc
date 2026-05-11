@@ -15,27 +15,27 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_analysisMode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
             
             @if (_analysisMode is AnalysisMode.Single)
             {
                 <Dropdown TItem="InterpolationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<InterpolationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
             else
             {
                 <Dropdown TItem="InterpolationMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<InterpolationMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
         </div>
 

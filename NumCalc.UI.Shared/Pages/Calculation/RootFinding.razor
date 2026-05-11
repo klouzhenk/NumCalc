@@ -16,7 +16,7 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="Mode"
                     @bind-Value:after="OnParametersChanged"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @switch (Mode)
@@ -26,7 +26,7 @@
                               Data="@(Enum.GetValues<RootFindingMethod>())"
                               @bind-Value="_formData.Method"
                               @bind-Value:after="OnParametersChanged"
-                              TextField="@(item => item.ToString())"
+                              TextField="@(item => Localizer[item.ToString()])"
                               Label="@Localizer["Method"]"/>
                     break;
                 case AnalysisMode.Benchmark:
@@ -35,7 +35,7 @@
                               MultiSelect="true"
                               @bind-SelectedItems="_benchmarkMethods"
                               @bind-SelectedItems:after="OnParametersChanged"
-                              TextField="@(item => item.ToString())"
+                              TextField="@(item => Localizer[item.ToString()])"
                               Label="@Localizer["Method"]"/>
                     break;
                 default:

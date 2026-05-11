@@ -16,37 +16,37 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
             {
                 <Dropdown TItem="IntegrationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<IntegrationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
 
                 @if (_method is IntegrationMethod.Rectangle)
                 {
                     <Dropdown TItem="RectangleVariant"
-                              Label="Variant"
+                              Label="@Localizer["Variant"]"
                               Data="@(Enum.GetValues<RectangleVariant>())"
                               @bind-Value="_rectangleVariant"
                               @bind-Value:after="ResetResult"
-                              TextField="@(item => item.ToString())"/>
+                              TextField="@(item => Localizer[item.ToString()])"/>
                 }
             }
             else
             {
                 <Dropdown TItem="IntegrationComparisonMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<IntegrationComparisonMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())"/>
+                          TextField="@(item => Localizer[item.ToString()])"/>
             }
         </div>
 

@@ -658,4 +658,73 @@
   <data name="UserDashboard" xml:space="preserve">
     <value>User dashboard</value>
   </data>
+  <data name="Methods" xml:space="preserve">
+    <value>Methods</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Goal</value>
+  </data>
+  <data name="Variant" xml:space="preserve">
+    <value>Variant</value>
+  </data>
+  <data name="Single" xml:space="preserve">
+    <value>Single</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Function</value>
+  </data>
+  <data name="RawData" xml:space="preserve">
+    <value>Raw data</value>
+  </data>
+  <data name="Linear" xml:space="preserve">
+    <value>Linear</value>
+  </data>
+  <data name="NonLinear" xml:space="preserve">
+    <value>Non-linear</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Newton" xml:space="preserve">
+    <value>Newton</value>
+  </data>
+  <data name="Spline" xml:space="preserve">
+    <value>Spline</value>
+  </data>
+  <data name="Dichotomy" xml:space="preserve">
+    <value>Dichotomy</value>
+  </data>
+  <data name="SimpleIterations" xml:space="preserve">
+    <value>Simple iterations</value>
+  </data>
+  <data name="Secant" xml:space="preserve">
+    <value>Secant</value>
+  </data>
+  <data name="Combined" xml:space="preserve">
+    <value>Combined</value>
+  </data>
+  <data name="FiniteDifferences" xml:space="preserve">
+    <value>Finite differences</value>
+  </data>
+  <data name="Rectangle" xml:space="preserve">
+    <value>Rectangle</value>
+  </data>
+  <data name="GradientDescent" xml:space="preserve">
+    <value>Gradient descent</value>
+  </data>
+  <data name="Picard" xml:space="preserve">
+    <value>Picard</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="Midpoint" xml:space="preserve">
+    <value>Midpoint</value>
+  </data>
 </root>

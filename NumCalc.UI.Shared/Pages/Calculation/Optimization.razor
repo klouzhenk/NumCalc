@@ -16,41 +16,41 @@
                     Data="@(Enum.GetValues<AnalysisMode>())"
                     @bind-Value="_mode"
                     @bind-Value:after="ResetResult"
-                    TextField="@(item => item.ToString())"
+                    TextField="@(item => Localizer[item.ToString()])"
                     Label="@Localizer["AnalysisMode"]" />
 
             @if (_mode is AnalysisMode.Single)
             {
                 <Dropdown TItem="OptimizationMethod"
-                          Label="Method"
+                          Label="@Localizer["Method"]"
                           Data="@(Enum.GetValues<OptimizationMethod>())"
                           @bind-Value="_method"
                           @bind-Value:after="ResetResult"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => Localizer[item.ToString()])" />
             }
             else
             {
                 <Dropdown TItem="OptimizationComparisonMethod"
-                          Label="Methods"
+                          Label="@Localizer["Methods"]"
                           Data="@(Enum.GetValues<OptimizationComparisonMethod>())"
                           MultiSelect="true"
                           @bind-SelectedItems="_benchmarkMethods"
                           @bind-SelectedItems:after="ResetResult"
-                          TextField="@(item => item.ToString())" />
+                          TextField="@(item => Localizer[item.ToString()])" />
             }
 
             <Switch TItem="bool"
-                    Label="Goal"
+                    Label="@Localizer["Goal"]"
                     Data="@(new[] { false, true })"
                     @bind-Value="_maximize"
                     @bind-Value:after="ResetResult"
-                    TextField="@(b => b ? "Maximize" : "Minimize")" />
+                    TextField="@(b => Localizer[b ? "Maximize" : "Minimize"].Value)" />
         </div>
 
         <div class="optimization__form">
             <OptimizationInput Method="_method" @ref="_input" />
             <div class="form-actions">
-                <button class="button button--primary" @onclick="Calculate">Calculate</button>
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
                 @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>

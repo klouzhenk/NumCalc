@@ -658,4 +658,73 @@
   <data name="UserDashboard" xml:space="preserve">
     <value>Кабінет користувача</value>
   </data>
+  <data name="Methods" xml:space="preserve">
+    <value>Методи</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Розмір</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Ціль</value>
+  </data>
+  <data name="Variant" xml:space="preserve">
+    <value>Варіант</value>
+  </data>
+  <data name="Single" xml:space="preserve">
+    <value>Один метод</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>Функція</value>
+  </data>
+  <data name="RawData" xml:space="preserve">
+    <value>Дані точок</value>
+  </data>
+  <data name="Linear" xml:space="preserve">
+    <value>Лінійна</value>
+  </data>
+  <data name="NonLinear" xml:space="preserve">
+    <value>Нелінійна</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Мінімізація</value>
+  </data>
+  <data name="Newton" xml:space="preserve">
+    <value>Ньютон</value>
+  </data>
+  <data name="Spline" xml:space="preserve">
+    <value>Сплайн</value>
+  </data>
+  <data name="Dichotomy" xml:space="preserve">
+    <value>Дихотомія</value>
+  </data>
+  <data name="SimpleIterations" xml:space="preserve">
+    <value>Прості ітерації</value>
+  </data>
+  <data name="Secant" xml:space="preserve">
+    <value>Січні</value>
+  </data>
+  <data name="Combined" xml:space="preserve">
+    <value>Комбінований</value>
+  </data>
+  <data name="FiniteDifferences" xml:space="preserve">
+    <value>Скінченні різниці</value>
+  </data>
+  <data name="Rectangle" xml:space="preserve">
+    <value>Прямокутники</value>
+  </data>
+  <data name="GradientDescent" xml:space="preserve">
+    <value>Градієнтний спуск</value>
+  </data>
+  <data name="Picard" xml:space="preserve">
+    <value>Пікар</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Ліві</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Праві</value>
+  </data>
+  <data name="Midpoint" xml:space="preserve">
+    <value>Середні</value>
+  </data>
 </root>
