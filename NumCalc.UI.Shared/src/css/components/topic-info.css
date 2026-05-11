@@ -28,6 +28,10 @@
         gap: var(--dimension-l);
         overflow-y: auto;
         padding: 0 var(--dimension-m) var(--dimension-m);
+        
+        @media (--laptop) {
+            padding: 0 var(--dimension-m) var(--dimension-m) 0;
+        }
     }
 
     &__overview {

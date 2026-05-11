@@ -4,9 +4,14 @@
     gap: var(--dimension-xl);
     overflow-y: auto;
     
+    @media (--mobile) {
+        padding: var(--dimension-s) var(--dimension-m) var(--dimension-m);
+        gap: var(--dimension-l);
+    }
+    
     .input-section__wrapper {
-        flex-wrap: wrap;
-
+        width: 100%;
+        
         .input-group--email {
             flex: 1.5;
         }
@@ -40,8 +45,9 @@
         flex-direction: row;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: var(--dimension-xs);
+        gap: var(--dimension-m) calc(var(--dimension-xxl) * 3);
         padding: 0 var(--dimension-xl);
+        align-items: center;
 
         & > * {
             width: fit-content;
@@ -51,6 +57,14 @@
     section {
         display: grid;
         grid-template-columns: minmax(260px, 2fr) minmax(260px, 1fr);
+        
+        .account-settings__card {
+            min-height: fit-content;
+        }
+
+        @media (--laptop) {
+            display: flex;
+        }
     }
 }
 

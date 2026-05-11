@@ -6,6 +6,16 @@
     align-items: center;
     z-index: 95;
 
+    @media (--laptop) {
+        bottom: 30px;
+        left: 30px;
+    }
+
+    @media (--mobile) {
+        bottom: 20px;
+        left: 20px;
+    }
+
     &__popover {
         position: absolute;
         bottom: calc(100% + var(--dimension-s));
@@ -78,4 +88,6 @@
     color: var(--gray-color);
     font-size: 0.9rem;
     padding: var(--dimension-l) 0;
+    text-align: center;
+    margin: 0;
 }

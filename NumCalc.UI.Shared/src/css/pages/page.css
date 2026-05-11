@@ -6,6 +6,11 @@
     padding: 0 var(--dimension-m);
     flex-wrap: wrap;
 
+    @media (--laptop) {
+        padding: 0 var(--dimension-s);
+        flex-wrap: wrap;
+    }
+
     & > * {
         flex: 1;
     }

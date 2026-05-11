@@ -1,7 +1,7 @@
 .page__integration {
     display: flex;
     flex-direction: row;
-    gap: var(--dimension-xl);
+    gap: var(--dimension-l);
     flex-wrap: nowrap;
 
     & > * {
@@ -15,6 +15,11 @@
         display: flex;
         flex-direction: column;
         gap: var(--dimension-l);
+
+        @media (--laptop) {
+            flex-shrink: 0;
+            min-height: fit-content;
+        }
     }
 
     &__form {
@@ -26,24 +31,5 @@
         & > button {
             margin: var(--dimension-m) 0;
         }
-    }
-}
-
-.integration-result {
-    display: flex;
-    flex-direction: column;
-    gap: var(--dimension-l);
-    flex: 1;
-
-    &__answer {
-        font-family: var(--font-heading), monospace;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        padding: var(--dimension-s) var(--dimension-m);
-        border: var(--default-border);
-        border-left: 3px solid var(--primary-color);
-        border-radius: var(--border-radius-s);
-        background: var(--primary-background);
     }
 }

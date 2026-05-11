@@ -4,7 +4,7 @@
     gap: var(--dimension-xs);
     padding: var(--dimension-xs);
     width: 100%;
-    min-width: 320px;
+    min-width: 280px;
 
     &__wrapper {
         border-radius: var(--border-radius-m);
@@ -28,7 +28,7 @@
 
     &__field {
         width: 100%;
-        padding: var(--dimension-s) var(--dimension-m);
+        padding: var(--dimension-xs) 0 var(--dimension-xs) var(--dimension-s);
         font-size: 1.1rem;
         outline: none;
         border: none;
@@ -39,10 +39,23 @@
         background: transparent;
         cursor: text;
     }
+
+    math-field::part(menu-toggle) {
+        display: none !important;
+    }
+
+    math-field::part(virtual-keyboard-toggle)::after {
+        display: none !important;
+    }
     
     &__copy-btn, .button--ocr {
         flex: unset;
-        padding: 0 var(--dimension-l);
+        padding: 0 var(--dimension-m);
         flex-shrink: 0;
+        
+         svg {
+             width: 1.25rem;
+             height: 1.25rem;
+         }
     }
 }

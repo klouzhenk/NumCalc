@@ -17,18 +17,20 @@
                 </div>
                 @if (LastCalculationHistoryRecords is { Count: > 0 })
                 {
-                    <ul class="user-dashboard__list">
-                        @foreach (var item in LastCalculationHistoryRecords)
-                        {
-                            <li class="user-dashboard__item user-dashboard__item--grid">
-                                <span class="user-dashboard__item-name">@item.MethodName</span>
-                                <span class="user-dashboard__item-meta">@item.Type</span>
-                                <span class="user-dashboard__item-meta">@item.ResultSummary</span>
-                                <span class="user-dashboard__item-date">@($"{item.ExecutionTimeMs:F1} ms")</span>
-                                <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
-                            </li>
-                        }
-                    </ul>
+                    <div class="user-dashboard__list-wrapper">
+                        <ul class="user-dashboard__list user-dashboard__list--calculation">
+                            @foreach (var item in LastCalculationHistoryRecords)
+                            {
+                                <li class="user-dashboard__item user-dashboard__item--grid">
+                                    <span class="user-dashboard__item-name">@item.MethodName</span>
+                                    <span class="user-dashboard__item-meta">@item.Type</span>
+                                    <span class="user-dashboard__item-meta">@item.ResultSummary</span>
+                                    <span class="user-dashboard__item-date">@($"{item.ExecutionTimeMs:F1} ms")</span>
+                                    <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
                 else
                 {
@@ -47,18 +49,20 @@
                 </div>
                 @if (LastDownloadedFiles is { Count: > 0 })
                 {
-                    <ul class="user-dashboard__list">
-                        @foreach (var item in LastDownloadedFiles)
-                        {
-                            <li class="user-dashboard__item">
-                                <div class="user-dashboard__item-row">
-                                    <span class="user-dashboard__item-name">@item.FileName</span>
-                                    <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
-                                </div>
-                                <span class="user-dashboard__item-meta">@item.Type · @item.MethodName</span>
-                            </li>
-                        }
-                    </ul>
+                    <div class="user-dashboard__list-wrapper">
+                        <ul class="user-dashboard__list">
+                            @foreach (var item in LastDownloadedFiles)
+                            {
+                                <li class="user-dashboard__item">
+                                    <div class="user-dashboard__item-row">
+                                        <span class="user-dashboard__item-name">@item.FileName</span>
+                                        <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                                    </div>
+                                    <span class="user-dashboard__item-meta">@item.Type · @item.MethodName</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
                 else
                 {
@@ -74,18 +78,20 @@
                 </div>
                 @if (LastSavedInputsData is { Count: > 0 })
                 {
-                    <ul class="user-dashboard__list">
-                        @foreach (var item in LastSavedInputsData)
-                        {
-                            <li class="user-dashboard__item">
-                                <div class="user-dashboard__item-row">
-                                    <span class="user-dashboard__item-name">@item.Name</span>
-                                    <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
-                                </div>
-                                <span class="user-dashboard__item-meta">@item.Type</span>
-                            </li>
-                        }
-                    </ul>
+                    <div class="user-dashboard__list-wrapper">
+                        <ul class="user-dashboard__list">
+                            @foreach (var item in LastSavedInputsData)
+                            {
+                                <li class="user-dashboard__item">
+                                    <div class="user-dashboard__item-row">
+                                        <span class="user-dashboard__item-name">@item.Name</span>
+                                        <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
+                                    </div>
+                                    <span class="user-dashboard__item-meta">@item.Type</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
                 else
                 {

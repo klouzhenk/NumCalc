@@ -1,7 +1,7 @@
 .page__interpolation {
     display: flex;
     flex-direction: row;
-    gap: var(--dimension-xl);
+    gap: var(--dimension-l);
     flex-wrap: nowrap;
     height: 100%;
     overflow: hidden;
@@ -10,6 +10,11 @@
         flex: 1;
         min-height: 0;
         min-width: 0;
+
+        @media (--laptop) {
+            min-height: fit-content;
+            flex-shrink: 0;
+        }
     }
 }
 
@@ -19,6 +24,11 @@
         flex-direction: column;
         gap: var(--dimension-l);
         overflow: hidden;
+        
+        @media (--laptop) {
+            flex-shrink: 0;
+            min-height: fit-content;
+        }
     }
 
     &__form {
@@ -29,7 +39,7 @@
         min-height: 0;
         overflow: hidden;
         padding: var(--dimension-s);
-
+        
         & > button {
             flex-shrink: 0;
             margin: var(--dimension-m) 0;

@@ -1,12 +1,17 @@
 .page__differentiation {
     display: flex;
     flex-direction: row;
-    gap: var(--dimension-xl);
+    gap: var(--dimension-l);
     flex-wrap: nowrap;
 
     & > * {
         flex: 1;
         min-width: 0;
+
+        @media (--laptop) {
+            min-height: fit-content;
+            flex-shrink: 0;
+        }
     }
 }
 

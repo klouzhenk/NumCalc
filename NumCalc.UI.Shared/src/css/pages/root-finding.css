@@ -1,7 +1,7 @@
 ﻿.page__root-finding{
     display: flex;
     flex-direction: row;
-    gap:  var(--dimension-xl);
+    gap: var(--dimension-l);
     flex-wrap: nowrap;
     
     & > * {

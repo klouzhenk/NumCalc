@@ -7,6 +7,7 @@
     &__wrapper {
         overflow-x: auto;
         padding: var(--dimension-s) 0;
+        flex-shrink: 0;
     }
 
     &__row {
@@ -66,5 +67,9 @@
         border-radius: var(--border-radius-s);
         box-shadow: var(--secondary-shadow);
         width: 7.5rem;
+        
+        @media (--tablet) {
+            width: 4rem;
+        }
     }
 }

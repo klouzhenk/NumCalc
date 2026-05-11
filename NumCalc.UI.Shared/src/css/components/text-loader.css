@@ -1,0 +1,12 @@
+﻿.text-loader {
+    display: flex;
+    align-items: center;
+    gap: var(--dimension-s);
+    justify-content: center;
+}
+
+.text-loader::before {
+    content: "↻";
+    display: inline-block;
+    animation: spin 0.75s linear infinite;
+}

@@ -45,7 +45,12 @@ input[type="number"] {
 .input-section__wrapper{
     display: flex;
     flex-direction: row;
-    gap: var(--dimension-xl);
+    gap: var(--dimension-m) var(--dimension-xl);
+    flex-wrap: wrap;
+    align-items: flex-end;
+    
+    @media (--laptop) {
+    }
 
     & > * {
         flex: 1;
@@ -72,6 +77,7 @@ input[type="number"] {
     flex-direction: column;
     gap: var(--dimension-xs);
     padding:  var(--dimension-xs);
+    min-width: 100px;    
     
     &__label {
         font-family: var(--font-heading), monospace;

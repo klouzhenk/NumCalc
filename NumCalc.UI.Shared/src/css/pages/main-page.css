@@ -5,6 +5,10 @@
         flex-direction: column;
         gap: var(--dimension-xxl);
         padding: 0 calc(var(--dimension-xxl) * 1.5);
+
+        @media (--tablet) {
+            padding: 0 var(--dimension-xl);
+        }
         
         section {
             flex-direction: row;
@@ -28,7 +32,7 @@
     &__text {
         display: flex;
         flex-direction: column;
-        gap: var(--dimension-s);
+        gap: var(--dimension-m);
     }
 
     &__title {
@@ -147,6 +151,10 @@ section.main-how-it-works {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--dimension-xl);
     padding-bottom: var(--dimension-xxl);
+    
+    @media (--tablet) {
+        padding: 0 0 var(--dimension-xl);
+    }
 }
 
 .method-card {

@@ -80,11 +80,18 @@
     /* shadow*/
     --text-shadow: 0 2px 6px var(--gray-ultra-light-color);
     --secondary-shadow: 0 2px 6px var(--gray-ultra-light-color);
-    --component-shadow: 0 0 12px var(--gray-ultra-light-color);
+    --component-shadow: 0 0 clamp(6px, 2vw, 12px) var(--gray-ultra-light-color);
     --component-shadow--inner: inner 0 0 12px var(--gray-ultra-light-color);
     --active-shadow: 0 0 8px var(--primary-color);
 
     /* fonts */
     --font-heading: 'IBM Plex Mono', monospace;
     --font-body: 'Mulish', sans-serif;
+
+    /* breakpoints */
+    @custom-media --mobile (max-width: 480px);
+    @custom-media --tablet (max-width: 768px);
+    @custom-media --laptop (max-width: 1024px);
+    @custom-media --desktop (max-width: 1280px);
+    @custom-media --desktop-large (max-width: 1440px);
 }

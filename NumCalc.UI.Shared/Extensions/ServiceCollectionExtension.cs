@@ -45,7 +45,9 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddCalculationApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        const string baseApiUrl = "http://localhost:5229";
+        var baseApiUrl = configuration["Apis:CalculationApi:BaseUrl"]
+            ?? throw new InvalidOperationException("Missing configuration: Apis:CalculationApi:BaseUrl");
+
         services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
         {
             client.BaseAddress = new Uri(baseApiUrl);
@@ -53,14 +55,15 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    
+
     public static IServiceCollection AddUserApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthorizationCore();
         services.AddScoped<IAuthStateService, AuthStateService>();
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-        const string baseApiUrl = "http://localhost:5230";      // TODO : setup all APIs IP in the configuration
+        var baseApiUrl = configuration["Apis:UserApi:BaseUrl"]
+            ?? throw new InvalidOperationException("Missing configuration: Apis:UserApi:BaseUrl");
 
         services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
         {

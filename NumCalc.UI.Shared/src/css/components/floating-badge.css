@@ -12,6 +12,11 @@
     svg {
         fill: var(--primary-dark-color);
         transition: var(--default-transition);
+
+        @media (--mobile) {
+            width: 1rem;
+            height: 1rem;
+        }
     }
 
     &:hover {

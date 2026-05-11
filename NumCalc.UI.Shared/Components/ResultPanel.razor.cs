@@ -9,10 +9,16 @@ public partial class ResultPanel : ComponentBase
     [Parameter] public bool HasResult { get; set; }
     [Parameter] public RenderFragment? Header { get; set; }
 
+    private ResultPanelHeaderModal? _resultModal;
     private bool _showChart = true;
 
     protected override void OnParametersSet()
     {
         if (!HasResult) _showChart = true;
+    }
+
+    private void ShowResultModal()
+    {
+        _resultModal?.Show();
     }
 }

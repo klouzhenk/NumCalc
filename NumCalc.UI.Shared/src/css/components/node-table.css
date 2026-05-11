@@ -9,6 +9,10 @@
     min-height: 0;
     overflow-y: auto;
 
+    @media (--laptop) {
+        max-height: 200px;
+    }
+
     &__add-btn {
         border: none;
         border-radius: 50%;

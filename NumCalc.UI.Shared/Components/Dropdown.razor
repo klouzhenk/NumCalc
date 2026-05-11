@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<div class="dropdown__container @(_isOpen ? "open" : "")" @onmousedown:stopPropagation>
+<div class="dropdown__container @CssClass @(_isOpen ? "open" : "")" @onmousedown:stopPropagation>
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="dropdown__label">@Label</label>

@@ -8,6 +8,11 @@
     font-weight: 200;
     font-size: var(--remark-size);
     font-style: italic;
+    text-align: center;
+
+    @media (--laptop) {
+        --remark-size: 1rem;
+    }
 
     &::before {
         content: "\1F6C8";

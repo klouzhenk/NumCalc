@@ -3,31 +3,37 @@
     flex-direction: column;
     gap: var(--dimension-m);
 
+    @media (--laptop) {
+        min-height: 400px;
+    }
+
     &__header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: var(--dimension-m);
+
+        .floating-badge {
+            display: none;
+
+            @media (--tablet) {
+                display: inline-flex;
+            }
+        }
     }
     
     &__result {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: var(--dimension-xs) var(--dimension-l);
         flex: 1;
         min-width: 0;
+        overflow-x: auto;
+        font-size: 0.9rem;
+        color: var(--black-color);
 
-        > span {
-            font-family: var(--font-heading), monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            padding: var(--dimension-s) var(--dimension-m);
-            border: var(--default-border);
-            border-left: 3px solid var(--primary-color);
-            border-radius: var(--border-radius-s);
-            background: var(--primary-background);
-            flex-shrink: 0;
+        @media (--tablet) {
+            display: none;
         }
     }
     
@@ -45,12 +51,6 @@
         align-items: center;
     }
 
-    &__result {
-        font-size: 0.9rem;
-        color: var(--black-color);
-        flex-wrap: nowrap;
-    }
-
     &__pane {
         flex: 1;
         min-height: 0;
@@ -61,6 +61,24 @@
         &--steps {
             overflow-y: auto;
             padding: var(--dimension-m);
+
+            @media (--laptop) {
+                padding: var(--dimension-m) var(--dimension-xs);
+            }
         }
     }
+}
+
+.result-panel__result > span,
+.modal--result-panel-header .modal__body > span {
+    font-family: var(--font-heading), monospace;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-weight: 700;
+    color: var(--primary-color);
+    padding: var(--dimension-s) var(--dimension-m);
+    border: var(--default-border);
+    border-left: 3px solid var(--primary-color);
+    border-radius: var(--border-radius-s);
+    background: var(--primary-background);
+    flex-shrink: 0;
 }

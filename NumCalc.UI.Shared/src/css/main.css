@@ -10,6 +10,7 @@
 @import "layout/main-layout.css";
 
 /* components */
+@import "components/text-loader.css";
 @import "components/link.css";
 @import "components/language-selector.css";
 @import "components/divider.css";

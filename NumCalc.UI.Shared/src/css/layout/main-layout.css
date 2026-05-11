@@ -39,6 +39,17 @@ main{
     height: 100%;
     padding: 0 var(--dimension-xl) var(--dimension-xl);
     
+    &.page-wrapper__calculation {
+        @media (--laptop) {
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        @media (--mobile) {
+            padding: 0 var(--dimension-l) var(--dimension-l);
+        }
+    }
+    
     section {
         display: flex;
         flex-direction: column;
@@ -48,6 +59,12 @@ main{
         & > * {
             flex: 1;
             min-height: 0;
+        }
+
+        @media (--laptop) {
+            & .result-panel {
+                min-height: 400px;
+            }   
         }
     }
 }

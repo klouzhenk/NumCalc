@@ -6,6 +6,10 @@
     overflow-y: auto;
     flex: 1;
 
+    @media (--tablet) {
+        padding: 0;
+    }
+
     &__row {
         display: flex;
         flex-direction: row;
@@ -19,6 +23,10 @@
         color: var(--primary-color);
         flex-shrink: 0;
         min-width: 3rem;
+
+        @media (--tablet) {
+            display: none;
+        }
     }
 
     &__math-input {

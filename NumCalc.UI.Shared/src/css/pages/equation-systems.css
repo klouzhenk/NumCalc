@@ -1,6 +1,6 @@
 .page__equation-systems {
     display: flex;
-    gap: var(--dimension-xl);
+    gap: var(--dimension-l);
     
     & > * {
         flex: 1;
@@ -13,6 +13,10 @@
         display: flex;
         flex-direction: column;
         gap: var(--dimension-l);
+        
+        @media (--tablet) {
+            height: max-content;
+        }
     }
 
     &__form {

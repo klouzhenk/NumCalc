@@ -2,7 +2,7 @@
     <BodyContent>
         @if (_items is null)
         {
-            <p class="modal-state">@Localizer["Loading"]</p>
+            <p class="modal-state text-loader">@Localizer["Loading"]</p>
         }
         else if (_items.Count == 0)
         {

@@ -7,6 +7,10 @@
     font-weight: 700;
     font-size: 0.85rem;
     flex: 1;
+    
+    @media (--mobile) {
+        padding: var(--dimension-s) var(--dimension-xl);
+    }
 
     &--icon{
         flex: 0 0 auto;

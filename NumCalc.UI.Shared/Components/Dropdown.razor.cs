@@ -15,6 +15,7 @@ public partial class Dropdown<TItem> : ComponentBase, IDisposable
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public List<TItem> SelectedItems { get; set; } = [];
     [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
+    [Parameter] public string? CssClass { get; set; }
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
 
