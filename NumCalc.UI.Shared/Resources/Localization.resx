@@ -26,10 +26,10 @@
     <value>Please select at least one method for benchmarking</value>
   </data>
   <data name="EquationIsRequired" xml:space="preserve">
-    <value>EquationIsRequired</value>
+    <value>Equation is required</value>
   </data>
   <data name="ToleranceMustBeReasonable" xml:space="preserve">
-    <value>ToleranceMustBeReasonable</value>
+    <value>Tolerance must be between 1e-10 and 0.1</value>
   </data>
   <data name="ExportPdf" xml:space="preserve">
     <value>Export PDF</value>
@@ -47,7 +47,7 @@
     <value>Numerical Methods Calculator</value>
   </data>
   <data name="MainHeroSubtitle" xml:space="preserve">
-    <value>A numerical methods computation platform for root finding, interpolation, integration, and more.</value>
+    <value>A numerical methods computation platform for root finding, interpolation, integration, and more</value>
   </data>
   <data name="HowItWorksTitle" xml:space="preserve">
     <value>How it works</value>
@@ -56,19 +56,19 @@
     <value>Enter expression</value>
   </data>
   <data name="HowItWorksStep1Desc" xml:space="preserve">
-    <value>Type your function or paste data points into the input field.</value>
+    <value>Type your function or paste data points into the input field</value>
   </data>
   <data name="HowItWorksStep2Title" xml:space="preserve">
     <value>Choose a method</value>
   </data>
   <data name="HowItWorksStep2Desc" xml:space="preserve">
-    <value>Select the numerical algorithm that fits your problem.</value>
+    <value>Select the numerical algorithm that fits your problem</value>
   </data>
   <data name="HowItWorksStep3Title" xml:space="preserve">
     <value>View results &amp; export</value>
   </data>
   <data name="HowItWorksStep3Desc" xml:space="preserve">
-    <value>Explore step-by-step solutions, interactive charts, and export to PDF.</value>
+    <value>Explore step-by-step solutions, interactive charts, and export to PDF</value>
   </data>
   <data name="FeatureStepByStep" xml:space="preserve">
     <value>Step-by-step solutions</value>
@@ -86,43 +86,43 @@
     <value>Root Finding</value>
   </data>
   <data name="RootsDesc" xml:space="preserve">
-    <value>Find where f(x) = 0 using iterative numerical methods.</value>
+    <value>Find where f(x) = 0 using iterative numerical methods</value>
   </data>
   <data name="EquationSystems" xml:space="preserve">
     <value>Equation Systems</value>
   </data>
   <data name="EquationSystemsDesc" xml:space="preserve">
-    <value>Solve linear and non-linear systems of equations.</value>
+    <value>Solve linear and non-linear systems of equations</value>
   </data>
   <data name="Interpolation" xml:space="preserve">
     <value>Interpolation</value>
   </data>
   <data name="InterpolationDesc" xml:space="preserve">
-    <value>Estimate f(x) between known data points using polynomials or splines.</value>
+    <value>Estimate f(x) between known data points using polynomials or splines</value>
   </data>
   <data name="Differentiation" xml:space="preserve">
     <value>Differentiation</value>
   </data>
   <data name="DifferentiationDesc" xml:space="preserve">
-    <value>Numerically compute first and second derivatives of functions.</value>
+    <value>Numerically compute first and second derivatives of functions</value>
   </data>
   <data name="Integration" xml:space="preserve">
     <value>Integration</value>
   </data>
   <data name="IntegrationDesc" xml:space="preserve">
-    <value>Calculate definite integrals using rectangle, trapezoid, or Simpson rules.</value>
+    <value>Calculate definite integrals using rectangle, trapezoid, or Simpson rules</value>
   </data>
   <data name="Optimization" xml:space="preserve">
     <value>Optimization</value>
   </data>
   <data name="OptimizationDesc" xml:space="preserve">
-    <value>Find the minimum of a function in one or multiple dimensions.</value>
+    <value>Find the minimum of a function in one or multiple dimensions</value>
   </data>
   <data name="Ode" xml:space="preserve">
     <value>Differential Equations</value>
   </data>
   <data name="OdeDesc" xml:space="preserve">
-    <value>Solve ordinary differential equations step by step with initial conditions.</value>
+    <value>Solve ordinary differential equations step by step with initial conditions</value>
   </data>
   <data name="Method_Bisection" xml:space="preserve">
     <value>Bisection</value>
@@ -200,55 +200,55 @@
     <value>Picard</value>
   </data>
   <data name="Hint_Tolerance" xml:space="preserve">
-    <value>Maximum allowed error between successive iterations. Smaller values give more precise results but require more iterations (e.g. 0.0001).</value>
+    <value>Maximum allowed error between successive iterations. Smaller values give more precise results but require more iterations (e.g. 0.0001)</value>
   </data>
   <data name="Hint_StepSize" xml:space="preserve">
-    <value>Step size h used in finite-difference formulas. Smaller h reduces truncation error but increases round-off error. Default 0.001 is a safe starting point.</value>
+    <value>Step size h used in finite-difference formulas. Smaller h reduces truncation error but increases round-off error. Default 0.001 is a safe starting point</value>
   </data>
   <data name="Hint_InitialGuess" xml:space="preserve">
-    <value>Starting point x₀ for the iterative method. Choose a value close to the expected root or solution for faster convergence.</value>
+    <value>Starting point x₀ for the iterative method. Choose a value close to the expected root or solution for faster convergence</value>
   </data>
   <data name="Hint_MaxIterations" xml:space="preserve">
-    <value>Maximum number of iterations allowed before stopping. Increase if the method has not yet converged within the tolerance.</value>
+    <value>Maximum number of iterations allowed before stopping. Increase if the method has not yet converged within the tolerance</value>
   </data>
   <data name="Hint_LowerBound" xml:space="preserve">
-    <value>Left endpoint a of the search interval [a, b]. Must be less than the upper bound.</value>
+    <value>Left endpoint a of the search interval [a, b]. Must be less than the upper bound</value>
   </data>
   <data name="Hint_UpperBound" xml:space="preserve">
-    <value>Right endpoint b of the search interval [a, b]. Must be greater than the lower bound.</value>
+    <value>Right endpoint b of the search interval [a, b]. Must be greater than the lower bound</value>
   </data>
   <data name="Hint_QueryPoint" xml:space="preserve">
-    <value>The point x* at which to evaluate the interpolated or differentiated value.</value>
+    <value>The point x* at which to evaluate the interpolated or differentiated value</value>
   </data>
   <data name="Hint_DerivativeOrder" xml:space="preserve">
-    <value>Order of the derivative to compute: 1 for f'(x), 2 for f''(x).</value>
+    <value>Order of the derivative to compute: 1 for f'(x), 2 for f''(x)</value>
   </data>
   <data name="Hint_LearningRate" xml:space="preserve">
-    <value>Step multiplier α for gradient descent. Too large causes divergence; too small causes slow convergence. Typical range: 0.001 – 0.1.</value>
+    <value>Step multiplier α for gradient descent. Too large causes divergence; too small causes slow convergence. Typical range: 0.001 – 0.1</value>
   </data>
   <data name="Hint_PicardOrder" xml:space="preserve">
-    <value>Number of successive approximation steps k in Picard's method. Higher values are more accurate near x₀ but diverge further away.</value>
+    <value>Number of successive approximation steps k in Picard's method. Higher values are more accurate near x₀ but diverge further away</value>
   </data>
   <data name="Hint_XNodes" xml:space="preserve">
-    <value>Interpolation nodes xᵢ — the x-coordinates of the known data points. Must be distinct and sorted in ascending order.</value>
+    <value>Interpolation nodes xᵢ — the x-coordinates of the known data points. Must be distinct and sorted in ascending order</value>
   </data>
   <data name="AboutThisTopic" xml:space="preserve">
     <value>About this topic</value>
   </data>
   <data name="ExpressionRequired" xml:space="preserve">
-    <value>Please enter a function expression.</value>
+    <value>Please enter a function expression</value>
   </data>
   <data name="StartMustBeLessThanEnd" xml:space="preserve">
-    <value>Start point must be less than end point.</value>
+    <value>Start point must be less than end point</value>
   </data>
   <data name="SelectAtLeastOneMethod" xml:space="preserve">
-    <value>Please select at least one method.</value>
+    <value>Please select at least one method</value>
   </data>
   <data name="ExpressionInvalid" xml:space="preserve">
-    <value>The expression contains a syntax error.</value>
+    <value>The expression contains a syntax error</value>
   </data>
   <data name="ExpressionOnlyX" xml:space="preserve">
-    <value>The expression must contain only the variable x.</value>
+    <value>The expression must contain only the variable x</value>
   </data>
   <data name="Benchmark" xml:space="preserve">
     <value>Benchmark</value>
@@ -332,7 +332,7 @@
     <value>Select saved inputs</value>
   </data>
   <data name="NoSavedInputsForType" xml:space="preserve">
-    <value>No saved inputs for this calculation type.</value>
+    <value>No saved inputs for this calculation type</value>
   </data>
   <data name="ContinueAsGuest" xml:space="preserve">
     <value>Continue as guest</value>
@@ -341,7 +341,7 @@
     <value>My Data</value>
   </data>
   <data name="DashboardDesc" xml:space="preserve">
-    <value>Overview of your recent calculations, saved inputs, and exported files.</value>
+    <value>Overview of your recent calculations, saved inputs, and exported files</value>
   </data>
   <data name="CalculationHistory" xml:space="preserve">
     <value>Calculation History</value>
@@ -356,7 +356,7 @@
     <value>View all</value>
   </data>
   <data name="NoData" xml:space="preserve">
-    <value>No records yet.</value>
+    <value>No records yet</value>
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
@@ -479,10 +479,10 @@
     <value>Forgot password?</value>
   </data>
   <data name="ForgotPasswordIntro" xml:space="preserve">
-    <value>Enter the email associated with your account and we will send you a link to reset your password.</value>
+    <value>Enter the email associated with your account and we will send you a link to reset your password</value>
   </data>
   <data name="ForgotPasswordSubmittedNotice" xml:space="preserve">
-    <value>If an account with that email exists, we have sent a link to reset your password. The link expires in 30 minutes.</value>
+    <value>If an account with that email exists, we have sent a link to reset your password. The link expires in 30 minutes</value>
   </data>
   <data name="SendResetLink" xml:space="preserve">
     <value>Send reset link</value>
@@ -491,10 +491,10 @@
     <value>Back to login</value>
   </data>
   <data name="ResetPasswordIntro" xml:space="preserve">
-    <value>Choose a new password for your account.</value>
+    <value>Choose a new password for your account</value>
   </data>
   <data name="ResetTokenMissing" xml:space="preserve">
-    <value>The reset link is invalid. Please request a new password reset email.</value>
+    <value>The reset link is invalid. Please request a new password reset email</value>
   </data>
   <data name="NewPassword" xml:space="preserve">
     <value>New password</value>
@@ -542,7 +542,7 @@
     <value>Account settings</value>
   </data>
   <data name="AccountSettingsDesc" xml:space="preserve">
-    <value>Manage your profile, change your password, or delete your account.</value>
+    <value>Manage your profile, change your password, or delete your account</value>
   </data>
   <data name="ProfileInformation" xml:space="preserve">
     <value>Profile information</value>
@@ -566,10 +566,10 @@
     <value>Delete account</value>
   </data>
   <data name="DeleteAccountDesc" xml:space="preserve">
-    <value>Permanently delete your account along with your history, saved inputs and exported files. This action cannot be undone.</value>
+    <value>Permanently delete your account along with your history, saved inputs and exported files. This action cannot be undone</value>
   </data>
   <data name="DeleteAccountConfirmDesc" xml:space="preserve">
-    <value>Enter your current password to confirm account deletion.</value>
+    <value>Enter your current password to confirm account deletion</value>
   </data>
   <data name="DeleteAccountConfirm" xml:space="preserve">
     <value>Delete my account</value>
@@ -578,6 +578,84 @@
     <value>Confirm changes</value>
   </data>
   <data name="ConfirmChangesDesc" xml:space="preserve">
-    <value>Enter your current password to apply the changes.</value>
+    <value>Enter your current password to apply the changes</value>
+  </data>
+  <data name="AllSelected" xml:space="preserve">
+    <value>All selected</value>
+  </data>
+  <data name="AnalysisMode" xml:space="preserve">
+    <value>Analysis mode</value>
+  </data>
+  <data name="ApplyAndRecognize" xml:space="preserve">
+    <value>Apply and recognize</value>
+  </data>
+  <data name="ArgumentX" xml:space="preserve">
+    <value>Argument x</value>
+  </data>
+  <data name="Calculate" xml:space="preserve">
+    <value>Calculate</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="ClickCalculateToViewResult" xml:space="preserve">
+    <value>Click Calculate to view the result</value>
+  </data>
+  <data name="Copied" xml:space="preserve">
+    <value>Copied</value>
+  </data>
+  <data name="CopyLaTeX" xml:space="preserve">
+    <value>Copy LaTeX</value>
+  </data>
+  <data name="ErrorOccurredWhileApplyingAndRecognizing" xml:space="preserve">
+    <value>An error occurred while applying and recognizing</value>
+  </data>
+  <data name="Expression" xml:space="preserve">
+    <value>Expression</value>
+  </data>
+  <data name="FunctionValue" xml:space="preserve">
+    <value>Function value</value>
+  </data>
+  <data name="InterpolatedValue" xml:space="preserve">
+    <value>Interpolated value</value>
+  </data>
+  <data name="Iterations" xml:space="preserve">
+    <value>Iterations</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="NoRecords" xml:space="preserve">
+    <value>No records found</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="RedesignYourImage" xml:space="preserve">
+    <value>Redesign your image</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Root" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="SelectItems" xml:space="preserve">
+    <value>Select items</value>
+  </data>
+  <data name="ThereIsNoDescriptionToStep" xml:space="preserve">
+    <value>No description for this step</value>
+  </data>
+  <data name="UserDashboard" xml:space="preserve">
+    <value>User dashboard</value>
   </data>
 </root>

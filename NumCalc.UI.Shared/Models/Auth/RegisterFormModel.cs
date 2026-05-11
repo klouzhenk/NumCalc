@@ -1,25 +1,29 @@
 using System.ComponentModel.DataAnnotations;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Models.Auth;
 
 public class RegisterFormModel : IValidatableObject
 {
-    [Required(ErrorMessage = "UsernameRequired")]
+    [Required(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "UsernameRequired")]
     public string Username { get; set; } = string.Empty;
-    
-    [Required(ErrorMessage = "EmailRequired")]
-    [EmailAddress(ErrorMessage = "EmailIsNotValid")]
+
+    [Required(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "EmailRequired")]
+    [EmailAddress(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "EmailIsNotValid")]
     public string Email { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "PasswordRequired")]
+    [Required(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "PasswordRequired")]
     public string Password { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "ConfirmPasswordRequired")]
+    [Required(ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "ConfirmPasswordRequired")]
     public string ConfirmPassword { get; set; } = string.Empty;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (Password != ConfirmPassword)
-            yield return new ValidationResult("PasswordsDoNotMatch", [nameof(ConfirmPassword)]);
+        {
+            var message = Localization.ResourceManager.GetString("PasswordsDoNotMatch") ?? "PasswordsDoNotMatch";
+            yield return new ValidationResult(message, [nameof(ConfirmPassword)]);
+        }
     }
 }

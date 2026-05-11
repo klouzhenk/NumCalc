@@ -120,8 +120,8 @@
         <Header>
             @if (Mode is AnalysisMode.Single && Result is not null)
             {
-                <span>@Localizer["Root"] = @Result.Root?.ToString("G6")</span>
-                <span>@Localizer["ExecutionTime"] = @Result.ExecutionTimeMs @Localizer["ms"]</span>
+                <span>@Localizer["Root"] = @Result.Root.FormatResult(_formData.Tolerance)</span>
+                <span>@Localizer["ExecutionTime"] = @Result.ExecutionTimeMs.FormatResult() @Localizer["ms"]</span>
                 <span>@Localizer["Iterations"] = @Result.Iterations</span>
             }
             else
@@ -149,11 +149,11 @@
                         <span class="comparison-result__item-title">@Localizer[benchmarkResult.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
                             @{
-                                var root = benchmarkResult.Root.HasValue ? benchmarkResult.Root.Value.RangeNumber(_formData.Tolerance) : string.Empty;
+                                var root = benchmarkResult.Root.FormatResult(_formData.Tolerance);
                             }
                             <span class="comparison-result__item-subtitle">@Localizer["Root"]</span>: @root &nbsp;|&nbsp;
                             <span class="comparison-result__item-subtitle">@Localizer["Iterations"]</span>: @benchmarkResult.Iterations &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @benchmarkResult.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

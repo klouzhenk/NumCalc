@@ -36,13 +36,6 @@ public partial class Optimization : CalculationPage<Optimization>
         Result = null;
         ComparisonResult = null;
     }
-    private string? _lastExpression;
-    private double _lastLowerBound;
-    private double _lastUpperBound;
-    private double _lastTolerance;
-    private List<double>? _lastInitialPoint;
-    private double _lastLearningRate;
-    private int _lastMaxIterations;
 
     private bool IsChartVisible => Result?.ChartData is not null;
 
@@ -70,14 +63,6 @@ public partial class Optimization : CalculationPage<Optimization>
             ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetOptimizationComparisonAsync(comparisonRequest));
             return;
         }
-        _lastExpression = formData.FunctionExpression;
-        _lastLowerBound = formData.LowerBound;
-        _lastUpperBound = formData.UpperBound;
-        _lastTolerance = formData.Tolerance;
-        _lastInitialPoint = formData.InitialPoint;
-        _lastLearningRate = formData.LearningRate;
-        _lastMaxIterations = formData.MaxIterations;
-
         Func<Task<OptimizationResponse?>> apiCall = _method switch
         {
             OptimizationMethod.UniformSearch => () => CalculationApiService.OptimizeUniformSearchAsync(new OptimizationRequest
@@ -133,9 +118,9 @@ public partial class Optimization : CalculationPage<Optimization>
                 inputs["Upper Bound"] = formData.UpperBound.ToString("G");
             }
 
-            var resultSummary = $"f(x*) = {Result.MinimumValue:G10}";
+            var resultSummary = $"f(x*) = {Result.MinimumValue.FormatResult(formData.Tolerance)}";
             if (Result.ArgMinX.HasValue)
-                resultSummary += $", x* = {Result.ArgMinX.Value:G10}";
+                resultSummary += $", x* = {Result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
 
             await TrySaveHistoryAsync(new SaveCalculationRecordRequest
             {
@@ -153,12 +138,14 @@ public partial class Optimization : CalculationPage<Optimization>
     private async Task UpdateChart()
     {
         if (Result?.ChartData is null) return;
+        if (_input is null) return;
 
+        var tolerance = (await _input.GetFormData()).Tolerance;
         var is3D = Result.ChartData.Any(p => p.Z.HasValue);
 
         if (is3D)
         {
-            await UpdateChart3dAsync();
+            await UpdateChart3dAsync(tolerance);
             return;
         }
 
@@ -200,6 +187,7 @@ public partial class Optimization : CalculationPage<Optimization>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(tolerance),
             XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = series
@@ -208,7 +196,7 @@ public partial class Optimization : CalculationPage<Optimization>
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
 
-    private async Task UpdateChart3dAsync()
+    private async Task UpdateChart3dAsync(double tolerance)
     {
         var surfaceData = Result!.ChartData!
             .Where(p => p is { X: not null, Y: not null, Z: not null })
@@ -248,6 +236,7 @@ public partial class Optimization : CalculationPage<Optimization>
         {
             ContainerId = ChartContainerId,
             ShowLegend = true,
+            Decimals = MathUtils.DecimalsFromTolerance(tolerance),
             XAxis = new ChartAxis { Title = "x" },
             YAxis = new ChartAxis { Title = "y" },
             ZAxis = new ChartAxis { Title = "f(x, y)" },
@@ -274,35 +263,37 @@ public partial class Optimization : CalculationPage<Optimization>
 
     private async Task ExportPdfAsync()
     {
-        if (Result is null) return;
+        if (Result is null || _input is null) return;
+
+        var formData = await _input.GetFormData();
 
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = _method.ToString(),
             ["Goal"] = _maximize ? "Maximize" : "Minimize",
-            ["Tolerance"] = _lastTolerance.ToString("G")
+            ["Tolerance"] = formData.Tolerance.ToString("G")
         };
-        if (!string.IsNullOrWhiteSpace(_lastExpression))
-            inputs["Expression"] = _lastExpression;
+        if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            inputs["Expression"] = formData.FunctionExpression;
 
         if (_method is OptimizationMethod.GradientDescent)
         {
-            if (_lastInitialPoint is { Count: > 0 })
-                inputs["Initial Point"] = $"({string.Join(", ", _lastInitialPoint)})";
-            inputs["Learning Rate"] = _lastLearningRate.ToString("G");
-            inputs["Max Iterations"] = _lastMaxIterations.ToString();
+            if (formData.InitialPoint is { Count: > 0 })
+                inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint)})";
+            inputs["Learning Rate"] = formData.LearningRate.ToString("G");
+            inputs["Max Iterations"] = formData.MaxIterations.ToString();
         }
         else
         {
-            inputs["Lower Bound"] = _lastLowerBound.ToString("G");
-            inputs["Upper Bound"] = _lastUpperBound.ToString("G");
+            inputs["Lower Bound"] = formData.LowerBound.ToString("G");
+            inputs["Upper Bound"] = formData.UpperBound.ToString("G");
         }
 
-        var resultStr = $"f(x*) = {Result.MinimumValue:G10}";
+        var resultStr = $"f(x*) = {Result.MinimumValue.FormatResult(formData.Tolerance)}";
         if (Result.ArgMinX.HasValue)
-            resultStr += $", x* = {Result.ArgMinX.Value:G10}";
+            resultStr += $", x* = {Result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
         else if (Result.ArgMinPoint is { Count: > 0 })
-            resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.ToString("G10")))})";
+            resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
 
         await ExportPdfCoreAsync(
             methodName: $"Optimization — {_method}",

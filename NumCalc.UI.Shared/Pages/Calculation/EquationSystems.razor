@@ -106,7 +106,7 @@
                 <div class="equation-systems-result__roots">
                     @for (var i = 0; i < Result?.Roots?.Count; i++)
                     {
-                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].ToString("G6")</span>
+                        <span>x<sub>@(i + 1)</sub> = @Result.Roots[i].FormatResult(_equationList?.Tolerance)</span>
                     }
                 </div>
             }
@@ -136,10 +136,10 @@
                         <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
-                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r.FormatResult()}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>
@@ -154,10 +154,10 @@
                         <div class="comparison-result__item-text">
                             @if (item.Roots is { Count: > 0 })
                             {
-                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))</span>
+                                <span>@string.Join(", ", item.Roots.Select((r, i) => $"x{i + 1} = {r.FormatResult(_equationList?.Tolerance)}"))</span>
                                 <span> &nbsp;|&nbsp; </span>
                             }
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

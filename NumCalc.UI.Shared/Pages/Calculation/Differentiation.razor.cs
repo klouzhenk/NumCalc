@@ -185,6 +185,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = series

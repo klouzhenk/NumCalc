@@ -55,7 +55,7 @@
         <Header>
             @if (_analysisMode is AnalysisMode.Single && Result is not null)
             {
-                <span>x* = @Result!.InterpolatedValue.ToString("G6")</span>
+                <span>x* = @Result!.InterpolatedValue.FormatResult()</span>
                 <LatexDisplay Latex="@Result?.PolynomialLatex" Prefix="P(x) = " AdditionalCssClass="result-panel__formula"/>
             }
             else
@@ -82,8 +82,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">@Localizer["InterpolatedValue"]</span>: @(item.InterpolatedValue?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">@Localizer["InterpolatedValue"]</span>: @(item.InterpolatedValue.HasValue ? item.InterpolatedValue.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

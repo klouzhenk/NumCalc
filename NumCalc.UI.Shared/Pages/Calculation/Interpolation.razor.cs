@@ -126,6 +126,7 @@ public partial class Interpolation : CalculationPage<Interpolation>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis
             {
                 Title = Localizer["ArgumentX"],

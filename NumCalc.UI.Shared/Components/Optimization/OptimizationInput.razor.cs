@@ -15,6 +15,7 @@ public partial class OptimizationInput : ComponentBase
     private double _upperBound = 1;
     private int _points = 100;
     private double _tolerance = 1e-6;
+    public double Tolerance => _tolerance;
 
     // Gradient descent fields
     private readonly List<double> _initialPoint = [0.0];

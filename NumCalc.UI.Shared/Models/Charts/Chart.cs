@@ -12,4 +12,5 @@ public class Chart
     
     public bool ShowLegend { get; set; } = false;
     public string? TooltipSuffix { get; set; }
+    public int? Decimals { get; set; }
 }

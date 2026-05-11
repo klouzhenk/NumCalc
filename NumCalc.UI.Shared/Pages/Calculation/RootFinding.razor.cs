@@ -120,7 +120,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
                     ["End"] = _formData.EndPoint.ToString("G"),
                     ["Tolerance"] = _formData.Tolerance.ToString("G")
                 }),
-                ResultSummary = Result.Root.HasValue ? $"Root: {Result.Root.Value:G10}" : "No root found",
+                ResultSummary = Result.Root.HasValue ? $"Root: {Result.Root.Value.FormatResult(_formData.Tolerance)}" : "No root found",
                 ExecutionTimeMs = Result.ExecutionTimeMs
             });
 
@@ -202,6 +202,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
         {
             ContainerId = ChartContainerId,
             Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(_formData.Tolerance),
             XAxis = new ChartAxis
             {
                 Min = min,
@@ -265,7 +266,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
         inputs["Tolerance"] = _formData.Tolerance.ToString("G");
 
         var resultStr = Result.Root.HasValue
-            ? $"Root: {Result.Root.Value:G10}    Iterations: {Result.Iterations}"
+            ? $"Root: {Result.Root.Value.FormatResult(_formData.Tolerance)}    Iterations: {Result.Iterations}"
             : "No root found";
 
         await ExportPdfCoreAsync(

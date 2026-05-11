@@ -64,7 +64,7 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>y(@(Result!.SolutionPoints?.LastOrDefault()?.X?.ToString("G6") ?? "?")) ≈ @Result.SolutionPoints?.LastOrDefault()?.Y?.ToString("G6")</span>
+                <span>y(@(Result!.SolutionPoints?.LastOrDefault()?.X.FormatResult() ?? "?")) ≈ @Result.SolutionPoints?.LastOrDefault()?.Y.FormatResult()</span>
                 <LatexDisplay Latex="@Result.PolynomialLatex" AdditionalCssClass="result-panel__formula" />
             }
             else
@@ -91,8 +91,8 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">y(x*)</span>: @(item.FinalY?.ToString("G6") ?? "—") &nbsp;|&nbsp;
-                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.ToString("F3") @Localizer["ms"]
+                            <span class="comparison-result__item-subtitle">y(x*)</span>: @(item.FinalY.HasValue ? item.FinalY.Value.FormatResult() : "—") &nbsp;|&nbsp;
+                            <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]
                         </div>
                     </ItemTemplate>
                 </ComparisonResultList>

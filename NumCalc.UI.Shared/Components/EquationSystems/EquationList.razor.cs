@@ -9,7 +9,7 @@ public partial class EquationList : ComponentBase
 
     private MathInput[] MathInputs { get; set; } = [];
     private double[] InitialGuess { get; set; } = [];
-    private double Tolerance { get; set; } = 1e-6;
+    public double Tolerance { get; set; } = 1e-6;
     private int MaxIterations { get; set; } = 500;
 
     protected override void OnParametersSet()
