@@ -1,44 +1,84 @@
-﻿<TopicInfo Title="Numerical Differentiation" Subtitle="Approximate f'(x) and f''(x) from function values">
+@inherits TopicInfoComponentBase
+
+<TopicInfo Title="@Localize("Numerical Differentiation", "Чисельне диференціювання")"
+           Subtitle="@Localize("Approximate f'(x) and f''(x) from function values", "Наближення f'(x) та f''(x) за значеннями функції")">
     <p class="topic-info__overview">
-        Numerical differentiation estimates derivatives using finite differences
-        or polynomial differentiation. The step size $h$ controls the trade-off
-        between truncation error and round-off error.
+        @Localize(
+            "Numerical differentiation estimates derivatives using finite differences or polynomial differentiation. The step size $h$ controls the trade-off between truncation error and round-off error.",
+            "Чисельне диференціювання обчислює похідні за допомогою скінченних різниць або диференціювання полінома. Крок $h$ керує балансом між похибкою усічення та похибкою округлення."
+        )
     </p>
 
     <div class="topic-info__cards">
         <div class="topic-info__card">
-            <h3>Forward Difference</h3>
+            <h3>@Localize("Forward Difference", "Різниця вперед")</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x)}{h}, \quad O(h)$$</div>
             <div class="topic-info__formula">$$f''(x) \approx \frac{f(x+2h) - 2f(x+h) + f(x)}{h^2}, \quad O(h)$$</div>
-            <p>Uses function values at $x$ and $x+h$. First-order accuracy.
-            Simple but asymmetric — error depends on the direction chosen.</p>
-            <p class="topic-info__limitation">$O(h)$ truncation error; too small $h$ causes catastrophic cancellation.</p>
+            <p>
+                @Localize(
+                    "Uses function values at $x$ and $x+h$. First-order accuracy. Simple but asymmetric — error depends on the direction chosen.",
+                    "Використовує значення функції в $x$ та $x+h$. Перший порядок точності. Простий, але несиметричний — похибка залежить від обраного напрямку."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "$O(h)$ truncation error; too small $h$ causes catastrophic cancellation.",
+                    "Похибка усічення $O(h)$; занадто малий $h$ призводить до катастрофічної втрати точності."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Backward Difference</h3>
+            <h3>@Localize("Backward Difference", "Різниця назад")</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x) - f(x-h)}{h}, \quad O(h)$$</div>
             <div class="topic-info__formula">$$f''(x) \approx \frac{f(x) - 2f(x-h) + f(x-2h)}{h^2}, \quad O(h)$$</div>
-            <p>Mirror image of forward difference. Same $O(h)$ accuracy. Useful
-            at right-hand boundaries where forward values are unavailable.</p>
-            <p class="topic-info__limitation">Same limitations as forward difference.</p>
+            <p>
+                @Localize(
+                    "Mirror image of forward difference. Same $O(h)$ accuracy. Useful at right-hand boundaries where forward values are unavailable.",
+                    "Дзеркальний аналог різниці вперед. Така ж точність $O(h)$. Корисний на правій межі, де значення «попереду» недоступні."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Same limitations as forward difference.",
+                    "Ті самі обмеження, що й у різниці вперед."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Central Difference</h3>
+            <h3>@Localize("Central Difference", "Центральна різниця")</h3>
             <div class="topic-info__formula">$$f'(x) \approx \frac{f(x+h) - f(x-h)}{2h}, \quad O(h^2)$$</div>
             <div class="topic-info__formula">$$f''(x) \approx \frac{f(x+h) - 2f(x) + f(x-h)}{h^2}, \quad O(h^2)$$</div>
-            <p>Uses symmetric points around $x$. Second-order accuracy — much
-            more accurate than forward/backward for the same $h$.</p>
-            <p class="topic-info__limitation">Requires function values on both sides; $O(h^2)$ still limited for very small $h$.</p>
+            <p>
+                @Localize(
+                    "Uses symmetric points around $x$. Second-order accuracy — much more accurate than forward/backward for the same $h$.",
+                    "Використовує симетричні точки навколо $x$. Другий порядок точності — значно точніше, ніж різниці вперед/назад при тому ж $h$."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Requires function values on both sides; $O(h^2)$ still limited for very small $h$.",
+                    "Потребує значень функції з обох боків; $O(h^2)$ все одно обмежений при дуже малих $h$."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Lagrange Derivative</h3>
+            <h3>@Localize("Lagrange Derivative", "Похідна полінома Лагранжа")</h3>
             <div class="topic-info__formula">$$f'(x^*) = P'(x^*), \quad P = \text{Lagrange interpolant}$$</div>
-            <p>Differentiates the Lagrange interpolating polynomial symbolically and
-            evaluates at $x^*$. More accurate for smooth functions over many nodes.</p>
-            <p class="topic-info__limitation">Accuracy depends on node placement; Runge's phenomenon affects high-degree cases.</p>
+            <p>
+                @Localize(
+                    "Differentiates the Lagrange interpolating polynomial symbolically and evaluates at $x^*$. More accurate for smooth functions over many nodes.",
+                    "Символьно диференціює інтерполяційний поліном Лагранжа та обчислює в точці $x^*$. Точніше для гладких функцій з великою кількістю вузлів."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Accuracy depends on node placement; Runge's phenomenon affects high-degree cases.",
+                    "Точність залежить від розміщення вузлів; явище Рунге впливає на випадки з високим степенем."
+                )
+            </p>
         </div>
     </div>
 </TopicInfo>

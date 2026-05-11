@@ -1,34 +1,64 @@
-﻿<TopicInfo Title="Numerical Integration" Subtitle="Approximate ∫f(x)dx over [a, b]">
+@inherits TopicInfoComponentBase
+
+<TopicInfo Title="@Localize("Numerical Integration", "Чисельне інтегрування")"
+           Subtitle="@Localize("Approximate ∫f(x)dx over [a, b]", "Наближення ∫f(x)dx на відрізку [a, b]")">
     <p class="topic-info__overview">
-        Numerical integration (quadrature) approximates the definite integral
-        $\int_a^b f(x)\,dx$ by summing weighted function evaluations over
-        sub-intervals. More sub-intervals $n$ reduces the error.
+        @Localize(
+            "Numerical integration (quadrature) approximates the definite integral $\\int_a^b f(x)\\,dx$ by summing weighted function evaluations over sub-intervals. More sub-intervals $n$ reduces the error.",
+            "Чисельне інтегрування (квадратура) наближає визначений інтеграл $\\int_a^b f(x)\\,dx$ як суму зважених значень функції на підінтервалах. Більше підінтервалів $n$ зменшує похибку."
+        )
     </p>
 
     <div class="topic-info__cards">
         <div class="topic-info__card">
-            <h3>Rectangle Rule</h3>
+            <h3>@Localize("Rectangle Rule", "Метод прямокутників")</h3>
             <div class="topic-info__formula">$$\int_a^b f(x)\,dx \approx h \sum_{i=0}^{n-1} f(x_i^*), \quad h = \frac{b-a}{n}$$</div>
-            <p>Approximates each sub-interval with a rectangle. Three variants:
-                left ($x_i^* = x_i$), right ($x_i^* = x_{i+1}$), midpoint ($x_i^* = x_i + h/2$).
-                Midpoint is $O(h^2)$; left and right are $O(h)$.</p>
-            <p class="topic-info__limitation">Low accuracy for rapidly varying functions with few intervals.</p>
+            <p>
+                @Localize(
+                    "Approximates each sub-interval with a rectangle. Three variants: left ($x_i^* = x_i$), right ($x_i^* = x_{i+1}$), midpoint ($x_i^* = x_i + h/2$). Midpoint is $O(h^2)$; left and right are $O(h)$.",
+                    "Наближає кожен підінтервал прямокутником. Три варіанти: лівий ($x_i^* = x_i$), правий ($x_i^* = x_{i+1}$), середній ($x_i^* = x_i + h/2$). Середній має точність $O(h^2)$; лівий і правий — $O(h)$."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Low accuracy for rapidly varying functions with few intervals.",
+                    "Низька точність для швидко змінних функцій при малій кількості інтервалів."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Trapezoidal Rule</h3>
+            <h3>@Localize("Trapezoidal Rule", "Метод трапецій")</h3>
             <div class="topic-info__formula">$$\int_a^b f(x)\,dx \approx \frac{h}{2}\!\left[f(a) + 2\sum_{i=1}^{n-1}f(x_i) + f(b)\right]$$</div>
-            <p>Approximates each strip with a trapezoid. $O(h^2)$ accuracy.
-                Easy to implement and more accurate than the basic rectangle rule.</p>
-            <p class="topic-info__limitation">Exact only for linear functions; performs poorly for oscillatory integrands.</p>
+            <p>
+                @Localize(
+                    "Approximates each strip with a trapezoid. $O(h^2)$ accuracy. Easy to implement and more accurate than the basic rectangle rule.",
+                    "Наближає кожну смугу трапецією. Точність $O(h^2)$. Простий у реалізації та точніший за базовий метод прямокутників."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Exact only for linear functions; performs poorly for oscillatory integrands.",
+                    "Точний лише для лінійних функцій; погано працює для осцилюючих підінтегральних функцій."
+                )
+            </p>
         </div>
 
         <div class="topic-info__card">
-            <h3>Simpson's 1/3 Rule</h3>
+            <h3>@Localize("Simpson's 1/3 Rule", "Метод Сімпсона (1/3)")</h3>
             <div class="topic-info__formula">$$\int_a^b f(x)\,dx \approx \frac{h}{3}\!\left[f(a) + 4\sum_{\text{odd}} f(x_i) + 2\sum_{\text{even}} f(x_i) + f(b)\right]$$</div>
-            <p>Fits a quadratic through each pair of sub-intervals. $O(h^4)$ accuracy —
-                a big leap over the trapezoid rule. Requires an even number of intervals.</p>
-            <p class="topic-info__limitation">Requires even $n$ (auto-corrected); exact only for polynomials up to degree 3.</p>
+            <p>
+                @Localize(
+                    "Fits a quadratic through each pair of sub-intervals. $O(h^4)$ accuracy — a big leap over the trapezoid rule. Requires an even number of intervals.",
+                    "Проводить параболу через кожну пару підінтервалів. Точність $O(h^4)$ — значний крок порівняно з методом трапецій. Потребує парної кількості інтервалів."
+                )
+            </p>
+            <p class="topic-info__limitation">
+                @Localize(
+                    "Requires even $n$ (auto-corrected); exact only for polynomials up to degree 3.",
+                    "Потребує парного $n$ (виправляється автоматично); точний лише для поліномів до 3-го степеня."
+                )
+            </p>
         </div>
     </div>
 </TopicInfo>

@@ -184,7 +184,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
             {
                 config.Series.Add(new ChartSeries
                 {
-                    Name = Localizer[result.Method.ToString()],
+                    Name = $"{Localizer["Root"]} ({Localizer[result.Method.ToString()]})",
                     Type = ChartType.Scatter,
                     Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
                     Color = ColorUtils.GetSeriesColor((int)result.Method),

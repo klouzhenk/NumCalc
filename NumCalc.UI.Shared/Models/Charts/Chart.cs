@@ -10,7 +10,7 @@ public class Chart
     public List<ChartSeries> Series { get; set; } = [];
     public string? Title { get; set; }
     
-    public bool ShowLegend { get; set; } = false;
+    public bool ShowLegend { get; set; } = true;
     public string? TooltipSuffix { get; set; }
     public int? Decimals { get; set; }
 }
