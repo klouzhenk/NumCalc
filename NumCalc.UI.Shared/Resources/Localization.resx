@@ -727,4 +727,61 @@
   <data name="Midpoint" xml:space="preserve">
     <value>Midpoint</value>
   </data>
+  <data name="Hint_DiffFunction" xml:space="preserve">
+    <value>Function f(x) to differentiate. Use standard math notation, e.g. sin(x), x^2 + 3*x</value>
+  </data>
+  <data name="Hint_DiffFunctionLagrange" xml:space="preserve">
+    <value>Function f(x) to differentiate symbolically via Lagrange polynomial interpolation</value>
+  </data>
+  <data name="Hint_IterationFunction" xml:space="preserve">
+    <value>Iteration function g&lt;sub&gt;{0}&lt;/sub&gt;(x). Rewrite f&lt;sub&gt;{0}&lt;/sub&gt;(x) = 0 as x&lt;sub&gt;{0}&lt;/sub&gt; = g&lt;sub&gt;{0}&lt;/sub&gt;(x) for fixed-point / Seidel iteration</value>
+  </data>
+  <data name="Hint_SystemInitialGuess" xml:space="preserve">
+    <value>Initial guess for x&lt;sub&gt;{0}&lt;/sub&gt;. Choose a value close to the expected solution</value>
+  </data>
+  <data name="Hint_InterpFunction" xml:space="preserve">
+    <value>Function f(x) to interpolate. The polynomial is built through sample points generated from this expression</value>
+  </data>
+  <data name="Hint_Integrand" xml:space="preserve">
+    <value>Integrand f(x). The definite integral ∫f(x)dx is computed numerically over [a, b]</value>
+  </data>
+  <data name="Hint_Intervals" xml:space="preserve">
+    <value>Number of sub-intervals n. More intervals improve accuracy at the cost of computation time</value>
+  </data>
+  <data name="Hint_InitialX" xml:space="preserve">
+    <value>Initial x value x₀ — the starting point of the solution interval</value>
+  </data>
+  <data name="Hint_InitialY" xml:space="preserve">
+    <value>Initial condition y(x₀) = y₀</value>
+  </data>
+  <data name="Hint_TargetX" xml:space="preserve">
+    <value>Target x value at which y is approximated. For Picard, keep |x_target − x₀| small (typically &lt; 1)</value>
+  </data>
+  <data name="Hint_OdeStep" xml:space="preserve">
+    <value>Integration step h. Smaller h gives higher accuracy but more computation steps. Estimated steps:</value>
+  </data>
+  <data name="Hint_OptObjective" xml:space="preserve">
+    <value>Objective function to minimize. Variables are detected alphabetically from the expression, e.g. x1^2 + x2^2</value>
+  </data>
+  <data name="Hint_ObjectiveFunc1D" xml:space="preserve">
+    <value>Objective function f(x) to minimize over [a, b]</value>
+  </data>
+  <data name="Hint_UniformPoints" xml:space="preserve">
+    <value>Number of uniformly spaced sample points. More points improve accuracy at the cost of computation time</value>
+  </data>
+  <data name="Hint_BracketingLowerBound" xml:space="preserve">
+    <value>Left endpoint a of the search interval [a, b]. Must satisfy f(a)·f(b) &lt; 0 for bracketing methods</value>
+  </data>
+  <data name="Hint_RootTolerance" xml:space="preserve">
+    <value>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε</value>
+  </data>
+  <data name="Hint_GradientNormTolerance" xml:space="preserve">
+    <value>Stop when the gradient norm falls below this value</value>
+  </data>
+  <data name="Hint_IntervalLengthTolerance" xml:space="preserve">
+    <value>Stop when the interval length is below this value. Controls the precision of the golden section search</value>
+  </data>
+  <data name="Hint_PicardWarning" xml:space="preserve">
+    <value>Picard's method is symbolic and converges only near x₀. Keep |x_target − x₀| small (typically &lt; 1).&lt;br/&gt;&lt;br/&gt;Higher approximation order on wide intervals will diverge or be very slow</value>
+  </data>
 </root>

@@ -6,7 +6,7 @@
             Label="@Localizer["Mode"]"
             Data="@(Enum.GetValues<InterpolationInputMode>())"
             @bind-Value="_mode"
-            TextField="@(item => item.ToString())"/>
+            TextField="@(item => Localizer[item.ToString()])"/>
 
     @if (_mode is InterpolationInputMode.Function)
     {
@@ -14,7 +14,7 @@
             <Content>
                 <MathInput Label="f(x)" @ref="_mathInput" />
             </Content>
-            <Hint>Function f(x) to interpolate. The polynomial is built through sample points generated from this expression.</Hint>
+            <Hint>@Localizer["Hint_InterpFunction"]</Hint>
         </Tooltip>
     }
     
@@ -27,7 +27,7 @@
                        @bind:event="oninput" />
             </div>
         </Content>
-        <Hint>Query point x* — the x-value at which to estimate f(x*).</Hint>
+        <Hint>@Localizer["Hint_QueryPoint"]</Hint>
     </Tooltip>
 </div>
 

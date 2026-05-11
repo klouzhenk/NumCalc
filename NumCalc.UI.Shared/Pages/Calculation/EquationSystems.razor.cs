@@ -43,6 +43,12 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
 
+    protected override void OnInitialized()
+    {
+        _linearBenchmarkMethods = Enum.GetValues<LinearSystemMethod>().ToList();
+        _nonLinearBenchmarkMethods = Enum.GetValues<NonLinearSystemMethod>().ToList();
+    }
+
     private void ResetResult()
     {
         Result = null;

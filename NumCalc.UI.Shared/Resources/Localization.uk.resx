@@ -727,4 +727,61 @@
   <data name="Midpoint" xml:space="preserve">
     <value>Середні</value>
   </data>
+  <data name="Hint_DiffFunction" xml:space="preserve">
+    <value>Функція f(x), яку диференціюємо. Використовуйте стандартний математичний запис, напр. sin(x), x^2 + 3*x</value>
+  </data>
+  <data name="Hint_DiffFunctionLagrange" xml:space="preserve">
+    <value>Функція f(x), яку диференціюємо символьно через інтерполяційний поліном Лагранжа</value>
+  </data>
+  <data name="Hint_IterationFunction" xml:space="preserve">
+    <value>Ітераційна функція g&lt;sub&gt;{0}&lt;/sub&gt;(x). Перепишіть f&lt;sub&gt;{0}&lt;/sub&gt;(x) = 0 у вигляді x&lt;sub&gt;{0}&lt;/sub&gt; = g&lt;sub&gt;{0}&lt;/sub&gt;(x) для методу простих ітерацій / Зейделя</value>
+  </data>
+  <data name="Hint_SystemInitialGuess" xml:space="preserve">
+    <value>Початкове наближення для x&lt;sub&gt;{0}&lt;/sub&gt;. Оберіть значення, близьке до очікуваного розв'язку</value>
+  </data>
+  <data name="Hint_InterpFunction" xml:space="preserve">
+    <value>Функція f(x) для інтерполяції. Поліном будується через вибірку точок, згенеровану з цього виразу</value>
+  </data>
+  <data name="Hint_Integrand" xml:space="preserve">
+    <value>Підінтегральна функція f(x). Визначений інтеграл ∫f(x)dx обчислюється чисельно на [a, b]</value>
+  </data>
+  <data name="Hint_Intervals" xml:space="preserve">
+    <value>Кількість підінтервалів n. Більша кількість підвищує точність ціною часу обчислень</value>
+  </data>
+  <data name="Hint_InitialX" xml:space="preserve">
+    <value>Початкове значення x₀ — точка, з якої починається відрізок розв'язання</value>
+  </data>
+  <data name="Hint_InitialY" xml:space="preserve">
+    <value>Початкова умова y(x₀) = y₀</value>
+  </data>
+  <data name="Hint_TargetX" xml:space="preserve">
+    <value>Цільове значення x, у якому наближається y. Для методу Пікара тримайте |x_target − x₀| малим (зазвичай &lt; 1)</value>
+  </data>
+  <data name="Hint_OdeStep" xml:space="preserve">
+    <value>Крок інтегрування h. Менший h дає вищу точність, але більше кроків. Орієнтовна кількість кроків:</value>
+  </data>
+  <data name="Hint_OptObjective" xml:space="preserve">
+    <value>Цільова функція для мінімізації. Змінні визначаються за алфавітом з виразу, напр. x1^2 + x2^2</value>
+  </data>
+  <data name="Hint_ObjectiveFunc1D" xml:space="preserve">
+    <value>Цільова функція f(x) для мінімізації на [a, b]</value>
+  </data>
+  <data name="Hint_UniformPoints" xml:space="preserve">
+    <value>Кількість рівновіддалених точок вибірки. Більше точок підвищує точність ціною часу обчислень</value>
+  </data>
+  <data name="Hint_BracketingLowerBound" xml:space="preserve">
+    <value>Ліва межа a інтервалу пошуку [a, b]. Має виконуватися f(a)·f(b) &lt; 0 для методів локалізації</value>
+  </data>
+  <data name="Hint_RootTolerance" xml:space="preserve">
+    <value>Максимально допустима похибка ε. Алгоритм зупиняється, коли ширина інтервалу або нев'язка менша за ε</value>
+  </data>
+  <data name="Hint_GradientNormTolerance" xml:space="preserve">
+    <value>Зупинка, коли норма градієнта стає меншою за це значення</value>
+  </data>
+  <data name="Hint_IntervalLengthTolerance" xml:space="preserve">
+    <value>Зупинка, коли довжина інтервалу стає меншою за це значення. Визначає точність методу золотого перетину</value>
+  </data>
+  <data name="Hint_PicardWarning" xml:space="preserve">
+    <value>Метод Пікара символьний і збігається лише поблизу x₀. Тримайте |x_target − x₀| малим (зазвичай &lt; 1).&lt;br/&gt;&lt;br/&gt;Вищий порядок наближення на широких інтервалах розбігається або стає дуже повільним</value>
+  </data>
 </root>

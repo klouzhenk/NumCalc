@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.UI.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Models.Optimization;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.Optimization;
 
 public partial class OptimizationInput : ComponentBase
 {
     [Parameter] public OptimizationMethod Method { get; set; }
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private MathInput? _mathInput;
 

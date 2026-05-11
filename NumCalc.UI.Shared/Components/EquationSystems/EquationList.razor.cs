@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using NumCalc.UI.Shared.Models.EquationSystems;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Components.EquationSystems;
 
 public partial class EquationList : ComponentBase
 {
     [Parameter] public int Size { get; set; }
+    [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
 
     private MathInput[] MathInputs { get; set; } = [];
     private double[] InitialGuess { get; set; } = [];

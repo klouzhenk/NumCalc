@@ -68,11 +68,11 @@
                     <Hint>
                         @if (Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton)
                         {
-                            <span>Initial guess x₀ for Newton-Raphson. Choose a value close to the expected root.</span>
+                            <span>@Localizer["Hint_InitialGuess"]</span>
                         }
                         else
                         {
-                            <span>Left endpoint a of the search interval [a, b]. Must satisfy f(a)·f(b) &lt; 0 for bracketing methods.</span>
+                            <span>@Localizer["Hint_BracketingLowerBound"]</span>
                         }
                     </Hint>
                 </Tooltip>
@@ -89,7 +89,7 @@
                                        @bind:after="OnParametersChanged" />
                             </div>
                         </Content>
-                        <Hint>Right endpoint b of the search interval [a, b].</Hint>
+                        <Hint>@Localizer["Hint_UpperBound"]</Hint>
                     </Tooltip>
                 }
 
@@ -103,7 +103,7 @@
                                @bind:after="OnParametersChanged" />
                         </div>
                     </Content>
-                    <Hint>Maximum allowed error ε. The algorithm stops when the interval width or residual is below ε.</Hint>
+                    <Hint>@Localizer["Hint_RootTolerance"]</Hint>
                 </Tooltip>
             </div>
             <div class="form-actions">

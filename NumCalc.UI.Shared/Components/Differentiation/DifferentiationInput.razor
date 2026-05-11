@@ -9,7 +9,7 @@
             <Content>
                 <MathInput Label="f(x)" @ref="_mathInput" />
             </Content>
-            <Hint>Function f(x) to differentiate. Use standard math notation, e.g. sin(x), x^2 + 3*x.</Hint>
+            <Hint>@Localizer["Hint_DiffFunction"]</Hint>
         </Tooltip>
     </div>
 
@@ -21,7 +21,7 @@
                     <input type="number" step="any" class="input-group__input" @bind="_queryPoint" />
                 </div>
             </Content>
-            <Hint>Query point x* — evaluate the derivative at this value.</Hint>
+            <Hint>@Localizer["Hint_QueryPoint"]</Hint>
         </Tooltip>
         
         <Tooltip>
@@ -32,7 +32,7 @@
                           @bind-Value="_derivativeOrder"
                           TextField="@(n => n == 1 ? "1st" : "2nd")" />
             </Content>
-            <Hint>Order of the derivative: 1 for f'(x), 2 for f''(x).</Hint>
+            <Hint>@Localizer["Hint_DerivativeOrder"]</Hint>
         </Tooltip>
         
         <Tooltip>
@@ -42,7 +42,7 @@
                     <input type="number" step="any" class="input-group__input" @bind="_stepSize" />
                 </div>
             </Content>
-            <Hint>Step size h in finite-difference formulas. Default 0.001 balances truncation and round-off error.</Hint>
+            <Hint>@Localizer["Hint_StepSize"]</Hint>
         </Tooltip>
     </div>
 }
@@ -56,7 +56,7 @@ else
                 <Content>
                     <MathInput Label="f(x)" @ref="_mathInput"/>
                 </Content>
-                <Hint>Function f(x) to differentiate symbolically via Lagrange polynomial interpolation.</Hint>
+                <Hint>@Localizer["Hint_DiffFunctionLagrange"]</Hint>
             </Tooltip>
         }
         <Tooltip>
@@ -67,7 +67,7 @@ else
                           @bind-Value="_derivativeOrder"
                           TextField="@(n => n == 1 ? "1st" : "2nd")"/>
             </Content>
-            <Hint>Order of the derivative: 1 for P'(x), 2 for P''(x).</Hint>
+            <Hint>@Localizer["Hint_DerivativeOrder"]</Hint>
         </Tooltip>
         <Tooltip>
             <Content>
@@ -76,7 +76,7 @@ else
                     <input type="number" step="any" class="input-group__input" @bind="_queryPoint"/>
                 </div>
             </Content>
-            <Hint>Query point x* — evaluate the derivative at this value.</Hint>
+            <Hint>@Localizer["Hint_QueryPoint"]</Hint>
         </Tooltip>
     </div>
 
