@@ -11,7 +11,6 @@ public partial class HamburgerMenu : ComponentBase, IDisposable
 {
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] protected IStringLocalizer<Localization> Localizer { get; set; } = null!;
-    [Inject] protected IAuthStateService AuthStateService { get; set; } = null!;
     [Inject] protected IUiStateService UiStateService { get; set; } = null!;
 
     protected bool IsMenuOpen => UiStateService.IsNavMenuOpen;
@@ -39,6 +38,12 @@ public partial class HamburgerMenu : ComponentBase, IDisposable
 
         CloseMenu();
         NavigationManager.NavigateTo($"/{relativePath}");
+    }
+
+    private void OpenTopicInfo(NavigationItem item)
+    {
+        CloseMenu();
+        UiStateService.RequestTopicInfo(item);
     }
 
     public void Dispose()

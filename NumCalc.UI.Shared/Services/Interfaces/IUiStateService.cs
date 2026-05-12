@@ -1,4 +1,5 @@
-﻿using NumCalc.UI.Shared.Models.Message;
+﻿using NumCalc.UI.Shared.Enums;
+using NumCalc.UI.Shared.Models.Message;
 
 namespace NumCalc.UI.Shared.Services.Interfaces;
 
@@ -8,6 +9,7 @@ public interface IUiStateService
     event Action<ToastMessage> OnShowToast;
     event Action OnCloseDropdownRequested;
     event Action OnNavMenuChanged;
+    event Action<NavigationItem> OnTopicInfoRequested;
 
     bool IsNavMenuOpen { get; }
 
@@ -18,4 +20,5 @@ public interface IUiStateService
     void RequestCloseDropdown();
     void ToggleNavMenu();
     void CloseNavMenu();
+    void RequestTopicInfo(NavigationItem item);
 }

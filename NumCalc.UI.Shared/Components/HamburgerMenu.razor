@@ -1,4 +1,4 @@
-﻿@using NumCalc.UI.Shared.Enums
+@using NumCalc.UI.Shared.Enums
 @using NumCalc.UI.Shared.Utils
 
 <button class="hamburger @(IsMenuOpen ? "hamburger--active" : "")" @onclick="ToggleMenu">
@@ -11,16 +11,13 @@
 
 <aside class="hamburger-menu @(IsMenuOpen ? "open" : "")">
     <ul class="hamburger-menu__list hoverable">
-        @if (AuthStateService.IsAuthenticated)
-        {
-            <li @onclick="@(() => NavigationManager.NavigateTo("/dashboard"))">
-                @Localizer[nameof(NavigationItem.Dashboard)]
-            </li>
-        }
         @foreach (var item in NavigationUtils.NavigationItems)
         {
-            <li @onclick="() => OnListItemClick(item.Key)">
-                @Localizer[item.Key.ToString()]
+            <li class="hamburger-menu__row" @onclick="() => OnListItemClick(item.Key)">
+                <span class="hamburger-menu__row-label">@Localizer[item.Key.ToString()]</span>
+                <button class="topic-info__trigger topic-info__trigger--icon"
+                        @onclick="() => OpenTopicInfo(item.Key)"
+                        @onclick:stopPropagation>?</button>
             </li>
         }
     </ul>
