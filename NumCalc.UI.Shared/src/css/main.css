@@ -36,6 +36,7 @@
 @import "components/comparison-result-list.css";
 @import "components/floating-badge.css";
 @import "components/saved-input-data-component.css";
+@import "components/user-menu.css";
 
 /* pages */
 @import "pages/page.css";

@@ -47,6 +47,15 @@
         }
     }
 
+    &--outline {
+        border: var(--default-border);
+        max-height: fit-content;
+
+        &:hover{
+            box-shadow: var(--component-shadow);
+        }
+    }
+
     &--secondary{
         color: var(--white-color);
         background-color: var(--secondary-color);

@@ -31,25 +31,7 @@
                 break;
         }
         
-        <LanguageSwitch />
-        
-        @if (AuthStateService.IsAuthenticated)
-        {
-            <a href="/account-settings" class="header__credentials link-underline">
-                <SvgIcon Name="user"/>
-                <span>@AuthStateService.Username</span>
-            </a>
-
-            <button class="button button--icon" @onclick="Logout">
-                <SvgIcon Name="logout" />
-            </button>
-        }
-        else
-        {
-            <button class="button button--icon" @onclick="Login">
-                <SvgIcon Name="login" />
-            </button>
-        }
+        <UserMenu />
     </div>
 </header>
 

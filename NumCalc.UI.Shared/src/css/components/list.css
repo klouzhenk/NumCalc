@@ -15,6 +15,12 @@
         border-bottom: var(--default-border);
         margin: 0 var(--dimension-m);
 
+        svg.icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+        
         &:last-child {
             border-bottom: none;
         }
