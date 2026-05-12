@@ -199,3 +199,9 @@ Thumbs.db
 
 # Claude Code per-developer settings
 .claude/*.local.json
+
+# Docker compose secrets — never commit
+.env
+.env.local
+.env.dev
+.env.prod
