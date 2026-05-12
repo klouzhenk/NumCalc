@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using NumCalc.User.API.Extensions;
 using NumCalc.User.API.Middlewares;
 using NumCalc.User.Infrastructure;
+using NumCalc.User.Infrastructure.Data;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,11 +25,23 @@ builder.Services.AddProblemDetails();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseSerilogRequestLogging();
-app.UseSwagger();
-app.UseSwaggerUI();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseHttpsRedirection();
+}
+
 app.UseExceptionHandler(_ => { });
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
