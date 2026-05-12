@@ -1,0 +1,39 @@
+# local .NET build output; the container will produce its own
+**/bin/
+**/obj/
+
+# npm deps; the Vite stage runs npm ci to install fresh
+**/node_modules/
+
+# Vite output; the Node stage in the image regenerates it
+**/wwwroot/dist/
+
+# local Python; Web UI doesn't need any of it
+.venv/
+**/__pycache__/
+**/*.pyc
+
+# version control noise
+.git/
+
+# local Serilog output
+**/Logs/
+
+# IDE files
+**/.vs/
+**/.idea/
+**/*.user
+**/*.suo
+
+# AI settings and files
+.claude/
+.continue/
+notes/
+
+# Docker settings
+**/Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Markdown files
+*.md

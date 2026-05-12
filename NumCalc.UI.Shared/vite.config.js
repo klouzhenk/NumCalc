@@ -1,9 +1,11 @@
 import { defineConfig, normalizePath } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 
 export default defineConfig({
+    base: '/_content/NumCalc.UI.Shared/dist/',
     plugins: [
         createSvgIconsPlugin({
             iconDirs: [path.resolve(process.cwd(), 'src/icons')],
@@ -13,6 +15,12 @@ export default defineConfig({
             png: { quality: 80 },
             jpeg: { quality: 75 },
             webp: { lossless: true }
+        }),
+        viteStaticCopy({
+            targets: [
+                { src: 'node_modules/mathlive/fonts/*', dest: 'js/fonts' },
+                { src: 'node_modules/mathlive/sounds/*', dest: 'js/sounds' }
+            ]
         }),
     ],
     build: {

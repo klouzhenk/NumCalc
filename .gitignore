@@ -196,3 +196,6 @@ Thumbs.db
 .continue/sessions/
 .continue/config.json
 .continue/index/
+
+# Claude Code per-developer settings
+.claude/*.local.json
