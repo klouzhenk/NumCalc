@@ -8,6 +8,7 @@
 @import "layout/hamburger-menu.css";
 @import "layout/header.css";
 @import "layout/main-layout.css";
+@import "layout/bottom-navigation.css";
 
 /* components */
 @import "components/text-loader.css";
