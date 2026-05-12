@@ -1,4 +1,5 @@
-﻿using NumCalc.UI.Shared.Models.Message;
+﻿using NumCalc.UI.Shared.Enums;
+using NumCalc.UI.Shared.Models.Message;
 using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.Shared.Services.Implementations;
@@ -10,6 +11,23 @@ public class UiStateService : IUiStateService
     public event Action<bool>? OnLoaderChanged;
     public event Action<ToastMessage>? OnShowToast;
     public event Action? OnCloseDropdownRequested;
+    public event Action? OnNavMenuChanged;
+    public event Action<NavigationItem>? OnTopicInfoRequested;
+
+    public bool IsNavMenuOpen { get; private set; }
+
+    public void ToggleNavMenu()
+    {
+        IsNavMenuOpen = !IsNavMenuOpen;
+        OnNavMenuChanged?.Invoke();
+    }
+
+    public void CloseNavMenu()
+    {
+        if (!IsNavMenuOpen) return;
+        IsNavMenuOpen = false;
+        OnNavMenuChanged?.Invoke();
+    }
 
     public void ShowLoader()
     {
@@ -38,5 +56,9 @@ public class UiStateService : IUiStateService
     public void ShowSuccess(string message, string title = "Success")
         => OnShowToast?.Invoke(new SuccessToastMessage(message, title));
 
-    public void RequestCloseDropdown() => OnCloseDropdownRequested?.Invoke();
+    public void RequestCloseDropdown() => 
+        OnCloseDropdownRequested?.Invoke();
+    
+    public void RequestTopicInfo(NavigationItem item) =>
+        OnTopicInfoRequested?.Invoke(item);
 }

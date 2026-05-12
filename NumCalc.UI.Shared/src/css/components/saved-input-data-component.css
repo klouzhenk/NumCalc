@@ -16,6 +16,10 @@
         left: 20px;
     }
 
+    @media (--tablet) {
+        bottom: calc(var(--bottom-nav-height) + var(--dimension-m));
+    }
+
     &__popover {
         position: absolute;
         bottom: calc(100% + var(--dimension-s));

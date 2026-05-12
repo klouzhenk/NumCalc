@@ -1,4 +1,5 @@
-﻿@using NumCalc.UI.Shared.Enums
+@using NumCalc.UI.Shared.Enums
+@using NumCalc.UI.Shared.Resources
 
 <header>
     <div class="header__logo" @onclick="OnHeaderLogoClick">
@@ -6,50 +7,13 @@
     </div>
 
     <div class="header__actions">
-        @switch (CurrentNavItem)
+        @if (CurrentNavItem.HasValue)
         {
-            case NavigationItem.Roots:
-                <RootFindingTopicInfo/>
-                break;
-            case NavigationItem.EquationSystems:
-                <EquationSystemsTopicInfo/>
-                break;
-            case NavigationItem.Interpolation:
-                <InterpolationTopicInfo/>
-                break;
-            case NavigationItem.Differentiation:
-                <DifferentiationTopicInfo/>
-                break;
-            case NavigationItem.Integration:
-                <IntegrationTopicInfo/>
-                break;
-            case NavigationItem.Optimization:
-                <OptimizationTopicInfo/>
-                break;
-            case NavigationItem.Ode:
-                <OdeTopicInfo/>
-                break;
+            <button class="topic-info__trigger link-underline" @onclick="OpenTopicInfo">
+                @Localizer[nameof(Localization.AboutThisTopic)]
+            </button>
         }
-        
-        <LanguageSwitch />
-        
-        @if (AuthStateService.IsAuthenticated)
-        {
-            <a href="/account-settings" class="header__credentials link-underline">
-                <SvgIcon Name="user"/>
-                <span>@AuthStateService.Username</span>
-            </a>
 
-            <button class="button button--icon" @onclick="Logout">
-                <SvgIcon Name="logout" />
-            </button>
-        }
-        else
-        {
-            <button class="button button--icon" @onclick="Login">
-                <SvgIcon Name="login" />
-            </button>
-        }
+        <UserMenu />
     </div>
 </header>
-

@@ -1,0 +1,67 @@
+.user-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+
+    &__trigger {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary-dark-color);
+        }
+    }
+
+    &__overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: none;
+    }
+
+    &__popover {
+        position: absolute;
+        top: calc(100% + var(--dimension-s));
+        right: 0;
+        z-index: 100;
+        min-width: 280px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(calc(-1 * var(--dimension-s)));
+        transition: var(--default-transition);
+    }
+
+    &--open &__overlay {
+        display: block;
+    }
+
+    &--open &__popover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: var(--dimension-m);
+        font-size: 0.9rem;
+    }
+}
+
+.modal--language {
+    .modal__body {
+        align-items: center;
+    }
+    
+    .button {
+        width: 100%;
+    }
+}

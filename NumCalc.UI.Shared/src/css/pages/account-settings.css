@@ -3,9 +3,13 @@
     flex-direction: column;
     gap: var(--dimension-xl);
     overflow-y: auto;
+
+    @media (--tablet) {
+        padding: var(--dimension-xl) var(--dimension-l) var(--dimension-l);
+    }
     
     @media (--mobile) {
-        padding: var(--dimension-s) var(--dimension-m) var(--dimension-m);
+        padding: var(--dimension-xl) var(--dimension-m) var(--dimension-m);
         gap: var(--dimension-l);
     }
     

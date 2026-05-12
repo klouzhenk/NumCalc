@@ -784,4 +784,13 @@
   <data name="Hint_PicardWarning" xml:space="preserve">
     <value>Метод Пікара символьний і збігається лише поблизу x₀. Тримайте |x_target − x₀| малим (зазвичай &lt; 1).&lt;br/&gt;&lt;br/&gt;Вищий порядок наближення на широких інтервалах розбігається або стає дуже повільним</value>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="ChooseLanguage" xml:space="preserve">
+    <value>Оберіть мову інтерфейсу</value>
+  </data>
 </root>

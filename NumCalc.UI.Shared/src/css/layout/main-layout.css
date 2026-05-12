@@ -38,6 +38,14 @@ main{
     width: 100%;
     height: 100%;
     padding: 0 var(--dimension-xl) var(--dimension-xl);
+
+    @media (--tablet) {
+        padding: var(--dimension-l) var(--dimension-xl) var(--dimension-xl);
+    }
+
+    @media (--mobile) {
+        padding: var(--dimension-l) var(--dimension-m) var(--dimension-xl);
+    }
     
     &.page-wrapper__calculation {
         @media (--laptop) {
@@ -46,7 +54,7 @@ main{
         }
         
         @media (--mobile) {
-            padding: 0 var(--dimension-l) var(--dimension-l);
+            padding: var(--dimension-l);
         }
     }
     

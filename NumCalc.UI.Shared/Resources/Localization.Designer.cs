@@ -204,6 +204,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose your interface language.
+        /// </summary>
+        public static string ChooseLanguage {
+            get {
+                return ResourceManager.GetString("ChooseLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click Calculate to view the result.
         /// </summary>
         public static string ClickCalculateToViewResult {
@@ -1221,6 +1230,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learning rate.
         /// </summary>
         public static string LearningRate {
@@ -1271,6 +1289,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string Login {
             get {
                 return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string Logout {
+            get {
+                return ResourceManager.GetString("Logout", resourceCulture);
             }
         }
         
