@@ -7,7 +7,7 @@
         padding: 0 calc(var(--dimension-xxl) * 1.5);
 
         @media (--tablet) {
-            padding: 0 var(--dimension-xl);
+            padding: var(--dimension-l) var(--dimension-xl) 0;
         }
         
         section {

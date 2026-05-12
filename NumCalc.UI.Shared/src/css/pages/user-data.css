@@ -6,6 +6,10 @@
     gap: var(--dimension-xxl);
     overflow-y: auto;
     padding: 0 var(--dimension-xxl) var(--dimension-xl);
+    
+    @media (--tablet) {
+        padding: var(--dimension-xl) var(--dimension-l);
+    }
 
     h2 {
         font-size: 1.25rem;
