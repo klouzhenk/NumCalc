@@ -793,4 +793,7 @@
   <data name="ChooseLanguage" xml:space="preserve">
     <value>Оберіть мову інтерфейсу</value>
   </data>
+  <data name="InvalidRange" xml:space="preserve">
+    <value>Неправильні межі</value>
+  </data>
 </root>

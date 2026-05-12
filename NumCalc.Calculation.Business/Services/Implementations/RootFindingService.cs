@@ -189,7 +189,6 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
             {
                 stopwatch.Restart();
 
-                // TODO : use new method for comparison
                 var jsonEnvelope = rootFindingMethod switch
                 {
                     RootFindingMethod.Dichotomy => rootSolver.SolveDichotomy(request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance),

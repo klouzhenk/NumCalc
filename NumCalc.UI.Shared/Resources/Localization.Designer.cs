@@ -1194,6 +1194,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid range.
+        /// </summary>
+        public static string InvalidRange {
+            get {
+                return ResourceManager.GetString("InvalidRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gradient descent.
         /// </summary>
         public static string IsGradientDescent {

@@ -12,7 +12,6 @@ public class RootFindingComparisonRequest
     /// <summary>
     /// The methods to compare.
     /// </summary>
-    /// TODO : generate examples
     public IEnumerable<RootFindingMethod>? Methods { get; set; }
     
     /// <summary>

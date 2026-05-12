@@ -15,33 +15,33 @@ using NumCalc.UI.Shared.Models.EquationSystems;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
+using NumCalc.UI.Shared.Utils.Calculation;
 
 namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class EquationSystems : CalculationPage<EquationSystems>
 {
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    private const string ChartContainerId = "chart--equation-systems";
 
-    private AnalysisMode _mode = AnalysisMode.Single;
+    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    
     private EquationSystemCategory Category { get; set; } = EquationSystemCategory.Linear;
     private LinearSystemMethod LinearMethod { get; set; } = LinearSystemMethod.Cramer;
     private NonLinearSystemMethod NonLinearMethod { get; set; } = NonLinearSystemMethod.FixedPoint;
-    private int Size { get; set; } = 2;
-
-    private const string ChartContainerId = "chart--equation-systems";
-
-    private readonly int[] _sizes = [2, 3, 4];
-
-    private LinearSystemInput? _linearInput;
-    private EquationList? _equationList;
-
-    private SystemSolvingResponse? Result { get; set; }
     private LinearSystemComparisonResponse? LinearComparisonResult { get; set; }
     private NonLinearSystemComparisonResponse? NonLinearComparisonResult { get; set; }
+    private SystemSolvingResponse? Result { get; set; }
+    private int Size { get; set; } = 2;
+    
+    private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
+
+    private AnalysisMode _mode = AnalysisMode.Single;
+    private readonly int[] _sizes = [2, 3, 4];
     private List<LinearSystemMethod>? _linearBenchmarkMethods;
     private List<NonLinearSystemMethod>? _nonLinearBenchmarkMethods;
-
-    private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
+    
+    private LinearSystemInput? _linearInput;
+    private EquationList? _equationList;
 
     protected override void OnInitialized()
     {
@@ -64,17 +64,33 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
         if (_mode is AnalysisMode.Benchmark)
         {
-            if (Category is EquationSystemCategory.Linear)
-                await CompareLinear();
-            else
-                await CompareNonLinear();
+            await HandleComparison();
             return;
         }
 
+        await HandleOneMethodCalculation();
+    }
+
+    private async Task HandleOneMethodCalculation()
+    {
         if (Category is EquationSystemCategory.Linear)
+        {
             await CalculateLinear();
-        else
-            await CalculateNonLinear();
+            return;
+        }
+        
+        await CalculateNonLinear();
+    }
+
+    private async Task HandleComparison()
+    {
+        if (Category is EquationSystemCategory.Linear)
+        {
+            await CompareLinear();
+            return;
+        }
+        
+        await CompareNonLinear();
     }
 
     private async Task CompareLinear()
@@ -82,7 +98,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         if (_linearInput is null) return;
 
         var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-        var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
+        var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
 
         var request = new LinearSystemComparisonRequest
         {
@@ -124,8 +140,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         if (_linearInput is null) return;
 
         var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-
-        var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
+        var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
 
         var request = new SystemSolvingRequest
         {
@@ -142,27 +157,25 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
         Result = await SafeExecuteAsync(apiCall);
 
-        if (Result is not null)
+        if (Result is null) return;
+
+        var inputs = new Dictionary<string, string> { ["Method"] = LinearMethod.ToString() };
+        for (var i = 0; i < equations.Count; i++)
+            inputs[$"Equation {i + 1}"] = equations[i];
+        inputs["Variables"] = string.Join(", ", variables);
+
+        await TrySaveHistoryAsync(new SaveCalculationRecordRequest
         {
-            var inputs = new Dictionary<string, string> { ["Method"] = LinearMethod.ToString() };
-            for (var i = 0; i < equations.Count; i++)
-                inputs[$"Equation {i + 1}"] = equations[i];
-            inputs["Variables"] = string.Join(", ", variables);
+            Type = CalculationType.EquationSystems,
+            MethodName = LinearMethod.ToString(),
+            InputsJson = JsonSerializer.Serialize(inputs),
+            ResultSummary = Result.Roots is { Count: > 0 }
+                ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
+                : "No solution",
+            ExecutionTimeMs = Result.ExecutionTimeMs
+        });
 
-            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-            {
-                Type = CalculationType.EquationSystems,
-                MethodName = LinearMethod.ToString(),
-                InputsJson = JsonSerializer.Serialize(inputs),
-                ResultSummary = Result.Roots is { Count: > 0 }
-                    ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
-                    : "No solution"
-                
-                // TODO : implement execution time
-            });
-
-            await UpdateChart();
-        }
+        await UpdateChart();
     }
 
     private async Task CalculateNonLinear()
@@ -177,15 +190,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             return;
         }
 
-        var request = new NonLinearSystemRequest
-        {
-            IterationFunctions = formData.IterationFunctions.ToList(),
-            Variables = formData.Variables.ToList(),
-            InitialGuess = formData.InitialGuess.ToList(),
-            Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations
-        };
-
+        var request = EquationSystemsUtils.BuildNonLinearSystemRequest(formData);
         Func<Task<SystemSolvingResponse?>> apiCall = NonLinearMethod switch
         {
             NonLinearSystemMethod.FixedPoint => () => CalculationApiService.SolveFixedPointAsync(request),
@@ -194,30 +199,31 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         };
 
         Result = await SafeExecuteAsync(apiCall);
+        if (Result is null) return;
 
-        if (Result is not null)
+        await SaveNonLinearCalculation(formData);
+        await UpdateChart();
+    }
+
+    private async Task SaveNonLinearCalculation(NonLinearSystemFormData formData)
+    {
+        var inputs = new Dictionary<string, string> { ["Method"] = NonLinearMethod.ToString() };
+        for (var i = 0; i < formData.IterationFunctions.Count(); i++)
+            inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions.ElementAt(i);
+        inputs["Variables"] = string.Join(", ", formData.Variables);
+        inputs["Initial Guess"] = string.Join(", ", formData.InitialGuess);
+        inputs["Tolerance"] = formData.Tolerance.ToString("G");
+
+        await TrySaveHistoryAsync(new SaveCalculationRecordRequest
         {
-            var inputs = new Dictionary<string, string> { ["Method"] = NonLinearMethod.ToString() };
-            for (var i = 0; i < formData.IterationFunctions.Count(); i++)
-                inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions.ElementAt(i);
-            inputs["Variables"] = string.Join(", ", formData.Variables);
-            inputs["Initial Guess"] = string.Join(", ", formData.InitialGuess);
-            inputs["Tolerance"] = formData.Tolerance.ToString("G");
-
-            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-            {
-                Type = CalculationType.EquationSystems,
-                MethodName = NonLinearMethod.ToString(),
-                InputsJson = JsonSerializer.Serialize(inputs),
-                ResultSummary = Result.Roots is { Count: > 0 }
-                    ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
-                    : "No solution"
-                
-                // TODO : implement execution time
-            });
-
-            await UpdateChart();
-        }
+            Type = CalculationType.EquationSystems,
+            MethodName = NonLinearMethod.ToString(),
+            InputsJson = JsonSerializer.Serialize(inputs),
+            ResultSummary = Result.Roots is { Count: > 0 }
+                ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
+                : "No solution",
+            ExecutionTimeMs = Result.ExecutionTimeMs
+        });
     }
 
     private async Task UpdateChart()
@@ -336,12 +342,23 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             var rows = Enumerable.Range(0, size)
                 .Select(i => Enumerable.Range(0, size).Select(j => _linearInput.Coefficients[i, j]).ToArray())
                 .ToArray();
-            json = JsonSerializer.Serialize(new { Category = "Linear", Size = size, Coefficients = rows, Rhs = _linearInput.Rhs });
+            json = JsonSerializer.Serialize(new
+            {
+                Category = nameof(EquationSystemCategory.Linear),
+                Size = size,
+                Coefficients = rows,
+                Rhs = _linearInput.Rhs
+            });
         }
         else if (_equationList is not null)
         {
             var data = await _equationList.GetFormData();
-            json = JsonSerializer.Serialize(new { Category = "NonLinear", Size = data.IterationFunctions.Length, NonLinear = data });
+            json = JsonSerializer.Serialize(new
+            {
+                Category = nameof(EquationSystemCategory.NonLinear),
+                Size = data.IterationFunctions.Length,
+                NonLinear = data
+            });
         }
         else return;
 
@@ -352,29 +369,29 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     {
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
-        var categoryStr = root.GetProperty("Category").GetString();
+        var categoryStr = root.GetProperty(nameof(Category)).GetString();
 
-        if (categoryStr == "Linear" && _linearInput is not null)
+        if (categoryStr == nameof(EquationSystemCategory.Linear) && _linearInput is not null)
         {
             Category = EquationSystemCategory.Linear;
-            var size = root.GetProperty("Size").GetInt32();
+            var size = root.GetProperty(nameof(Size)).GetInt32();
             Size = size;
             StateHasChanged();
             await Task.Yield();
 
-            var coefficients = root.GetProperty("Coefficients").Deserialize<double[][]>() ?? [];
-            var rhs = root.GetProperty("Rhs").Deserialize<double[]>() ?? [];
+            var coefficients = root.GetProperty(nameof(LinearSystemInput.Coefficients)).Deserialize<double[][]>() ?? [];
+            var rhs = root.GetProperty(nameof(LinearSystemInput.Rhs)).Deserialize<double[]>() ?? [];
             _linearInput.SetValues(coefficients, rhs);
         }
-        else if (categoryStr == "NonLinear" && _equationList is not null)
+        else if (categoryStr == nameof(EquationSystemCategory.NonLinear) && _equationList is not null)
         {
             Category = EquationSystemCategory.NonLinear;
-            var size = root.GetProperty("Size").GetInt32();
+            var size = root.GetProperty(nameof(Size)).GetInt32();
             Size = size;
             StateHasChanged();
             await Task.Yield();
 
-            var data = root.GetProperty("NonLinear").Deserialize<NonLinearSystemFormData>();
+            var data = root.GetProperty(nameof(EquationSystemCategory.NonLinear)).Deserialize<NonLinearSystemFormData>();
             if (data is not null)
                 await _equationList.SetFormDataAsync(data);
         }
@@ -397,7 +414,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         if (Category is EquationSystemCategory.Linear && _linearInput is not null)
         {
             var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-            var equations = BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
+            var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
             for (var i = 0; i < equations.Count; i++)
                 inputs[$"Equation {i + 1}"] = equations[i];
             inputs["Variables"] = string.Join(", ", variables);
@@ -424,18 +441,4 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             type: CalculationType.EquationSystems);
     }
 
-    private static List<string> BuildEquationStrings(double[,] coefficients, double[] rhs, List<string> variables)
-    {
-        var size = variables.Count;
-        var equations = new List<string>(size);
-
-        for (var row = 0; row < size; row++)
-        {
-            var terms = Enumerable.Range(0, size)
-                .Select(col => $"{coefficients[row, col]}*{variables[col]}");
-            equations.Add($"{string.Join(" + ", terms)} = {rhs[row]}");
-        }
-
-        return equations;
-    }
 }

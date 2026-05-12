@@ -7,4 +7,5 @@ public class SystemSolvingResponse
     public List<double>? Roots { get; set; }
     public List<EquationChartSeries>? ChartSeries { get; set; }
     public List<SolutionStep>? SolutionSteps { get; set; }
+    public double ExecutionTimeMs { get; set; }
 }

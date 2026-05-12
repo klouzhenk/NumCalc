@@ -793,4 +793,7 @@
   <data name="ChooseLanguage" xml:space="preserve">
     <value>Choose your interface language</value>
   </data>
+  <data name="InvalidRange" xml:space="preserve">
+    <value>Invalid range</value>
+  </data>
 </root>
