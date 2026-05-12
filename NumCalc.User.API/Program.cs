@@ -24,10 +24,15 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
-app.UseSwagger();
-app.UseSwaggerUI();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseHttpsRedirection();
+}
+
 app.UseExceptionHandler(_ => { });
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
