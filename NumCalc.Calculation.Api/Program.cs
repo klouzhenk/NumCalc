@@ -38,7 +38,8 @@ builder.Services.AddSwaggerGen(options =>
 
 var binPath = AppDomain.CurrentDomain.BaseDirectory;
 var projectRoot = Path.GetFullPath(Path.Combine(binPath, "../../../../")); 
-var venvPath = Path.Combine(projectRoot, ".venv");
+var venvPath =  builder.Configuration["Python:VenvPath"]
+                ?? Path.Combine(projectRoot, ".venv");
 var scriptsPath = Path.Combine(binPath, "Scripts");
 
 builder.Services
@@ -71,9 +72,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
