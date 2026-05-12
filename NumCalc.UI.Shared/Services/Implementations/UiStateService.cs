@@ -10,6 +10,22 @@ public class UiStateService : IUiStateService
     public event Action<bool>? OnLoaderChanged;
     public event Action<ToastMessage>? OnShowToast;
     public event Action? OnCloseDropdownRequested;
+    public event Action? OnNavMenuChanged;
+
+    public bool IsNavMenuOpen { get; private set; }
+
+    public void ToggleNavMenu()
+    {
+        IsNavMenuOpen = !IsNavMenuOpen;
+        OnNavMenuChanged?.Invoke();
+    }
+
+    public void CloseNavMenu()
+    {
+        if (!IsNavMenuOpen) return;
+        IsNavMenuOpen = false;
+        OnNavMenuChanged?.Invoke();
+    }
 
     public void ShowLoader()
     {
