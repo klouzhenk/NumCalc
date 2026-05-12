@@ -1,0 +1,183 @@
+name: Deploy to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP: numcalc-rg
+  CONTAINER_APP_ENV: numcalc-env
+
+jobs:
+  build:
+    name: Build & push ${{ matrix.service.name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service:
+          - name: web
+            dockerfile: NumCalc.UI.Web/Dockerfile
+          - name: calc-api
+            dockerfile: NumCalc.Calculation.Api/Dockerfile
+          - name: user-api
+            dockerfile: NumCalc.User.API/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute lowercase owner (ghcr.io requires lowercase)
+        id: repo
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: |
+            ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-${{ matrix.service.name }}:latest
+            ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-${{ matrix.service.name }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Container Apps
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Compute lowercase owner
+        id: repo
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Get Container Apps environment default domain
+        id: env_domain
+        run: |
+          domain=$(az containerapp env show \
+            -n $CONTAINER_APP_ENV \
+            -g $RESOURCE_GROUP \
+            --query 'properties.defaultDomain' -o tsv)
+          echo "domain=$domain" >> $GITHUB_OUTPUT
+          echo "Env default domain: $domain"
+
+      - name: Deploy calc-api (internal)
+        run: |
+          IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-calc-api:${{ github.sha }}"
+          NAME=numcalc-calc-api
+          if az containerapp show -n $NAME -g $RESOURCE_GROUP >/dev/null 2>&1; then
+            echo "Updating existing $NAME..."
+            az containerapp update -n $NAME -g $RESOURCE_GROUP --image $IMAGE
+          else
+            echo "Creating $NAME..."
+            az containerapp create \
+              -n $NAME \
+              -g $RESOURCE_GROUP \
+              --environment $CONTAINER_APP_ENV \
+              --image $IMAGE \
+              --target-port 8080 \
+              --ingress internal \
+              --transport http \
+              --cpu 0.5 --memory 1.0Gi \
+              --min-replicas 0 --max-replicas 1 \
+              --secrets gemini-key="${{ secrets.GEMINI_API_KEY }}" \
+              --env-vars \
+                ASPNETCORE_URLS=http://+:8080 \
+                Python__VenvPath=/app/.venv \
+                OcrSettings__GeminiApiKey=secretref:gemini-key
+          fi
+
+      - name: Deploy user-api (internal)
+        run: |
+          IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-user-api:${{ github.sha }}"
+          NAME=numcalc-user-api
+          WEB_URL="https://numcalc-web.${{ steps.env_domain.outputs.domain }}"
+          if az containerapp show -n $NAME -g $RESOURCE_GROUP >/dev/null 2>&1; then
+            echo "Updating existing $NAME..."
+            az containerapp update -n $NAME -g $RESOURCE_GROUP --image $IMAGE
+          else
+            echo "Creating $NAME..."
+            az containerapp create \
+              -n $NAME \
+              -g $RESOURCE_GROUP \
+              --environment $CONTAINER_APP_ENV \
+              --image $IMAGE \
+              --target-port 8080 \
+              --ingress internal \
+              --transport http \
+              --cpu 0.25 --memory 0.5Gi \
+              --min-replicas 0 --max-replicas 1 \
+              --secrets \
+                connection-string="${{ secrets.SQL_CONNECTION_STRING }}" \
+                jwt-secret="${{ secrets.JWT_SECRET }}" \
+                smtp-username="${{ secrets.SMTP_USERNAME }}" \
+                smtp-password="${{ secrets.SMTP_PASSWORD }}" \
+                smtp-from="${{ secrets.SMTP_FROM_ADDRESS }}" \
+              --env-vars \
+                ASPNETCORE_URLS=http://+:8080 \
+                ConnectionStrings__DefaultConnection=secretref:connection-string \
+                JWT__Secret=secretref:jwt-secret \
+                JWT__Issuer=NumCalc \
+                JWT__Audience=NumCalc \
+                JWT__ExpiryDays=7 \
+                EmailSettings__Smtp__Host=smtp.gmail.com \
+                EmailSettings__Smtp__Port=587 \
+                EmailSettings__Smtp__Username=secretref:smtp-username \
+                EmailSettings__Smtp__Password=secretref:smtp-password \
+                EmailSettings__Smtp__FromAddress=secretref:smtp-from \
+                EmailSettings__Smtp__FromName=NumCalc \
+                EmailSettings__Smtp__UseSsl=true \
+                WebApp__BaseUrl="$WEB_URL"
+          fi
+
+      - name: Deploy web (external)
+        run: |
+          IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-web:${{ github.sha }}"
+          NAME=numcalc-web
+          CALC_API_URL="https://numcalc-calc-api.internal.${{ steps.env_domain.outputs.domain }}"
+          USER_API_URL="https://numcalc-user-api.internal.${{ steps.env_domain.outputs.domain }}"
+          if az containerapp show -n $NAME -g $RESOURCE_GROUP >/dev/null 2>&1; then
+            echo "Updating existing $NAME..."
+            az containerapp update -n $NAME -g $RESOURCE_GROUP --image $IMAGE
+          else
+            echo "Creating $NAME..."
+            az containerapp create \
+              -n $NAME \
+              -g $RESOURCE_GROUP \
+              --environment $CONTAINER_APP_ENV \
+              --image $IMAGE \
+              --target-port 8080 \
+              --ingress external \
+              --transport http \
+              --cpu 0.25 --memory 0.5Gi \
+              --min-replicas 0 --max-replicas 1 \
+              --env-vars \
+                ASPNETCORE_URLS=http://+:8080 \
+                Apis__CalculationApi__BaseUrl="$CALC_API_URL" \
+                Apis__UserApi__BaseUrl="$USER_API_URL"
+          fi
+
+      - name: Print web URL
+        run: |
+          fqdn=$(az containerapp show \
+            -n numcalc-web \
+            -g $RESOURCE_GROUP \
+            --query 'properties.configuration.ingress.fqdn' -o tsv)
+          echo "::notice title=Deployment complete::Web UI is at: https://$fqdn"
