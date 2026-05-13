@@ -9,6 +9,7 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Optimization;
 using NumCalc.UI.Shared.Models.User;
@@ -21,7 +22,7 @@ public partial class Optimization : CalculationPage<Optimization>
 {
     private const string ChartContainerId = "chart--optimization";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IOptimizationApiService OptimizationApiService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
@@ -60,12 +61,12 @@ public partial class Optimization : CalculationPage<Optimization>
                 Maximize = _maximize,
                 Methods = _benchmarkMethods
             };
-            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetOptimizationComparisonAsync(comparisonRequest));
+            ComparisonResult = await SafeExecuteAsync(() => OptimizationApiService.GetOptimizationComparisonAsync(comparisonRequest));
             return;
         }
         Func<Task<OptimizationResponse?>> apiCall = _method switch
         {
-            OptimizationMethod.UniformSearch => () => CalculationApiService.OptimizeUniformSearchAsync(new OptimizationRequest
+            OptimizationMethod.UniformSearch => () => OptimizationApiService.OptimizeUniformSearchAsync(new OptimizationRequest
             {
                 FunctionExpression = formData.FunctionExpression,
                 LowerBound = formData.LowerBound,
@@ -74,7 +75,7 @@ public partial class Optimization : CalculationPage<Optimization>
                 Tolerance = formData.Tolerance,
                 Maximize = _maximize
             }),
-            OptimizationMethod.GoldenSection => () => CalculationApiService.OptimizeGoldenSectionAsync(new OptimizationRequest
+            OptimizationMethod.GoldenSection => () => OptimizationApiService.OptimizeGoldenSectionAsync(new OptimizationRequest
             {
                 FunctionExpression = formData.FunctionExpression,
                 LowerBound = formData.LowerBound,
@@ -83,7 +84,7 @@ public partial class Optimization : CalculationPage<Optimization>
                 Tolerance = formData.Tolerance,
                 Maximize = _maximize
             }),
-            OptimizationMethod.GradientDescent => () => CalculationApiService.OptimizeGradientDescentAsync(new GradientDescentRequest
+            OptimizationMethod.GradientDescent => () => OptimizationApiService.OptimizeGradientDescentAsync(new GradientDescentRequest
             {
                 FunctionExpression = formData.FunctionExpression,
                 InitialPoint = formData.InitialPoint,

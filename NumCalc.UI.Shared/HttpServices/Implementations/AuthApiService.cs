@@ -8,15 +8,17 @@ namespace NumCalc.UI.Shared.HttpServices.Implementations;
 
 public class AuthApiService(HttpClient httpClient) : BaseApiService(httpClient), IAuthApiService
 {
+    protected override string ApiControllerName => "api/auth";
+
     public async Task<AuthResponse?> RegisterAsync(RegisterRequest request) =>
-        await SendPostRequestAsync<AuthResponse>("api/auth/register", request);
+        await SendPostRequestAsync<AuthResponse>($"{ApiControllerName}/register", request);
 
     public async Task<AuthResponse?> LoginAsync(LoginRequest request) =>
-        await SendPostRequestAsync<AuthResponse>("api/auth/login", request);
+        await SendPostRequestAsync<AuthResponse>($"{ApiControllerName}/login", request);
     
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request) =>
-        await SendPostRequestAsync("api/auth/forgot-password", request);
+        await SendPostRequestAsync($"{ApiControllerName}/forgot-password", request);
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request) =>
-        await SendPostRequestAsync("api/auth/reset-password", request);
+        await SendPostRequestAsync($"{ApiControllerName}/reset-password", request);
 }

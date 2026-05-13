@@ -8,6 +8,7 @@ using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.ODE;
 using NumCalc.UI.Shared.Models.User;
@@ -21,7 +22,7 @@ public partial class Ode : CalculationPage<Ode>
 {
     private const string ChartContainerId = "chart--ode";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IOdeApiService OdeApiService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
@@ -65,7 +66,7 @@ public partial class Ode : CalculationPage<Ode>
                 Methods = _benchmarkMethods
             };
 
-            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetOdeComparisonAsync(compRequest));
+            ComparisonResult = await SafeExecuteAsync(() => OdeApiService.GetOdeComparisonAsync(compRequest));
             return;
         }
 
@@ -81,11 +82,11 @@ public partial class Ode : CalculationPage<Ode>
 
         Func<Task<OdeResponse?>> apiCall = _method switch
         {
-            OdeMethod.Euler         => () => CalculationApiService.SolveEuler(request),
-            OdeMethod.EulerImproved => () => CalculationApiService.SolveEulerImproved(request),
-            OdeMethod.RungeKutta2   => () => CalculationApiService.SolveRungeKutta2(request),
-            OdeMethod.RungeKutta4   => () => CalculationApiService.SolveRungeKutta4(request),
-            OdeMethod.Picard        => () => CalculationApiService.SolvePicard(request),
+            OdeMethod.Euler         => () => OdeApiService.SolveEuler(request),
+            OdeMethod.EulerImproved => () => OdeApiService.SolveEulerImproved(request),
+            OdeMethod.RungeKutta2   => () => OdeApiService.SolveRungeKutta2(request),
+            OdeMethod.RungeKutta4   => () => OdeApiService.SolveRungeKutta4(request),
+            OdeMethod.Picard        => () => OdeApiService.SolvePicard(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 

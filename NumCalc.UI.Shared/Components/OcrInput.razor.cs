@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 using NumCalc.Shared.OCR.Requests;
 using NumCalc.UI.Shared.Components.Modals;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Resources;
 using NumCalc.UI.Shared.Services.Interfaces;
 
@@ -12,7 +13,7 @@ namespace NumCalc.UI.Shared.Components;
 public partial class OcrInput : ComponentBase
 {
     [Parameter] public EventCallback<string> OnInputContentRecognize { get; set; }
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IOcrApiService OcrApiService { get; set; } = null!;
     [Inject] private IUiStateService UiStateService { get; set; } = null!;
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
@@ -86,7 +87,7 @@ public partial class OcrInput : ComponentBase
             UiStateService.ShowLoader();
             
             var request = new OcrRequest { ImageBase64DataUrl = imageBase64 };
-            var response = await CalculationApiService.RecognizeExpressionAsync(request);
+            var response = await OcrApiService.RecognizeExpressionAsync(request);
             if (string.IsNullOrWhiteSpace(response?.Latex))
                 throw new Exception("TEXT_NOT_RECOGNIZED");
                 

@@ -9,6 +9,7 @@ using NumCalc.UI.Shared.Components.Integration;
 using NumCalc.UI.Shared.Enums.Integration;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Integration;
 using NumCalc.UI.Shared.Models.User;
@@ -21,7 +22,7 @@ public partial class Integration : CalculationPage<Integration>
 {
     private const string ChartContainerId = "chart--integration";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IIntegrationApiService IntegrationApiService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private IntegrationMethod _method = IntegrationMethod.Rectangle;
@@ -69,7 +70,7 @@ public partial class Integration : CalculationPage<Integration>
                 Methods = _benchmarkMethods
             };
 
-            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetIntegrationComparisonAsync(compRequest));
+            ComparisonResult = await SafeExecuteAsync(() => IntegrationApiService.GetIntegrationComparisonAsync(compRequest));
             return;
         }
 
@@ -85,9 +86,9 @@ public partial class Integration : CalculationPage<Integration>
 
         Func<Task<IntegrationResponse?>> apiCall = _method switch
         {
-            IntegrationMethod.Rectangle => () => CalculationApiService.IntegrateRectangleAsync(request),
-            IntegrationMethod.Trapezoid => () => CalculationApiService.IntegrateTrapezoidAsync(request),
-            IntegrationMethod.Simpson   => () => CalculationApiService.IntegrateSimpsonAsync(request),
+            IntegrationMethod.Rectangle => () => IntegrationApiService.IntegrateRectangleAsync(request),
+            IntegrationMethod.Trapezoid => () => IntegrationApiService.IntegrateTrapezoidAsync(request),
+            IntegrationMethod.Simpson   => () => IntegrationApiService.IntegrateSimpsonAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 

@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using NumCalc.UI.MAUI.Services.Implementations;
 using NumCalc.UI.Shared.Extensions;
-using NumCalc.UI.Shared.HttpServices.Implementations;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Implementations.Calculation;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.MAUI;
@@ -29,7 +29,7 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
         
-        builder.Services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
+        builder.Services.AddHttpClient<IOcrApiService, OcrApiService>(client =>
         {
 #if ANDROID
             client.BaseAddress = new Uri(BaseApiUrlAndroid);

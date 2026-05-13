@@ -8,18 +8,20 @@ namespace NumCalc.UI.Shared.HttpServices.Implementations;
 public class SavedInputApiService(HttpClient httpClient, IAuthStateService authStateService)
     : BaseUserApiService(httpClient, authStateService), ISavedInputApiService
 {
+    protected override string ApiControllerName => "api/saved-inputs";
+
     public async Task<List<SavedInputDto>?> GetSavedInputsAsync() =>
-        await SendGetRequestAsync<List<SavedInputDto>>("api/saved-inputs");
+        await SendGetRequestAsync<List<SavedInputDto>>($"{ApiControllerName}");
 
     public async Task<List<SavedInputDto>?> GetLastAsync(int count) =>
-        await SendGetRequestAsync<List<SavedInputDto>>($"api/saved-inputs/last?count={count}");
+        await SendGetRequestAsync<List<SavedInputDto>>($"{ApiControllerName}/last?count={count}");
 
     public async Task<List<SavedInputDto>?> GetByTypeAsync(CalculationType type) =>
-        await SendGetRequestAsync<List<SavedInputDto>>($"api/saved-inputs?type={type}");
+        await SendGetRequestAsync<List<SavedInputDto>>($"{ApiControllerName}?type={type}");
     
     public async Task<SavedInputDto?> CreateSavedInputAsync(CreateSavedInputRequest request) =>
-        await SendPostRequestAsync<SavedInputDto>("api/saved-inputs", request);
+        await SendPostRequestAsync<SavedInputDto>($"{ApiControllerName}", request);
 
     public async Task DeleteSavedInputAsync(Guid id) =>
-        await SendDeleteRequestAsync($"api/saved-inputs/{id}");
+        await SendDeleteRequestAsync($"{ApiControllerName}/{id}");
 }

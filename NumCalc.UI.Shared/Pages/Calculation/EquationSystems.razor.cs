@@ -10,6 +10,7 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.EquationSystems;
 using NumCalc.UI.Shared.Models.User;
@@ -23,7 +24,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 {
     private const string ChartContainerId = "chart--equation-systems";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IEquationSystemApiService EquationSystemApiService { get; set; } = null!;
     
     private EquationSystemCategory Category { get; set; } = EquationSystemCategory.Linear;
     private LinearSystemMethod LinearMethod { get; set; } = LinearSystemMethod.Cramer;
@@ -107,7 +108,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             Methods = _linearBenchmarkMethods
         };
 
-        LinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetLinearComparisonAsync(request));
+        LinearComparisonResult = await SafeExecuteAsync(() => EquationSystemApiService.GetLinearComparisonAsync(request));
     }
 
     private async Task CompareNonLinear()
@@ -132,7 +133,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             Methods = _nonLinearBenchmarkMethods
         };
 
-        NonLinearComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetNonLinearComparisonAsync(request));
+        NonLinearComparisonResult = await SafeExecuteAsync(() => EquationSystemApiService.GetNonLinearComparisonAsync(request));
     }
 
     private async Task CalculateLinear()
@@ -150,8 +151,8 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
         Func<Task<SystemSolvingResponse?>> apiCall = LinearMethod switch
         {
-            LinearSystemMethod.Cramer => () => CalculationApiService.SolveCramerAsync(request),
-            LinearSystemMethod.Gauss  => () => CalculationApiService.SolveGaussianAsync(request),
+            LinearSystemMethod.Cramer => () => EquationSystemApiService.SolveCramerAsync(request),
+            LinearSystemMethod.Gauss  => () => EquationSystemApiService.SolveGaussianAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(LinearMethod))
         };
 
@@ -193,8 +194,8 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         var request = EquationSystemsUtils.BuildNonLinearSystemRequest(formData);
         Func<Task<SystemSolvingResponse?>> apiCall = NonLinearMethod switch
         {
-            NonLinearSystemMethod.FixedPoint => () => CalculationApiService.SolveFixedPointAsync(request),
-            NonLinearSystemMethod.Seidel     => () => CalculationApiService.SolveSeidelAsync(request),
+            NonLinearSystemMethod.FixedPoint => () => EquationSystemApiService.SolveFixedPointAsync(request),
+            NonLinearSystemMethod.Seidel     => () => EquationSystemApiService.SolveSeidelAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(NonLinearMethod))
         };
 

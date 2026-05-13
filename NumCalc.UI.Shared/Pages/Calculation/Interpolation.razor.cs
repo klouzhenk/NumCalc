@@ -9,6 +9,7 @@ using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Interpolation;
 using NumCalc.UI.Shared.Models.User;
@@ -22,7 +23,7 @@ public partial class Interpolation : CalculationPage<Interpolation>
 {
     private const string ChartContainerId = "chart--interpolation";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IInterpolationApiService InterpolationApiService { get; set; } = null!;
 
     private InterpolationMethod _method = InterpolationMethod.Newton;
     private InterpolationInput? _input;
@@ -64,7 +65,7 @@ public partial class Interpolation : CalculationPage<Interpolation>
                 Methods = _benchmarkMethods
             };
 
-            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetInterpolationComparisonAsync(comparisonRequest));
+            ComparisonResult = await SafeExecuteAsync(() => InterpolationApiService.GetInterpolationComparisonAsync(comparisonRequest));
             return;
         }
 
@@ -79,9 +80,9 @@ public partial class Interpolation : CalculationPage<Interpolation>
 
         Func<Task<InterpolationResponse?>> apiCall = _method switch
         {
-            InterpolationMethod.Newton   => () => CalculationApiService.InterpolateNewtonAsync(request),
-            InterpolationMethod.Lagrange => () => CalculationApiService.InterpolateLagrangeAsync(request),
-            InterpolationMethod.Spline   => () => CalculationApiService.InterpolateSplineAsync(request),
+            InterpolationMethod.Newton   => () => InterpolationApiService.InterpolateNewtonAsync(request),
+            InterpolationMethod.Lagrange => () => InterpolationApiService.InterpolateLagrangeAsync(request),
+            InterpolationMethod.Spline   => () => InterpolationApiService.InterpolateSplineAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 

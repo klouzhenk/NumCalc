@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NumCalc.UI.Shared.HttpServices.Implementations;
+using NumCalc.UI.Shared.HttpServices.Implementations.Calculation;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 using Serilog;
@@ -45,13 +47,17 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddCalculationApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var baseApiUrl = configuration["Apis:CalculationApi:BaseUrl"]
-            ?? throw new InvalidOperationException("Missing configuration: Apis:CalculationApi:BaseUrl");
+        var baseUri = new Uri(configuration["Apis:CalculationApi:BaseUrl"]
+            ?? throw new InvalidOperationException("Missing configuration: Apis:CalculationApi:BaseUrl"));
 
-        services.AddHttpClient<ICalculationApiService, CalculationApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
+        services.AddApiClient<IRootFindingApiService, RootFindingApiService>(baseUri);
+        services.AddApiClient<IEquationSystemApiService, EquationSystemApiService>(baseUri);
+        services.AddApiClient<IIntegrationApiService, IntegrationApiService>(baseUri);
+        services.AddApiClient<IInterpolationApiService, InterpolationApiService>(baseUri);
+        services.AddApiClient<IDifferentiationApiService, DifferentiationApiService>(baseUri);
+        services.AddApiClient<IOptimizationApiService, OptimizationApiService>(baseUri);
+        services.AddApiClient<IOdeApiService, OdeApiService>(baseUri);
+        services.AddApiClient<IOcrApiService, OcrApiService>(baseUri);
 
         return services;
     }
@@ -62,34 +68,25 @@ public static class ServiceCollectionExtension
         services.AddScoped<IAuthStateService, AuthStateService>();
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-        var baseApiUrl = configuration["Apis:UserApi:BaseUrl"]
-            ?? throw new InvalidOperationException("Missing configuration: Apis:UserApi:BaseUrl");
+        var baseUri = new Uri(configuration["Apis:UserApi:BaseUrl"]
+            ?? throw new InvalidOperationException("Missing configuration: Apis:UserApi:BaseUrl"));
 
-        services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
-
-        services.AddHttpClient<IUserApiService, UserApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
-
-        services.AddHttpClient<ICalculationHistoryApiService, CalculationHistoryApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
-
-        services.AddHttpClient<ISavedInputApiService, SavedInputApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
-
-        services.AddHttpClient<ISavedFileApiService, SavedFileApiService>(client =>
-        {
-            client.BaseAddress = new Uri(baseApiUrl);
-        });
+        services.AddApiClient<IAuthApiService, AuthApiService>(baseUri);
+        services.AddApiClient<IUserApiService, UserApiService>(baseUri);
+        services.AddApiClient<ICalculationHistoryApiService, CalculationHistoryApiService>(baseUri);
+        services.AddApiClient<ISavedInputApiService, SavedInputApiService>(baseUri);
+        services.AddApiClient<ISavedFileApiService, SavedFileApiService>(baseUri);
 
         return services;
+    }
+
+    private static void AddApiClient<TInterface, TImplementation>(this IServiceCollection services, Uri baseUri)
+        where TInterface : class
+        where TImplementation : class, TInterface
+    {
+        services.AddHttpClient<TInterface, TImplementation>(client =>
+        {
+            client.BaseAddress = baseUri;
+        });
     }
 }

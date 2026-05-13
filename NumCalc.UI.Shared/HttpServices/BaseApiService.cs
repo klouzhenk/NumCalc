@@ -9,6 +9,8 @@ public abstract class BaseApiService(HttpClient httpClient)
 {
     protected readonly HttpClient HttpClient = httpClient;
     
+    protected abstract string ApiControllerName { get; }
+    
     protected virtual void ConfigureRequest(HttpRequestMessage request) { }
     
     protected async Task<TResponse?> SendPostRequestAsync<TResponse>(string endpoint, object requestData)

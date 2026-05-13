@@ -9,6 +9,7 @@ using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Differentiation;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Differentiation;
 using NumCalc.UI.Shared.Models.User;
@@ -22,7 +23,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
 {
     private const string ChartContainerId = "chart--differentiation";
 
-    [Inject] private ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] private IDifferentiationApiService DifferentiationApiService { get; set; } = null!;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private DifferentiationMethod _method = DifferentiationMethod.FiniteDifferences;
@@ -73,7 +74,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
                 Methods = _benchmarkMethods
             };
 
-            ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetDifferentiationComparisonAsync(compRequest));
+            ComparisonResult = await SafeExecuteAsync(() => DifferentiationApiService.GetDifferentiationComparisonAsync(compRequest));
             return;
         }
 
@@ -90,8 +91,8 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
         Func<Task<DifferentiationResponse?>> apiCall = _method switch
         {
-            DifferentiationMethod.FiniteDifferences => () => CalculationApiService.DifferentiateFiniteDiffAsync(request, _variant),
-            DifferentiationMethod.Lagrange           => () => CalculationApiService.DifferentiateLagrangeAsync(request),
+            DifferentiationMethod.FiniteDifferences => () => DifferentiationApiService.DifferentiateFiniteDiffAsync(request, _variant),
+            DifferentiationMethod.Lagrange           => () => DifferentiationApiService.DifferentiateLagrangeAsync(request),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 

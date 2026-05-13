@@ -8,15 +8,17 @@ namespace NumCalc.UI.Shared.HttpServices.Implementations;
 public class SavedFileApiService(HttpClient httpClient, IAuthStateService authStateService)
     : BaseUserApiService(httpClient, authStateService), ISavedFileApiService
 {
+    protected override string ApiControllerName => "api/saved-files";
+    
     public async Task<List<SavedFileMetadataDto>?> GetSavedFilesAsync() =>
-        await SendGetRequestAsync<List<SavedFileMetadataDto>>("api/saved-files");
+        await SendGetRequestAsync<List<SavedFileMetadataDto>>($"{ApiControllerName}");
 
     public async Task<List<SavedFileMetadataDto>?> GetLastAsync(int count) =>
-        await SendGetRequestAsync<List<SavedFileMetadataDto>>($"api/saved-files/last?count={count}");
+        await SendGetRequestAsync<List<SavedFileMetadataDto>>($"{ApiControllerName}/last?count={count}");
 
     public async Task<byte[]?> DownloadFileAsync(Guid id)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/saved-files/{id}/download");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{ApiControllerName}/{id}/download");
         ConfigureRequest(request);
 
         var response = await HttpClient.SendAsync(request);
@@ -32,8 +34,8 @@ public class SavedFileApiService(HttpClient httpClient, IAuthStateService authSt
     }
 
     public async Task SaveFileAsync(SaveFileRequest request) =>
-        await SendPostRequestAsync("api/saved-files", request);
+        await SendPostRequestAsync($"{ApiControllerName}", request);
 
     public async Task DeleteFileAsync(Guid id) =>
-        await SendDeleteRequestAsync($"api/saved-files/{id}");
+        await SendDeleteRequestAsync($"{ApiControllerName}/{id}");
 }

@@ -9,6 +9,7 @@ using NumCalc.UI.Shared.Enums;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.RootFinding;
 using NumCalc.UI.Shared.Models.User;
@@ -21,7 +22,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
 {
     private const string ChartContainerId = "chart--root-finding";
 
-    [Inject] public ICalculationApiService CalculationApiService { get; set; } = null!;
+    [Inject] public IRootFindingApiService RootFindingApiService { get; set; } = null!;
     
     private AnalysisMode Mode { get; set; }
     private List<RootFindingMethod> _benchmarkMethods = [];
@@ -98,11 +99,11 @@ public partial class RootFinding : CalculationPage<RootFinding>
 
         Func<Task<RootFindingResponse?>> apiCall = _formData.Method switch                                                                                                                                                                
         {
-            RootFindingMethod.Dichotomy        => () => CalculationApiService.GetDichotomyResultAsync(requestModel),
-            RootFindingMethod.Newton           => () => CalculationApiService.GetNewtonResultAsync(requestModel),
-            RootFindingMethod.SimpleIterations => () => CalculationApiService.GetSimpleIterationsResultAsync(requestModel),
-            RootFindingMethod.Secant           => () => CalculationApiService.GetSecantResultAsync(requestModel),
-            RootFindingMethod.Combined         => () => CalculationApiService.GetCombinedResultAsync(requestModel),
+            RootFindingMethod.Dichotomy        => () => RootFindingApiService.GetDichotomyResultAsync(requestModel),
+            RootFindingMethod.Newton           => () => RootFindingApiService.GetNewtonResultAsync(requestModel),
+            RootFindingMethod.SimpleIterations => () => RootFindingApiService.GetSimpleIterationsResultAsync(requestModel),
+            RootFindingMethod.Secant           => () => RootFindingApiService.GetSecantResultAsync(requestModel),
+            RootFindingMethod.Combined         => () => RootFindingApiService.GetCombinedResultAsync(requestModel),
             _ => throw new ArgumentOutOfRangeException(nameof(_formData.Method))
         };
 
@@ -138,7 +139,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
             Methods = _benchmarkMethods
         };
 
-        ComparisonResult = await SafeExecuteAsync(() => CalculationApiService.GetBenchmarkResultAsync(request));
+        ComparisonResult = await SafeExecuteAsync(() => RootFindingApiService.GetBenchmarkResultAsync(request));
 
         await UpdateChart();
     }
