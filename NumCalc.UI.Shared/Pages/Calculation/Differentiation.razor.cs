@@ -58,8 +58,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
     
     private async Task DoSingleCalculation()
     {
-        if (_mode is not AnalysisMode.Single)
-            return;
+        if (_mode is not AnalysisMode.Single) return;
         
         var request = FormData.GetSingleCalculationRequest();
 
@@ -72,10 +71,10 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
         Result = await SafeExecuteAsync(apiCall);
         
-        if(Result is null) return;
+        if (Result is null) return;
+
         var historyRecord = FormData.GetHistoryRecord(Result, _method, _variant);
         await TrySaveHistoryAsync(historyRecord);
-        
         await UpdateChart();
     }
 
@@ -124,7 +123,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
         if (Result is null) return;
 
         var (inputs, methodLabel) = 
-            FormData.GetFormRecordInputs(_method, _variant);
+            FormData.GetMethodInputs(_method, _variant);
 
         var order = FormData.DerivativeOrder == 2 ? "f''" : "f'";
         var resultStr = $"{order}(x*) = {Result.DerivativeValue:G10}";

@@ -49,7 +49,7 @@ public static class DifferentiationUtils
         DifferentiationMethod method,
         FiniteDiffVariant variant)
     {
-        var (inputs, methodLabel) = formData.GetFormRecordInputs(method, variant);
+        var (inputs, methodLabel) = formData.GetMethodInputs(method, variant);
         
         var order = formData.DerivativeOrder == 2 ? "f''" : "f'";
         return new SaveCalculationRecordRequest
@@ -62,7 +62,7 @@ public static class DifferentiationUtils
         };
     }
     
-    public static (Dictionary<string, string> inputs, string methodLabel) GetFormRecordInputs(
+    public static (Dictionary<string, string> inputs, string methodLabel) GetMethodInputs(
         this DifferentiationFormData formData,
         DifferentiationMethod method,
         FiniteDiffVariant variant)
