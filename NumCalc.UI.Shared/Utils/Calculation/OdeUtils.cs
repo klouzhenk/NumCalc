@@ -47,11 +47,7 @@ public static class OdeUtils
         OdeMethod method)
     {
         var inputs = formData.GetMethodInputs(method);
-
-        var lastPoint = result.SolutionPoints?.LastOrDefault();
-        var resultSummary = lastPoint is not null
-            ? $"y({lastPoint.X.FormatResult()}) ≈ {lastPoint.Y.FormatResult()}"
-            : "No solution";
+        var resultSummary = result.GetResultSummary();
         
         return new SaveCalculationRecordRequest
         {
@@ -126,5 +122,14 @@ public static class OdeUtils
                 }
             ]
         };
+    }
+
+    public static string GetResultSummary(this OdeResponse result)
+    {
+        var lastPoint = result.SolutionPoints?.LastOrDefault();
+
+        return lastPoint is not null
+            ? $"y({lastPoint.X.FormatResult()}) ≈ {lastPoint.Y.FormatResult()}"
+            : "No solution";
     }
 }

@@ -20,19 +20,12 @@ public partial class Ode : CalculationPage<Ode>
 
     private OdeResponse? Result { get; set; }
     private OdeComparisonResponse? ComparisonResult { get; set; }
+    private bool IsChartVisible => Result?.SolutionPoints is { Count: > 0 };
     
     private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
     private List<OdeMethod> _benchmarkMethods = [];
     private OdeInput? _input;
-
-    private void ResetResult()
-    {
-        Result = null;
-        ComparisonResult = null;
-    }
-
-    private bool IsChartVisible => Result?.SolutionPoints is { Count: > 0 };
 
     private async Task Calculate()
     {
@@ -67,8 +60,8 @@ public partial class Ode : CalculationPage<Ode>
 
         if (Result is null) return;
 
-        var historyRequest = formData.GetHistoryRecord(Result, _method);
-        await TrySaveHistoryAsync(historyRequest);
+        var historyRecord = formData.GetHistoryRecord(Result, _method);
+        await TrySaveHistoryAsync(historyRecord);
         await UpdateChart(formData);
     }
 
@@ -118,18 +111,21 @@ public partial class Ode : CalculationPage<Ode>
         var formData = await _input.GetFormData();
 
         var inputs = formData.GetMethodInputs(_method);
-        var lastPoint = Result.SolutionPoints?.LastOrDefault();
-        var resultStr = lastPoint is not null
-            ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"
-            : "No solution";
+        var resultSummary = Result.GetResultSummary();
 
         await ExportPdfCoreAsync(
             methodName: $"ODE — {_method}",
             inputs: inputs,
-            result: resultStr,
+            result: resultSummary,
             steps: Result.SolutionSteps,
             chartContainerId: IsChartVisible ? ChartContainerId : null,
             fileName: $"ode-{_method}.pdf",
             type: CalculationType.Ode);
+    }
+    
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
     }
 }
