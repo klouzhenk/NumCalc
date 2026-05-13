@@ -1,20 +1,17 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.RootFinding;
-using NumCalc.Shared.RootFinding.Requests;
 using NumCalc.Shared.RootFinding.Responses;
-using NumCalc.UI.Shared.Components;
-using NumCalc.UI.Shared.Enums;
-using NumCalc.UI.Shared.Enums.Charts;
+using NumCalc.UI.Shared.Components.RootFinding;
 using NumCalc.UI.Shared.Enums.Roots;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.RootFinding;
-using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
 using NumCalc.UI.Shared.Utils;
+using NumCalc.UI.Shared.Utils.Calculation;
 
 namespace NumCalc.UI.Shared.Pages.Calculation;
 
@@ -24,78 +21,39 @@ public partial class RootFinding : CalculationPage<RootFinding>
 
     [Inject] public IRootFindingApiService RootFindingApiService { get; set; } = null!;
     
-    private AnalysisMode Mode { get; set; }
-    private List<RootFindingMethod> _benchmarkMethods = [];
-    
-    private readonly RootFindingFormData _formData = new();
-
-    private RootFindingResponse? Result { get; set; }
     private RootFindingComparisonResponse? ComparisonResult { get; set; }
-    private MathInput? _mathInputComponent;
+    private RootFindingResponse? Result { get; set; }
+    private AnalysisMode Mode { get; set; }
     private bool IsChartVisible => !string.IsNullOrWhiteSpace(_formData.FunctionExpression);
 
-    private record ExpressionValidationResult(bool Valid, string[] Variables);
+    private List<RootFindingMethod> _benchmarkMethods = [];
+    private readonly RootFindingFormData _formData = new();
+    private RootFindingInput? _formDataInput;
 
     private async Task Calculate()
     {
-        Result = null;
-        ComparisonResult = null;
-
-        if (!await ValidateAsync()) return;
-
-        if (Mode == AnalysisMode.Single) await DoSingleMethodCalculation();
-        else await DoMultipleMethodCalculations();
-    }
-
-    private async Task<bool> ValidateAsync()
-    {
-        if (string.IsNullOrWhiteSpace(_formData.FunctionExpression))
+        try
         {
-            UiService.ShowError(Localizer["ExpressionRequired"]);
-            return false;
+            var (isValid, errorMessage) = await _formData.ValidateFormData(Mode, _benchmarkMethods, JsRuntime);
+            if (!isValid)
+            {
+                UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);
+                return;
+            }
+
+            if (Mode is AnalysisMode.Single) await DoSingleMethodCalculation();
+            else await DoMultipleMethodCalculations();
         }
-
-        // TODO : check the bug with '5x + 3'
-        // var result = await JsRuntime.InvokeAsync<ExpressionValidationResult>(
-        //     "NumCalc.validateExpression", _formData.FunctionExpression);
-        //
-        // if (!result.Valid)
-        // {
-        //     UiService.ShowError(Localizer["ExpressionInvalid"]);
-        //     return false;
-        // }
-
-        // if (result.Variables.Any(v => v != "x"))
-        // {
-        //     UiService.ShowError(Localizer["ExpressionOnlyX"]);
-        //     return false;
-        // }
-
-        var isNewton = Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton;
-        if (!isNewton && _formData.StartPoint >= _formData.EndPoint)
+        catch (Exception ex)
         {
-            UiService.ShowError(Localizer["StartMustBeLessThanEnd"]);
-            return false;
+            Logger.LogError(ex, "Calculate failed");
+            UiService.ShowError(Localizer["SomethingWentWrong"]);
         }
-
-        if (Mode is AnalysisMode.Benchmark && _benchmarkMethods.Count == 0)
-        {
-            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
-            return false;
-        }
-
-        return true;
     }
 
     private async Task DoSingleMethodCalculation()
     {
-        var requestModel = new RootFindingRequest()
-        {
-            FunctionExpression = _formData.FunctionExpression ?? string.Empty,
-            StartRange = _formData.StartPoint,
-            EndRange = _formData.EndPoint,
-            Error = _formData.Tolerance
-        };
+        var requestModel = _formData.GetSingleCalculationRequest();
 
         Func<Task<RootFindingResponse?>> apiCall = _formData.Method switch                                                                                                                                                                
         {
@@ -110,37 +68,18 @@ public partial class RootFinding : CalculationPage<RootFinding>
         Result = await SafeExecuteAsync(apiCall);
 
         if (Result is not null)
-            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-            {
-                Type = CalculationType.RootFinding,
-                MethodName = _formData.Method.ToString(),
-                InputsJson = JsonSerializer.Serialize(new Dictionary<string, string>
-                {
-                    ["Expression"] = _formData.FunctionExpression ?? string.Empty,
-                    ["Start"] = _formData.StartPoint.ToString("G"),
-                    ["End"] = _formData.EndPoint.ToString("G"),
-                    ["Tolerance"] = _formData.Tolerance.ToString("G")
-                }),
-                ResultSummary = Result.Root.HasValue ? $"Root: {Result.Root.Value.FormatResult(_formData.Tolerance)}" : "No root found",
-                ExecutionTimeMs = Result.ExecutionTimeMs
-            });
+        {
+            var historyRecord = _formData.GetHistoryRecord(Result);
+            await TrySaveHistoryAsync(historyRecord);
+        }
 
         await UpdateChart();
     }
 
     private async Task DoMultipleMethodCalculations()
     {
-        var request = new RootFindingComparisonRequest()
-        {
-            FunctionExpression = _formData.FunctionExpression ?? string.Empty,
-            StartRange = _formData.StartPoint,
-            EndRange = _formData.EndPoint,
-            Tolerance = _formData.Tolerance,
-            Methods = _benchmarkMethods
-        };
-
+        var request = _formData.GetBenchmarkCalculationRequest(_benchmarkMethods);
         ComparisonResult = await SafeExecuteAsync(() => RootFindingApiService.GetBenchmarkResultAsync(request));
-
         await UpdateChart();
     }
 
@@ -153,83 +92,38 @@ public partial class RootFinding : CalculationPage<RootFinding>
 
     private async Task UpdateChart()
     {
-        var asciiEquation = _mathInputComponent is not null
-            ? await _mathInputComponent.GetAsciiValue()
-            : null;
-        if (string.IsNullOrWhiteSpace(asciiEquation)) return;
-        if (_formData.StartPoint >= _formData.EndPoint) return;
+        try
+        {
+            var asciiEquation = await _formDataInput?.GetAsciiExpressionAsync()!;
+            if (string.IsNullOrWhiteSpace(asciiEquation)) return;
+            if (_formData.StartPoint >= _formData.EndPoint) return;
 
-        var config = CreateChartConfig(asciiEquation.NormalizeForChart(), _formData.StartPoint, _formData.EndPoint);
-        AppendResultSeries(config);
+            var config = RootFindingUtils.CreateChartConfig(
+                ChartContainerId, 
+                asciiEquation.NormalizeForChart(),
+                _formData,
+                Localizer);
+            
+            AppendResult(config);
 
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+            await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Chart update failed");
+        }
     }
 
-    private void AppendResultSeries(Chart config)
+    private void AppendResult(Chart config)
     {
         if (Mode is AnalysisMode.Single && Result?.Root.HasValue == true)
         {
-            config.Series.Add(new ChartSeries
-            {
-                Name = $"{Localizer["Root"]} ({_formData.Method})",
-                Type = ChartType.Scatter,
-                Data = [[Result.Root.Value, 0]],
-                Color = ColorUtils.GetColor(Color.PrimaryDark),
-                IsVisible = true,
-                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
-            });
+            config.AppendSingleResult(_formData, Result, Localizer);
         }
         else if (Mode is AnalysisMode.Benchmark && ComparisonResult?.Results is { Count: > 0 })
         {
-            foreach (var result in ComparisonResult.Results)
-            {
-                config.Series.Add(new ChartSeries
-                {
-                    Name = $"{Localizer["Root"]} ({Localizer[result.Method.ToString()]})",
-                    Type = ChartType.Scatter,
-                    Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
-                    Color = ColorUtils.GetSeriesColor((int)result.Method),
-                    IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle },
-                    Opacity = 0.8
-                });
-            }
-        }
-    }
-    
-    private Chart CreateChartConfig(string expression, double min, double max)
-    {
-        return new Chart
-        {
-            ContainerId = ChartContainerId,
-            Title = null,
-            Decimals = MathUtils.DecimalsFromTolerance(_formData.Tolerance),
-            XAxis = new ChartAxis
-            {
-                Min = min,
-                Max = max,
-                Title = Localizer["ArgumentX"],
-                PlotLines = [ ChartUtils.CreateZeroLine() ]
-            },
-
-            YAxis = new ChartAxis
-            {
-                Title = Localizer["FunctionValue"],
-                PlotLines = [ ChartUtils.CreateZeroLine() ]
-            },
-
-            Series =
-            [
-                new ChartSeries
-                {
-                    Name = "f(x)",
-                    Expression = expression,
-                    Color = ColorUtils.GetColor(Color.Primary),
-                    LineWidth = 2,
-                    IsVisible = true
-                }
-            ]
-        };
+            config.AppendBenchmarkResults(ComparisonResult, Localizer);
+        }        
     }
 
     private async Task SaveInputAsync(string name)
@@ -241,14 +135,10 @@ public partial class RootFinding : CalculationPage<RootFinding>
     {
         var data = JsonSerializer.Deserialize<RootFindingFormData>(json);
         if (data is null) return;
-        _formData.StartPoint = data.StartPoint;
-        _formData.EndPoint = data.EndPoint;
-        _formData.Tolerance = data.Tolerance;
-        _formData.Method = data.Method;
-        _formData.FunctionExpression = data.FunctionExpression;
+        _formData.CopyFrom(data);
         StateHasChanged();
-        if (!string.IsNullOrEmpty(data.FunctionExpression))
-            await (_mathInputComponent?.SetLatexValue(data.FunctionExpression) ?? Task.CompletedTask);
+
+        await (_formDataInput?.SetLatexExpressionAsync(data.FunctionExpression) ?? Task.CompletedTask);
         await UpdateChart();
     }
 
@@ -256,16 +146,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
     {
         if (Result is null) return;
 
-        var isNewton = _formData.Method is RootFindingMethod.Newton;
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _formData.Method.ToString(),
-            ["Expression"] = _formData.FunctionExpression ?? string.Empty,
-            [isNewton ? "Initial Guess" : "Start"] = _formData.StartPoint.ToString("G"),
-        };
-        if (!isNewton) inputs["End"] = _formData.EndPoint.ToString("G");
-        inputs["Tolerance"] = _formData.Tolerance.ToString("G");
-
+        var inputs = _formData.GetPdfInputs();
         var resultStr = Result.Root.HasValue
             ? $"Root: {Result.Root.Value.FormatResult(_formData.Tolerance)}    Iterations: {Result.Iterations}"
             : "No root found";
