@@ -17,8 +17,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Differentiation : CalculationPage<Differentiation>
 {
-    private const string ChartContainerId = "chart--differentiation";
-
     [Inject] private IDifferentiationApiService DifferentiationApiService { get; set; } = null!;
 
     private DifferentiationResponse? Result { get; set; }
@@ -96,7 +94,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
     private async Task UpdateChart()
     {
-        var config = FormData.CreateChartConfig(Result, ChartContainerId);
+        var config = FormData.CreateChartConfig(Result);
         if (config is null) return;
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }
@@ -133,7 +131,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
             inputs: inputs,
             result: resultStr,
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? DifferentiationUtils.ChartContainerId : null,
             fileName: $"differentiation-{_method}.pdf",
             type: CalculationType.Differentiation);
     }

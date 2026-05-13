@@ -15,8 +15,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Interpolation : CalculationPage<Interpolation>
 {
-    private const string ChartContainerId = "chart--interpolation";
-
     [Inject] private IInterpolationApiService InterpolationApiService { get; set; } = null!;
     
     private InterpolationResponse? Result { get; set; }
@@ -89,7 +87,7 @@ public partial class Interpolation : CalculationPage<Interpolation>
     {
         if (Result?.ChartData is null) return;
         
-        var chartConfig = formData.CreateChartConfig(Result, _method, ChartContainerId, Localizer);
+        var chartConfig = formData.CreateChartConfig(Result, _method, Localizer);
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
@@ -120,7 +118,7 @@ public partial class Interpolation : CalculationPage<Interpolation>
             inputs: inputs,
             result: $"P(x*) = {Result.InterpolatedValue:G6}",
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? InterpolationUtils.ChartContainerId : null,
             fileName: $"interpolation-{_method}.pdf",
             type: CalculationType.Interpolation);
     }

@@ -13,6 +13,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class OptimizationUtils
 {
+    public const string ChartContainerId = "chart--optimization";
+    
     public static OptimizationComparisonRequest GetComparisonRequest(
         this OptimizationFormData formData,
         List<OptimizationComparisonMethod> benchmarkMethods,
@@ -105,8 +107,7 @@ public static class OptimizationUtils
 
     public static Chart? Create2DChartConfig(        
         this OptimizationFormData formData,
-        OptimizationResponse result,
-        string chartContainerId)
+        OptimizationResponse result)
     {
         var chartData = result.ChartData?
             .Where(p => p is { X: not null, Y: not null })
@@ -144,7 +145,7 @@ public static class OptimizationUtils
 
         return new Chart
         {
-            ContainerId = chartContainerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(formData.Tolerance),
             XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
@@ -155,8 +156,7 @@ public static class OptimizationUtils
     
     public static Chart? Create3DChartConfig(        
         this OptimizationFormData formData,
-        OptimizationResponse result,
-        string chartContainerId)
+        OptimizationResponse result)
     {
         var surfaceData = result.ChartData?
             .Where(p => p is { X: not null, Y: not null, Z: not null })
@@ -196,7 +196,7 @@ public static class OptimizationUtils
 
         return new Chart
         {
-            ContainerId = chartContainerId,
+            ContainerId = ChartContainerId,
             ShowLegend = true,
             Decimals = MathUtils.DecimalsFromTolerance(formData.Tolerance),
             XAxis = new ChartAxis { Title = "x" },
@@ -208,13 +208,13 @@ public static class OptimizationUtils
 
     public static string GetResultSummary(this OptimizationResponse result, OptimizationFormData formData)
     {
-        var resultStr = $"f(x*) = {result.MinimumValue.FormatResult(formData.Tolerance)}";
+        var resultSummary = $"f(x*) = {result.MinimumValue.FormatResult(formData.Tolerance)}";
 
         if (result.ArgMinX.HasValue)
-            resultStr += $", x* = {result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
+            resultSummary += $", x* = {result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
         else if (result.ArgMinPoint is { Count: > 0 })
-            resultStr += $", x* = ({string.Join(", ", result.ArgMinPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
+            resultSummary += $", x* = ({string.Join(", ", result.ArgMinPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
         
-        return resultStr;
+        return resultSummary;
     }
 }

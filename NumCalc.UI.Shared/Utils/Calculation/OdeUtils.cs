@@ -13,6 +13,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class OdeUtils
 {
+    public const string ChartContainerId = "chart--ode";
+    
     public static OdeComparisonRequest GetComparisonRequest(
         this OdeFormData formData,
         List<OdeMethod> benchmarkMethods)
@@ -80,8 +82,7 @@ public static class OdeUtils
     public static Chart? CreateChartConfig(        
         this OdeFormData formData,
         OdeResponse result,
-        OdeMethod method,
-        string chartContainerId)
+        OdeMethod method)
     {
         var chartData = result.SolutionPoints?
             .Where(p => p is { X: not null, Y: not null })
@@ -105,7 +106,7 @@ public static class OdeUtils
 
         return new Chart
         {
-            ContainerId = chartContainerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis { Title = "x", PlotLines = xAxisPlotLines },

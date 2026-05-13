@@ -16,8 +16,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Integration : CalculationPage<Integration>
 {
-    private const string ChartContainerId = "chart--integration";
-
     [Inject] private IIntegrationApiService IntegrationApiService { get; set; } = null!;
     
     private IntegrationResponse? Result { get; set; }
@@ -88,7 +86,7 @@ public partial class Integration : CalculationPage<Integration>
     {
         if (Result?.ChartData is null) return;
 
-        var chartConfig = formData.CreateChartConfig(Result, _method, _rectangleVariant, ChartContainerId);
+        var chartConfig = formData.CreateChartConfig(Result, _method, _rectangleVariant);
         if (chartConfig is null) return; 
         
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
@@ -125,7 +123,7 @@ public partial class Integration : CalculationPage<Integration>
             inputs: inputs,
             result: resultStr,
             steps: FilteredSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? IntegrationUtils.ChartContainerId : null,
             fileName: $"integration-{_method}.pdf",
             type: CalculationType.Integration);
     }

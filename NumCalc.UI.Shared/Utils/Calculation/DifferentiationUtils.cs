@@ -13,6 +13,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class DifferentiationUtils
 {
+    public const string ChartContainerId = "chart--differentiation";
+    
     public static DifferentiationComparisonRequest GetComparisonRequest(
         this DifferentiationFormData formData,
         List<DifferentiationComparisonMethod> benchmarkMethods)
@@ -86,10 +88,7 @@ public static class DifferentiationUtils
         return (inputs, methodLabel);
     }
 
-    public static Chart? CreateChartConfig(        
-        this DifferentiationFormData formData,
-        DifferentiationResponse? result,
-        string chartContainerId)
+    public static Chart? CreateChartConfig(this DifferentiationFormData formData, DifferentiationResponse? result)
     {
         var chartData = result?.ChartData?
             .Where(p => p is { X: not null, Y: not null })
@@ -103,7 +102,7 @@ public static class DifferentiationUtils
 
         return new Chart
         {
-            ContainerId = chartContainerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },

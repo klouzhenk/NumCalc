@@ -12,6 +12,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class IntegrationUtils
 {
+    public const string ChartContainerId = "chart--integration";
+    
     public static IntegrationComparisonRequest GetComparisonRequest(
         this IntegrationFormData formData,
         List<IntegrationComparisonMethod> benchmarkMethods)
@@ -84,8 +86,7 @@ public static class IntegrationUtils
         this IntegrationFormData formData,
         IntegrationResponse? result,
         IntegrationMethod method,
-        RectangleVariant variant,
-        string chartContainerId)
+        RectangleVariant variant)
     {
         var chartData = result?.ChartData?
             .Where(p => p is { X: not null, Y: not null })
@@ -117,7 +118,7 @@ public static class IntegrationUtils
 
         return new Chart
         {
-            ContainerId = chartContainerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis

@@ -14,8 +14,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Ode : CalculationPage<Ode>
 {
-    private const string ChartContainerId = "chart--ode";
-
     [Inject] private IOdeApiService OdeApiService { get; set; } = null!;
 
     private OdeResponse? Result { get; set; }
@@ -83,7 +81,7 @@ public partial class Ode : CalculationPage<Ode>
     {
         if (Result?.SolutionPoints is not { Count: > 0 }) return;
 
-        var chartConfig = formData.CreateChartConfig(Result, _method, ChartContainerId);
+        var chartConfig = formData.CreateChartConfig(Result, _method);
         if (chartConfig is null) return;
      
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
@@ -118,7 +116,7 @@ public partial class Ode : CalculationPage<Ode>
             inputs: inputs,
             result: resultSummary,
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? OdeUtils.ChartContainerId : null,
             fileName: $"ode-{_method}.pdf",
             type: CalculationType.Ode);
     }

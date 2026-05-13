@@ -17,6 +17,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class RootFindingUtils
 {
+    public const string ChartContainerId = "chart--root-finding";
+    
     private record ExpressionValidationResult(bool Valid, string[] Variables);
     
     public static async Task<(bool isValid, string? errorMessage)> ValidateFormData(
@@ -92,14 +94,13 @@ public static class RootFindingUtils
     }
     
     public static Chart CreateChartConfig(
-        string containerId,
+        this RootFindingFormData formData,
         string expression,
-        RootFindingFormData formData,
         IStringLocalizer<Localization> localizer)
     {
         return new Chart
         {
-            ContainerId = containerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(formData.Tolerance),
             XAxis = new ChartAxis

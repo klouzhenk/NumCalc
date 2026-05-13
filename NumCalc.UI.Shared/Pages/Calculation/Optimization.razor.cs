@@ -15,8 +15,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Optimization : CalculationPage<Optimization>
 {
-    private const string ChartContainerId = "chart--optimization";
-
     [Inject] private IOptimizationApiService OptimizationApiService { get; set; } = null!;
 
     private OptimizationResponse? Result { get; set; }
@@ -100,14 +98,14 @@ public partial class Optimization : CalculationPage<Optimization>
 
     private async Task Update2DChart(OptimizationFormData formData)
     {
-        var chartConfig = formData.Create2DChartConfig(Result!, ChartContainerId);
+        var chartConfig = formData.Create2DChartConfig(Result!);
         if (chartConfig is null) return;
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);        
     }
 
     private async Task Update3DChart(OptimizationFormData formData)
     {
-        var chartConfig = formData.Create3DChartConfig(Result!, ChartContainerId);
+        var chartConfig = formData.Create3DChartConfig(Result!);
         if (chartConfig is null) return;
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", chartConfig);
     }
@@ -141,7 +139,7 @@ public partial class Optimization : CalculationPage<Optimization>
             inputs: inputs,
             result: resultSummary,
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? OptimizationUtils.ChartContainerId : null,
             fileName: $"optimization-{_method}.pdf",
             type: CalculationType.Optimization);
     }

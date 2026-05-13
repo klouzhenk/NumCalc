@@ -1,29 +1,20 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.EquationSystems;
-using NumCalc.Shared.EquationsSystems.Requests;
 using NumCalc.Shared.EquationsSystems.Responses;
 using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
-using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.EquationSystems;
 using NumCalc.UI.Shared.Enums.Roots;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
-using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.EquationSystems;
-using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
-using NumCalc.UI.Shared.Utils;
 using NumCalc.UI.Shared.Utils.Calculation;
 
 namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class EquationSystems : CalculationPage<EquationSystems>
 {
-    private const string ChartContainerId = "chart--equation-systems";
-
     [Inject] private IEquationSystemApiService EquationSystemApiService { get; set; } = null!;
     
     private EquationSystemCategory Category { get; set; } = EquationSystemCategory.Linear;
@@ -44,111 +35,82 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     private LinearSystemInput? _linearInput;
     private EquationList? _equationList;
 
-    protected override void OnInitialized()
-    {
-        _linearBenchmarkMethods = Enum.GetValues<LinearSystemMethod>().ToList();
-        _nonLinearBenchmarkMethods = Enum.GetValues<NonLinearSystemMethod>().ToList();
-    }
-
-    private void ResetResult()
-    {
-        Result = null;
-        LinearComparisonResult = null;
-        NonLinearComparisonResult = null;
-    }
-
     private async Task Calculate()
     {
-        Result = null;
-        LinearComparisonResult = null;
-        NonLinearComparisonResult = null;
-
-        if (_mode is AnalysisMode.Benchmark)
+        if (_mode is AnalysisMode.Single)
         {
-            await HandleComparison();
+            await DoSingleCalculation();
             return;
         }
 
-        await HandleOneMethodCalculation();
+        await DoBenchmarkCalculation();
     }
 
-    private async Task HandleOneMethodCalculation()
+    private async Task DoSingleCalculation()
     {
         if (Category is EquationSystemCategory.Linear)
         {
-            await CalculateLinear();
+            await DoSingleLinearCalculation();
             return;
         }
         
-        await CalculateNonLinear();
+        await DoSingleNonLinearCalculation();
     }
 
-    private async Task HandleComparison()
+    private async Task DoBenchmarkCalculation()
     {
         if (Category is EquationSystemCategory.Linear)
         {
-            await CompareLinear();
+            await DoBenchmarkLinearCalculation();
             return;
         }
         
-        await CompareNonLinear();
+        await DoBenchmarkNonLinearCalculation();
     }
 
-    private async Task CompareLinear()
+    private async Task DoBenchmarkLinearCalculation()
     {
         if (_linearInput is null) return;
-
-        var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-        var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
-
-        var request = new LinearSystemComparisonRequest
+                
+        if (_linearBenchmarkMethods is not { Count: > 0 })
         {
-            Equations = equations,
-            Variables = variables,
-            Methods = _linearBenchmarkMethods
-        };
+            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+            return;
+        }
 
-        LinearComparisonResult = await SafeExecuteAsync(() => EquationSystemApiService.GetLinearComparisonAsync(request));
+        var request = _linearInput.GetLinearComparisonRequest(Size, _linearBenchmarkMethods);
+
+        LinearComparisonResult = await SafeExecuteAsync(() 
+            => EquationSystemApiService.GetLinearComparisonAsync(request));
     }
 
-    private async Task CompareNonLinear()
+    private async Task DoBenchmarkNonLinearCalculation()
     {
         if (_equationList is null) return;
-
+        
+        if (_nonLinearBenchmarkMethods is not { Count: > 0 })
+        {
+            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+            return;
+        }
+        
         var formData = await _equationList.GetFormData();
-
         if (formData.IterationFunctions.Any(string.IsNullOrWhiteSpace))
         {
             UiService.ShowError(Localizer["ExpressionRequired"]);
             return;
         }
 
-        var request = new NonLinearSystemComparisonRequest
-        {
-            IterationFunctions = formData.IterationFunctions.ToList(),
-            Variables = formData.Variables.ToList(),
-            InitialGuess = formData.InitialGuess.ToList(),
-            Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations,
-            Methods = _nonLinearBenchmarkMethods
-        };
-
-        NonLinearComparisonResult = await SafeExecuteAsync(() => EquationSystemApiService.GetNonLinearComparisonAsync(request));
+        var request = formData.GetNonLinearComparisonRequest(_nonLinearBenchmarkMethods);
+        NonLinearComparisonResult = await SafeExecuteAsync(() 
+            => EquationSystemApiService.GetNonLinearComparisonAsync(request));
     }
 
-    private async Task CalculateLinear()
+    private async Task DoSingleLinearCalculation()
     {
         if (_linearInput is null) return;
 
-        var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-        var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
-
-        var request = new SystemSolvingRequest
-        {
-            Equations = equations,
-            Variables = variables
-        };
-
+        var (request, variables, equations) = _linearInput.GetLinearCalculationRequest(Size);
         Func<Task<SystemSolvingResponse?>> apiCall = LinearMethod switch
         {
             LinearSystemMethod.Cramer => () => EquationSystemApiService.SolveCramerAsync(request),
@@ -160,26 +122,12 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
 
         if (Result is null) return;
 
-        var inputs = new Dictionary<string, string> { ["Method"] = LinearMethod.ToString() };
-        for (var i = 0; i < equations.Count; i++)
-            inputs[$"Equation {i + 1}"] = equations[i];
-        inputs["Variables"] = string.Join(", ", variables);
-
-        await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-        {
-            Type = CalculationType.EquationSystems,
-            MethodName = LinearMethod.ToString(),
-            InputsJson = JsonSerializer.Serialize(inputs),
-            ResultSummary = Result.Roots is { Count: > 0 }
-                ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
-                : "No solution",
-            ExecutionTimeMs = Result.ExecutionTimeMs
-        });
-
+        var historyRecord = Result.GetLinearHistoryRecord(variables, equations, LinearMethod);
+        await TrySaveHistoryAsync(historyRecord);
         await UpdateChart();
     }
 
-    private async Task CalculateNonLinear()
+    private async Task DoSingleNonLinearCalculation()
     {
         if (_equationList is null) return;
 
@@ -191,7 +139,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             return;
         }
 
-        var request = EquationSystemsUtils.BuildNonLinearSystemRequest(formData);
+        var request = formData.GetNonLinearCalculationRequest();
         Func<Task<SystemSolvingResponse?>> apiCall = NonLinearMethod switch
         {
             NonLinearSystemMethod.FixedPoint => () => EquationSystemApiService.SolveFixedPointAsync(request),
@@ -202,31 +150,11 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         Result = await SafeExecuteAsync(apiCall);
         if (Result is null) return;
 
-        await SaveNonLinearCalculation(formData);
+        var historyRecord = Result.GetNonLinearHistoryRecord(formData, NonLinearMethod);
+        await TrySaveHistoryAsync(historyRecord);
         await UpdateChart();
     }
-
-    private async Task SaveNonLinearCalculation(NonLinearSystemFormData formData)
-    {
-        var inputs = new Dictionary<string, string> { ["Method"] = NonLinearMethod.ToString() };
-        for (var i = 0; i < formData.IterationFunctions.Count(); i++)
-            inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions.ElementAt(i);
-        inputs["Variables"] = string.Join(", ", formData.Variables);
-        inputs["Initial Guess"] = string.Join(", ", formData.InitialGuess);
-        inputs["Tolerance"] = formData.Tolerance.ToString("G");
-
-        await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-        {
-            Type = CalculationType.EquationSystems,
-            MethodName = NonLinearMethod.ToString(),
-            InputsJson = JsonSerializer.Serialize(inputs),
-            ResultSummary = Result.Roots is { Count: > 0 }
-                ? string.Join(", ", Result.Roots.Select((r, i) => $"x{i + 1} = {r:G6}"))
-                : "No solution",
-            ExecutionTimeMs = Result.ExecutionTimeMs
-        });
-    }
-
+    
     private async Task UpdateChart()
     {
         if (Result?.ChartSeries is not { Count: > 0 }) return;
@@ -235,167 +163,56 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             ? await _equationList.GetFormData()
             : null;
 
-        var currentVariables = Category is EquationSystemCategory.Linear
-            ? Enumerable.Range(1, Size).Select(i => $"x{i}").ToList()
-            : nonLinearFormData?.Variables.ToList() ?? [];
-
-        var decimals = MathUtils.DecimalsFromTolerance(nonLinearFormData?.Tolerance);
-
-        var x1Name = currentVariables.ElementAtOrDefault(0) ?? "x\u2081";
-        var x2Name = currentVariables.ElementAtOrDefault(1) ?? "x\u2082";
-
         var is3D = Result.ChartSeries.Any(s => s.Points.Any(p => p.Z.HasValue));
 
         if (is3D)
         {
-            var x3Name = currentVariables.ElementAtOrDefault(2) ?? "x\u2083";
-
-            var series3d = Result.ChartSeries
-                .Select((s, idx) => new ChartSeries
-                {
-                    Name = s.Label,
-                    Data = s.Points
-                        .Where(p => p is { X: not null, Y: not null, Z: not null })
-                        .Select(p => new[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
-                        .ToList(),
-                    Color = ColorUtils.GetSeriesColor(idx),
-                    IsVisible = true
-                })
-                .ToList();
-
-            if (Result.Roots is { Count: >= 3 })
-            {
-                series3d.Add(new ChartSeries
-                {
-                    Name = "Solution",
-                    Data = [[Result.Roots[0], Result.Roots[1], Result.Roots[2]]],
-                    Type = ChartType.Scatter,
-                    Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
-                    IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
-                });
-            }
-
-            var config3d = new Chart
-            {
-                ContainerId = ChartContainerId,
-                ShowLegend = true,
-                Decimals = decimals,
-                XAxis = new ChartAxis { Title = x1Name },
-                YAxis = new ChartAxis { Title = x2Name },
-                ZAxis = new ChartAxis { Title = x3Name }
-            };
-            config3d.Series.AddRange(series3d);
-
-            await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config3d);
+            await Update3DChart(nonLinearFormData);
+            return;
         }
-        else
-        {
-            var series = Result.ChartSeries
-                .Select((s, idx) => new ChartSeries
-                {
-                    Name = s.Label,
-                    Data = s.Points
-                        .Where(p => p is { X: not null, Y: not null })
-                        .Select(p => new[] { p.X!.Value, p.Y!.Value })
-                        .ToList(),
-                    Color = ColorUtils.GetSeriesColor(idx),
-                    LineWidth = 2,
-                    IsVisible = true
-                })
-                .ToList();
+        
+        await Update2DChart(nonLinearFormData);
+    }
+    
+    private async Task Update2DChart(NonLinearSystemFormData? nonLinearFormData)
+    {
+        var config = Result!.Create2DChartConfig(nonLinearFormData, Category, Size);
+        if (config is null) return;
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
 
-            if (Result.Roots is { Count: >= 2 })
-            {
-                series.Add(new ChartSeries
-                {
-                    Name = "Solution",
-                    Data = [[Result.Roots[0], Result.Roots[1]]],
-                    Type = ChartType.Scatter,
-                    Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
-                    LineWidth = 0,
-                    ZIndex = 5,
-                    IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
-                });
-            }
-
-            var config = new Chart
-            {
-                ContainerId = ChartContainerId,
-                ShowLegend = true,
-                Decimals = decimals,
-                XAxis = new ChartAxis { Title = x1Name, PlotLines = [ChartUtils.CreateZeroLine()] },
-                YAxis = new ChartAxis { Title = x2Name, PlotLines = [ChartUtils.CreateZeroLine()] }
-            };
-            config.Series.AddRange(series);
-
-            await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
-        }
+    private async Task Update3DChart(NonLinearSystemFormData? nonLinearFormData)
+    {
+        var config = Result!.Create3DChartConfig(nonLinearFormData, Category, Size);
+        if (config is null) return;
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config);
     }
 
     private async Task SaveInputAsync(string name)
     {
-        string json;
-        if (Category is EquationSystemCategory.Linear && _linearInput is not null)
-        {
-            var size = _linearInput.Coefficients.GetLength(0);
-            var rows = Enumerable.Range(0, size)
-                .Select(i => Enumerable.Range(0, size).Select(j => _linearInput.Coefficients[i, j]).ToArray())
-                .ToArray();
-            json = JsonSerializer.Serialize(new
-            {
-                Category = nameof(EquationSystemCategory.Linear),
-                Size = size,
-                Coefficients = rows,
-                Rhs = _linearInput.Rhs
-            });
-        }
-        else if (_equationList is not null)
-        {
-            var data = await _equationList.GetFormData();
-            json = JsonSerializer.Serialize(new
-            {
-                Category = nameof(EquationSystemCategory.NonLinear),
-                Size = data.IterationFunctions.Length,
-                NonLinear = data
-            });
-        }
-        else return;
+        string? json = null;
 
+        if (Category is EquationSystemCategory.Linear && _linearInput is not null)
+            json = _linearInput.GetLinearInputSaveData();
+        else if (_equationList is not null)
+            json = await _equationList.GetNonLinearInputSaveData();
+        
+        if (json is null) return;
         await TrySaveInputAsync(name, CalculationType.EquationSystems, json);
     }
 
     private async Task LoadFromJsonAsync(string json)
     {
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-        var categoryStr = root.GetProperty(nameof(Category)).GetString();
+        var (category, size) = EquationSystemsUtils.ParseCategoryAndSize(json);
+        Category = category;
+        Size = size;
+        StateHasChanged();
+        await Task.Yield(); // wait for re-render so the right ref populates
 
-        if (categoryStr == nameof(EquationSystemCategory.Linear) && _linearInput is not null)
-        {
-            Category = EquationSystemCategory.Linear;
-            var size = root.GetProperty(nameof(Size)).GetInt32();
-            Size = size;
-            StateHasChanged();
-            await Task.Yield();
-
-            var coefficients = root.GetProperty(nameof(LinearSystemInput.Coefficients)).Deserialize<double[][]>() ?? [];
-            var rhs = root.GetProperty(nameof(LinearSystemInput.Rhs)).Deserialize<double[]>() ?? [];
-            _linearInput.SetValues(coefficients, rhs);
-        }
-        else if (categoryStr == nameof(EquationSystemCategory.NonLinear) && _equationList is not null)
-        {
-            Category = EquationSystemCategory.NonLinear;
-            var size = root.GetProperty(nameof(Size)).GetInt32();
-            Size = size;
-            StateHasChanged();
-            await Task.Yield();
-
-            var data = root.GetProperty(nameof(EquationSystemCategory.NonLinear)).Deserialize<NonLinearSystemFormData>();
-            if (data is not null)
-                await _equationList.SetFormDataAsync(data);
-        }
+        if (Category is EquationSystemCategory.Linear && _linearInput is not null)
+            _linearInput.LoadFromJson(json);
+        else if (_equationList is not null)
+            await _equationList.LoadFromJsonAsync(json);
     }
 
     private async Task ExportPdfAsync()
@@ -406,40 +223,30 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
             ? $"Equation Systems — {LinearMethod}"
             : $"Equation Systems — {NonLinearMethod}";
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Category"] = Category.ToString(),
-            ["Method"] = Category is EquationSystemCategory.Linear ? LinearMethod.ToString() : NonLinearMethod.ToString()
-        };
+        var inputs = new Dictionary<string, string>();
         
         if (Category is EquationSystemCategory.Linear && _linearInput is not null)
-        {
-            var variables = Enumerable.Range(1, Size).Select(i => $"x{i}").ToList();
-            var equations = EquationSystemsUtils.BuildEquationStrings(_linearInput.Coefficients, _linearInput.Rhs, variables);
-            for (var i = 0; i < equations.Count; i++)
-                inputs[$"Equation {i + 1}"] = equations[i];
-            inputs["Variables"] = string.Join(", ", variables);
-        }
+            inputs = _linearInput.GetLinearMethodInputs(Category, LinearMethod, Size);
         else if (_equationList is not null)
         {
             var formData = await _equationList.GetFormData();
-            for (var i = 0; i < formData.IterationFunctions.Length; i++)
-                inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions[i];
-            inputs["Variables"] = string.Join(", ", formData.Variables);
+            inputs = formData.GetNonLinearMethodInputs(Category, NonLinearMethod);
         }
-
-        var resultStr = Result.Roots is { Count: > 0 }
-            ? string.Join(",  ", Result.Roots.Select((r, i) => $"x{i + 1} = {r}"))
-            : "No solution found";
 
         await ExportPdfCoreAsync(
             methodName: methodName,
             inputs: inputs,
-            result: resultStr,
+            result: Result.GetResultSummary(),
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? EquationSystemsUtils.ChartContainerId : null,
             fileName: $"equation-systems-{(Category is EquationSystemCategory.Linear ? LinearMethod : NonLinearMethod)}.pdf",
             type: CalculationType.EquationSystems);
     }
-
+    
+    private void ResetResult()
+    {
+        Result = null;
+        LinearComparisonResult = null;
+        NonLinearComparisonResult = null;
+    }
 }

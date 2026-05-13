@@ -17,8 +17,6 @@ namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class RootFinding : CalculationPage<RootFinding>
 {
-    private const string ChartContainerId = "chart--root-finding";
-
     [Inject] public IRootFindingApiService RootFindingApiService { get; set; } = null!;
     
     private RootFindingComparisonResponse? ComparisonResult { get; set; }
@@ -98,12 +96,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
             if (string.IsNullOrWhiteSpace(asciiEquation)) return;
             if (_formData.StartPoint >= _formData.EndPoint) return;
 
-            var config = RootFindingUtils.CreateChartConfig(
-                ChartContainerId, 
-                asciiEquation.NormalizeForChart(),
-                _formData,
-                Localizer);
-            
+            var config = _formData.CreateChartConfig(asciiEquation.NormalizeForChart(), Localizer);
             AppendResult(config);
 
             await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
@@ -156,7 +149,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
             inputs: inputs,
             result: resultStr,
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? RootFindingUtils.ChartContainerId : null,
             fileName: $"root-finding-{_formData.Method}.pdf",
             type: CalculationType.RootFinding);
     }

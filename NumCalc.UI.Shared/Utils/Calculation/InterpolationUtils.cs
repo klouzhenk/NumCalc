@@ -15,6 +15,8 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 
 public static class InterpolationUtils
 {
+    public const string ChartContainerId = "chart--interpolation";
+    
     public static InterpolationRequest GetSingleCalculationRequest(this InterpolationFormData formData)
     {
         return new InterpolationRequest
@@ -80,7 +82,6 @@ public static class InterpolationUtils
         this InterpolationFormData formData, 
         InterpolationResponse? result,
         InterpolationMethod method,
-        string containerId,
         IStringLocalizer<Localization> localizer)
     {
         if (result is null) 
@@ -93,7 +94,7 @@ public static class InterpolationUtils
 
         return new Chart
         {
-            ContainerId = containerId,
+            ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis
