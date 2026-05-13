@@ -106,12 +106,14 @@ public static class IntegrationUtils
             FillUpperBound = useShapes ? null : formData.UpperBound
         };
 
-        var seriesList = new List<ChartSeries> { curveSeries };
+        var seriesList = new List<ChartSeries>();
 
         if (useShapes)
         {
             seriesList.AddShapes(formData, result, method, variant);
         }
+        
+        seriesList.Add(curveSeries);
 
         return new Chart
         {

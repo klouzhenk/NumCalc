@@ -1,19 +1,13 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
 using NumCalc.UI.Shared.Components.ODE;
-using NumCalc.UI.Shared.Enums;
-using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Roots;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
-using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.ODE;
-using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
-using NumCalc.UI.Shared.Utils;
+using NumCalc.UI.Shared.Utils.Calculation;
 using OdeMethod = NumCalc.Shared.Enums.ODE.OdeMethod;
 
 namespace NumCalc.UI.Shared.Pages.Calculation;
@@ -24,12 +18,13 @@ public partial class Ode : CalculationPage<Ode>
 
     [Inject] private IOdeApiService OdeApiService { get; set; } = null!;
 
+    private OdeResponse? Result { get; set; }
+    private OdeComparisonResponse? ComparisonResult { get; set; }
+    
     private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
     private List<OdeMethod> _benchmarkMethods = [];
     private OdeInput? _input;
-    private OdeResponse? Result { get; set; }
-    private OdeComparisonResponse? ComparisonResult { get; set; }
 
     private void ResetResult()
     {
@@ -41,44 +36,22 @@ public partial class Ode : CalculationPage<Ode>
 
     private async Task Calculate()
     {
-        Result = null;
-        ComparisonResult = null;
-
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
 
-        if (_mode is AnalysisMode.Benchmark)
+        if (_mode is AnalysisMode.Single)
         {
-            if (_benchmarkMethods.Count == 0)
-            {
-                UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
-                return;
-            }
-
-            var compRequest = new OdeComparisonRequest
-            {
-                FunctionExpression = formData.FunctionExpression,
-                InitialX = formData.InitialX,
-                InitialY = formData.InitialY,
-                TargetX = formData.TargetX,
-                StepSize = formData.StepSize,
-                Methods = _benchmarkMethods
-            };
-
-            ComparisonResult = await SafeExecuteAsync(() => OdeApiService.GetOdeComparisonAsync(compRequest));
+            await DoSingleCalculation(formData);
             return;
         }
 
-        var request = new OdeRequest
-        {
-            FunctionExpression = formData.FunctionExpression,
-            InitialX = formData.InitialX,
-            InitialY = formData.InitialY,
-            TargetX = formData.TargetX,
-            StepSize = formData.StepSize,
-            PicardOrder = formData.PicardOrder ?? 4
-        };
+        await DoBenchmarkCalculation(formData);
+    }
+    
+    private async Task DoSingleCalculation(OdeFormData formData)
+    {
+        var request = formData.GetSingleCalculationRequest();
 
         Func<Task<OdeResponse?>> apiCall = _method switch
         {
@@ -92,84 +65,35 @@ public partial class Ode : CalculationPage<Ode>
 
         Result = await SafeExecuteAsync(apiCall);
 
-        if (Result is not null)
-        {
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _method.ToString(),
-                ["f(x, y)"] = formData.FunctionExpression ?? string.Empty,
-                ["x₀"] = formData.InitialX.ToString("G"),
-                ["y₀"] = formData.InitialY.ToString("G"),
-                ["Target x"] = formData.TargetX.ToString("G"),
-                ["Step Size h"] = formData.StepSize.ToString("G")
-            };
-            if (_method is OdeMethod.Picard)
-                inputs["Picard Order"] = (formData.PicardOrder ?? 4).ToString();
+        if (Result is null) return;
 
-            var lastPoint = Result.SolutionPoints?.LastOrDefault();
-            var resultSummary = lastPoint is not null
-                ? $"y({lastPoint.X.FormatResult()}) ≈ {lastPoint.Y.FormatResult()}"
-                : "No solution";
-
-            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-            {
-                Type = CalculationType.Ode,
-                MethodName = _method.ToString(),
-                InputsJson = JsonSerializer.Serialize(inputs),
-                ResultSummary = resultSummary,
-                ExecutionTimeMs = Result.ExecutionTimeMs
-            });
-
-            await UpdateChart();
-        }
+        var historyRequest = formData.GetHistoryRecord(Result, _method);
+        await TrySaveHistoryAsync(historyRequest);
+        await UpdateChart(formData);
     }
 
-    private async Task UpdateChart()
+    private async Task DoBenchmarkCalculation(OdeFormData formData)
     {
-        if (Result?.SolutionPoints is not { Count: > 0 } || _input is null) return;
+        if (_mode is not AnalysisMode.Benchmark) return;
 
-        var formData = await _input.GetFormData();
-        var chartData = Result.SolutionPoints
-            .Where(p => p is { X: not null, Y: not null })
-            .Select(p => new[] { p.X!.Value, p.Y!.Value })
-            .ToList();
-
-        if (chartData.Count == 0) return;
-
-        var xAxisPlotLines = new List<PlotLine> { ChartUtils.CreateZeroLine() };
-
-        if (_method is OdeMethod.Picard)
+        if (_benchmarkMethods.Count == 0)
         {
-            xAxisPlotLines.Add(new PlotLine
-            {
-                Value = formData.InitialX,
-                Color = ColorUtils.GetColor(Color.SuccessLight),
-                Width = 1,
-                DashStyle = LineStyle.Dash
-            });
+            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+            return;
         }
 
-        var config = new Chart
-        {
-            ContainerId = ChartContainerId,
-            Title = null,
-            Decimals = MathUtils.DecimalsFromTolerance(null),
-            XAxis = new ChartAxis { Title = "x", PlotLines = xAxisPlotLines },
-            YAxis = new ChartAxis { Title = "y(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
-            Series =
-            [
-                new ChartSeries
-                {
-                    Name = "y(x)",
-                    Data = chartData,
-                    Color = ColorUtils.GetColor(Color.Primary),
-                    LineWidth = 2,
-                    IsVisible = true
-                }
-            ]
-        };
+        var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods);
+        ComparisonResult = await SafeExecuteAsync(() => OdeApiService.GetOdeComparisonAsync(comparisonRequest));
+    }
 
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    private async Task UpdateChart(OdeFormData formData)
+    {
+        if (Result?.SolutionPoints is not { Count: > 0 }) return;
+
+        var chartConfig = formData.CreateChartConfig(Result, _method, ChartContainerId);
+        if (chartConfig is null) return;
+     
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
     private async Task SaveInputAsync(string name)
@@ -192,20 +116,8 @@ public partial class Ode : CalculationPage<Ode>
         if (Result is null || _input is null) return;
 
         var formData = await _input.GetFormData();
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["x₀"] = formData.InitialX.ToString("G"),
-            ["y₀"] = formData.InitialY.ToString("G"),
-            ["Target x"] = formData.TargetX.ToString("G"),
-            ["Step Size h"] = formData.StepSize.ToString("G")
-        };
 
-        if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
-            inputs["f(x, y)"] = formData.FunctionExpression;
-        if (_method is OdeMethod.Picard)
-            inputs["Picard Order"] = formData.PicardOrder?.ToString() ?? string.Empty;
-
+        var inputs = formData.GetMethodInputs(_method);
         var lastPoint = Result.SolutionPoints?.LastOrDefault();
         var resultStr = lastPoint is not null
             ? $"y({lastPoint.X?.ToString("F4") ?? "?"}) ≈ {lastPoint.Y?.ToString("G10") ?? "?"}"

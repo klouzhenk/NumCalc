@@ -89,6 +89,8 @@ public partial class Integration : CalculationPage<Integration>
         if (Result?.ChartData is null) return;
 
         var chartConfig = formData.CreateChartConfig(Result, _method, _rectangleVariant, ChartContainerId);
+        if (chartConfig is null) return; 
+        
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
