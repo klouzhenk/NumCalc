@@ -43,7 +43,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
             if (_mode is AnalysisMode.Single)
             {
-                await DoSingleCalculationRequest();
+                await DoSingleCalculation();
                 return;
             }
 
@@ -56,7 +56,7 @@ public partial class Differentiation : CalculationPage<Differentiation>
         }
     }
     
-    private async Task DoSingleCalculationRequest()
+    private async Task DoSingleCalculation()
     {
         if (_mode is not AnalysisMode.Single)
             return;
