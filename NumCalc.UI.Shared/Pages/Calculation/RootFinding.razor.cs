@@ -41,8 +41,8 @@ public partial class RootFinding : CalculationPage<RootFinding>
                 return;
             }
 
-            if (Mode is AnalysisMode.Single) await DoSingleMethodCalculation();
-            else await DoMultipleMethodCalculations();
+            if (Mode is AnalysisMode.Single) await DoSingleCalculation();
+            else await DoBenchmarkCalculation();
         }
         catch (Exception ex)
         {
@@ -51,7 +51,7 @@ public partial class RootFinding : CalculationPage<RootFinding>
         }
     }
 
-    private async Task DoSingleMethodCalculation()
+    private async Task DoSingleCalculation()
     {
         var requestModel = _formData.GetSingleCalculationRequest();
 
@@ -76,9 +76,9 @@ public partial class RootFinding : CalculationPage<RootFinding>
         await UpdateChart();
     }
 
-    private async Task DoMultipleMethodCalculations()
+    private async Task DoBenchmarkCalculation()
     {
-        var request = _formData.GetBenchmarkCalculationRequest(_benchmarkMethods);
+        var request = _formData.GetComparisonRequest(_benchmarkMethods);
         ComparisonResult = await SafeExecuteAsync(() => RootFindingApiService.GetBenchmarkResultAsync(request));
         await UpdateChart();
     }

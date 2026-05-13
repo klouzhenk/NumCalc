@@ -59,7 +59,7 @@ public static class RootFindingUtils
         };
     }
     
-    public static RootFindingComparisonRequest GetBenchmarkCalculationRequest(this RootFindingFormData formData, List<RootFindingMethod> benchmarkMethods)
+    public static RootFindingComparisonRequest GetComparisonRequest(this RootFindingFormData formData, List<RootFindingMethod> benchmarkMethods)
     {
         return new RootFindingComparisonRequest
         {
