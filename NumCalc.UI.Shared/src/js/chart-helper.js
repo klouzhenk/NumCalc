@@ -159,7 +159,16 @@ function formatNumber(value, tooltipDecimals){
 }
 
 function findChart(containerId) {
-    return Highcharts.charts.find(c => c && c.renderTo.id === containerId);
+    const container = document.getElementById(containerId);
+    if (!container) return undefined;
+
+    // SPA navigation leaves charts bound to detached elements that still carry
+    // the same id — destroy those so they aren't updated instead of the live one.
+    Highcharts.charts
+        .filter(c => c && c.renderTo.id === containerId && c.renderTo !== container)
+        .forEach(c => c.destroy());
+
+    return Highcharts.charts.find(c => c && c.renderTo === container);
 }
 
 function upsertChart(containerId, chartOptions, generatedSeries){
