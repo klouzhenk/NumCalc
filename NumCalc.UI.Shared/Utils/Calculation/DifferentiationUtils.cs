@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Differentiation.Requests;
 using NumCalc.Shared.Differentiation.Responses;
 using NumCalc.Shared.Enums.Differentiation;
@@ -8,6 +9,7 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Differentiation;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Utils.Calculation;
 
@@ -86,6 +88,85 @@ public static class DifferentiationUtils
             inputs["Step Size"] = formData.StepSize.ToString("G");
 
         return (inputs, methodLabel);
+    }
+
+    public static Chart? CreateBenchmarkChartConfig(
+        this DifferentiationFormData formData,
+        DifferentiationComparisonResponse comparison,
+        IStringLocalizer<Localization> localizer)
+    {
+        var chartData = comparison.ChartData?
+            .Where(p => p is { X: not null, Y: not null })
+            .Select(p => new[] { p.X!.Value, p.Y!.Value })
+            .ToList();
+
+        if (chartData is not { Count: > 0 })
+            return null;
+
+        var xMin = chartData.Min(p => p[0]);
+        var xMax = chartData.Max(p => p[0]);
+        var nearest = chartData.MinBy(p => Math.Abs(p[0] - formData.QueryPoint))!;
+        var fAtXStar = nearest[1];
+
+        var series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "f(x)",
+                Data = chartData,
+                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                LineWidth = 2,
+                IsVisible = true
+            }
+        };
+
+        if (formData.DerivativeOrder == 1)
+        {
+            foreach (var result in comparison.Results)
+            {
+                if (!result.DerivativeValue.HasValue) continue;
+
+                var slope = result.DerivativeValue.Value;
+                series.Add(new ChartSeries
+                {
+                    Name = $"Tangent at x* ({localizer[result.Method.ToString()]})",
+                    Data =
+                    [
+                        [xMin, fAtXStar + slope * (xMin - formData.QueryPoint)],
+                        [xMax, fAtXStar + slope * (xMax - formData.QueryPoint)]
+                    ],
+                    Color = ColorUtils.GetSeriesColor((int)result.Method),
+                    LineWidth = 1,
+                    IsVisible = true,
+                    Opacity = 0.8
+                });
+            }
+        }
+
+        series.Add(new ChartSeries
+        {
+            Name = "x*",
+            Type = ChartType.Scatter,
+            Data = [[formData.QueryPoint, fAtXStar]],
+            Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
+            IsVisible = true,
+            Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
+        });
+
+        return new Chart
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
+            ShowLegend = true,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
+            XAxis = new ChartAxis
+            {
+                Title = "x",
+                PlotLines = [ChartUtils.CreateZeroLine(), ChartUtils.CreateConstant(formData.QueryPoint)]
+            },
+            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
+            Series = series
+        };
     }
 
     public static Chart? CreateChartConfig(this DifferentiationFormData formData, DifferentiationResponse? result)

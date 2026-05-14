@@ -258,14 +258,25 @@ function sampleCurve(expression, xMin, xMax) {
 }
 
 function buildCurveSeries(seriesItem, data) {
+    const hasFill = seriesItem.fillLowerBound != null && seriesItem.fillUpperBound != null;
+
     return {
         name: seriesItem.name,
         data: data,
         color: seriesItem.color,
-        type: seriesItem.type ? seriesItem.type.toLowerCase() : 'line',
+        type: hasFill ? 'area' : (seriesItem.type ? seriesItem.type.toLowerCase() : 'line'),
         dashStyle: seriesItem.dashStyle || 'solid',
         lineWidth: seriesItem.lineWidth || 2,
-        marker: { enabled: false }
+        marker: { enabled: false },
+        ...(hasFill && {
+            fillOpacity: 0.25,
+            zoneAxis: 'x',
+            zones: [
+                { value: seriesItem.fillLowerBound, fillColor: 'transparent' },
+                { value: seriesItem.fillUpperBound },
+                { fillColor: 'transparent' }
+            ]
+        })
     };
 }
 

@@ -604,6 +604,9 @@
   <data name="ClickCalculateToViewResult" xml:space="preserve">
     <value>Click Calculate to view the result</value>
   </data>
+  <data name="NoChartForBenchmark" xml:space="preserve">
+    <value>Benchmark mode has no chart — see the Steps tab for results</value>
+  </data>
   <data name="Copied" xml:space="preserve">
     <value>Copied</value>
   </data>

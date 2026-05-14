@@ -604,6 +604,9 @@
   <data name="ClickCalculateToViewResult" xml:space="preserve">
     <value>Натисніть «Обчислити», щоб переглянути результат</value>
   </data>
+  <data name="NoChartForBenchmark" xml:space="preserve">
+    <value>У режимі порівняння графік недоступний — результати у вкладці «Steps»</value>
+  </data>
   <data name="Copied" xml:space="preserve">
     <value>Скопійовано</value>
   </data>

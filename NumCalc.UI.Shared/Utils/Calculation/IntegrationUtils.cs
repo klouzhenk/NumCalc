@@ -82,7 +82,43 @@ public static class IntegrationUtils
         return inputs;
     }
 
-    public static Chart? CreateChartConfig(        
+    public static Chart CreateBenchmarkChartConfig(this IntegrationFormData formData)
+    {
+        return new Chart
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
+            XAxis = new ChartAxis
+            {
+                Min = formData.LowerBound,
+                Max = formData.UpperBound,
+                Title = "x",
+                PlotLines =
+                [
+                    ChartUtils.CreateZeroLine(),
+                    ChartUtils.CreateConstant(formData.LowerBound),
+                    ChartUtils.CreateConstant(formData.UpperBound)
+                ]
+            },
+            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
+            Series =
+            [
+                new ChartSeries
+                {
+                    Name = "f(x)",
+                    Expression = formData.FunctionExpression,
+                    Color = ColorUtils.GetColor(Enums.Color.Primary),
+                    LineWidth = 2,
+                    IsVisible = true,
+                    FillLowerBound = formData.LowerBound,
+                    FillUpperBound = formData.UpperBound
+                }
+            ]
+        };
+    }
+
+    public static Chart? CreateChartConfig(
         this IntegrationFormData formData,
         IntegrationResponse? result,
         IntegrationMethod method,

@@ -174,6 +174,7 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
                 stopwatch.Stop();
 
                 item.FinalY = data.SolutionPoints?.LastOrDefault()?.Y;
+                item.SolutionPoints = data.SolutionPoints;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;
 
                 logger.LogInformation("Compare/{Method}: finalY={FinalY}, elapsed={ElapsedMs}ms",
