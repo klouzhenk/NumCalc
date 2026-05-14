@@ -5,6 +5,7 @@ export const PdfHelper = {
     getChartImage: async (containerId) => {
         const container = document.getElementById(containerId);
         if (!container) return null;
+        
         try {
             const canvas = await html2canvas(container, { backgroundColor: '#ffffff' });
             return canvas.toDataURL('image/png');

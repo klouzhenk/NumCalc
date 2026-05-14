@@ -23,10 +23,9 @@ public partial class TopicInfo : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_modal?.IsVisible == true && !_latexRendered)
-        {
-            _latexRendered = true;
-            await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexInContainer", _bodyId);
-        }
+        if (_modal?.IsVisible != true || _latexRendered) return;
+
+        _latexRendered = true;
+        await JsRuntime.InvokeVoidAsync("LatexHelper.renderLatexInContainer", _bodyId);
     }
 }

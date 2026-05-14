@@ -2,255 +2,121 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.Optimization;
-using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
 using NumCalc.UI.Shared.Components.Optimization;
-using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Enums.Roots;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
 using NumCalc.UI.Shared.HttpServices.Interfaces.Calculation;
-using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Optimization;
-using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
-using NumCalc.UI.Shared.Utils;
+using NumCalc.UI.Shared.Utils.Calculation;
 
 namespace NumCalc.UI.Shared.Pages.Calculation;
 
 public partial class Optimization : CalculationPage<Optimization>
 {
-    private const string ChartContainerId = "chart--optimization";
-
     [Inject] private IOptimizationApiService OptimizationApiService { get; set; } = null!;
 
+    private OptimizationResponse? Result { get; set; }
+    private OptimizationComparisonResponse? ComparisonResult { get; set; }
+    private bool IsChartVisible => Result?.ChartData is not null;
+    
     private AnalysisMode _mode = AnalysisMode.Single;
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
     private List<OptimizationComparisonMethod> _benchmarkMethods = [];
-    private bool _maximize;
     private OptimizationInput? _input;
-    private OptimizationResponse? Result { get; set; }
-    private OptimizationComparisonResponse? ComparisonResult { get; set; }
-
-    private void ResetResult()
-    {
-        Result = null;
-        ComparisonResult = null;
-    }
-
-    private bool IsChartVisible => Result?.ChartData is not null;
+    private bool _maximize;
 
     private async Task Calculate()
     {
-        Result = null;
-        ComparisonResult = null;
-
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
 
-        if (_mode is AnalysisMode.Benchmark)
+        if (_mode is AnalysisMode.Single)
         {
-            var comparisonRequest = new OptimizationComparisonRequest
-            {
-                FunctionExpression = formData.FunctionExpression,
-                LowerBound = formData.LowerBound,
-                UpperBound = formData.UpperBound,
-                Points = formData.Points,
-                Tolerance = formData.Tolerance,
-                Maximize = _maximize,
-                Methods = _benchmarkMethods
-            };
-            ComparisonResult = await SafeExecuteAsync(() => OptimizationApiService.GetOptimizationComparisonAsync(comparisonRequest));
+            await DoSingleCalculation(formData);
             return;
         }
+
+        await DoBenchmarkCalculation(formData);
+    }
+
+    private async Task DoBenchmarkCalculation(OptimizationFormData formData)
+    {
+        if (_mode is not AnalysisMode.Benchmark) return;
+        
+        if (_benchmarkMethods.Count == 0)
+        {
+            UiService.ShowError(Localizer["SelectAtLeastOneMethod"]);
+            return;
+        }
+
+        var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods, _maximize);
+        ComparisonResult = await SafeExecuteAsync(() 
+            => OptimizationApiService.GetOptimizationComparisonAsync(comparisonRequest));
+    }
+
+    private async Task DoSingleCalculation(OptimizationFormData formData)
+    {
+        if (_mode is not AnalysisMode.Single) return;
+        
         Func<Task<OptimizationResponse?>> apiCall = _method switch
         {
-            OptimizationMethod.UniformSearch => () => OptimizationApiService.OptimizeUniformSearchAsync(new OptimizationRequest
-            {
-                FunctionExpression = formData.FunctionExpression,
-                LowerBound = formData.LowerBound,
-                UpperBound = formData.UpperBound,
-                Points = formData.Points,
-                Tolerance = formData.Tolerance,
-                Maximize = _maximize
-            }),
-            OptimizationMethod.GoldenSection => () => OptimizationApiService.OptimizeGoldenSectionAsync(new OptimizationRequest
-            {
-                FunctionExpression = formData.FunctionExpression,
-                LowerBound = formData.LowerBound,
-                UpperBound = formData.UpperBound,
-                Points = formData.Points,
-                Tolerance = formData.Tolerance,
-                Maximize = _maximize
-            }),
-            OptimizationMethod.GradientDescent => () => OptimizationApiService.OptimizeGradientDescentAsync(new GradientDescentRequest
-            {
-                FunctionExpression = formData.FunctionExpression,
-                InitialPoint = formData.InitialPoint,
-                LearningRate = formData.LearningRate,
-                Tolerance = formData.Tolerance,
-                MaxIterations = formData.MaxIterations,
-                Maximize = _maximize
-            }),
+            OptimizationMethod.UniformSearch => 
+                () => OptimizationApiService.OptimizeUniformSearchAsync(formData.GetOptimizationRequest(_maximize)),
+            OptimizationMethod.GoldenSection => 
+                () => OptimizationApiService.OptimizeGoldenSectionAsync(formData.GetOptimizationRequest(_maximize)),
+            OptimizationMethod.GradientDescent => 
+                () => OptimizationApiService.OptimizeGradientDescentAsync(formData.GetGradientRequest(_maximize)),
             _ => throw new ArgumentOutOfRangeException(nameof(_method))
         };
 
         Result = await SafeExecuteAsync(apiCall);
 
-        if (Result is not null)
-        {
-            var inputs = new Dictionary<string, string>
-            {
-                ["Method"] = _method.ToString(),
-                ["Expression"] = formData.FunctionExpression,
-                ["Goal"] = _maximize ? "Maximize" : "Minimize",
-                ["Tolerance"] = formData.Tolerance.ToString("G")
-            };
-            if (_method is OptimizationMethod.GradientDescent)
-            {
-                inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint)})";
-                inputs["Learning Rate"] = formData.LearningRate.ToString("G");
-                inputs["Max Iterations"] = formData.MaxIterations.ToString();
-            }
-            else
-            {
-                inputs["Lower Bound"] = formData.LowerBound.ToString("G");
-                inputs["Upper Bound"] = formData.UpperBound.ToString("G");
-            }
+        if (Result is null) return;
 
-            var resultSummary = $"f(x*) = {Result.MinimumValue.FormatResult(formData.Tolerance)}";
-            if (Result.ArgMinX.HasValue)
-                resultSummary += $", x* = {Result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
-
-            await TrySaveHistoryAsync(new SaveCalculationRecordRequest
-            {
-                Type = CalculationType.Optimization,
-                MethodName = _method.ToString(),
-                InputsJson = JsonSerializer.Serialize(inputs),
-                ResultSummary = resultSummary,
-                ExecutionTimeMs = Result.ExecutionTimeMs
-            });
-
-            await UpdateChart();
-        }
+        var historyRecord = formData.GetHistoryRecord(Result, _method, _maximize);
+        await TrySaveHistoryAsync(historyRecord);
+        await UpdateChart(formData);
     }
 
-    private async Task UpdateChart()
+    private async Task UpdateChart(OptimizationFormData formData)
     {
         if (Result?.ChartData is null) return;
-        if (_input is null) return;
 
-        var tolerance = (await _input.GetFormData()).Tolerance;
         var is3D = Result.ChartData.Any(p => p.Z.HasValue);
 
         if (is3D)
         {
-            await UpdateChart3dAsync(tolerance);
+            await Update3DChart(formData);
             return;
         }
 
-        var chartData = Result.ChartData
-            .Where(p => p is { X: not null, Y: not null })
-            .Select(p => new double[] { p.X!.Value, p.Y!.Value })
-            .ToList();
-
-        if (chartData.Count == 0) return;
-
-        var xStar = Result.ArgMinX ?? Result.ArgMinPoint?.FirstOrDefault();
-
-        var series = new List<ChartSeries>
-        {
-            new()
-            {
-                Name = "f(x)",
-                Data = chartData,
-                Color = ColorUtils.GetColor(Enums.Color.PrimaryLight),
-                LineWidth = 2,
-                IsVisible = true
-            }
-        };
-
-        if (xStar.HasValue)
-        {
-            series.Add(new ChartSeries
-            {
-                Name = "x*",
-                Type = ChartType.Scatter,
-                Data = [[xStar.Value, Result.MinimumValue]],
-                Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
-                IsVisible = true,
-                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
-            });
-        }
-
-        var config = new Chart
-        {
-            ContainerId = ChartContainerId,
-            Title = null,
-            Decimals = MathUtils.DecimalsFromTolerance(tolerance),
-            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
-            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
-            Series = series
-        };
-
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+        await Update2DChart(formData);
     }
 
-    private async Task UpdateChart3dAsync(double tolerance)
+    private async Task Update2DChart(OptimizationFormData formData)
     {
-        var surfaceData = Result!.ChartData!
-            .Where(p => p is { X: not null, Y: not null, Z: not null })
-            .Select(p => new double[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
-            .ToList();
+        var chartConfig = formData.Create2DChartConfig(Result!);
+        if (chartConfig is null) return;
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);        
+    }
 
-        var series = new List<ChartSeries>
-        {
-            new()
-            {
-                Name = "f(x, y)",
-                Data = surfaceData,
-                Color = ColorUtils.GetColor(Enums.Color.PrimaryLight),
-                IsVisible = true
-            }
-        };
-
-        if (Result.PathData is not null)
-        {
-            var pathData = Result.PathData
-                .Where(p => p is { X: not null, Y: not null, Z: not null })
-                .Select(p => new[] { p.X!.Value, p.Y!.Value, p.Z!.Value })
-                .ToList();
-
-            series.Add(new ChartSeries
-            {
-                Name = "Descent path",
-                Data = pathData,
-                Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
-                Type = ChartType.Scatter,
-                IsVisible = true,
-                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
-            });
-        }
-
-        var config = new Chart
-        {
-            ContainerId = ChartContainerId,
-            ShowLegend = true,
-            Decimals = MathUtils.DecimalsFromTolerance(tolerance),
-            XAxis = new ChartAxis { Title = "x" },
-            YAxis = new ChartAxis { Title = "y" },
-            ZAxis = new ChartAxis { Title = "f(x, y)" },
-            Series = series
-        };
-
-        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", config);
+    private async Task Update3DChart(OptimizationFormData formData)
+    {
+        var chartConfig = formData.Create3DChartConfig(Result!);
+        if (chartConfig is null) return;
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot3d", chartConfig);
     }
 
     private async Task SaveInputAsync(string name)
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.Maximize = _maximize;
+        data.AnalysisMode = _mode;
+        data.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.Optimization, JsonSerializer.Serialize(data));
     }
 
@@ -259,6 +125,12 @@ public partial class Optimization : CalculationPage<Optimization>
         if (_input is null) return;
         var data = JsonSerializer.Deserialize<OptimizationFormData>(json);
         if (data is null) return;
+        _method = data.Method;
+        _maximize = data.Maximize;
+        _mode = data.AnalysisMode;
+        _benchmarkMethods = data.BenchmarkMethods;
+        StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 
@@ -268,41 +140,22 @@ public partial class Optimization : CalculationPage<Optimization>
 
         var formData = await _input.GetFormData();
 
-        var inputs = new Dictionary<string, string>
-        {
-            ["Method"] = _method.ToString(),
-            ["Goal"] = _maximize ? "Maximize" : "Minimize",
-            ["Tolerance"] = formData.Tolerance.ToString("G")
-        };
-        if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
-            inputs["Expression"] = formData.FunctionExpression;
-
-        if (_method is OptimizationMethod.GradientDescent)
-        {
-            if (formData.InitialPoint is { Count: > 0 })
-                inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint)})";
-            inputs["Learning Rate"] = formData.LearningRate.ToString("G");
-            inputs["Max Iterations"] = formData.MaxIterations.ToString();
-        }
-        else
-        {
-            inputs["Lower Bound"] = formData.LowerBound.ToString("G");
-            inputs["Upper Bound"] = formData.UpperBound.ToString("G");
-        }
-
-        var resultStr = $"f(x*) = {Result.MinimumValue.FormatResult(formData.Tolerance)}";
-        if (Result.ArgMinX.HasValue)
-            resultStr += $", x* = {Result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
-        else if (Result.ArgMinPoint is { Count: > 0 })
-            resultStr += $", x* = ({string.Join(", ", Result.ArgMinPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
+        var inputs = formData.GetMethodInputs(_method, _maximize);
+        var resultSummary = Result.GetResultSummary(formData);
 
         await ExportPdfCoreAsync(
             methodName: $"Optimization — {_method}",
             inputs: inputs,
-            result: resultStr,
+            result: resultSummary,
             steps: Result.SolutionSteps,
-            chartContainerId: IsChartVisible ? ChartContainerId : null,
+            chartContainerId: IsChartVisible ? OptimizationUtils.ChartContainerId : null,
             fileName: $"optimization-{_method}.pdf",
             type: CalculationType.Optimization);
+    }
+    
+    private void ResetResult()
+    {
+        Result = null;
+        ComparisonResult = null;
     }
 }

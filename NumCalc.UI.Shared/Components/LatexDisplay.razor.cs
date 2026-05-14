@@ -19,7 +19,8 @@ public partial class LatexDisplay : ComponentBase
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_rendered || string.IsNullOrEmpty(Latex)) return;
+        
         _rendered = true;
-        await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexById", _containerId, Prefix + Latex);
+        await JsRuntime.InvokeVoidAsync("LatexHelper.renderLatexById", _containerId, Prefix + Latex);
     }
 }

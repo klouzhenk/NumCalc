@@ -1,0 +1,64 @@
+﻿@using NumCalc.Shared.Enums.RootFinding
+@using NumCalc.UI.Shared.Enums.Roots
+<div class="input-section__wrapper">
+    <MathInput Label="@Localizer["Expression"]"
+               @bind-Value="FormData.FunctionExpression"
+               @ref="_mathInputComponent"
+               OnInput="ParametersChanged"/>
+</div >
+<div class="input-section__wrapper">
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">
+                    @(Mode is AnalysisMode.Single && FormData.Method is RootFindingMethod.Newton
+                        ? Localizer["InitialGuess"]
+                        : Localizer["StartPoint"])
+                </label>
+                <input type="number" class="input-group__input" step="any"
+                       @bind="FormData.StartPoint"
+                       @bind:event="oninput"
+                       @bind:after="ParametersChanged" />
+            </div>
+        </Content>
+        <Hint>
+            @if (Mode is AnalysisMode.Single && FormData.Method is RootFindingMethod.Newton)
+            {
+                <span>@Localizer["Hint_InitialGuess"]</span>
+            }
+            else
+            {
+                <span>@Localizer["Hint_BracketingLowerBound"]</span>
+            }
+        </Hint>
+    </Tooltip>
+
+    @if (!(Mode is AnalysisMode.Single && FormData.Method is RootFindingMethod.Newton))
+    {
+        <Tooltip>
+            <Content>
+                <div class="input-group">
+                    <label class="input-group__label">@Localizer["EndPoint"]</label>
+                    <input type="number" class="input-group__input" step="any"
+                           @bind="FormData.EndPoint"
+                           @bind:event="oninput"
+                           @bind:after="ParametersChanged" />
+                </div>
+            </Content>
+            <Hint>@Localizer["Hint_UpperBound"]</Hint>
+        </Tooltip>
+    }
+
+    <Tooltip>
+        <Content>
+            <div class="input-group">
+                <label class="input-group__label">@Localizer["Tolerance"]</label>
+                <input type="number" class="input-group__group" step="0.00001"
+                   @bind="FormData.Tolerance"
+                   @bind:event="oninput"
+                   @bind:after="ParametersChanged" />
+            </div>
+        </Content>
+        <Hint>@Localizer["Hint_RootTolerance"]</Hint>
+    </Tooltip>
+</div>

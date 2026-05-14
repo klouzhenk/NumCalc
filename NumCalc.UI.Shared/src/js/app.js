@@ -6,10 +6,13 @@ import { ImageHelper } from './image-helper.js';
 import { PdfHelper } from './pdf-helper.js';
 import { TooltipHelper } from './tooltip-helper.js';
 import { MathValidationHelper } from './math-helper.js';
+import { ChartHelper } from './chart-helper.js';
+import { LatexHelper } from './latex-helper.js';
 
 window.NumCalc = {
     ...MathHelper,
     ...MathValidationHelper,
+    ...ChartHelper,
 };
 
 window.ImageHelper = {
@@ -22,6 +25,10 @@ window.PdfHelper = {
 
 window.TooltipHelper = {
     ...TooltipHelper,
+}
+
+window.LatexHelper = {
+    ...LatexHelper,
 }
 
 TooltipHelper.init();

@@ -12,10 +12,6 @@
 
         if (!canvas) return null;
 
-        const base64String = canvas.toDataURL("image/jpeg", 0.8);
-
-        console.log("Image successfully compressed, sending to Blazor...");
-
-        return base64String;
+        return canvas.toDataURL("image/jpeg", 0.8);
     }
 };

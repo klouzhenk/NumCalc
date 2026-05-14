@@ -40,6 +40,11 @@ public partial class Dropdown<TItem> : ComponentBase, IDisposable
         UiStateService.OnCloseDropdownRequested += Close;
     }
 
+    protected override void OnParametersSet()
+    {
+        SelectedItems ??= [];
+    }
+
     private bool IsSelected(TItem item)
     {
         return MultiSelect 

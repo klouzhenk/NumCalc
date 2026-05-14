@@ -49,7 +49,7 @@ public partial class OptimizationInput : ComponentBase
             InitialPoint = [.. _initialPoint],
             LearningRate = _learningRate,
             MaxIterations = _maxIterations,
-            IsGradientDescent = Method is OptimizationMethod.GradientDescent
+            Method = Method
         };
     }
 

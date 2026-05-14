@@ -16,7 +16,8 @@ public partial class Tooltip : ComponentBase
     private async Task OnFirstHover()
     {
         if (_rendered) return;
+        
         _rendered = true;
-        await JsRuntime.InvokeVoidAsync("TooltipHelper.renderLatexInContainer", _popupId);
+        await JsRuntime.InvokeVoidAsync("LatexHelper.renderLatexInContainer", _popupId);
     }
 }

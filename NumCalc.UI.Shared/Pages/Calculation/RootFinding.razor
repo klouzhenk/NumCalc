@@ -3,7 +3,7 @@
 @using NumCalc.UI.Shared.Enums.Roots
 @using NumCalc.UI.Shared.Components
 @using NumCalc.UI.Shared.Models.User.Enums
-@using NumCalc.UI.Shared.Utils
+@using NumCalc.UI.Shared.Components.RootFinding
 
 @inherits CalculationPage<RootFinding>
 
@@ -44,68 +44,10 @@
             }
         </div>
         <div class="root-finding__form">
-            <div class="input-section__wrapper">
-                <MathInput Label="@Localizer["Expression"]"
-                           @bind-Value="_formData.FunctionExpression"
-                           @ref="_mathInputComponent"
-                           OnInput="OnParametersChanged"/>
-            </div >
-            <div class="input-section__wrapper">
-                <Tooltip>
-                    <Content>
-                        <div class="input-group">
-                            <label class="input-group__label">
-                                @(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton
-                                    ? Localizer["InitialGuess"]
-                                    : Localizer["StartPoint"])
-                            </label>
-                            <input type="number" class="input-group__input" step="any"
-                                   @bind="_formData.StartPoint"
-                                   @bind:event="oninput"
-                                   @bind:after="OnParametersChanged" />
-                        </div>
-                    </Content>
-                    <Hint>
-                        @if (Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton)
-                        {
-                            <span>@Localizer["Hint_InitialGuess"]</span>
-                        }
-                        else
-                        {
-                            <span>@Localizer["Hint_BracketingLowerBound"]</span>
-                        }
-                    </Hint>
-                </Tooltip>
-
-                @if (!(Mode is AnalysisMode.Single && _formData.Method is RootFindingMethod.Newton))
-                {
-                    <Tooltip>
-                        <Content>
-                            <div class="input-group">
-                                <label class="input-group__label">@Localizer["EndPoint"]</label>
-                                <input type="number" class="input-group__input" step="any"
-                                       @bind="_formData.EndPoint"
-                                       @bind:event="oninput"
-                                       @bind:after="OnParametersChanged" />
-                            </div>
-                        </Content>
-                        <Hint>@Localizer["Hint_UpperBound"]</Hint>
-                    </Tooltip>
-                }
-
-                <Tooltip>
-                    <Content>
-                        <div class="input-group">
-                            <label class="input-group__label">@Localizer["Tolerance"]</label>
-                            <input type="number" class="input-group__group" step="0.00001"
-                               @bind="_formData.Tolerance"
-                               @bind:event="oninput"
-                               @bind:after="OnParametersChanged" />
-                        </div>
-                    </Content>
-                    <Hint>@Localizer["Hint_RootTolerance"]</Hint>
-                </Tooltip>
-            </div>
+            <RootFindingInput @ref="_formDataInput"
+                              FormData="_formData"
+                              Mode="Mode"
+                              OnParametersChanged="OnParametersChanged" />
             <div class="form-actions">
                 <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
                 @if (Mode is AnalysisMode.Single && Result is not null)
@@ -131,7 +73,7 @@
         </Header>
         <ChartContent>
             <div class="chart__container">
-                <div class="chart" id="@ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
+                <div class="chart" id="@RootFindingUtils.ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
                 <span class="remark" style="display: @(IsChartVisible ? "none" : "flex");">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
         </ChartContent>
