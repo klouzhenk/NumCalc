@@ -96,6 +96,10 @@ public partial class Integration : CalculationPage<Integration>
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.AnalysisMode = _mode;
+        data.Method = _method;
+        data.RectangleVariant = _rectangleVariant;
+        data.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.Integration, JsonSerializer.Serialize(data));
     }
 
@@ -104,6 +108,12 @@ public partial class Integration : CalculationPage<Integration>
         if (_input is null) return;
         var data = JsonSerializer.Deserialize<IntegrationFormData>(json);
         if (data is null) return;
+        _mode = data.AnalysisMode;
+        _method = data.Method;
+        _rectangleVariant = data.RectangleVariant;
+        _benchmarkMethods = data.BenchmarkMethods;
+        StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 

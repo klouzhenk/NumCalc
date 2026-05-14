@@ -103,6 +103,10 @@ public partial class Differentiation : CalculationPage<Differentiation>
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.AnalysisMode = _mode;
+        data.Method = _method;
+        data.Variant = _variant;
+        data.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.Differentiation, JsonSerializer.Serialize(data));
     }
 
@@ -112,7 +116,12 @@ public partial class Differentiation : CalculationPage<Differentiation>
         var data = JsonSerializer.Deserialize<DifferentiationFormData>(json);
         if (data is null) return;
         _inputMode = data.Mode;
+        _mode = data.AnalysisMode;
+        _method = data.Method;
+        _variant = data.Variant;
+        _benchmarkMethods = data.BenchmarkMethods;
         StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 

@@ -192,5 +192,7 @@ public static class RootFindingUtils
         original.Tolerance = copy.Tolerance;
         original.Method = copy.Method;
         original.FunctionExpression = copy.FunctionExpression;
+        original.Mode = copy.Mode;
+        original.BenchmarkMethods = [.. copy.BenchmarkMethods];
     }
 }

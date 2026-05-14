@@ -6,6 +6,7 @@ using NumCalc.UI.Shared.Components;
 using NumCalc.UI.Shared.Components.EquationSystems;
 using NumCalc.UI.Shared.Enums.Charts;
 using NumCalc.UI.Shared.Enums.EquationSystems;
+using NumCalc.UI.Shared.Enums.Roots;
 using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.EquationSystems;
 using NumCalc.UI.Shared.Models.User;
@@ -262,29 +263,43 @@ public static class EquationSystemsUtils
             : "No solution found";
     }
     
-    public static string GetLinearInputSaveData(this LinearSystemInput linearInput)
+    public static string GetLinearInputSaveData(
+        this LinearSystemInput linearInput,
+        AnalysisMode analysisMode,
+        LinearSystemMethod method,
+        List<LinearSystemMethod>? benchmarkMethods)
     {
         var size = linearInput.Coefficients.GetLength(0);
         var rows = Enumerable.Range(0, size)
             .Select(i => Enumerable.Range(0, size).Select(j => linearInput.Coefficients[i, j]).ToArray())
             .ToArray();
-        
-        return JsonSerializer.Serialize(new
+
+        return JsonSerializer.Serialize(new EquationSystemsSaveData
         {
-            Category = nameof(EquationSystemCategory.Linear),
+            Category = EquationSystemCategory.Linear,
             Size = size,
+            AnalysisMode = analysisMode,
+            LinearMethod = method,
+            LinearBenchmarkMethods = benchmarkMethods ?? [],
             Coefficients = rows,
             Rhs = linearInput.Rhs
         });
     }
-    
-    public static async Task<string> GetNonLinearInputSaveData(this EquationList equationList)
+
+    public static async Task<string> GetNonLinearInputSaveData(
+        this EquationList equationList,
+        AnalysisMode analysisMode,
+        NonLinearSystemMethod method,
+        List<NonLinearSystemMethod>? benchmarkMethods)
     {
         var data = await equationList.GetFormData();
-        return JsonSerializer.Serialize(new
+        return JsonSerializer.Serialize(new EquationSystemsSaveData
         {
-            Category = nameof(EquationSystemCategory.NonLinear),
+            Category = EquationSystemCategory.NonLinear,
             Size = data.IterationFunctions.Length,
+            AnalysisMode = analysisMode,
+            NonLinearMethod = method,
+            NonLinearBenchmarkMethods = benchmarkMethods ?? [],
             NonLinear = data
         });
     }
@@ -319,35 +334,4 @@ public static class EquationSystemsUtils
 
         return equations;
     }
-
-    #region Saved input loading helpers
-
-    public static (EquationSystemCategory category, int size) ParseCategoryAndSize(string json)
-    {
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-        var category = Enum.Parse<EquationSystemCategory>(root.GetProperty("Category").GetString()!);
-        var size = root.GetProperty("Size").GetInt32();
-        return (category, size);
-    }
-
-    public static void LoadFromJson(this LinearSystemInput input, string json)
-    {
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-        var coefficients = root.GetProperty(nameof(LinearSystemInput.Coefficients)).Deserialize<double[][]>() ?? [];
-        var rhs = root.GetProperty(nameof(LinearSystemInput.Rhs)).Deserialize<double[]>() ?? [];
-        input.SetValues(coefficients, rhs);
-    }
-
-    public static async Task LoadFromJsonAsync(this EquationList list, string json)
-    {
-        using var doc = JsonDocument.Parse(json);
-        var data = doc.RootElement.GetProperty(nameof(EquationSystemCategory.NonLinear))
-            .Deserialize<NonLinearSystemFormData>();
-        if (data is not null)
-            await list.SetFormDataAsync(data);
-    }
-
-    #endregion
 }

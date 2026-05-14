@@ -95,6 +95,9 @@ public partial class Interpolation : CalculationPage<Interpolation>
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.AnalysisMode = _analysisMode;
+        data.Method = _method;
+        data.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.Interpolation, JsonSerializer.Serialize(data));
     }
 
@@ -103,6 +106,11 @@ public partial class Interpolation : CalculationPage<Interpolation>
         if (_input is null) return;
         var data = JsonSerializer.Deserialize<InterpolationFormData>(json);
         if (data is null) return;
+        _analysisMode = data.AnalysisMode;
+        _method = data.Method;
+        _benchmarkMethods = data.BenchmarkMethods;
+        StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 

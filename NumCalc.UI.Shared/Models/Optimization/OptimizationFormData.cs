@@ -1,4 +1,6 @@
+using NumCalc.Shared.Enums.Optimization;
 using NumCalc.UI.Shared.Enums.Optimization;
+using NumCalc.UI.Shared.Enums.Roots;
 
 namespace NumCalc.UI.Shared.Models.Optimization;
 
@@ -20,4 +22,7 @@ public class OptimizationFormData
     public OptimizationMethod Method { get; set; }
 
     public bool Maximize { get; set; }
+
+    public AnalysisMode AnalysisMode { get; set; }
+    public List<OptimizationComparisonMethod> BenchmarkMethods { get; set; } = [];
 }

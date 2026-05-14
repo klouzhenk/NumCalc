@@ -121,6 +121,8 @@ public partial class RootFinding : CalculationPage<RootFinding>
 
     private async Task SaveInputAsync(string name)
     {
+        _formData.Mode = Mode;
+        _formData.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.RootFinding, JsonSerializer.Serialize(_formData));
     }
 
@@ -129,6 +131,8 @@ public partial class RootFinding : CalculationPage<RootFinding>
         var data = JsonSerializer.Deserialize<RootFindingFormData>(json);
         if (data is null) return;
         _formData.CopyFrom(data);
+        Mode = data.Mode;
+        _benchmarkMethods = data.BenchmarkMethods;
         StateHasChanged();
 
         await (_formDataInput?.SetLatexExpressionAsync(data.FunctionExpression) ?? Task.CompletedTask);

@@ -91,6 +91,9 @@ public partial class Ode : CalculationPage<Ode>
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.AnalysisMode = _mode;
+        data.Method = _method;
+        data.BenchmarkMethods = _benchmarkMethods;
         await TrySaveInputAsync(name, CalculationType.Ode, JsonSerializer.Serialize(data));
     }
 
@@ -99,6 +102,11 @@ public partial class Ode : CalculationPage<Ode>
         if (_input is null) return;
         var data = JsonSerializer.Deserialize<OdeFormData>(json);
         if (data is null) return;
+        _mode = data.AnalysisMode;
+        _method = data.Method;
+        _benchmarkMethods = data.BenchmarkMethods;
+        StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 

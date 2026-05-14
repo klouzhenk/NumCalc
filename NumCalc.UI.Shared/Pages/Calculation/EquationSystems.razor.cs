@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.EquationSystems;
@@ -193,26 +194,34 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
         string? json = null;
 
         if (Category is EquationSystemCategory.Linear && _linearInput is not null)
-            json = _linearInput.GetLinearInputSaveData();
+            json = _linearInput.GetLinearInputSaveData(_mode, LinearMethod, _linearBenchmarkMethods);
         else if (_equationList is not null)
-            json = await _equationList.GetNonLinearInputSaveData();
-        
+            json = await _equationList.GetNonLinearInputSaveData(_mode, NonLinearMethod, _nonLinearBenchmarkMethods);
+
         if (json is null) return;
         await TrySaveInputAsync(name, CalculationType.EquationSystems, json);
     }
 
     private async Task LoadFromJsonAsync(string json)
     {
-        var (category, size) = EquationSystemsUtils.ParseCategoryAndSize(json);
-        Category = category;
-        Size = size;
+        var data = JsonSerializer.Deserialize<EquationSystemsSaveData>(json);
+        if (data is null) return;
+
+        Category = data.Category;
+        Size = data.Size;
+        _mode = data.AnalysisMode;
+        LinearMethod = data.LinearMethod;
+        NonLinearMethod = data.NonLinearMethod;
+        _linearBenchmarkMethods = data.LinearBenchmarkMethods;
+        _nonLinearBenchmarkMethods = data.NonLinearBenchmarkMethods;
+
         StateHasChanged();
         await Task.Yield(); // wait for re-render so the right ref populates
 
         if (Category is EquationSystemCategory.Linear && _linearInput is not null)
-            _linearInput.LoadFromJson(json);
-        else if (_equationList is not null)
-            await _equationList.LoadFromJsonAsync(json);
+            _linearInput.SetValues(data.Coefficients ?? [], data.Rhs ?? []);
+        else if (_equationList is not null && data.NonLinear is not null)
+            await _equationList.SetFormDataAsync(data.NonLinear);
     }
 
     private async Task ExportPdfAsync()
