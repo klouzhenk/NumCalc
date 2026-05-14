@@ -91,6 +91,8 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
                 item.DerivativeValue = data.DerivativeValue;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;
 
+                response.ChartData ??= data.ChartPoints;
+
                 logger.LogInformation("Compare/{Method}: derivative={Value}, elapsed={ElapsedMs}ms",
                     method, item.DerivativeValue, item.ExecutionTimeMs);
             }

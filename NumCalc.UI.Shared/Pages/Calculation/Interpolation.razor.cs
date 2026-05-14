@@ -19,7 +19,8 @@ public partial class Interpolation : CalculationPage<Interpolation>
     
     private InterpolationResponse? Result { get; set; }
     private InterpolationComparisonResponse? ComparisonResult { get; set; }
-    private bool IsChartVisible => Result?.ChartData is not null;
+    private bool IsChartVisible => Result?.ChartData is not null
+        || (_analysisMode is AnalysisMode.Benchmark && ComparisonResult is not null);
     
     private InterpolationMethod _method = InterpolationMethod.Newton;
     private InterpolationInput? _input;
@@ -82,7 +83,18 @@ public partial class Interpolation : CalculationPage<Interpolation>
         var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods);
         ComparisonResult = await SafeExecuteAsync(() =>
             InterpolationApiService.GetInterpolationComparisonAsync(comparisonRequest));
+
+        if (ComparisonResult is null) return;
+
+        await UpdateBenchmarkChart(formData);
     }
+
+    private async Task UpdateBenchmarkChart(InterpolationFormData formData)
+    {
+        var chartConfig = formData.CreateBenchmarkChartConfig(ComparisonResult!, Localizer);
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
+    }
+
     private async Task UpdateChart(InterpolationFormData formData)
     {
         if (Result?.ChartData is null) return;

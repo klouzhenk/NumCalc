@@ -22,7 +22,8 @@ public partial class Differentiation : CalculationPage<Differentiation>
     private DifferentiationResponse? Result { get; set; }
     private DifferentiationComparisonResponse? ComparisonResult { get; set; }
     private DifferentiationFormData FormData { get; set; } = new();
-    private bool IsChartVisible => Result?.ChartData is not null;
+    private bool IsChartVisible => Result?.ChartData is not null
+        || (_mode is AnalysisMode.Benchmark && ComparisonResult is not null);
     
     private AnalysisMode _mode = AnalysisMode.Single;
     private DifferentiationMethod _method = DifferentiationMethod.FiniteDifferences;
@@ -88,13 +89,24 @@ public partial class Differentiation : CalculationPage<Differentiation>
         }
 
         var comparisonRequest = FormData.GetComparisonRequest(_benchmarkMethods);
-        ComparisonResult = await SafeExecuteAsync(() 
+        ComparisonResult = await SafeExecuteAsync(()
             => DifferentiationApiService.GetDifferentiationComparisonAsync(comparisonRequest));
+
+        if (ComparisonResult is null) return;
+
+        await UpdateBenchmarkChart();
     }
 
     private async Task UpdateChart()
     {
         var config = FormData.CreateChartConfig(Result);
+        if (config is null) return;
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
+    }
+
+    private async Task UpdateBenchmarkChart()
+    {
+        var config = FormData.CreateBenchmarkChartConfig(ComparisonResult!, Localizer);
         if (config is null) return;
         await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", config);
     }

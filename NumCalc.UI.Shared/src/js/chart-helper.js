@@ -69,23 +69,48 @@ function build2dChartOptions(config, series) {
         },
         title: { text: title || null },
         xAxis: {
-            title: { text: xAxis.title || null },
+            title: { 
+                text: xAxis.title || null,
+                style: {
+                    color: 'rgb(var(--black-rgb))'
+                }
+            },
             min: xAxis.min,
             max: xAxis.max,
             gridLineWidth: xAxis.showGrid ? 1 : 0,
-            plotLines: xAxis.plotLines || []
+            plotLines: xAxis.plotLines || [],
+            labels: {
+                style: {
+                    color: 'rgb(var(--black-rgb))'
+                }
+            },
         },
         yAxis: {
-            title: { text: yAxis.title || null },
+            title: {
+                text: yAxis.title || null,
+                style: {
+                    color: 'rgb(var(--black-rgb))'
+                }
+            },
             gridLineWidth: yAxis.showGrid ? 1 : 0,
-            plotLines: yAxis.plotLines || []
+            plotLines: yAxis.plotLines || [],
+            labels: {
+                style: {
+                    color: 'rgb(var(--black-rgb))'
+                }
+            },
         },
         tooltip: {
             shared: true,
             useHTML: true,
             formatter: buildTooltipFormatter(tooltipSuffix, tooltipDecimals)
         },
-        legend: { enabled: showLegend },
+        legend: {
+            enabled: showLegend,
+            itemStyle: {
+                color: 'rgb(var(--black-rgb))'
+            }
+        },
         credits: { enabled: false },
         series: series
     };
@@ -233,14 +258,25 @@ function sampleCurve(expression, xMin, xMax) {
 }
 
 function buildCurveSeries(seriesItem, data) {
+    const hasFill = seriesItem.fillLowerBound != null && seriesItem.fillUpperBound != null;
+
     return {
         name: seriesItem.name,
         data: data,
         color: seriesItem.color,
-        type: seriesItem.type ? seriesItem.type.toLowerCase() : 'line',
+        type: hasFill ? 'area' : (seriesItem.type ? seriesItem.type.toLowerCase() : 'line'),
         dashStyle: seriesItem.dashStyle || 'solid',
         lineWidth: seriesItem.lineWidth || 2,
-        marker: { enabled: false }
+        marker: { enabled: false },
+        ...(hasFill && {
+            fillOpacity: 0.25,
+            zoneAxis: 'x',
+            zones: [
+                { value: seriesItem.fillLowerBound, fillColor: 'transparent' },
+                { value: seriesItem.fillUpperBound },
+                { fillColor: 'transparent' }
+            ]
+        })
     };
 }
 

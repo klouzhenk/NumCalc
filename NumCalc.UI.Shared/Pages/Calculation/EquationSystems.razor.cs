@@ -27,6 +27,7 @@ public partial class EquationSystems : CalculationPage<EquationSystems>
     private int Size { get; set; } = 2;
     
     private bool IsChartVisible => Result?.ChartSeries is { Count: > 0 };
+    private bool HasBenchmarkResult => LinearComparisonResult is not null || NonLinearComparisonResult is not null;
 
     private AnalysisMode _mode = AnalysisMode.Single;
     private readonly int[] _sizes = [2, 3, 4];

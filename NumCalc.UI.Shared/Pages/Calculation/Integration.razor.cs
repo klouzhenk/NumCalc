@@ -20,7 +20,8 @@ public partial class Integration : CalculationPage<Integration>
     
     private IntegrationResponse? Result { get; set; }
     private IntegrationComparisonResponse? ComparisonResult { get; set; }
-    private bool IsChartVisible => Result?.ChartData is not null;
+    private bool IsChartVisible => Result?.ChartData is not null
+        || (_mode is AnalysisMode.Benchmark && ComparisonResult is not null);
     private SolutionStep? SelectedStep => Result?.SolutionSteps?.FirstOrDefault();
     private IList<SolutionStep>? FilteredSteps => Result?.SolutionSteps;
     
@@ -80,6 +81,16 @@ public partial class Integration : CalculationPage<Integration>
 
         var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods);
         ComparisonResult = await SafeExecuteAsync(() => IntegrationApiService.GetIntegrationComparisonAsync(comparisonRequest));
+
+        if (ComparisonResult is null) return;
+
+        await UpdateBenchmarkChart(formData);
+    }
+
+    private async Task UpdateBenchmarkChart(IntegrationFormData formData)
+    {
+        var chartConfig = formData.CreateBenchmarkChartConfig();
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
     private async Task UpdateChart(IntegrationFormData formData)

@@ -8,6 +8,7 @@ import { TooltipHelper } from './tooltip-helper.js';
 import { MathValidationHelper } from './math-helper.js';
 import { ChartHelper } from './chart-helper.js';
 import { LatexHelper } from './latex-helper.js';
+import { ThemeHelper } from './theme-helper.js';
 
 window.NumCalc = {
     ...MathHelper,
@@ -17,6 +18,10 @@ window.NumCalc = {
 
 window.ImageHelper = {
     ...ImageHelper,
+}
+
+window.ThemeHelper = {
+    ...ThemeHelper,
 }
 
 window.PdfHelper = {

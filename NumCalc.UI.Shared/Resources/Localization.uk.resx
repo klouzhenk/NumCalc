@@ -604,6 +604,9 @@
   <data name="ClickCalculateToViewResult" xml:space="preserve">
     <value>Натисніть «Обчислити», щоб переглянути результат</value>
   </data>
+  <data name="NoChartForBenchmark" xml:space="preserve">
+    <value>У режимі порівняння графік недоступний — результати у вкладці «Steps»</value>
+  </data>
   <data name="Copied" xml:space="preserve">
     <value>Скопійовано</value>
   </data>
@@ -795,5 +798,11 @@
   </data>
   <data name="InvalidRange" xml:space="preserve">
     <value>Неправильні межі</value>
+  </data>
+  <data name="ChooseTheme" xml:space="preserve">
+    <value>Оберіть кольорову тему</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
   </data>
 </root>

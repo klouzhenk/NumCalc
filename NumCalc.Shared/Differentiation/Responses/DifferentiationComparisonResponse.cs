@@ -1,3 +1,4 @@
+using NumCalc.Shared.Common;
 using NumCalc.Shared.DTOs.Differentiation;
 using NumCalc.Shared.Enums.Differentiation;
 
@@ -7,4 +8,5 @@ public class DifferentiationComparisonResponse
 {
     public List<DifferentiationBenchmarkResultDto> Results { get; set; } = [];
     public DifferentiationComparisonMethod? BestMethod { get; set; }
+    public IEnumerable<Point>? ChartData { get; set; }
 }

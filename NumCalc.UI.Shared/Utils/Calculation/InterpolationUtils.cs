@@ -78,6 +78,83 @@ public static class InterpolationUtils
         return inputs;
     }
 
+    public static Chart CreateBenchmarkChartConfig(
+        this InterpolationFormData formData,
+        InterpolationComparisonResponse comparison,
+        IStringLocalizer<Localization> localizer)
+    {
+        var series = new List<ChartSeries>();
+
+        if (formData.Mode is InterpolationInputMode.Function
+            && !string.IsNullOrWhiteSpace(formData.FunctionExpression))
+        {
+            series.Add(new ChartSeries
+            {
+                Name = "f(x)",
+                Expression = formData.FunctionExpression,
+                Color = ColorUtils.GetColor(Color.Primary),
+                LineWidth = 2,
+                IsVisible = true
+            });
+        }
+        else if (formData.YValues is { Count: > 0 })
+        {
+            series.Add(new ChartSeries
+            {
+                Name = localizer["XNodes"],
+                Type = ChartType.Scatter,
+                Data = formData.XNodes.Zip(formData.YValues, (x, y) => new[] { x, y }).ToList(),
+                Color = ColorUtils.GetColor(Color.Primary),
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 5 }
+            });
+        }
+
+        foreach (var result in comparison.Results)
+        {
+            series.Add(new ChartSeries
+            {
+                Name = $"x* ({localizer[result.Method.ToString()]})",
+                Type = ChartType.Scatter,
+                Data = result.InterpolatedValue.HasValue
+                    ? [[formData.QueryPoint, result.InterpolatedValue.Value]]
+                    : null,
+                Color = ColorUtils.GetSeriesColor((int)result.Method),
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond },
+                Opacity = 0.8
+            });
+        }
+
+        double? xMin = null, xMax = null;
+        if (formData.XNodes is { Count: > 0 })
+        {
+            xMin = Math.Min(formData.XNodes.Min(), formData.QueryPoint);
+            xMax = Math.Max(formData.XNodes.Max(), formData.QueryPoint);
+        }
+
+        return new Chart
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
+            ShowLegend = true,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
+            XAxis = new ChartAxis
+            {
+                Min = xMin,
+                Max = xMax,
+                Title = localizer["ArgumentX"],
+                PlotLines = [ChartUtils.CreateZeroLine()]
+            },
+            YAxis = new ChartAxis
+            {
+                Title = localizer["FunctionValue"],
+                PlotLines = [ChartUtils.CreateZeroLine()]
+            },
+            Series = series
+        };
+    }
+
     public static Chart? CreateChartConfig(
         this InterpolationFormData formData, 
         InterpolationResponse? result,

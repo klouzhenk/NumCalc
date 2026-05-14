@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Enums.Optimization;
 using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
@@ -8,6 +9,7 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.Optimization;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Utils.Calculation;
 
@@ -211,6 +213,61 @@ public static class OptimizationUtils
             XAxis = new ChartAxis { Title = "x" },
             YAxis = new ChartAxis { Title = "y" },
             ZAxis = new ChartAxis { Title = "f(x, y)" },
+            Series = series
+        };
+    }
+
+    public static Chart CreateBenchmarkChartConfig(
+        this OptimizationFormData formData,
+        OptimizationComparisonResponse comparison,
+        IStringLocalizer<Localization> localizer)
+    {
+        var series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "f(x)",
+                Expression = formData.FunctionExpression,
+                Color = ColorUtils.GetColor(Enums.Color.Primary),
+                LineWidth = 2,
+                IsVisible = true
+            }
+        };
+
+        foreach (var result in comparison.Results)
+        {
+            series.Add(new ChartSeries
+            {
+                Name = $"x* ({localizer[result.Method.ToString()]})",
+                Type = ChartType.Scatter,
+                Data = result is { ArgMinX: not null, MinimumValue: not null }
+                    ? [[result.ArgMinX.Value, result.MinimumValue.Value]]
+                    : null,
+                Color = ColorUtils.GetSeriesColor((int)result.Method),
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond },
+                Opacity = 0.8
+            });
+        }
+
+        return new Chart
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
+            Decimals = MathUtils.DecimalsFromTolerance(formData.Tolerance),
+            XAxis = new ChartAxis
+            {
+                Min = formData.LowerBound,
+                Max = formData.UpperBound,
+                Title = "x",
+                PlotLines =
+                [
+                    ChartUtils.CreateZeroLine(),
+                    ChartUtils.CreateConstant(formData.LowerBound),
+                    ChartUtils.CreateConstant(formData.UpperBound)
+                ]
+            },
+            YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = series
         };
     }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Localization;
 using NumCalc.Shared.Enums.ODE;
 using NumCalc.Shared.ODE.Requests;
 using NumCalc.Shared.ODE.Responses;
@@ -8,6 +9,7 @@ using NumCalc.UI.Shared.Models.Charts;
 using NumCalc.UI.Shared.Models.ODE;
 using NumCalc.UI.Shared.Models.User;
 using NumCalc.UI.Shared.Models.User.Enums;
+using NumCalc.UI.Shared.Resources;
 
 namespace NumCalc.UI.Shared.Utils.Calculation;
 
@@ -122,6 +124,46 @@ public static class OdeUtils
                     IsVisible = true
                 }
             ]
+        };
+    }
+
+    public static Chart? CreateBenchmarkChartConfig(
+        this OdeFormData formData,
+        OdeComparisonResponse comparison,
+        IStringLocalizer<Localization> localizer)
+    {
+        var series = new List<ChartSeries>();
+
+        foreach (var result in comparison.Results)
+        {
+            var data = result.SolutionPoints?
+                .Where(p => p is { X: not null, Y: not null })
+                .Select(p => new[] { p.X!.Value, p.Y!.Value })
+                .ToList();
+
+            if (data is not { Count: > 0 }) continue;
+
+            series.Add(new ChartSeries
+            {
+                Name = localizer[result.Method.ToString()],
+                Data = data,
+                Color = ColorUtils.GetSeriesColor((int)result.Method),
+                LineWidth = 2,
+                IsVisible = true
+            });
+        }
+
+        if (series.Count == 0) return null;
+
+        return new Chart
+        {
+            ContainerId = ChartContainerId,
+            Title = null,
+            ShowLegend = true,
+            Decimals = MathUtils.DecimalsFromTolerance(null),
+            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
+            YAxis = new ChartAxis { Title = "y(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
+            Series = series
         };
     }
 

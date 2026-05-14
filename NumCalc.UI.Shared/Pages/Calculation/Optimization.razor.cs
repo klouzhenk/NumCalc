@@ -19,7 +19,8 @@ public partial class Optimization : CalculationPage<Optimization>
 
     private OptimizationResponse? Result { get; set; }
     private OptimizationComparisonResponse? ComparisonResult { get; set; }
-    private bool IsChartVisible => Result?.ChartData is not null;
+    private bool IsChartVisible => Result?.ChartData is not null
+        || (_mode is AnalysisMode.Benchmark && ComparisonResult is not null);
     
     private AnalysisMode _mode = AnalysisMode.Single;
     private OptimizationMethod _method = OptimizationMethod.UniformSearch;
@@ -53,8 +54,18 @@ public partial class Optimization : CalculationPage<Optimization>
         }
 
         var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods, _maximize);
-        ComparisonResult = await SafeExecuteAsync(() 
+        ComparisonResult = await SafeExecuteAsync(()
             => OptimizationApiService.GetOptimizationComparisonAsync(comparisonRequest));
+
+        if (ComparisonResult is null) return;
+
+        await UpdateBenchmarkChart(formData);
+    }
+
+    private async Task UpdateBenchmarkChart(OptimizationFormData formData)
+    {
+        var chartConfig = formData.CreateBenchmarkChartConfig(ComparisonResult!, Localizer);
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
     private async Task DoSingleCalculation(OptimizationFormData formData)

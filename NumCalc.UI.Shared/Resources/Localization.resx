@@ -604,6 +604,9 @@
   <data name="ClickCalculateToViewResult" xml:space="preserve">
     <value>Click Calculate to view the result</value>
   </data>
+  <data name="NoChartForBenchmark" xml:space="preserve">
+    <value>Benchmark mode has no chart — see the Steps tab for results</value>
+  </data>
   <data name="Copied" xml:space="preserve">
     <value>Copied</value>
   </data>
@@ -795,5 +798,11 @@
   </data>
   <data name="InvalidRange" xml:space="preserve">
     <value>Invalid range</value>
+  </data>
+  <data name="ChooseTheme" xml:space="preserve">
+    <value>Choose color theme</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
   </data>
 </root>

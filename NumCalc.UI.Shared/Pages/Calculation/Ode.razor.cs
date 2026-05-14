@@ -18,7 +18,8 @@ public partial class Ode : CalculationPage<Ode>
 
     private OdeResponse? Result { get; set; }
     private OdeComparisonResponse? ComparisonResult { get; set; }
-    private bool IsChartVisible => Result?.SolutionPoints is { Count: > 0 };
+    private bool IsChartVisible => Result?.SolutionPoints is { Count: > 0 }
+        || (_mode is AnalysisMode.Benchmark && ComparisonResult is not null);
     
     private AnalysisMode _mode = AnalysisMode.Single;
     private OdeMethod _method = OdeMethod.EulerImproved;
@@ -75,6 +76,18 @@ public partial class Ode : CalculationPage<Ode>
 
         var comparisonRequest = formData.GetComparisonRequest(_benchmarkMethods);
         ComparisonResult = await SafeExecuteAsync(() => OdeApiService.GetOdeComparisonAsync(comparisonRequest));
+
+        if (ComparisonResult is null) return;
+
+        await UpdateBenchmarkChart(formData);
+    }
+
+    private async Task UpdateBenchmarkChart(OdeFormData formData)
+    {
+        var chartConfig = formData.CreateBenchmarkChartConfig(ComparisonResult!, Localizer);
+        if (chartConfig is null) return;
+
+        await JsRuntime.InvokeVoidAsync("NumCalc.drawPlot", chartConfig);
     }
 
     private async Task UpdateChart(OdeFormData formData)
