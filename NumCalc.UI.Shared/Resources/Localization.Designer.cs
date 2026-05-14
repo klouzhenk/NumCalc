@@ -213,6 +213,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose color theme.
+        /// </summary>
+        public static string ChooseTheme {
+            get {
+                return ResourceManager.GetString("ChooseTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click Calculate to view the result.
         /// </summary>
         public static string ClickCalculateToViewResult {
@@ -2243,6 +2252,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string TargetX {
             get {
                 return ResourceManager.GetString("TargetX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme.
+        /// </summary>
+        public static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
             }
         }
         

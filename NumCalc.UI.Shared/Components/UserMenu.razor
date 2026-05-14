@@ -1,3 +1,4 @@
+@using NumCalc.UI.Shared.Enums
 @using NumCalc.UI.Shared.Resources
 
 <div class="user-menu @(_isOpen ? "user-menu--open" : "")">
@@ -23,6 +24,10 @@
                     <SvgIcon Name="language"/>
                     <span>@Localizer[nameof(Localization.Language)]</span>
                 </li>
+                <li class="user-menu__item" @onclick="OpenThemeModal">
+                    <SvgIcon Name="theme"/>
+                    <span>@Localizer[nameof(Localization.Theme)]</span>
+                </li>
                 <li class="user-menu__item" @onclick="Logout">
                     <SvgIcon Name="logout"/>
                     <span>@Localizer[nameof(Localization.Logout)]</span>
@@ -38,6 +43,10 @@
                     <SvgIcon Name="language"/>
                     <span>@Localizer[nameof(Localization.Language)]</span>
                 </li>
+                <li class="user-menu__item" @onclick="OpenThemeModal">
+                    <SvgIcon Name="theme"/>
+                    <span>@Localizer[nameof(Localization.Theme)]</span>
+                </li>
             }
         </ul>
     </div>
@@ -45,12 +54,24 @@
 
 <BaseModal @ref="_languageModal"
            Subtitle="@Localizer[nameof(Localization.ChooseLanguage)]"
-           CssClass="modal--language">
+           CssClass="modal--user-settings">
     <BodyContent>
         <button class="button @(CultureService.CurrentCulture == "en" ? "button--primary" : "button--outline")"
                 @onclick='() => SelectCulture("en")'>@Localizer["English"]</button>
         <Divider Text="@Localizer[nameof(Localization.Or)]"/>
         <button class="button @(CultureService.CurrentCulture == "uk" ? "button--primary" : "button--outline")"
                 @onclick='() => SelectCulture("uk")'>@Localizer["Ukrainian"]</button>
+    </BodyContent>
+</BaseModal>
+
+<BaseModal @ref="_themeModal"
+           Subtitle="@Localizer[nameof(Localization.ChooseTheme)]"
+           CssClass="modal--user-settings">
+    <BodyContent>
+        <button class="button @(_themeMode is ThemeMode.Light ? "button--primary" : "button--outline")"
+                @onclick="() => ToggleTheme(ThemeMode.Light)">@Localizer["Light"]</button>
+            <Divider Text="@Localizer[nameof(Localization.Or)]"/>
+        <button class="button @(_themeMode is ThemeMode.Dark ? "button--primary" : "button--outline")"
+                @onclick="() => ToggleTheme(ThemeMode.Dark)">@Localizer["Dark"]</button>
     </BodyContent>
 </BaseModal>

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICultureService, CultureService>();
 builder.Services.AddScoped<ITokenStorage, ProtectedTokenStorage>();
+builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddNumCalcUiSharedServices()
     .AddSharedLogging("Logs/web-log-.txt");
 

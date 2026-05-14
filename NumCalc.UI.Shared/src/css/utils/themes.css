@@ -1,0 +1,19 @@
+﻿[data-theme='dark'] {
+    --black-rgb: 244, 243, 238;
+    --white-rgb: 13, 19, 33;
+
+    --layout-background: #0D1321;
+    --layout-transparent-background: rgba(13, 19, 33, 0.5);
+
+    --gray-color: color-mix(in srgb, var(--white-color), var(--black-color) 75%);
+    --gray-dark-color: color-mix(in srgb, var(--white-color), var(--black-color) 15%);
+    --gray-light-color: color-mix(in srgb, var(--white-color), var(--black-color) 50%);
+    --gray-ultra-light-color: color-mix(in srgb, var(--white-color), var(--black-color) 85%);
+
+    --text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    --component-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+
+    --primary-light-color: color-mix(in srgb, var(--primary-color), var(--white-color) 20%);
+    --primary-color: color-mix(in srgb, rgb(140, 33, 85), white 25%);
+    --button-primary-color: var(--white-color);
+}

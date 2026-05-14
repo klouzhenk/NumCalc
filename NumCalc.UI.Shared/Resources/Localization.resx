@@ -796,4 +796,10 @@
   <data name="InvalidRange" xml:space="preserve">
     <value>Invalid range</value>
   </data>
+  <data name="ChooseTheme" xml:space="preserve">
+    <value>Choose color theme</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
 </root>

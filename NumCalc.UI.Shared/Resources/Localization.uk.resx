@@ -796,4 +796,10 @@
   <data name="InvalidRange" xml:space="preserve">
     <value>Неправильні межі</value>
   </data>
+  <data name="ChooseTheme" xml:space="preserve">
+    <value>Оберіть кольорову тему</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
 </root>

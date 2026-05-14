@@ -32,14 +32,22 @@
         font-size: 1.1rem;
         outline: none;
         border: none;
-        --caret-color: var(--primary-color);
-        --selection-background: var(--primary-background);
-        --selection-color: var(--black-color);
         --keyboard-zindex: 10000;
         background: transparent;
         cursor: text;
     }
 
+    math-field {
+        --foreground-color: rgb(var(--black-rgb)) !important;
+        --background-color: transparent !important;
+        --caret-color: var(--primary-color) !important;
+        --primary-color: var(--primary-color) !important;
+
+        color: rgb(var(--black-rgb)) !important;
+        background-color: transparent !important;
+        border: var(--default-border) !important;
+    }
+    
     math-field::part(menu-toggle) {
         display: none !important;
     }
