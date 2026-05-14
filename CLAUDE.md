@@ -140,7 +140,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - **Services:** `IPdfExportService` / `PdfExportService`, `IUiStateService` / `UiStateService`, `ICultureService` (OCR is no longer a UI service — it's exposed by the Calculation API at `POST api/ocr/recognize` and called via `ICalculationApiService.RecognizeExpressionAsync`)
 - **Layout:** `MainLayout.razor` in `Layouts/`
 - Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
-- Frontend stack: **Highcharts** (charts, via `wwwroot/js/highcharts.js` + `charts.js`), **MathLive** (math input field), **mathjs** (client-side expression evaluation), **Vite** (JS/CSS bundler)
+- Frontend stack: **Highcharts** (charts) and **mathjs** (client-side expression evaluation) — npm deps bundled by **Vite**; **MathLive** (math input field). Bundled JS lives in `src/js/` as per-purpose `*-helper.js` modules (`chart-helper`, `math-input`, `math-helper`, `pdf-helper`, `tooltip-helper`, `image-helper`) wired through `app.js`
 - LaTeX in `SolutionStep.LatexFormula` is rendered via **KaTeX** (html2canvas captures it as PNG for PDF export)
 
 ### Web UI (`NumCalc.UI.Web`)

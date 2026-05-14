@@ -143,7 +143,7 @@ public static class RootFindingUtils
             Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
             Color = ColorUtils.GetColor(Color.PrimaryDark),
             IsVisible = true,
-            Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
+            Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
         });
     }
 
@@ -161,7 +161,7 @@ public static class RootFindingUtils
                 Data = result.Root.HasValue ? [[result.Root.Value, 0]] : null,
                 Color = ColorUtils.GetSeriesColor((int)result.Method),
                 IsVisible = true,
-                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle },
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond },
                 Opacity = 0.8
             });
         }

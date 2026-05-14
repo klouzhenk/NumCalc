@@ -139,7 +139,7 @@ public static class OptimizationUtils
                 Data = [[xStar.Value, result.MinimumValue]],
                 Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 IsVisible = true,
-                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Circle }
+                Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
             });
         }
 
@@ -148,7 +148,16 @@ public static class OptimizationUtils
             ContainerId = ChartContainerId,
             Title = null,
             Decimals = MathUtils.DecimalsFromTolerance(formData.Tolerance),
-            XAxis = new ChartAxis { Title = "x", PlotLines = [ChartUtils.CreateZeroLine()] },
+            XAxis = new ChartAxis 
+            { 
+                Title = "x", 
+                PlotLines =
+                [
+                    ChartUtils.CreateZeroLine(),
+                    ChartUtils.CreateConstant(formData.LowerBound),
+                    ChartUtils.CreateConstant(formData.UpperBound)
+                ]
+            },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = series
         };
