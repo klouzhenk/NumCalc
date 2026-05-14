@@ -1,8 +1,8 @@
-﻿import Highcharts from 'highcharts';
+﻿import Highcharts from 'highcharts/esm/highcharts';
+import 'highcharts/esm/highcharts-3d';
 import * as math from "mathjs";
 
 const CURVE_RESOLUTION = 250;
-let _hc3dReady = false;
 
 const OPTIONS_3D_DEFAULTS = {
     enabled: true,
@@ -31,9 +31,7 @@ export const ChartHelper = {
         upsertChart(config.containerId, chartOptions, generatedSeries);
     },
 
-    drawPlot3d: async (config) => {
-        await ensureHighcharts3dLoaded();
-
+    drawPlot3d: (config) => {
         const container = document.getElementById(config.containerId);
         if (!container) return;
 
@@ -44,13 +42,6 @@ export const ChartHelper = {
         const chart = Highcharts.chart(config.containerId, chartOptions);
         enableMouseRotation(chart);
     },
-}
-
-async function ensureHighcharts3dLoaded() {
-    if (_hc3dReady) return;
-    window._Highcharts = Highcharts;
-    await import('highcharts/highcharts-3d');
-    _hc3dReady = true;
 }
 
 function build3dSeries(seriesItem) {
@@ -253,7 +244,11 @@ function processScatterItem(seriesItem) {
         color: seriesItem.color,
         type: hasFill ? 'area' : (seriesItem.type ? seriesItem.type.toLowerCase() : 'line'),
         lineWidth: seriesItem.lineWidth || 2,
-        marker: { symbol: seriesItem.marker?.symbol ?? 'circle', enabled: seriesItem.type?.toLowerCase() === 'scatter', radius: seriesItem.marker?.radius ?? 8 },
+        marker: {
+            symbol: seriesItem.marker?.symbol ?? 'circle',
+            enabled: seriesItem.type?.toLowerCase() === 'scatter',
+            radius: seriesItem.marker?.radius ?? 8
+        },
         ...(hasFill && {
             fillOpacity: 0.25,
             zoneAxis: 'x',

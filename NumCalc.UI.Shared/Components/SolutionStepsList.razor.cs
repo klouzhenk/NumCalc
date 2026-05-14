@@ -20,10 +20,9 @@ public partial class SolutionStepsList : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!_latexRendered && Steps is { Count: > 0 })
-        {
-            _latexRendered = true;
-            await JsRuntime.InvokeVoidAsync("TooltipHelper.renderStepFormulas", _containerId);
-        }
+        if (_latexRendered || Steps is not { Count: > 0 }) return;
+
+        _latexRendered = true;
+        await JsRuntime.InvokeVoidAsync("LatexHelper.renderStepFormulas", _containerId);
     }
 }
