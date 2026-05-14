@@ -6,58 +6,30 @@ const KATEX_DELIMITERS = [
     { left: '$',  right: '$',  display: false }
 ];
 
-function getPopupForIcon(icon) {
-    const wrapper = icon.closest('.tooltip__wrapper');
-    if (!wrapper) return null;
-
-    if (!wrapper._tooltipPopup) {
-        const popup = wrapper.querySelector('.tooltip__popup');
-        if (!popup) return null;
-        wrapper._tooltipPopup = popup;
-        document.body.appendChild(popup); // portal: escapes all stacking contexts
-    }
-
-    return wrapper._tooltipPopup;
-}
-
-function positionPopup(icon, popup) {
-    const rect = icon.getBoundingClientRect();
-
-    requestAnimationFrame(() => {
-        const h = popup.offsetHeight;
-        const w = popup.offsetWidth;
-        const gap = 4;
-
-        const top  = rect.top - h - gap;
-        const left = rect.right - w;
-
-        popup.style.top  = top < 8  ? `${rect.bottom + gap}px` : `${top}px`;
-        popup.style.left = left < 8 ? '8px'                    : `${left}px`;
-    });
-}
-
 export const TooltipHelper = {
     renderLatexInContainer(containerId) {
-        const el = document.getElementById(containerId);
-        if (!el) return;
-        renderMathInElement(el, { delimiters: KATEX_DELIMITERS, throwOnError: false });
+        const element = document.getElementById(containerId);
+        if (!element) return;
+        renderMathInElement(element, { delimiters: KATEX_DELIMITERS, throwOnError: false });
     },
 
     renderLatexById(elementId, latex) {
-        const el = document.getElementById(elementId);
-        if (!el) return;
-        katex.render(latex, el, { throwOnError: false, displayMode: true });
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        katex.render(latex, element, { throwOnError: false, displayMode: true });
     },
 
     renderStepFormulas(containerId) {
-        const el = document.getElementById(containerId);
-        if (!el) return;
-        el.querySelectorAll('.solution-steps__item-formula[data-latex]').forEach(div => {
+        const element = document.getElementById(containerId);
+        if (!element) return;
+        
+        element.querySelectorAll('.solution-steps__item-formula[data-latex]').forEach(div => {
             const latex = div.dataset.latex;
             if (!latex) return;
             katex.render(latex, div, { throwOnError: false, displayMode: true });
         });
-        el.querySelectorAll('.solution-steps__item-value[data-latex]').forEach(span => {
+        
+        element.querySelectorAll('.solution-steps__item-value[data-latex]').forEach(span => {
             const text = span.dataset.latex;
             if (!text) return;
             if (/\\[a-zA-Z]/.test(text)) {
@@ -89,3 +61,35 @@ export const TooltipHelper = {
         });
     }
 };
+
+function getPopupForIcon(icon) {
+    const wrapper = icon.closest('.tooltip__wrapper');
+    if (!wrapper) return null;
+
+    if (wrapper._tooltipPopup) {
+        return wrapper._tooltipPopup;
+    }
+
+    const popup = wrapper.querySelector('.tooltip__popup');
+    if (!popup) return null;
+
+    wrapper._tooltipPopup = popup;
+    document.body.appendChild(popup); // escapes all stacking contexts
+    return wrapper._tooltipPopup;
+}
+
+function positionPopup(icon, popup) {
+    const rect = icon.getBoundingClientRect();
+
+    requestAnimationFrame(() => {
+        const height = popup.offsetHeight;
+        const width = popup.offsetWidth;
+        const gap = 4;
+
+        const top  = rect.top - height - gap;
+        const left = rect.right - width;
+
+        popup.style.top  = top < 8  ? `${rect.bottom + gap}px` : `${top}px`;
+        popup.style.left = left < 8 ? '8px'                    : `${left}px`;
+    });
+}

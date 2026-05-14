@@ -6,10 +6,12 @@ import { ImageHelper } from './image-helper.js';
 import { PdfHelper } from './pdf-helper.js';
 import { TooltipHelper } from './tooltip-helper.js';
 import { MathValidationHelper } from './math-helper.js';
+import { ChartHelper } from './chart-helper.js';
 
 window.NumCalc = {
     ...MathHelper,
     ...MathValidationHelper,
+    ...ChartHelper,
 };
 
 window.ImageHelper = {
