@@ -1,3 +1,5 @@
+using NumCalc.UI.Shared.Enums.Optimization;
+
 namespace NumCalc.UI.Shared.Models.Optimization;
 
 public class OptimizationFormData
@@ -15,7 +17,7 @@ public class OptimizationFormData
     public double LearningRate { get; set; } = 0.01;
     public int MaxIterations { get; set; } = 200;
 
-    public bool IsGradientDescent { get; set; }
+    public OptimizationMethod Method { get; set; }
 
     public bool Maximize { get; set; }
 }

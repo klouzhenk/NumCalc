@@ -114,6 +114,7 @@ public partial class Optimization : CalculationPage<Optimization>
     {
         if (_input is null) return;
         var data = await _input.GetFormData();
+        data.Maximize = _maximize;
         await TrySaveInputAsync(name, CalculationType.Optimization, JsonSerializer.Serialize(data));
     }
 
@@ -122,6 +123,10 @@ public partial class Optimization : CalculationPage<Optimization>
         if (_input is null) return;
         var data = JsonSerializer.Deserialize<OptimizationFormData>(json);
         if (data is null) return;
+        _method = data.Method;
+        _maximize = data.Maximize;
+        StateHasChanged();
+        await Task.Yield();
         await _input.SetFormDataAsync(data);
     }
 
