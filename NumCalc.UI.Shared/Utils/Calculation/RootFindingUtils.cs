@@ -30,7 +30,6 @@ public static class RootFindingUtils
         if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
             return (false, "ExpressionRequired");
 
-        // TODO : check the bug with '5x + 3'
         var result = await jsRuntime.InvokeAsync<ExpressionValidationResult>(
             "NumCalc.validateExpression", formData.FunctionExpression);
         
