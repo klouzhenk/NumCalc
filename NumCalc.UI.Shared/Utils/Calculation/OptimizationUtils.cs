@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
 using NumCalc.Shared.Enums.Optimization;
 using NumCalc.Shared.Optimization.Requests;
 using NumCalc.Shared.Optimization.Responses;
@@ -16,6 +17,33 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 public static class OptimizationUtils
 {
     public const string ChartContainerId = "chart--optimization";
+
+    private record ExpressionValidationResult(bool Valid, string[] Variables);
+
+    public static async Task<(bool isValid, string? errorMessage)> ValidateFormData(
+        this OptimizationFormData formData,
+        IJSRuntime jsRuntime)
+    {
+        if (!formData.LowerBound.HasValue
+            || !formData.UpperBound.HasValue
+            || !formData.Points.HasValue
+            || !formData.Tolerance.HasValue)
+            return (false, "SettingValueIsRequired");
+        
+        if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            return (false, "ExpressionRequired");
+
+        var result = await jsRuntime.InvokeAsync<ExpressionValidationResult>(
+            "NumCalc.validateExpression", formData.FunctionExpression);
+        
+        if (!result.Valid)
+            return (false, "ExpressionInvalid");
+
+        if (result.Variables.Any(v => v != "x"))
+            return (false, "ExpressionOnlyX");
+
+        return (true, null);
+    }
     
     public static OptimizationComparisonRequest GetComparisonRequest(
         this OptimizationFormData formData,
@@ -25,10 +53,10 @@ public static class OptimizationUtils
         return new OptimizationComparisonRequest
         {
             FunctionExpression = formData.FunctionExpression,
-            LowerBound = formData.LowerBound,
-            UpperBound = formData.UpperBound,
-            Points = formData.Points,
-            Tolerance = formData.Tolerance,
+            LowerBound = formData.LowerBound ?? 0,
+            UpperBound = formData.UpperBound ?? 0,
+            Points = formData.Points ?? 100,
+            Tolerance = formData.Tolerance ?? 1e-6,
             Maximize = maximize,
             Methods = benchmarkMethods
         };
@@ -39,10 +67,10 @@ public static class OptimizationUtils
         return new OptimizationRequest
         {
             FunctionExpression = formData.FunctionExpression,
-            LowerBound = formData.LowerBound,
-            UpperBound = formData.UpperBound,
-            Points = formData.Points,
-            Tolerance = formData.Tolerance,
+            LowerBound = formData.LowerBound ?? 0,
+            UpperBound = formData.UpperBound ?? 0,
+            Points = formData.Points ?? 100,
+            Tolerance = formData.Tolerance ?? 1e-6,
             Maximize = maximize
         };
     }
@@ -52,10 +80,10 @@ public static class OptimizationUtils
         return new GradientDescentRequest
         {
             FunctionExpression = formData.FunctionExpression,
-            InitialPoint = formData.InitialPoint,
-            LearningRate = formData.LearningRate,
-            Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations,
+            InitialPoint = formData.InitialPoint.Select(v => v ?? 0).ToList(),
+            LearningRate = formData.LearningRate ?? 0.01,
+            Tolerance = formData.Tolerance ?? 1e-6,
+            MaxIterations = formData.MaxIterations ?? 200,
             Maximize = maximize
         };
     }
@@ -86,22 +114,22 @@ public static class OptimizationUtils
         {
             ["Method"] = method.ToString(),
             ["Goal"] = maximize ? "Maximize" : "Minimize",
-            ["Tolerance"] = formData.Tolerance.ToString("G")
+            ["Tolerance"] = (formData.Tolerance ?? 1e-6).ToString("G")
         };
-        
+
         if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
             inputs["Expression"] = formData.FunctionExpression;
-        
+
         if (method is OptimizationMethod.GradientDescent)
         {
-            inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint)})";
-            inputs["Learning Rate"] = formData.LearningRate.ToString("G");
-            inputs["Max Iterations"] = formData.MaxIterations.ToString();
+            inputs["Initial Point"] = $"({string.Join(", ", formData.InitialPoint.Select(v => v ?? 0))})";
+            inputs["Learning Rate"] = (formData.LearningRate ?? 0.01).ToString("G");
+            inputs["Max Iterations"] = (formData.MaxIterations ?? 200).ToString();
         }
         else
         {
-            inputs["Lower Bound"] = formData.LowerBound.ToString("G");
-            inputs["Upper Bound"] = formData.UpperBound.ToString("G");
+            inputs["Lower Bound"] = (formData.LowerBound ?? 0).ToString("G");
+            inputs["Upper Bound"] = (formData.UpperBound ?? 0).ToString("G");
         }
         
         return inputs;
@@ -156,8 +184,8 @@ public static class OptimizationUtils
                 PlotLines =
                 [
                     ChartUtils.CreateZeroLine(),
-                    ChartUtils.CreateConstant(formData.LowerBound),
-                    ChartUtils.CreateConstant(formData.UpperBound)
+                    ChartUtils.CreateConstant(formData.LowerBound ?? 0),
+                    ChartUtils.CreateConstant(formData.UpperBound ?? 0)
                 ]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
@@ -263,8 +291,8 @@ public static class OptimizationUtils
                 PlotLines =
                 [
                     ChartUtils.CreateZeroLine(),
-                    ChartUtils.CreateConstant(formData.LowerBound),
-                    ChartUtils.CreateConstant(formData.UpperBound)
+                    ChartUtils.CreateConstant(formData.LowerBound ?? 0),
+                    ChartUtils.CreateConstant(formData.UpperBound ?? 0)
                 ]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },

@@ -32,6 +32,13 @@ public partial class Ode : CalculationPage<Ode>
 
         var formData = await _input.GetFormData();
 
+        var (isValid, errorMessage) = formData.ValidateFormData();
+        if (!isValid)
+        {
+            UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);
+            return;
+        }
+
         if (_mode is AnalysisMode.Single)
         {
             await DoSingleCalculation(formData);

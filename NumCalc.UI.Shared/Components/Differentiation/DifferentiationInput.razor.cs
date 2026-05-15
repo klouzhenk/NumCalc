@@ -16,8 +16,8 @@ public partial class DifferentiationInput : ComponentBase
     private MathInput? _mathInput;
     private NodeTable? _nodeTable;
 
-    private double _queryPoint;
-    private double _stepSize = 0.001;
+    private double? _queryPoint;
+    private double? _stepSize = 0.001;
     private int _derivativeOrder = 1;
 
     public async Task<DifferentiationFormData> GetFormData()

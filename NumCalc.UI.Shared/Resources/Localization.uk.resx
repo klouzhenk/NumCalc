@@ -235,6 +235,12 @@
   <data name="StartMustBeLessThanEnd" xml:space="preserve">
     <value>Початкова точка має бути менша за кінцеву</value>
   </data>
+  <data name="SettingValueIsRequired" xml:space="preserve">
+    <value>Будь ласка, заповніть усі обов'язкові поля</value>
+  </data>
+  <data name="LowerMustBeLessThanUpper" xml:space="preserve">
+    <value>Нижня межа має бути менша за верхню</value>
+  </data>
   <data name="SelectAtLeastOneMethod" xml:space="preserve">
     <value>Будь ласка, оберіть хоча б один метод</value>
   </data>

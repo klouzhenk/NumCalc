@@ -9,7 +9,7 @@ public class InterpolationFormData
     public string? FunctionExpression { get; set; }
     public List<double> XNodes { get; set; } = [];
     public List<double>? YValues { get; set; }
-    public double QueryPoint { get; set; }
+    public double? QueryPoint { get; set; }
 
     public AnalysisMode AnalysisMode { get; set; }
     public InterpolationMethod Method { get; set; }

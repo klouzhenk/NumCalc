@@ -40,6 +40,13 @@ public partial class Differentiation : CalculationPage<Differentiation>
 
             FormData = await _input.GetFormData();
 
+            var (isValid, errorMessage) = FormData.ValidateFormData();
+            if (!isValid)
+            {
+                UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);
+                return;
+            }
+
             if (_mode is AnalysisMode.Single)
             {
                 await DoSingleCalculation();

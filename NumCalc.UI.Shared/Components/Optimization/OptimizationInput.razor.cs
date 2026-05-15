@@ -14,16 +14,16 @@ public partial class OptimizationInput : ComponentBase
     private MathInput? _mathInput;
 
     // 2D methods fields
-    private double _lowerBound;
-    private double _upperBound = 1;
-    private int _points = 100;
-    private double _tolerance = 1e-6;
-    public double Tolerance => _tolerance;
+    private double? _lowerBound;
+    private double? _upperBound = 1;
+    private int? _points = 100;
+    private double? _tolerance = 1e-6;
+    public double? Tolerance => _tolerance;
 
     // Gradient descent fields
     private readonly List<double> _initialPoint = [0.0];
-    private double _learningRate = 0.01;
-    private int _maxIterations = 200;
+    private double? _learningRate = 0.01;
+    private int? _maxIterations = 200;
 
     private void AddVariable() => _initialPoint.Add(0.0);
 
@@ -46,7 +46,7 @@ public partial class OptimizationInput : ComponentBase
             UpperBound = _upperBound,
             Points = _points,
             Tolerance = _tolerance,
-            InitialPoint = [.. _initialPoint],
+            InitialPoint = _initialPoint.Select(v => (double?)v).ToList(),
             LearningRate = _learningRate,
             MaxIterations = _maxIterations,
             Method = Method
@@ -60,7 +60,7 @@ public partial class OptimizationInput : ComponentBase
         _points = data.Points;
         _tolerance = data.Tolerance;
         _initialPoint.Clear();
-        _initialPoint.AddRange(data.InitialPoint);
+        _initialPoint.AddRange(data.InitialPoint.Select(v => v ?? 0));
         _learningRate = data.LearningRate;
         _maxIterations = data.MaxIterations;
         StateHasChanged();

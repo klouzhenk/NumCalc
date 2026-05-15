@@ -25,8 +25,8 @@ public static class EquationSystemsUtils
             IterationFunctions = formData.IterationFunctions.ToList(),
             Variables = formData.Variables.ToList(),
             InitialGuess = formData.InitialGuess.ToList(),
-            Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations
+            Tolerance = formData.Tolerance ?? 1e-6,
+            MaxIterations = formData.MaxIterations ?? 500
         };
     }
     
@@ -74,7 +74,7 @@ public static class EquationSystemsUtils
             inputs[$"Iteration Function {i + 1}"] = formData.IterationFunctions.ElementAt(i);
         inputs["Variables"] = string.Join(", ", formData.Variables);
         inputs["Initial Guess"] = string.Join(", ", formData.InitialGuess);
-        inputs["Tolerance"] = formData.Tolerance.ToString("G");
+        inputs["Tolerance"] = (formData.Tolerance ?? 1e-6).ToString("G");
 
         return new SaveCalculationRecordRequest
         {
@@ -150,8 +150,8 @@ public static class EquationSystemsUtils
             IterationFunctions = formData.IterationFunctions.ToList(),
             Variables = formData.Variables.ToList(),
             InitialGuess = formData.InitialGuess.ToList(),
-            Tolerance = formData.Tolerance,
-            MaxIterations = formData.MaxIterations,
+            Tolerance = formData.Tolerance ?? 1e-6,
+            MaxIterations = formData.MaxIterations ?? 500,
             Methods = nonLinearBenchmarkMethods
         };
     }

@@ -27,6 +27,11 @@ public static class RootFindingUtils
         List<RootFindingMethod> benchmarkMethods,
         IJSRuntime jsRuntime)
     {
+        if (!formData.StartPoint.HasValue 
+            || !formData.EndPoint.HasValue 
+            || !formData.Tolerance.HasValue)
+            return (false, "SettingValueIsRequired");
+        
         if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
             return (false, "ExpressionRequired");
 
@@ -54,9 +59,9 @@ public static class RootFindingUtils
         return new RootFindingRequest
         {
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
-            StartRange = formData.StartPoint,
-            EndRange = formData.EndPoint,
-            Error = formData.Tolerance
+            StartRange = formData.StartPoint ?? 0,
+            EndRange = formData.EndPoint ?? 0,
+            Error = formData.Tolerance ?? 0
         };
     }
     
@@ -65,9 +70,9 @@ public static class RootFindingUtils
         return new RootFindingComparisonRequest
         {
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
-            StartRange = formData.StartPoint,
-            EndRange = formData.EndPoint,
-            Tolerance = formData.Tolerance,
+            StartRange = formData.StartPoint ?? 0,
+            EndRange = formData.EndPoint ?? 0,
+            Tolerance = formData.Tolerance ?? 0,
             Methods = benchmarkMethods
         };
     }
@@ -81,9 +86,9 @@ public static class RootFindingUtils
             InputsJson = JsonSerializer.Serialize(new Dictionary<string, string>
             {
                 ["Expression"] = formData.FunctionExpression ?? string.Empty,
-                ["Start"] = formData.StartPoint.ToString("G"),
-                ["End"] = formData.EndPoint.ToString("G"),
-                ["Tolerance"] = formData.Tolerance.ToString("G")
+                ["Start"] = formData.StartPoint.HasValue ? formData.StartPoint.Value.ToString("G") : "0",
+                ["End"] = formData.EndPoint.HasValue ? formData.EndPoint.Value.ToString("G") : "0",
+                ["Tolerance"] = formData.Tolerance.HasValue ? formData.Tolerance.Value.ToString("G") : "0"
             }),
             ResultSummary = result.Root.HasValue
                 ? $"Root: {result.Root.Value.FormatResult(formData.Tolerance)}"
@@ -175,12 +180,12 @@ public static class RootFindingUtils
         {
             ["Method"] = formData.Method.ToString(),
             ["Expression"] = formData.FunctionExpression ?? string.Empty,
-            [isNewton ? "Initial Guess" : "Start"] = formData.StartPoint.ToString("G"),
+            [isNewton ? "Initial Guess" : "Start"] = formData.StartPoint.HasValue ? formData.StartPoint.Value.ToString("G") : "0",
         };
         
         if (!isNewton) 
-            inputs["End"] = formData.EndPoint.ToString("G");
-        inputs["Tolerance"] = formData.Tolerance.ToString("G");
+            inputs["End"] = formData.EndPoint.HasValue ? formData.EndPoint.Value.ToString("G") : "0";
+        inputs["Tolerance"] = formData.Tolerance.HasValue ? formData.Tolerance.Value.ToString("G") : "0";
 
         return inputs;
     }

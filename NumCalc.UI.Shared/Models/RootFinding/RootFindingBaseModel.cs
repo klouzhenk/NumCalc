@@ -9,13 +9,13 @@ public abstract class RootFindingBaseModel : IValidatableObject
     public string? FunctionExpression { get; set; }
     
     [Required]
-    public double StartPoint { get; set; }
+    public double? StartPoint { get; set; }
     
     [Required]
-    public double EndPoint { get; set; }
+    public double? EndPoint { get; set; }
     
     [Range(1e-10, 0.1, ErrorMessageResourceType = typeof(Localization), ErrorMessageResourceName = "ToleranceMustBeReasonable")]
-    public double Tolerance { get; set; } = 1e-4;
+    public double? Tolerance { get; set; } = 1e-4;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

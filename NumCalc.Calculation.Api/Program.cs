@@ -57,7 +57,8 @@ builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 builder.Services.AddScoped<IOptimizationService, OptimizationService>();
 builder.Services.AddScoped<IOdeService, OdeService>();
 builder.Services.AddScoped<IOcrService, OcrService>();
-builder.Services.AddHttpClient<IOcrProvider, GeminiOcrProvider>();
+builder.Services.AddHttpClient<IOcrProvider, GeminiOcrProvider>()
+    .AddStandardResilienceHandler();
 builder.Services.AddHostedService<PythonWarmingUpService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

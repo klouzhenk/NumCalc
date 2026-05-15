@@ -13,7 +13,23 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 public static class IntegrationUtils
 {
     public const string ChartContainerId = "chart--integration";
-    
+
+    public static (bool isValid, string? errorMessage) ValidateFormData(this IntegrationFormData formData)
+    {
+        if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            return (false, "ExpressionRequired");
+
+        if (!formData.LowerBound.HasValue
+            || !formData.UpperBound.HasValue
+            || !formData.Intervals.HasValue)
+            return (false, "SettingValueIsRequired");
+
+        if (formData.LowerBound >= formData.UpperBound)
+            return (false, "LowerMustBeLessThanUpper");
+
+        return (true, null);
+    }
+
     public static IntegrationComparisonRequest GetComparisonRequest(
         this IntegrationFormData formData,
         List<IntegrationComparisonMethod> benchmarkMethods)
@@ -21,13 +37,13 @@ public static class IntegrationUtils
         return new IntegrationComparisonRequest
         {
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
-            LowerBound = formData.LowerBound,
-            UpperBound = formData.UpperBound,
-            Intervals = formData.Intervals,
+            LowerBound = formData.LowerBound ?? 0,
+            UpperBound = formData.UpperBound ?? 0,
+            Intervals = formData.Intervals ?? 100,
             Methods = benchmarkMethods
         };
     }
-    
+
     public static IntegrationRequest GetSingleCalculationRequest(
         this IntegrationFormData formData,
         IntegrationMethod method,
@@ -37,9 +53,9 @@ public static class IntegrationUtils
         {
             Mode = IntegrationInputMode.Function,
             FunctionExpression = formData.FunctionExpression,
-            LowerBound = formData.LowerBound,
-            UpperBound = formData.UpperBound,
-            Intervals = formData.Intervals,
+            LowerBound = formData.LowerBound ?? 0,
+            UpperBound = formData.UpperBound ?? 0,
+            Intervals = formData.Intervals ?? 100,
             RectangleVariant = method is IntegrationMethod.Rectangle ? variant : null
         };
     }
@@ -70,9 +86,9 @@ public static class IntegrationUtils
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = method.ToString(),
-            ["Lower Bound"] = formData.LowerBound.ToString("G"),
-            ["Upper Bound"] = formData.UpperBound.ToString("G"),
-            ["Intervals"] = formData.Intervals.ToString()
+            ["Lower Bound"] = (formData.LowerBound ?? 0).ToString("G"),
+            ["Upper Bound"] = (formData.UpperBound ?? 0).ToString("G"),
+            ["Intervals"] = (formData.Intervals ?? 100).ToString()
         };
         if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
             inputs["Expression"] = formData.FunctionExpression;
@@ -97,8 +113,8 @@ public static class IntegrationUtils
                 PlotLines =
                 [
                     ChartUtils.CreateZeroLine(),
-                    ChartUtils.CreateConstant(formData.LowerBound),
-                    ChartUtils.CreateConstant(formData.UpperBound)
+                    ChartUtils.CreateConstant(formData.LowerBound ?? 0),
+                    ChartUtils.CreateConstant(formData.UpperBound ?? 0)
                 ]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
@@ -163,8 +179,8 @@ public static class IntegrationUtils
                 PlotLines =
                 [
                     ChartUtils.CreateZeroLine(),
-                    ChartUtils.CreateConstant(formData.LowerBound),
-                    ChartUtils.CreateConstant(formData.UpperBound)
+                    ChartUtils.CreateConstant(formData.LowerBound ?? 0),
+                    ChartUtils.CreateConstant(formData.UpperBound ?? 0)
                 ]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },

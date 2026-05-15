@@ -16,7 +16,24 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 public static class OdeUtils
 {
     public const string ChartContainerId = "chart--ode";
-    
+
+    public static (bool isValid, string? errorMessage) ValidateFormData(this OdeFormData formData)
+    {
+        if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            return (false, "ExpressionRequired");
+
+        if (!formData.InitialX.HasValue
+            || !formData.InitialY.HasValue
+            || !formData.TargetX.HasValue
+            || !formData.StepSize.HasValue)
+            return (false, "SettingValueIsRequired");
+
+        if (formData.StepSize <= 0)
+            return (false, "SettingValueIsRequired");
+
+        return (true, null);
+    }
+
     public static OdeComparisonRequest GetComparisonRequest(
         this OdeFormData formData,
         List<OdeMethod> benchmarkMethods)
@@ -24,23 +41,23 @@ public static class OdeUtils
         return new OdeComparisonRequest
         {
             FunctionExpression = formData.FunctionExpression,
-            InitialX = formData.InitialX,
-            InitialY = formData.InitialY,
-            TargetX = formData.TargetX,
-            StepSize = formData.StepSize,
+            InitialX = formData.InitialX ?? 0,
+            InitialY = formData.InitialY ?? 0,
+            TargetX = formData.TargetX ?? 0,
+            StepSize = formData.StepSize ?? 0.1,
             Methods = benchmarkMethods
         };
     }
-    
+
     public static OdeRequest GetSingleCalculationRequest(this OdeFormData formData)
     {
         return new OdeRequest
         {
             FunctionExpression = formData.FunctionExpression,
-            InitialX = formData.InitialX,
-            InitialY = formData.InitialY,
-            TargetX = formData.TargetX,
-            StepSize = formData.StepSize,
+            InitialX = formData.InitialX ?? 0,
+            InitialY = formData.InitialY ?? 0,
+            TargetX = formData.TargetX ?? 0,
+            StepSize = formData.StepSize ?? 0.1,
             PicardOrder = formData.PicardOrder ?? 4
         };
     }
@@ -68,10 +85,10 @@ public static class OdeUtils
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = method.ToString(),
-            ["x₀"] = formData.InitialX.ToString("G"),
-            ["y₀"] = formData.InitialY.ToString("G"),
-            ["Target x"] = formData.TargetX.ToString("G"),
-            ["Step Size h"] = formData.StepSize.ToString("G")
+            ["x₀"] = (formData.InitialX ?? 0).ToString("G"),
+            ["y₀"] = (formData.InitialY ?? 0).ToString("G"),
+            ["Target x"] = (formData.TargetX ?? 0).ToString("G"),
+            ["Step Size h"] = (formData.StepSize ?? 0.1).ToString("G")
         };
         if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
             inputs["f(x, y)"] = formData.FunctionExpression;
@@ -99,7 +116,7 @@ public static class OdeUtils
         {
             xAxisPlotLines.Add(new PlotLine
             {
-                Value = formData.InitialX,
+                Value = formData.InitialX ?? 0,
                 Color = ColorUtils.GetColor(Color.SuccessLight),
                 Width = 1,
                 DashStyle = LineStyle.Dash

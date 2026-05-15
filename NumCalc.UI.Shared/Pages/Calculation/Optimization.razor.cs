@@ -33,6 +33,13 @@ public partial class Optimization : CalculationPage<Optimization>
         if (_input is null) return;
 
         var formData = await _input.GetFormData();
+        
+        var (isValid, errorMessage) = await formData.ValidateFormData(JsRuntime);
+        if (!isValid)
+        {
+            UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);
+            return;
+        }
 
         if (_mode is AnalysisMode.Single)
         {

@@ -10,9 +10,9 @@ public partial class IntegrationInput : ComponentBase
     [Inject] private IStringLocalizer<Localization> Localizer { get; set; } = null!;
     
     private MathInput? _mathInput;
-    private double _lowerBound;
-    private double _upperBound = 1;
-    private int _intervals = 100;
+    private double? _lowerBound;
+    private double? _upperBound = 1;
+    private int? _intervals = 100;
 
     public async Task<IntegrationFormData> GetFormData()
     {

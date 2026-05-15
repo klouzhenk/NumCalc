@@ -13,14 +13,16 @@ public partial class OdeInput : ComponentBase
 
     private MathInput? _mathInput;
 
-    private double _initialX;
-    private double _initialY;
-    private double _targetX = 1;
-    private double _stepSize = 0.1;
+    private double? _initialX;
+    private double? _initialY;
+    private double? _targetX = 1;
+    private double? _stepSize = 0.1;
     private int _picardOrder = 4;
 
     private int ComputedStepCount =>
-        _stepSize > 0 ? (int)(Math.Abs(_targetX - _initialX) / _stepSize) : 0;
+        _stepSize is > 0 && _initialX.HasValue && _targetX.HasValue
+            ? (int)(Math.Abs(_targetX.Value - _initialX.Value) / _stepSize.Value)
+            : 0;
 
     public async Task<OdeFormData> GetFormData()
     {

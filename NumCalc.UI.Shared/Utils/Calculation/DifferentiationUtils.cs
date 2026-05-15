@@ -16,7 +16,19 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 public static class DifferentiationUtils
 {
     public const string ChartContainerId = "chart--differentiation";
-    
+
+    public static (bool isValid, string? errorMessage) ValidateFormData(this DifferentiationFormData formData)
+    {
+        if (formData.Mode is DifferentiationInputMode.Function
+            && string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            return (false, "ExpressionRequired");
+
+        if (!formData.QueryPoint.HasValue || !formData.StepSize.HasValue)
+            return (false, "SettingValueIsRequired");
+
+        return (true, null);
+    }
+
     public static DifferentiationComparisonRequest GetComparisonRequest(
         this DifferentiationFormData formData,
         List<DifferentiationComparisonMethod> benchmarkMethods)
@@ -25,13 +37,13 @@ public static class DifferentiationUtils
         {
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
             XNodes = formData.XNodes,
-            QueryPoint = formData.QueryPoint,
-            StepSize = formData.StepSize,
+            QueryPoint = formData.QueryPoint ?? 0,
+            StepSize = formData.StepSize ?? 0.001,
             DerivativeOrder = formData.DerivativeOrder,
             Methods = benchmarkMethods
         };
     }
-    
+
     public static DifferentiationRequest GetSingleCalculationRequest(
         this DifferentiationFormData formData)
     {
@@ -41,8 +53,8 @@ public static class DifferentiationUtils
             FunctionExpression = formData.FunctionExpression,
             XNodes = formData.XNodes,
             YValues = formData.YValues,
-            QueryPoint = formData.QueryPoint,
-            StepSize = formData.StepSize,
+            QueryPoint = formData.QueryPoint ?? 0,
+            StepSize = formData.StepSize ?? 0.001,
             DerivativeOrder = formData.DerivativeOrder
         };
     }
@@ -78,14 +90,14 @@ public static class DifferentiationUtils
         var inputs = new Dictionary<string, string>
         {
             ["Method"] = methodLabel,
-            ["Query Point"] = formData.QueryPoint.ToString("G"),
+            ["Query Point"] = (formData.QueryPoint ?? 0).ToString("G"),
             ["Derivative Order"] = formData.DerivativeOrder.ToString()
         };
         if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
             inputs["Expression"] = formData.FunctionExpression;
-        
+
         if (method is DifferentiationMethod.FiniteDifferences)
-            inputs["Step Size"] = formData.StepSize.ToString("G");
+            inputs["Step Size"] = (formData.StepSize ?? 0.001).ToString("G");
 
         return (inputs, methodLabel);
     }
@@ -103,9 +115,10 @@ public static class DifferentiationUtils
         if (chartData is not { Count: > 0 })
             return null;
 
+        var queryPoint = formData.QueryPoint ?? 0;
         var xMin = chartData.Min(p => p[0]);
         var xMax = chartData.Max(p => p[0]);
-        var nearest = chartData.MinBy(p => Math.Abs(p[0] - formData.QueryPoint))!;
+        var nearest = chartData.MinBy(p => Math.Abs(p[0] - queryPoint))!;
         var fAtXStar = nearest[1];
 
         var series = new List<ChartSeries>
@@ -132,8 +145,8 @@ public static class DifferentiationUtils
                     Name = $"Tangent at x* ({localizer[result.Method.ToString()]})",
                     Data =
                     [
-                        [xMin, fAtXStar + slope * (xMin - formData.QueryPoint)],
-                        [xMax, fAtXStar + slope * (xMax - formData.QueryPoint)]
+                        [xMin, fAtXStar + slope * (xMin - queryPoint)],
+                        [xMax, fAtXStar + slope * (xMax - queryPoint)]
                     ],
                     Color = ColorUtils.GetSeriesColor((int)result.Method),
                     LineWidth = 1,
@@ -147,7 +160,7 @@ public static class DifferentiationUtils
         {
             Name = "x*",
             Type = ChartType.Scatter,
-            Data = [[formData.QueryPoint, fAtXStar]],
+            Data = [[queryPoint, fAtXStar]],
             Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
             IsVisible = true,
             Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
@@ -162,7 +175,7 @@ public static class DifferentiationUtils
             XAxis = new ChartAxis
             {
                 Title = "x",
-                PlotLines = [ChartUtils.CreateZeroLine(), ChartUtils.CreateConstant(formData.QueryPoint)]
+                PlotLines = [ChartUtils.CreateZeroLine(), ChartUtils.CreateConstant(queryPoint)]
             },
             YAxis = new ChartAxis { Title = "f(x)", PlotLines = [ChartUtils.CreateZeroLine()] },
             Series = series
@@ -197,9 +210,10 @@ public static class DifferentiationUtils
         DifferentiationFormData formData,
         DifferentiationResponse result)
     {
+        var queryPoint = formData.QueryPoint ?? 0;
         var xMin = chartData.Min(p => p[0]);
         var xMax = chartData.Max(p => p[0]);
-        var nearest = chartData.MinBy(p => Math.Abs(p[0] - formData.QueryPoint));
+        var nearest = chartData.MinBy(p => Math.Abs(p[0] - queryPoint));
         var fAtXStar = nearest![1];
         
         var series = new List<ChartSeries>
@@ -221,8 +235,8 @@ public static class DifferentiationUtils
                 Name = "Tangent at x*",
                 Data =
                 [
-                    [xMin, fAtXStar + result.DerivativeValue * (xMin - formData.QueryPoint)],
-                    [xMax, fAtXStar + result.DerivativeValue * (xMax - formData.QueryPoint)]
+                    [xMin, fAtXStar + result.DerivativeValue * (xMin - queryPoint)],
+                    [xMax, fAtXStar + result.DerivativeValue * (xMax - queryPoint)]
                 ],
                 Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 LineWidth = 1,
@@ -234,7 +248,7 @@ public static class DifferentiationUtils
         {
             Name = "x*",
             Type = ChartType.Scatter,
-            Data = [[formData.QueryPoint, fAtXStar]],
+            Data = [[queryPoint, fAtXStar]],
             Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
             IsVisible = true,
             Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }

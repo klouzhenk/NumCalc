@@ -12,7 +12,7 @@ public partial class InterpolationInput : ComponentBase
 
     private MathInput? _mathInput;
     private NodeTable? _nodeTable;
-    private double _queryPoint;
+    private double? _queryPoint;
     private InterpolationInputMode _mode = InterpolationInputMode.Function;
 
     public async Task<InterpolationFormData> GetFormData()

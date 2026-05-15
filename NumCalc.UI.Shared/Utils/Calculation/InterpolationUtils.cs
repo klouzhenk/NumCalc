@@ -16,7 +16,22 @@ namespace NumCalc.UI.Shared.Utils.Calculation;
 public static class InterpolationUtils
 {
     public const string ChartContainerId = "chart--interpolation";
-    
+
+    public static (bool isValid, string? errorMessage) ValidateFormData(this InterpolationFormData formData)
+    {
+        if (formData.Mode is InterpolationInputMode.Function
+            && string.IsNullOrWhiteSpace(formData.FunctionExpression))
+            return (false, "ExpressionRequired");
+
+        if (!formData.QueryPoint.HasValue)
+            return (false, "SettingValueIsRequired");
+
+        if (formData.XNodes is not { Count: >= 2 })
+            return (false, "SettingValueIsRequired");
+
+        return (true, null);
+    }
+
     public static InterpolationRequest GetSingleCalculationRequest(this InterpolationFormData formData)
     {
         return new InterpolationRequest
@@ -25,7 +40,7 @@ public static class InterpolationUtils
             FunctionExpression = formData.FunctionExpression,
             XNodes = formData.XNodes,
             YValues = formData.YValues,
-            QueryPoint = formData.QueryPoint
+            QueryPoint = formData.QueryPoint ?? 0
         };
     }
 
@@ -38,7 +53,7 @@ public static class InterpolationUtils
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
             XNodes = formData.XNodes,
             YValues = formData.YValues,
-            QueryPoint = formData.QueryPoint,
+            QueryPoint = formData.QueryPoint ?? 0,
             Methods = benchmarkMethods
         };
     }
@@ -68,7 +83,7 @@ public static class InterpolationUtils
         {
             ["Method"] = method.ToString(),
             ["Mode"] = formData.Mode.ToString(),
-            ["Query Point"] = formData.QueryPoint.ToString("G")
+            ["Query Point"] = (formData.QueryPoint ?? 0).ToString("G")
         };
         if (!string.IsNullOrWhiteSpace(formData.FunctionExpression))
             inputs["Expression"] = formData.FunctionExpression;
@@ -117,7 +132,7 @@ public static class InterpolationUtils
                 Name = $"x* ({localizer[result.Method.ToString()]})",
                 Type = ChartType.Scatter,
                 Data = result.InterpolatedValue.HasValue
-                    ? [[formData.QueryPoint, result.InterpolatedValue.Value]]
+                    ? [[formData.QueryPoint ?? 0, result.InterpolatedValue.Value]]
                     : null,
                 Color = ColorUtils.GetSeriesColor((int)result.Method),
                 IsVisible = true,
@@ -129,8 +144,9 @@ public static class InterpolationUtils
         double? xMin = null, xMax = null;
         if (formData.XNodes is { Count: > 0 })
         {
-            xMin = Math.Min(formData.XNodes.Min(), formData.QueryPoint);
-            xMax = Math.Max(formData.XNodes.Max(), formData.QueryPoint);
+            var queryPoint = formData.QueryPoint ?? 0;
+            xMin = Math.Min(formData.XNodes.Min(), queryPoint);
+            xMax = Math.Max(formData.XNodes.Max(), queryPoint);
         }
 
         return new Chart
@@ -198,7 +214,7 @@ public static class InterpolationUtils
                 {
                     Name = "x*",
                     Type = ChartType.Scatter,
-                    Data = [[formData.QueryPoint, result.InterpolatedValue]],
+                    Data = [[formData.QueryPoint ?? 0, result.InterpolatedValue]],
                     Color = ColorUtils.GetColor(Color.PrimaryDark),
                     IsVisible = true,
                     Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }

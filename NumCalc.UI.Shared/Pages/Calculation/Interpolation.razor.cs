@@ -34,6 +34,13 @@ public partial class Interpolation : CalculationPage<Interpolation>
             if (_input is null) return;
             var formData = await _input.GetFormData();
 
+            var (isValid, errorMessage) = formData.ValidateFormData();
+            if (!isValid)
+            {
+                UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);
+                return;
+            }
+
             if (_analysisMode is AnalysisMode.Single)
             {
                 await DoSingleCalculation(formData);
