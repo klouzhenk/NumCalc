@@ -66,4 +66,7 @@
       <ProjectReference Include="..\NumCalc.UI.Shared\NumCalc.UI.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" Version="1.5.3" />
+    </ItemGroup>
 </Project>

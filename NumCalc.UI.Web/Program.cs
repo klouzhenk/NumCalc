@@ -1,14 +1,26 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
-using NumCalc.UI.Shared.HttpServices.Implementations;
-using NumCalc.UI.Shared.HttpServices.Interfaces;
+using NumCalc.UI.Shared.Extensions;
 using NumCalc.UI.Shared.Layouts;
-using NumCalc.UI.Shared.Services.Implementations;
 using NumCalc.UI.Shared.Services.Interfaces;
 using WebUI.Components;
-using NumCalc.UI.Shared.Extensions;
 using WebUI.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var dpBlobConnection = builder.Configuration["DataProtection:BlobConnectionString"];
+var dataProtection = builder.Services.AddDataProtection()
+    .SetApplicationName("NumCalc.UI.Web");
+
+if (!string.IsNullOrWhiteSpace(dpBlobConnection))
+{
+    // Persist DP keys to Blob Storage so they survive container restarts.
+    // If unset (local dev), falls back to the default per-instance ephemeral keys.
+    dataProtection.PersistKeysToAzureBlobStorage(
+        dpBlobConnection,
+        containerName: "dataprotection-keys",
+        blobName: "numcalc-ui-web-keys.xml");
+}
 
 builder.Services.AddScoped<ICultureService, CultureService>();
 builder.Services.AddScoped<ITokenStorage, ProtectedTokenStorage>();
