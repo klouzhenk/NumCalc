@@ -15,8 +15,8 @@
         right: 0;
         bottom: 0;
         z-index: 90;
-        height: var(--bottom-nav-height);
-        padding: 0 var(--dimension-xl);
+        height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+        padding: 0 var(--dimension-xl) env(safe-area-inset-bottom, 0px);
         background-color: var(--layout-background);
         box-shadow: 0 -2px 12px var(--gray-ultra-light-color);
     }
@@ -71,7 +71,7 @@
     }
 
     main {
-        padding-bottom: var(--bottom-nav-height);
+        padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
     }
 }
 

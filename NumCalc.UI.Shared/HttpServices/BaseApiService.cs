@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using NumCalc.UI.Shared.Exceptions;
 
 namespace NumCalc.UI.Shared.HttpServices;
@@ -50,8 +50,7 @@ public abstract class BaseApiService(HttpClient httpClient)
     {
         if (queryParams is { Count: > 0 })
         {
-            var queryString = QueryString.Create(queryParams!);
-            endpoint += queryString.Value;
+            endpoint = QueryHelpers.AddQueryString(endpoint, queryParams!);
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
@@ -73,8 +72,7 @@ public abstract class BaseApiService(HttpClient httpClient)
     {
         if (queryParams is { Count: > 0 })
         {
-            var queryString = QueryString.Create(queryParams!);
-            endpoint += queryString.Value;
+            endpoint = QueryHelpers.AddQueryString(endpoint, queryParams!);
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);

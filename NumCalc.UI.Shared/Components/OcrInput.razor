@@ -7,16 +7,11 @@
            Subtitle="UploadImageWithYourEquation"
            CssClass="modal--image-upload">
     <BodyContent>
+        @* TODO: Re-introduce "Take Photo" option once mobile camera capture is wired up
+           via a custom Android WebChromeClient (or MAUI MediaPicker JS interop). *@
         <CustomInputFile IconName="image"
                          OnFileUpload="UploadImage"
                          Text="UploadImage"/>
-        
-        <Divider Text="@Localizer["Or"]"/>
-        
-        <CustomInputFile IconName="camera"
-                         OnFileUpload="UploadImage"
-                         Text="TakePhoto"
-                         CanTakePhoto="true"/>
     </BodyContent>
 </BaseModal>
 

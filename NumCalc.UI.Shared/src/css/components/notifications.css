@@ -7,6 +7,10 @@
     flex-direction: column;
     gap: var(--dimension-m);
     pointer-events: none;
+
+    @media (--tablet) {
+        bottom: calc(var(--bottom-nav-height) + var(--dimension-xl) + env(safe-area-inset-bottom, 0px));
+    }
 }
 
 .toast-message {

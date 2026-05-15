@@ -18,7 +18,7 @@ public class PdfExportService : IPdfExportService
     private static readonly string ColorTextMuted     = ColorUtils.GetHexColor(Color.Gray);
     private static readonly string ColorFooter        = ColorUtils.GetHexColor(Color.GrayLight);
 
-    static PdfExportService()
+    public static void ConfigureQuestPdfLicense()
     {
         QuestPDF.Settings.License = LicenseType.Community;
     }

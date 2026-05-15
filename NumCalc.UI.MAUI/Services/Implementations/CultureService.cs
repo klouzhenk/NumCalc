@@ -1,14 +1,15 @@
-﻿using System.Globalization;
+using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using NumCalc.UI.Shared.Services.Interfaces;
 
 namespace NumCalc.UI.MAUI.Services.Implementations;
 
-public class CultureService : ICultureService
+public class CultureService(NavigationManager navigationManager) : ICultureService
 {
     private const string PreferenceKey = "app_culture";
-    
+
     public string CurrentCulture => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-    
+
     public Task SetCulture(string culture)
     {
         Preferences.Set(PreferenceKey, culture);
@@ -16,7 +17,9 @@ public class CultureService : ICultureService
         var cultureInfo = new CultureInfo(culture);
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-        
+
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+
         return Task.CompletedTask;
     }
 }

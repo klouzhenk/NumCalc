@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>NumCalc</title>
+    <base href="/" />
+
+    <link href="_content/NumCalc.UI.Shared/dist/css/styles.css" rel="stylesheet" />
+    <link href="_content/NumCalc.UI.Shared/dist/css/main.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="_content/NumCalc.UI.Shared/images/favicon.ico" />
+    <link href="_content/Cropper.Blazor/cropper.min.css" rel="stylesheet" />
+
+    <style>
+        /* Reserve top space equal to the device's status bar height so the
+           WebView's content doesn't render under the (now transparent) bar.
+           Background of <html> shows through the status bar, picking up the
+           theme via [data-theme='dark']. */
+        html, body {
+            padding-top: env(safe-area-inset-top, 0);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        #blazor-error-ui {
+            display: none;
+            position: fixed;
+            bottom: var(--dimension-xl);
+            right: var(--dimension-xl);
+            min-width: 300px;
+            max-width: 400px;
+            padding: var(--dimension-l);
+            border-radius: var(--border-radius-m);
+            background: var(--white-color);
+            color: var(--black-color);
+            border-left: 5px solid var(--danger-color);
+            box-shadow: 0 4px 12px rgba(var(--black-rgb), 0.15);
+            z-index: 99999;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        #blazor-error-ui .reload {
+            display: inline-block;
+            margin-left: var(--dimension-m);
+            color: var(--danger-color);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #blazor-error-ui .dismiss {
+            position: absolute;
+            top: var(--dimension-m);
+            right: var(--dimension-l);
+            cursor: pointer;
+            color: color-mix(in srgb, var(--black-color), transparent 60%);
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        #blazor-error-ui .dismiss:hover {
+            color: var(--black-color);
+        }
+    </style>
+
+    <script>
+        // MAUI BlazorWebView starts Blazor before ES modules finish loading,
+        // so Blazor's first JS interop call resolves and may CACHE the function
+        // reference it finds at boot. If we hand it a no-op stub, every later
+        // call goes to that stub even after main.js installs the real impl.
+        // Solution: the stub does the real work itself. main.js will overwrite
+        // these objects, but any cached references still behave correctly.
+        window.NumCalc = {};
+        window.ImageHelper = {};
+        window.ThemeHelper = {};
+        window.PdfHelper = {};
+        window.TooltipHelper = {};
+        window.LatexHelper = {};
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div class="loader-overlay">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script src="_content/Cropper.Blazor/cropper.min.js"></script>
+    <script type="module" src="_content/NumCalc.UI.Shared/dist/js/main.js"></script>
+</body>
+</html>

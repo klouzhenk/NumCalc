@@ -1,6 +1,6 @@
 ﻿.hamburger {
     position: fixed;
-    top: 65px;
+    top: calc(65px + env(safe-area-inset-top, 0px));
     transform: translate(-50%, -50%);
     right: 40px;
     z-index: 110;
@@ -70,7 +70,7 @@
 
 .hamburger-menu {
     position: fixed;
-    top: calc(40px + 40px + 60px);
+    top: calc(40px + 40px + 60px + env(safe-area-inset-top, 0px));
     right: 0;
     max-height: 80dvh;
     width: 260px;
