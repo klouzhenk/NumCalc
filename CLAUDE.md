@@ -19,32 +19,39 @@ dotnet run --project NumCalc.Calculation.Api
 dotnet run --project NumCalc.UI.Web
 ```
 
-**Prerequisites:** .NET 9.0 SDK, Python with `sympy`, `numpy`, `scipy`, `mpmath` (see `requirements.txt`). A `.venv/` virtual environment must exist at the repo root for CSnakes to work.
+**Prerequisites:** .NET 9.0 SDK. Python dependencies (`sympy`, `numpy`, `scipy`, `mpmath`, `latex2sympy2`) are listed in `NumCalc.Calculation.Business/Scripts/requirements.txt`. CSnakes uses `.FromRedistributable()` + `.WithPipInstaller(...)`, so it auto-downloads a portable Python and installs the packages into `.venv/` (at repo root locally, `/app/.venv` in Docker) on first run — no manual `pip install` needed.
+
+**Docker:** `NumCalc.Calculation.Api` and `NumCalc.UI.Web` each ship a `Dockerfile`. CI/CD publishes both images automatically.
 
 There are no test projects yet.
 
 ## Architecture
 
-The solution has 7 projects organized in three layers:
+The solution has 11 projects:
 
 ```
-NumCalc.UI.Web (Blazor Server)
-    └── HTTP → NumCalc.Calculation.Api (ASP.NET Core REST API)
-                    └── CSnakes → Scripts/ (Python numerical implementations)
+NumCalc.UI.Web (Blazor Server)       ┐
+NumCalc.UI.MAUI (Blazor Hybrid)      ┴── share UI from NumCalc.UI.Shared
+    └── HTTP → NumCalc.Calculation.Api (ASP.NET Core REST API — thin controller layer)
+                    └── NumCalc.Calculation.Business (services, hosted services, Python scripts)
+                            └── CSnakes → Scripts/ (Python numerical implementations)
+    └── HTTP → NumCalc.User.API (auth + user data)
+                    └── NumCalc.User.Infrastructure → NumCalc.User.Application → NumCalc.User.Domain
 
-NumCalc.Shared          — DTOs and contracts shared across all projects
-NumCalc.UI.Shared       — Reusable Blazor components and HTTP service abstractions
-NumCalc.UI.MAUI         — Mobile UI (in progress)
-NumCalc.User.API        — Auth (register/login/password-reset), backed by EF Core + SQL Server
-NumCalc.Core            — Minimal, mostly unused
+NumCalc.Shared              — DTOs and contracts shared across all projects
+NumCalc.UI.Shared           — All Blazor pages, components, services, JS/CSS, localization
+NumCalc.Calculation.Business — Calculation services, Python scripts, hosted warmup, entities
+NumCalc.Core                — Minimal, mostly unused
 ```
 
 ### Calculation API (`NumCalc.Calculation.Api`)
 
+Thin controller layer. Holds only `Controllers/`, `Middlewares/`, and `Program.cs`. All business logic, services, Python scripts, hosted services, and DTO entities live in `NumCalc.Calculation.Business`.
+
 - **Controllers:** `RootFindingController` (5 methods + comparison), `EquationsSystemsController` (Cramer, Gaussian, Fixed-point, Seidel + linear-comparison + nonlinear-comparison), `InterpolationController` (Newton, Lagrange, Spline + comparison), `DifferentiationController` (finite-diff via `?variant=` query param, Lagrange + comparison), `IntegrationController` (rectangle, trapezoid, Simpson + comparison), `OptimizationController` (uniform-search, golden-section, gradient-descent + comparison), `OdeController` (Euler, Euler Improved, RK2, RK4, Picard + comparison), `OcrController` (recognize endpoint, Gemini provider via `IOcrProvider`)
-- **Services:** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes. `IOcrService` orchestrates OCR (parsing + LaTeX cleanup) and delegates the actual recognition to `IOcrProvider` (currently `GeminiOcrProvider`).
+- **Services (in `NumCalc.Calculation.Business/Services/`):** `IRootFindingService` / `IEquationsSystemService` / `IInterpolationService` / `IDifferentiationService` / `IIntegrationService` / `IOptimizationService` / `IOdeService` — call into Python via CSnakes. `IOcrService` orchestrates OCR (parsing + LaTeX cleanup) and delegates the actual recognition to `IOcrProvider` (currently `GeminiOcrProvider`). Gemini client registered via `AddHttpClient` with `AddStandardResilienceHandler()` for retries.
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging
-- **Startup:** `PythonWarmupService` (IHostedService) pre-loads the Python runtime to avoid first-call latency
+- **Startup:** `PythonWarmingUpService` (IHostedService, lives in `NumCalc.Calculation.Business/HostedServices/`) pre-loads the Python runtime to avoid first-call latency
 - Swagger/OpenAPI enabled in development at `/swagger`
 
 ### User API (`NumCalc.User.API`)
@@ -60,24 +67,24 @@ NumCalc.Core            — Minimal, mostly unused
 - **Middleware:** `GlobalExceptionHandler` (RFC 7807 Problem Details), Serilog request logging.
 - Swagger/OpenAPI enabled in development at `/swagger`.
 
-### Python Scripts (`Scripts/`)
+### Python Scripts (`NumCalc.Calculation.Business/Scripts/`)
 
 Numerical logic lives entirely in Python. C# services call these scripts through CSnakes Runtime; Python returns JSON strings that C# deserializes.
 
 ```
-Scripts/
+NumCalc.Calculation.Business/Scripts/
   equations/          — Root finding algorithms
     dichotomy.py      — Bisection method
     newton.py         — Newton-Raphson (tangent)
     simple_iterations.py
     secant.py
     combined.py       — Brent's hybrid method
-  equation_systems/
+  eq_systems/
     cramer.py         — Cramer's rule for linear systems
     gaussian.py       — Gaussian elimination with partial pivoting
     fixed_point.py    — Fixed-point (Jacobi-style) iteration for non-linear systems
     seidel.py         — Gauss-Seidel iteration for non-linear systems
-  interpolation/
+  interpolation_methods/
     newton_interp.py        — Newton divided differences polynomial
     lagrange.py             — Lagrange basis polynomial
     spline.py               — Cubic spline (SciPy)
@@ -86,11 +93,11 @@ Scripts/
     finite_diff_backward.py  — Backward finite difference (1st and 2nd order)
     finite_diff_central.py   — Central finite difference (1st and 2nd order)
     diff_lagrange.py         — Derivative via Lagrange interpolation polynomial (symbolic diff)
-  integration/
+  integration_methods/
     rectangle.py      — Left, right, midpoint rectangle rules (all 3 variants in one call)
     trapezoid.py      — Composite trapezoidal rule
     simpson.py        — Composite Simpson's 1/3 rule (auto-corrects odd n to even)
-  optimization/
+  optimization_methods/
     uniform_search.py — Brute grid search over [a, b]
     golden_section.py — Golden section interval search
     gradient_descent.py — Gradient descent (N-D, auto-detects variables from expression)
@@ -133,22 +140,33 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 
 ### UI Shared Library (`NumCalc.UI.Shared`)
 
-- **HTTP layer:** `BaseApiService` (abstract base) → `ICalculationApiService` / `CalculationApiService` (single concrete client covering all 7 topic areas)
-- **All page components** live in `NumCalc.UI.Shared/Pages/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`, `MainPage.razor`
-- **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `Header`, `BaseModal`, `OcrInput`, `ComparisonResultList` (generic `@typeparam TItem` component for all benchmark result lists), per-domain input components (`OdeInput`, `OptimizationInput`, `InterpolationInput`, `DifferentiationInput`, `IntegrationInput`, `EquationList`)
-- **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) — rendered from `Header.razor` via a switch on `NavigationItem`
-- **Services:** `IPdfExportService` / `PdfExportService`, `IUiStateService` / `UiStateService`, `ICultureService` (OCR is no longer a UI service — it's exposed by the Calculation API at `POST api/ocr/recognize` and called via `ICalculationApiService.RecognizeExpressionAsync`)
-- **Layout:** `MainLayout.razor` in `Layouts/`
-- Localization resources: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
-- Frontend stack: **Highcharts** (charts) and **mathjs** (client-side expression evaluation) — npm deps bundled by **Vite**; **MathLive** (math input field). Bundled JS lives in `src/js/` as per-purpose `*-helper.js` modules (`chart-helper`, `math-input`, `math-helper`, `pdf-helper`, `tooltip-helper`, `image-helper`) wired through `app.js`
+- **HTTP layer:** `BaseApiService` (abstract base) → `ICalculationApiService` / `CalculationApiService` (single concrete client covering all 7 topic areas) and `IUserApiService` / `UserApiService` for auth + user data
+- **Calculation pages** live in `Pages/Calculation/` — `RootFinding.razor`, `EquationSystems.razor`, `Interpolation.razor`, `Differentiation.razor`, `Integration.razor`, `Optimization.razor`, `Ode.razor`. All inherit from `CalculationPage.cs` (shared base with input/result/loading/saved-input plumbing).
+- **Other pages** in `Pages/`: `MainPage`, `Login`, `Register`, `ForgotPassword`, `ResetPassword`, `AccountSettings`, `UserDashboard`, `CalculationHistory`, `SavedInputs`, `SavedFiles`. Base classes: `BasePage.cs`, `AuthorizedPage.cs` (gates content via `AuthGuard`).
+- **Reusable components** in `Components/`: `MathInput`, `Tooltip`, `TopicInfo`, `SolutionStepsList`, `NodeTable`, `LinearSystemInput`, `Dropdown`, `Switch`, `HamburgerMenu`, `BottomNavigation`, `Header`, `BaseModal`, `OcrInput`, `LatexDisplay`, `ResultPanel`, `ResultPanelHeaderModal`, `GlobalLoader`, `ToastContainer`, `LanguageSwitch`, `UserMenu`, `AuthGuard`, `RedirectToLogin`, `SvgIcon`, `Divider`, `CustomInputFile`, `SavedInputDataPanel` / `SavedInputDataActions` / `SavedInputDataPickerModal` / `SavedInputDataSaveModal`, `ComparisonResultList` (generic `@typeparam TItem` for all benchmark result lists)
+- **Per-domain input components** in topic-named subfolders: `Components/RootFinding/RootFindingInput`, `Components/EquationSystems/EquationList`, `Components/Interpolation/InterpolationInput`, `Components/Differentiation/DifferentiationInput`, `Components/Integration/IntegrationInput`, `Components/Optimization/OptimizationInput`, `Components/ODE/OdeInput`
+- **Modals** in `Components/Modals/`: `CropImageModal` (used by OCR flow)
+- **TopicInfo components** in `Components/TopicInfos/`: one Razor component per topic (`RootFindingTopicInfo`, `EquationSystemsTopicInfo`, `InterpolationTopicInfo`, `DifferentiationTopicInfo`, `IntegrationTopicInfo`, `OptimizationTopicInfo`, `OdeTopicInfo`) + `TopicInfoComponentBase.cs` base class — orchestrated by `TopicInfosContainer` (renders the right one based on current nav item)
+- **Services** (split into `Services/Interfaces/` and `Services/Implementations/`): `IPdfExportService` / `PdfExportService`, `IUiStateService` / `UiStateService`, `IAuthStateService` / `AuthStateService`, `CustomAuthenticationStateProvider`, `ICultureService`, `IStorageService`, `ITokenStorage`. Host-specific implementations of `IStorageService` / `ITokenStorage` / `ICultureService` live in `NumCalc.UI.Web/Services/` and `NumCalc.UI.MAUI/Services/` (e.g., `MauiStorageService`, `MauiTokenStorage`). OCR is exposed by the Calculation API at `POST api/ocr/recognize` and called via `ICalculationApiService.RecognizeExpressionAsync`.
+- **Layouts** in `Layouts/`: `MainLayout.razor` (app shell), `AuthLayout.razor` (centered card for login/register/reset flows)
+- Localization resources in `Resources/`: `Localization.resx` (English) + `Localization.uk.resx` (Ukrainian)
+- Frontend stack: **Highcharts** (charts) and **mathjs** (client-side expression evaluation) — npm deps bundled by **Vite**; **MathLive** (math input field). Bundled JS lives in `src/js/` as per-purpose modules: `chart-helper`, `math-input`, `math-helper`, `pdf-helper`, `tooltip-helper`, `image-helper`, `latex-helper`, `theme-helper` — wired through `app.js`
 - LaTeX in `SolutionStep.LatexFormula` is rendered via **KaTeX** (html2canvas captures it as PNG for PDF export)
+- **Theming:** Light/dark mode via CSS custom properties in `src/css/utils/themes.css`, toggled through `theme-helper.js`
 
 ### Web UI (`NumCalc.UI.Web`)
 
 - Server-side Blazor with interactive server rendering
-- Contains only `App.razor` and `Routes.razor` — all page and component logic lives in `NumCalc.UI.Shared`
+- Contains `App.razor` and `Routes.razor` plus host-specific service implementations in `Services/` — all page and component logic lives in `NumCalc.UI.Shared`
 - Localization: supports `en` and `uk` cultures via `RequestLocalizationOptions`
-- Communicates with the Calculation API via `ICalculationApiService`
+- Communicates with the Calculation API via `ICalculationApiService` and User API via `IUserApiService`
+- Containerized via `Dockerfile`
+
+### MAUI UI (`NumCalc.UI.MAUI`)
+
+- Blazor Hybrid (`BlazorWebView`) — reuses pages and components from `NumCalc.UI.Shared`
+- Platform-specific service impls: `MauiStorageService`, `MauiTokenStorage`, `CultureService`
+- Entry: `MauiProgram.cs` configures DI, registers shared services, points HTTP clients at the configured API base URLs via `MauiSettings`
 
 ## Key Patterns
 
@@ -206,8 +224,10 @@ Currently working (User API):
 - Password reset (email + token, 30-min expiry, DB-enforced one active token per user)
 - Calculation history, saved inputs, saved files — fully integrated (entities + repos + services + API + UI pages: `CalculationHistory.razor`, `SavedInputs.razor`, `SavedFiles.razor`, `UserDashboard.razor`)
 
-Not implemented yet:
-- Complete MAUI UI
+Currently working (other):
+- Dark mode (light/dark theme toggle, persisted)
+- Docker images for `NumCalc.Calculation.Api` and `NumCalc.UI.Web` with CI/CD pipeline
+- MAUI app — builds and runs, reuses all shared pages via Blazor Hybrid; OCR keyboard handling and platform storage wired up
 
 IMPORTANT:
 Do NOT assume features exist unless explicitly listed as implemented.
