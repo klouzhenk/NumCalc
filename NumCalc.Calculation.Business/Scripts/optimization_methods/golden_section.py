@@ -101,9 +101,9 @@ def solve(expression: str, lower_bound: float, upper_bound: float, tolerance: fl
 
         envelope = OptimizationResponseEnvelope(
             success=OptimizationSuccessData(
-                minimum_value=f_min,
-                arg_min_x=x_min,
-                arg_min_point=None,
+                extremum_value=f_min,
+                arg_extremum_x=x_min,
+                arg_extremum_point=None,
                 chart_points=chart_points,
                 solution_steps=steps
             ),

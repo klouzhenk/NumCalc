@@ -1,4 +1,4 @@
-﻿from equations import dichotomy, newton, simple_iterations, secant, combined
+﻿from root_finding_methods import dichotomy, newton, simple_iterations, secant, combined
 
 def solve_dichotomy(expr: str, a: float, b: float, tol: float) -> str:
     return dichotomy.solve(expr, a, b, tol)

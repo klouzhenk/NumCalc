@@ -99,9 +99,9 @@ def solve(expression: str, initial_point: List[float], learning_rate: float, tol
 
         envelope = OptimizationResponseEnvelope(
             success=OptimizationSuccessData(
-                minimum_value=f_min,
-                arg_min_x=None,
-                arg_min_point=point,
+                extremum_value=f_min,
+                arg_extremum_x=None,
+                arg_extremum_point=point,
                 chart_points=chart_points,
                 solution_steps=steps,
                 path_points=path_points

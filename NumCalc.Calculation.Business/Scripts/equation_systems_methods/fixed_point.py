@@ -4,7 +4,7 @@ import math
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
-from shared.eq_chart import nonlinear_chart_series
+from shared.equation_system_charts import nonlinear_chart_series
 
 def _format_state(variables, values):
     return ",\\ ".join([f"{variables[i]} = {values[i]:.6g}" for i in range(len(variables))])

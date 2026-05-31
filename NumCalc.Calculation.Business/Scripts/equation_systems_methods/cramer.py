@@ -3,7 +3,7 @@ import sympy
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
-from shared.eq_chart import linear_chart_series
+from shared.equation_system_charts import linear_chart_series
 
 def solve(equations: List[str], variables: List[str]) -> str:
     try:

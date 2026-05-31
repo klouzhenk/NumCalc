@@ -54,6 +54,10 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
             fa = float(f(curr_a))
             fb = float(f(curr_b))
 
+            if abs(fb - fa) < 1e-15:
+                envelope = ResponseEnvelope(failure=FailureData("DIVISION_BY_ZERO", "f(b) equals f(a), cannot calculate chord step"), success=None)
+                return json.dumps(asdict(envelope))
+
             try:
                 mid_point = (curr_a + curr_b) / 2
                 ddf_val = float(ddf(mid_point))
@@ -70,16 +74,10 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
                     return json.dumps(asdict(envelope))
 
                 next_a = curr_a - fa / dfa
-
                 next_b = curr_b - fb * (curr_b - curr_a) / (fb - fa)
-
             else:
                 method_a = "Chord"
                 method_b = "Newton"
-
-                if abs(fb - fa) < 1e-15:
-                    envelope = ResponseEnvelope(failure=FailureData("DIVISION_BY_ZERO", "f(b) equals f(a)"), success=None)
-                    return json.dumps(asdict(envelope))
 
                 next_a = curr_a - fa * (curr_b - curr_a) / (fb - fa)
 
@@ -90,36 +88,36 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
 
                 next_b = curr_b - fb / dfb
 
-            if next_a < a or next_a > b: next_a = (curr_a + curr_b) / 2
-            if next_b < a or next_b > b: next_b = (curr_a + curr_b) / 2
+            if next_a < a or next_a > b:
+                next_a = (curr_a + curr_b) / 2
+            if next_b < a or next_b > b:
+                next_b = (curr_a + curr_b) / 2
 
             if next_a > next_b:
                 next_a, next_b = next_b, next_a
 
             delta = abs(next_b - next_a)
             mid_approx = (next_a + next_b) / 2
+            is_converged = delta < tolerance
 
             step_desc = f"Iter #{iterations}: a->{method_a}, b->{method_b}"
+            if is_converged:
+                step_desc += " (Convergence met)"
+
             step_latex = f"a_{{{iterations}}}={next_a:.5f}, b_{{{iterations}}}={next_b:.5f}"
 
             steps_log.append(SolutionStep(
                 step_index=iterations,
                 description=step_desc,
                 latex_formula=step_latex,
-                value=f"New Interval: [{next_a:.5f}; {next_b:.5f}], Delta: {delta:.6f}"
+                value=f"Interval: [{next_a:.5f}; {next_b:.5f}], Delta: {delta:.6f}"
             ))
 
             curr_a = next_a
             curr_b = next_b
             root = mid_approx
 
-            if delta < tolerance:
-                steps_log.append(SolutionStep(
-                    step_index=iterations + 1,
-                    description="Convergence criteria met",
-                    latex_formula=f"|b_{{{iterations}}} - a_{{{iterations}}}| < {tolerance}",
-                    value=f"Root found: {root:.6f}"
-                ))
+            if is_converged:
                 break
 
         if iterations >= max_iterations:

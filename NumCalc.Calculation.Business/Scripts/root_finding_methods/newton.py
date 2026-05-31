@@ -16,50 +16,52 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
             return json.dumps(asdict(envelope))
 
         deriv = sympy.diff(expr, x)
-
-        steps_log = []
-
-        steps_log.append(SolutionStep(
-            step_index=0,
-            description="Analytic differentiation",
-            latex_formula=f"f'(x) = {sympy.latex(deriv)}",
-            value="Derivative was found"
-        ))
-
         f = sympy.lambdify(x, expr, modules="numpy")
         f_prime = sympy.lambdify(x, deriv, modules="numpy")
 
+        try:
+            f_x0 = float(f(x0))
+        except Exception as e:
+            envelope = ResponseEnvelope(failure=FailureData("EVALUATION_ERROR", str(e)), success=None)
+            return json.dumps(asdict(envelope))
+
+        steps_log = []
+        steps_log.append(SolutionStep(
+            step_index=0,
+            description=f"Initialization. Derivative: f'(x) = {sympy.latex(deriv)}",
+            latex_formula=f"x_0 = {x0}",
+            value=f"f(x_0) = {f_x0:.5f}"
+        ))
+
         iterations = 0
-        root = 0.0
         max_iterations = 100
         curr_x = x0
         converged = False
 
-        steps_log.append(SolutionStep(
-            step_index=0,
-            description="Initial approximation",
-            latex_formula=f"x_0 = {curr_x}",
-            value=f"f(x_0) = {float(f(curr_x)):.5f}"
-        ))
-
         for iteration in range(1, max_iterations + 1):
-            f_val = f(curr_x)
-            df_val = f_prime(curr_x)
+            f_val = float(f(curr_x))
+            df_val = float(f_prime(curr_x))
 
             if df_val == 0:
-                break
+                envelope = ResponseEnvelope(failure=FailureData("ZERO_DERIVATIVE", f"Derivative became zero at x = {curr_x}"), success=None)
+                return json.dumps(asdict(envelope))
 
             next_x = curr_x - f_val / df_val
-
             iterations += 1
+
+            try:
+                f_next_val = float(f(next_x))
+            except (Exception,):
+                f_next_val = np.nan
+
             steps_log.append(SolutionStep(
                 step_index=iteration,
-                description=f"Iteration {iteration}",
-                latex_formula=f"x_{iteration} = {next_x:.5f}",
-                value=f"f(x_{iteration}) = {f_val:.5f}"
+                description=f"Iteration #{iteration}: x_n = x_{{{iteration-1}}} - f(x_{{{iteration-1}}})/f'(x_{{{iteration-1}}})",
+                latex_formula=f"x_{{{iteration}}} = {next_x:.5f}",
+                value=f"f(x_{{{iteration}}}) = {f_next_val:.5f}"
             ))
 
-            if abs(next_x - curr_x) <= tolerance and abs(f_val) <= tolerance:
+            if abs(next_x - curr_x) <= tolerance or abs(f_next_val) <= tolerance:
                 curr_x = next_x
                 converged = True
                 break
@@ -69,7 +71,7 @@ def solve(expression: str, x0: float, tolerance: float = 0.001) -> str:
         root = curr_x
 
         if not converged:
-            envelope = ResponseEnvelope(failure=FailureData("NO_CONVERGENCE", "Newton method did not converge"), success=None)
+            envelope = ResponseEnvelope(failure=FailureData("NO_CONVERGENCE", "Newton method did not converge within maximum iterations"), success=None)
             return json.dumps(asdict(envelope))
 
         plot_range = abs(root - x0) * 2 if abs(root - x0) > 1 else 5.0

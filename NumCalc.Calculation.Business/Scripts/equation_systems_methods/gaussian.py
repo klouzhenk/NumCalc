@@ -5,7 +5,7 @@ from fractions import Fraction
 from typing import List
 from dataclasses import asdict
 from shared.structures import SystemResponseEnvelope, SystemSuccessData, FailureData, SolutionStep
-from shared.eq_chart import linear_chart_series
+from shared.equation_system_charts  import linear_chart_series
 
 
 def _to_latex_number(value: float) -> str:

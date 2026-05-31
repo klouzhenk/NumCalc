@@ -1,4 +1,4 @@
-from odes import euler, euler_improved, runge_kutta_2, runge_kutta_4, picard
+from ode_methods import euler, euler_improved, runge_kutta_2, runge_kutta_4, picard
 
 def solve_euler(expression: str, initial_x: float, initial_y: float, target_x: float, step_size: float) -> str:
     return euler.solve(expression, initial_x, initial_y, target_x, step_size)

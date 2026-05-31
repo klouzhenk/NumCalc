@@ -77,9 +77,9 @@ class DifferentiationResponseEnvelope:
 # Optimization result
 @dataclass
 class OptimizationSuccessData:
-    minimum_value: float
-    arg_min_x: float | None
-    arg_min_point: List[float] | None
+    extremum_value: float
+    arg_extremum_x: float | None
+    arg_extremum_point: List[float] | None
     chart_points: List[Point] | None
     solution_steps: List[SolutionStep] = field(default_factory=list)
     path_points: List[Point] | None = None

@@ -24,6 +24,20 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
             envelope = ResponseEnvelope(failure=FailureData("EVALUATION_ERROR", str(e)), success=None)
             return json.dumps(asdict(envelope))
 
+        if abs(fa) < 1e-15:
+            points = generate_points(f, a, b)
+            points_objects = [Point(x=p[0], y=p[1]) for p in points]
+            step = SolutionStep(0, "Root on boundary", f"x = {a:.6f}", f"f(a) = {fa:.4f}")
+            envelope = ResponseEnvelope(success=SuccessData(a, 0, points_objects, [step]), failure=None)
+            return json.dumps(asdict(envelope))
+
+        if abs(fb) < 1e-15:
+            points = generate_points(f, a, b)
+            points_objects = [Point(x=p[0], y=p[1]) for p in points]
+            step = SolutionStep(0, "Root on boundary", f"x = {b:.6f}", f"f(b) = {fb:.4f}")
+            envelope = ResponseEnvelope(success=SuccessData(b, 0, points_objects, [step]), failure=None)
+            return json.dumps(asdict(envelope))
+
         if fa * fb > 0:
             envelope = ResponseEnvelope(failure=FailureData("RANGE_INVALID", f"Signs are same: f({a})={fa}, f({b})={fb}"), success=None)
             return json.dumps(asdict(envelope))
@@ -32,6 +46,7 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
         root = 0.0
         max_iterations = 1000
         curr_a, curr_b = a, b
+        curr_fa = fa
 
         steps_log = []
         steps_log.append(SolutionStep(
@@ -44,13 +59,10 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
         while (curr_b - curr_a) / 2 > tolerance and iterations < max_iterations:
             c = (curr_a + curr_b) / 2
             fc = float(f(c))
-            fa = float(f(curr_a))
-
             iterations += 1
 
             if abs(fc) < 1e-15:
                 root = c
-
                 steps_log.append(SolutionStep(
                     step_index=iterations,
                     description="Root found (value is effectively zero)",
@@ -59,14 +71,13 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
                 ))
                 break
 
-            sign_check = fa * fc
-
-            if sign_check < 0:
+            if curr_fa * fc < 0:
                 next_action = "Root is on the left (b = c)"
                 curr_b = c
             else:
                 next_action = "Root is on the right (a = c)"
                 curr_a = c
+                curr_fa = fc
 
             step_desc = f"Iteration #{iterations}: Calculating mid-point. {next_action}"
             step_latex = f"c = {c:.5f}, f(c) = {fc:.5f}"
@@ -77,11 +88,6 @@ def solve(expression: str, a: float, b: float, tolerance: float = 0.001) -> str:
                 latex_formula=step_latex,
                 value=f"New interval: [{curr_a:.4f}; {curr_b:.4f}]"
             ))
-
-            if fc == 0:
-                root = c
-                break
-
             root = c
 
         points = generate_points(f, a, b)
