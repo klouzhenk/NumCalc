@@ -29,8 +29,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
             request.StepSize
         );
 
-        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
         logger.LogInformation("Euler completed: {Points} points, elapsed={ElapsedMs}ms",
             result.SolutionPoints?.Count, stopWatch.Elapsed.TotalMilliseconds);
@@ -54,8 +55,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
             request.StepSize
         );
 
-        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
         logger.LogInformation("EulerImproved completed: {Points} points, elapsed={ElapsedMs}ms",
             result.SolutionPoints?.Count, stopWatch.Elapsed.TotalMilliseconds);
@@ -79,8 +81,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
             request.StepSize
         );
 
-        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
         logger.LogInformation("RK2 completed: {Points} points, elapsed={ElapsedMs}ms",
             result.SolutionPoints?.Count, stopWatch.Elapsed.TotalMilliseconds);
@@ -104,8 +107,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
             request.StepSize
         );
 
-        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
         logger.LogInformation("RK4 completed: {Points} points, elapsed={ElapsedMs}ms",
             result.SolutionPoints?.Count, stopWatch.Elapsed.TotalMilliseconds);
@@ -130,8 +134,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
             request.PicardOrder
         );
 
-        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
         stopWatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
         logger.LogInformation("Picard completed: {Points} points, elapsed={ElapsedMs}ms",
             result.SolutionPoints?.Count, stopWatch.Elapsed.TotalMilliseconds);
@@ -170,8 +175,9 @@ public class OdeService(IPythonEnvironment env, ILogger<OdeService> logger) : IO
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 
-                var data = jsonEnvelope.UnwrapOrThrow<OdeData>();
                 stopwatch.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<OdeData>();
 
                 item.FinalY = data.SolutionPoints?.LastOrDefault()?.Y;
                 item.SolutionPoints = data.SolutionPoints;

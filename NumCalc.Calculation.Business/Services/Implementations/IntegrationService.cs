@@ -29,9 +29,9 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
             request.Intervals,
             variant
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Rectangle completed: integral={Value}, elapsed={ElapsedMs}ms",
             result.IntegralValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -53,9 +53,9 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
             request.UpperBound,
             request.Intervals
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Trapezoid completed: integral={Value}, elapsed={ElapsedMs}ms",
             result.IntegralValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -77,9 +77,9 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
             request.UpperBound,
             request.Intervals
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Simpson completed: integral={Value}, elapsed={ElapsedMs}ms",
             result.IntegralValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -120,8 +120,9 @@ public class IntegrationService(IPythonEnvironment env, ILogger<IntegrationServi
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 
-                var data = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
                 stopwatch.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<IntegrationData>();
 
                 item.IntegralValue = data.IntegralValue;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;

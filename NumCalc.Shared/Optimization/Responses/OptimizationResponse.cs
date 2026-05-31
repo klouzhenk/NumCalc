@@ -4,9 +4,9 @@ namespace NumCalc.Shared.Optimization.Responses;
 
 public class OptimizationResponse
 {
-    public double MinimumValue { get; set; }
-    public double? ArgMinX { get; set; }
-    public List<double>? ArgMinPoint { get; set; }
+    public double ExtremumValue { get; set; }
+    public double? ArgExtremumX { get; set; }
+    public List<double>? ArgExtremumPoint { get; set; }
     public IEnumerable<Point>? ChartData { get; set; }
     public IEnumerable<Point>? PathData { get; set; }
     public List<SolutionStep>? SolutionSteps { get; set; }

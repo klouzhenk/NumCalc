@@ -17,11 +17,10 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 {
     public RootFindingResponse CalculateDichotomy(RootFindingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateRequest(request);
 
         logger.LogInformation("Dichotomy: f={Expression}, [{Start}, {End}], err={Error}",
-            request.FunctionExpression, request.StartRange, request.EndRange, request.Error);
+            request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance);
 
         var rootSolver = env.RootFinding();
 
@@ -29,7 +28,7 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
             request.FunctionExpression,
             request.StartRange,
             request.EndRange,
-            request.Error
+            request.Tolerance
         );
 
         var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
@@ -48,18 +47,17 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 
     public RootFindingResponse CalculateNewton(RootFindingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateRequest(request);
 
         logger.LogInformation("Newton: f={Expression}, x0={Start}, err={Error}",
-            request.FunctionExpression, request.StartRange, request.Error);
+            request.FunctionExpression, request.StartRange, request.Tolerance);
 
         var rootSolver = env.RootFinding();
 
         var jsonEnvelope = rootSolver.SolveNewton(
             request.FunctionExpression,
             request.StartRange,
-            request.Error
+            request.Tolerance
         );
 
         var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
@@ -78,11 +76,10 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 
     public RootFindingResponse CalculateSimpleIterations(RootFindingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateRequest(request);
 
         logger.LogInformation("SimpleIterations: f={Expression}, [{Start}, {End}], err={Error}",
-            request.FunctionExpression, request.StartRange, request.EndRange, request.Error);
+            request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance);
 
         var rootSolver = env.RootFinding();
 
@@ -90,7 +87,7 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
             request.FunctionExpression,
             request.StartRange,
             request.EndRange,
-            request.Error
+            request.Tolerance
         );
 
         var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
@@ -109,11 +106,10 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 
     public RootFindingResponse CalculateSecant(RootFindingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateRequest(request);
 
         logger.LogInformation("Secant: f={Expression}, [{Start}, {End}], err={Error}",
-            request.FunctionExpression, request.StartRange, request.EndRange, request.Error);
+            request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance);
 
         var rootSolver = env.RootFinding();
 
@@ -121,7 +117,7 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
             request.FunctionExpression,
             request.StartRange,
             request.EndRange,
-            request.Error
+            request.Tolerance
         );
 
         var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
@@ -140,11 +136,10 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 
     public RootFindingResponse CalculateCombined(RootFindingRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateRequest(request);
 
         logger.LogInformation("Combined: f={Expression}, [{Start}, {End}], err={Error}",
-            request.FunctionExpression, request.StartRange, request.EndRange, request.Error);
+            request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance);
 
         var rootSolver = env.RootFinding();
 
@@ -152,7 +147,7 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
             request.FunctionExpression,
             request.StartRange,
             request.EndRange,
-            request.Error
+            request.Tolerance
         );
 
         var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData>();
@@ -171,11 +166,10 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
 
     public RootFindingComparisonResponse Compare(RootFindingComparisonRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
-            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+        ValidateComparisonRequest(request);
 
         logger.LogInformation("Compare: f={Expression}, methods={Methods}",
-            request.FunctionExpression, string.Join(", ", request?.Methods ?? []));
+            request.FunctionExpression, string.Join(", ", request.Methods!));
 
         var rootSolver = env.RootFinding();
         var response = new RootFindingComparisonResponse();
@@ -198,9 +192,9 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
                     RootFindingMethod.Combined => rootSolver.SolveCombined(request.FunctionExpression, request.StartRange, request.EndRange, request.Tolerance),
                     _ => throw new CustomException(NumCalcErrorCode.NotImplemented, string.Empty)
                 };
-                var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData?>();
-
                 stopwatch.Stop();
+
+                var rootData = jsonEnvelope.UnwrapOrThrow<RootFindingData?>();
 
                 comparisonResultItem.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;
                 comparisonResultItem.Root = rootData?.Root;
@@ -229,5 +223,46 @@ public class RootFindingService(IPythonEnvironment env, ILogger<RootFindingServi
         logger.LogInformation("Compare completed: best method={BestMethod}", response.BestMethod);
 
         return response;
+    }
+
+    private static void ValidateRequest(RootFindingRequest request, bool isNewton = false)
+    {
+        if (request is null)
+            throw new CustomException(NumCalcErrorCode.EmptyData, "The request object cannot be null");
+        
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+
+        if (!double.IsFinite(request.StartRange))
+            throw new CustomException(NumCalcErrorCode.InvalidData, "Start range must be a finite number");
+        
+        if (!isNewton && !double.IsFinite(request.EndRange))
+            throw new CustomException(NumCalcErrorCode.InvalidData, "End range must be a finite number");
+
+        if (!isNewton && request.StartRange >= request.EndRange)
+            throw new CustomException(NumCalcErrorCode.RangeInvalid, "Start range must be less than end range");
+    }
+    
+    private static void ValidateComparisonRequest(RootFindingComparisonRequest request)
+    {
+        if (request is null)
+            throw new CustomException(NumCalcErrorCode.EmptyData, "The request object cannot be null");
+        
+        if (request.Methods is null || !request.Methods.Any())
+            throw new CustomException(NumCalcErrorCode.EmptyData, "At least one method must be selected");
+        
+        if (string.IsNullOrWhiteSpace(request.FunctionExpression))
+            throw new CustomException(NumCalcErrorCode.SyntaxError, "The entered function expression is empty");
+
+        if (!double.IsFinite(request.StartRange))
+            throw new CustomException(NumCalcErrorCode.InvalidData, "Start range must be a finite number");
+
+        var hasNonNewton = request.Methods.Any(method => method is not RootFindingMethod.Newton);
+        
+        if (hasNonNewton && !double.IsFinite(request.EndRange))
+            throw new CustomException(NumCalcErrorCode.InvalidData, "End range must be a finite number");
+
+        if (hasNonNewton && request.StartRange >= request.EndRange)
+            throw new CustomException(NumCalcErrorCode.RangeInvalid, "Start range must be less than end range");
     }
 }

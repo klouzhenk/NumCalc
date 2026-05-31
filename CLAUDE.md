@@ -27,7 +27,7 @@ There are no test projects yet.
 
 ## Architecture
 
-The solution has 11 projects:
+The solution has 10 projects:
 
 ```
 NumCalc.UI.Web (Blazor Server)       ┐
@@ -41,7 +41,6 @@ NumCalc.UI.MAUI (Blazor Hybrid)      ┴── share UI from NumCalc.UI.Shared
 NumCalc.Shared              — DTOs and contracts shared across all projects
 NumCalc.UI.Shared           — All Blazor pages, components, services, JS/CSS, localization
 NumCalc.Calculation.Business — Calculation services, Python scripts, hosted warmup, entities
-NumCalc.Core                — Minimal, mostly unused
 ```
 
 ### Calculation API (`NumCalc.Calculation.Api`)
@@ -73,13 +72,13 @@ Numerical logic lives entirely in Python. C# services call these scripts through
 
 ```
 NumCalc.Calculation.Business/Scripts/
-  equations/          — Root finding algorithms
+  root_finding_methods/ — Root finding algorithms
     dichotomy.py      — Bisection method
     newton.py         — Newton-Raphson (tangent)
     simple_iterations.py
     secant.py
     combined.py       — Brent's hybrid method
-  eq_systems/
+  equation_systems_methods/
     cramer.py         — Cramer's rule for linear systems
     gaussian.py       — Gaussian elimination with partial pivoting
     fixed_point.py    — Fixed-point (Jacobi-style) iteration for non-linear systems
@@ -92,7 +91,7 @@ NumCalc.Calculation.Business/Scripts/
     finite_diff_forward.py   — Forward finite difference (1st and 2nd order)
     finite_diff_backward.py  — Backward finite difference (1st and 2nd order)
     finite_diff_central.py   — Central finite difference (1st and 2nd order)
-    diff_lagrange.py         — Derivative via Lagrange interpolation polynomial (symbolic diff)
+    differentiation_lagrange.py — Derivative via Lagrange interpolation polynomial (symbolic diff)
   integration_methods/
     rectangle.py      — Left, right, midpoint rectangle rules (all 3 variants in one call)
     trapezoid.py      — Composite trapezoidal rule
@@ -101,7 +100,7 @@ NumCalc.Calculation.Business/Scripts/
     uniform_search.py — Brute grid search over [a, b]
     golden_section.py — Golden section interval search
     gradient_descent.py — Gradient descent (N-D, auto-detects variables from expression)
-  odes/
+  ode_methods/
     euler.py          — Euler method
     euler_improved.py — Euler improved (Heun) method
     runge_kutta_2.py  — Runge-Kutta 2nd order
@@ -134,7 +133,7 @@ Top-level dispatcher scripts (CSnakes entry points): `root_finding.py`, `equatio
 - `IntegrationResponse` — `IntegralValue`, `ChartData`, `SolutionSteps`, `ExecutionTimeMs`
 - `OptimizationRequest` — `FunctionExpression`, `LowerBound`, `UpperBound`, `Points` (default 100), `Tolerance` (default 1e-6)
 - `GradientDescentRequest` — `FunctionExpression`, `InitialPoint[]`, `LearningRate` (0.01), `Tolerance` (1e-6), `MaxIterations` (200)
-- `OptimizationResponse` — `MinimumValue`, `ArgMinX?` (2D methods), `ArgMinPoint?` (gradient descent), `ChartData?`, `SolutionSteps`, `ExecutionTimeMs`
+- `OptimizationResponse` — `ExtremumValue`, `ArgExtremumX?` (1D methods), `ArgExtremumPoint?` (gradient descent), `ChartData?`, `PathData?`, `SolutionSteps`, `ExecutionTimeMs`
 - `OdeRequest` — `FunctionExpression`, `InitialX`, `InitialY`, `TargetX`, `StepSize` (default 0.1, must be positive), `PicardOrder` (1–10, default 4)
 - `OdeResponse` — `SolutionPoints` (List<Point>), `PolynomialLatex?` (Picard only), `SolutionSteps`, `ExecutionTimeMs`
 

@@ -78,7 +78,7 @@ jobs:
           echo "domain=$domain" >> $GITHUB_OUTPUT
           echo "Env default domain: $domain"
 
-      - name: Deploy calc-api (internal)
+      - name: Deploy calc-api
         run: |
           IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-calc-api:${{ github.sha }}"
           NAME=numcalc-calc-api
@@ -93,7 +93,7 @@ jobs:
               --environment $CONTAINER_APP_ENV \
               --image $IMAGE \
               --target-port 8080 \
-              --ingress internal \
+              --ingress external \
               --transport http \
               --cpu 0.5 --memory 1.0Gi \
               --min-replicas 0 --max-replicas 1 \
@@ -104,7 +104,7 @@ jobs:
                 OcrSettings__GeminiApiKey=secretref:gemini-key
           fi
 
-      - name: Deploy user-api (internal)
+      - name: Deploy user-api
         run: |
           IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-user-api:${{ github.sha }}"
           NAME=numcalc-user-api
@@ -120,7 +120,7 @@ jobs:
               --environment $CONTAINER_APP_ENV \
               --image $IMAGE \
               --target-port 8080 \
-              --ingress internal \
+              --ingress external \
               --transport http \
               --cpu 0.25 --memory 0.5Gi \
               --min-replicas 0 --max-replicas 1 \
@@ -151,8 +151,8 @@ jobs:
         run: |
           IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/numcalc-web:${{ github.sha }}"
           NAME=numcalc-web
-          CALC_API_URL="https://numcalc-calc-api.internal.${{ steps.env_domain.outputs.domain }}"
-          USER_API_URL="https://numcalc-user-api.internal.${{ steps.env_domain.outputs.domain }}"
+          CALC_API_URL="https://numcalc-calc-api.${{ steps.env_domain.outputs.domain }}"
+          USER_API_URL="https://numcalc-user-api.${{ steps.env_domain.outputs.domain }}"
           if az containerapp show -n $NAME -g $RESOURCE_GROUP >/dev/null 2>&1; then
             echo "Updating existing $NAME..."
             az containerapp update -n $NAME -g $RESOURCE_GROUP --image $IMAGE

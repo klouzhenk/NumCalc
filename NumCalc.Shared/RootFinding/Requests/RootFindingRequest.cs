@@ -39,5 +39,5 @@ public class RootFindingRequest
     /// <example>0.001</example>
     [Range(1e-15, 0.1, ErrorMessage = "Tolerance must be between 1e-15 and 0.1")]
     [DefaultValue(0.001)]
-    public double Error { get; set; } = 0.001;
+    public double Tolerance { get; set; } = 0.001;
 }

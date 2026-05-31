@@ -27,9 +27,9 @@ public class InterpolationService(IPythonEnvironment env, ILogger<InterpolationS
             request.QueryPoint,
             request.Mode == InterpolationInputMode.Function ? request.FunctionExpression : null
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<InterpolationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Newton interpolation completed: value={Value}, elapsed={ElapsedMs}ms",
             result.InterpolatedValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -51,9 +51,9 @@ public class InterpolationService(IPythonEnvironment env, ILogger<InterpolationS
             request.QueryPoint,
             request.Mode == InterpolationInputMode.Function ? request.FunctionExpression : null
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<InterpolationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Lagrange interpolation completed: value={Value}, elapsed={ElapsedMs}ms",
             result.InterpolatedValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -75,9 +75,9 @@ public class InterpolationService(IPythonEnvironment env, ILogger<InterpolationS
             request.QueryPoint,
             request.Mode == InterpolationInputMode.Function ? request.FunctionExpression : null
         );
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<InterpolationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("Spline interpolation completed: value={Value}, elapsed={ElapsedMs}ms",
             result.InterpolatedValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -122,8 +122,9 @@ public class InterpolationService(IPythonEnvironment env, ILogger<InterpolationS
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 
-                var data = jsonEnvelope.UnwrapOrThrow<InterpolationData>();
                 stopwatch.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<InterpolationData>();
 
                 item.InterpolatedValue = data.InterpolatedValue;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;

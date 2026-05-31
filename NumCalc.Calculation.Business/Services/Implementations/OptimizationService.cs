@@ -28,12 +28,12 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.Points,
             request.Maximize
         );
-
-        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
         stopwatch.Stop();
 
+        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
+
         logger.LogInformation("UniformSearch completed: min={Value}, argMin={ArgMin}, elapsed={ElapsedMs}ms",
-            result.MinimumValue, result.ArgMinX, stopwatch.Elapsed.TotalMilliseconds);
+            result.ExtremumValue, result.ArgExtremumX, stopwatch.Elapsed.TotalMilliseconds);
 
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }
@@ -53,12 +53,12 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.Tolerance,
             request.Maximize
         );
-
-        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
         stopwatch.Stop();
 
+        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
+
         logger.LogInformation("GoldenSection completed: min={Value}, argMin={ArgMin}, elapsed={ElapsedMs}ms",
-            result.MinimumValue, result.ArgMinX, stopwatch.Elapsed.TotalMilliseconds);
+            result.ExtremumValue, result.ArgExtremumX, stopwatch.Elapsed.TotalMilliseconds);
 
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }
@@ -79,12 +79,12 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
             request.MaxIterations,
             request.Maximize
         );
-
-        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
         stopwatch.Stop();
 
+        var result = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
+
         logger.LogInformation("GradientDescent completed: min={Value}, elapsed={ElapsedMs}ms",
-            result.MinimumValue, stopwatch.Elapsed.TotalMilliseconds);
+            result.ExtremumValue, stopwatch.Elapsed.TotalMilliseconds);
 
         return MapToResponse(result, stopwatch.Elapsed.TotalMilliseconds);
     }
@@ -116,15 +116,16 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 
-                var data = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
                 stopwatch.Stop();
 
-                item.MinimumValue = data.MinimumValue;
-                item.ArgMinX = data.ArgMinX;
+                var data = jsonEnvelope.UnwrapOrThrow<OptimizationData>();
+
+                item.ExtremumValue = data.ExtremumValue;
+                item.ArgExtremumX = data.ArgExtremumX;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;
 
                 logger.LogInformation("Compare/{Method}: min={Value}, argMin={ArgMin}, elapsed={ElapsedMs}ms",
-                    method, item.MinimumValue, item.ArgMinX, item.ExecutionTimeMs);
+                    method, item.ExtremumValue, item.ArgExtremumX, item.ExecutionTimeMs);
             }
             catch (Exception ex)
             {
@@ -137,7 +138,7 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
         }
 
         response.BestMethod = response.Results
-            .Where(r => r.MinimumValue.HasValue)
+            .Where(r => r.ExtremumValue.HasValue)
             .OrderBy(r => r.ExecutionTimeMs)
             .FirstOrDefault()?.Method;
 
@@ -149,9 +150,9 @@ public class OptimizationService(IPythonEnvironment env, ILogger<OptimizationSer
     private static OptimizationResponse MapToResponse(OptimizationData data, double executionTimeMs) =>
         new()
         {
-            MinimumValue = data.MinimumValue,
-            ArgMinX = data.ArgMinX,
-            ArgMinPoint = data.ArgMinPoint,
+            ExtremumValue = data.ExtremumValue,
+            ArgExtremumX = data.ArgExtremumX,
+            ArgExtremumPoint = data.ArgExtremumPoint,
             ChartData = data.ChartPoints,
             PathData = data.PathPoints,
             SolutionSteps = data.SolutionSteps,

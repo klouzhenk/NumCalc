@@ -119,18 +119,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
     {
         logger.LogInformation("LinearComparison: {Count} equations", request.Equations.Count);
 
-        var solverRequest = new SystemSolvingRequest
-        {
-            Equations = request.Equations,
-            Variables = request.Variables
-        };
-
-        var solvers = new Dictionary<LinearSystemMethod, Func<SystemSolvingResponse>>
-        {
-            [LinearSystemMethod.Cramer] = () => SolveCramer(solverRequest),
-            [LinearSystemMethod.Gauss]  = () => SolveGaussian(solverRequest)
-        };
-
+        var solver = env.EquationSystems();
         var methods = request.Methods?.ToList() is { Count: > 0 } m
             ? m
             : Enum.GetValues<LinearSystemMethod>().ToList();
@@ -140,18 +129,42 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
 
         foreach (var method in methods)
         {
-            sw.Restart();
-            var result = solvers[method]();
-            sw.Stop();
-            results.Add(new LinearSystemBenchmarkResultDto
+            var item = new LinearSystemBenchmarkResultDto { Method = method };
+
+            try
             {
-                Method = method,
-                Roots = result.Roots,
-                ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-            });
+                sw.Restart();
+
+                var jsonEnvelope = method switch
+                {
+                    LinearSystemMethod.Cramer => solver.SolveCramer(request.Equations, request.Variables),
+                    LinearSystemMethod.Gauss  => solver.SolveGaussian(request.Equations, request.Variables),
+                    _ => throw new ArgumentOutOfRangeException(nameof(method))
+                };
+                sw.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<SystemSolvingData>();
+
+                item.Roots = data.Roots;
+                item.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+
+                logger.LogInformation("LinearComparison/{Method}: {Count} roots, elapsed={ElapsedMs}ms",
+                    method, data.Roots?.Count, sw.Elapsed.TotalMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                item.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+                logger.LogWarning(ex, "LinearComparison/{Method} failed after {ElapsedMs}ms", method, sw.Elapsed.TotalMilliseconds);
+            }
+
+            results.Add(item);
         }
 
-        var best = results.OrderBy(r => r.ExecutionTimeMs).FirstOrDefault();
+        var best = results
+            .Where(r => r.Roots is not null)
+            .OrderBy(r => r.ExecutionTimeMs)
+            .FirstOrDefault();
 
         return new LinearSystemComparisonResponse
         {
@@ -164,21 +177,7 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
     {
         logger.LogInformation("NonLinearComparison: {Count} functions", request.IterationFunctions.Count);
 
-        var solverRequest = new NonLinearSystemRequest
-        {
-            IterationFunctions = request.IterationFunctions,
-            Variables = request.Variables,
-            InitialGuess = request.InitialGuess,
-            Tolerance = request.Tolerance,
-            MaxIterations = request.MaxIterations
-        };
-
-        var solvers = new Dictionary<NonLinearSystemMethod, Func<SystemSolvingResponse>>
-        {
-            [NonLinearSystemMethod.FixedPoint] = () => SolveFixedPoint(solverRequest),
-            [NonLinearSystemMethod.Seidel]     = () => SolveSeidel(solverRequest)
-        };
-
+        var solver = env.EquationSystems();
         var methods = request.Methods?.ToList() is { Count: > 0 } m
             ? m
             : Enum.GetValues<NonLinearSystemMethod>().ToList();
@@ -188,18 +187,44 @@ public class EquationsSystemService(IPythonEnvironment env, ILogger<EquationsSys
 
         foreach (var method in methods)
         {
-            sw.Restart();
-            var result = solvers[method]();
-            sw.Stop();
-            results.Add(new NonLinearSystemBenchmarkResultDto
+            var item = new NonLinearSystemBenchmarkResultDto { Method = method };
+
+            try
             {
-                Method = method,
-                Roots = result.Roots,
-                ExecutionTimeMs = sw.Elapsed.TotalMilliseconds
-            });
+                sw.Restart();
+
+                var jsonEnvelope = method switch
+                {
+                    NonLinearSystemMethod.FixedPoint =>
+                        solver.SolveFixedPoint(request.IterationFunctions, request.Variables, request.InitialGuess, request.Tolerance, request.MaxIterations),
+                    NonLinearSystemMethod.Seidel =>
+                        solver.SolveSeidel(request.IterationFunctions, request.Variables, request.InitialGuess, request.Tolerance, request.MaxIterations),
+                    _ => throw new ArgumentOutOfRangeException(nameof(method))
+                };
+                sw.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<SystemSolvingData>();
+
+                item.Roots = data.Roots;
+                item.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+
+                logger.LogInformation("NonLinearComparison/{Method}: {Count} roots, elapsed={ElapsedMs}ms",
+                    method, data.Roots?.Count, sw.Elapsed.TotalMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                item.ExecutionTimeMs = sw.Elapsed.TotalMilliseconds;
+                logger.LogWarning(ex, "NonLinearComparison/{Method} failed after {ElapsedMs}ms", method, sw.Elapsed.TotalMilliseconds);
+            }
+
+            results.Add(item);
         }
 
-        var best = results.OrderBy(r => r.ExecutionTimeMs).FirstOrDefault();
+        var best = results
+            .Where(r => r.Roots is not null)
+            .OrderBy(r => r.ExecutionTimeMs)
+            .FirstOrDefault();
 
         return new NonLinearSystemComparisonResponse
         {

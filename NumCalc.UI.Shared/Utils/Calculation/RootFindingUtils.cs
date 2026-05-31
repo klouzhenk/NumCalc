@@ -61,7 +61,7 @@ public static class RootFindingUtils
             FunctionExpression = formData.FunctionExpression ?? string.Empty,
             StartRange = formData.StartPoint ?? 0,
             EndRange = formData.EndPoint ?? 0,
-            Error = formData.Tolerance ?? 0
+            Tolerance = formData.Tolerance ?? 0
         };
     }
     

@@ -5,14 +5,14 @@ namespace NumCalc.Calculation.Business.Entities.Optimization;
 
 public class OptimizationData
 {
-    [JsonPropertyName("minimum_value")]
-    public double MinimumValue { get; set; }
+    [JsonPropertyName("extremum_value")]
+    public double ExtremumValue { get; set; }
 
-    [JsonPropertyName("arg_min_x")]
-    public double? ArgMinX { get; set; }
+    [JsonPropertyName("arg_extremum_x")]
+    public double? ArgExtremumX { get; set; }
 
-    [JsonPropertyName("arg_min_point")]
-    public List<double>? ArgMinPoint { get; set; }
+    [JsonPropertyName("arg_extremum_point")]
+    public List<double>? ArgExtremumPoint { get; set; }
 
     [JsonPropertyName("chart_points")]
     public IEnumerable<Point>? ChartPoints { get; set; }

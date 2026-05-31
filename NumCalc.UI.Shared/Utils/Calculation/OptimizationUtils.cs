@@ -146,7 +146,7 @@ public static class OptimizationUtils
 
         if (chartData is not { Count: > 0 }) return null;
 
-        var xStar = result.ArgMinX ?? result.ArgMinPoint?.FirstOrDefault();
+        var xStar = result.ArgExtremumX ?? result.ArgExtremumPoint?.FirstOrDefault();
 
         var series = new List<ChartSeries>
         {
@@ -166,7 +166,7 @@ public static class OptimizationUtils
             {
                 Name = "x*",
                 Type = ChartType.Scatter,
-                Data = [[xStar.Value, result.MinimumValue]],
+                Data = [[xStar.Value, result.ExtremumValue]],
                 Color = ColorUtils.GetColor(Enums.Color.PrimaryDark),
                 IsVisible = true,
                 Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
@@ -268,8 +268,8 @@ public static class OptimizationUtils
             {
                 Name = $"x* ({localizer[result.Method.ToString()]})",
                 Type = ChartType.Scatter,
-                Data = result is { ArgMinX: not null, MinimumValue: not null }
-                    ? [[result.ArgMinX.Value, result.MinimumValue.Value]]
+                Data = result is { ArgExtremumX: not null, ExtremumValue: not null }
+                    ? [[result.ArgExtremumX.Value, result.ExtremumValue.Value]]
                     : null,
                 Color = ColorUtils.GetSeriesColor((int)result.Method),
                 IsVisible = true,
@@ -302,12 +302,12 @@ public static class OptimizationUtils
 
     public static string GetResultSummary(this OptimizationResponse result, OptimizationFormData formData)
     {
-        var resultSummary = $"f(x*) = {result.MinimumValue.FormatResult(formData.Tolerance)}";
+        var resultSummary = $"f(x*) = {result.ExtremumValue.FormatResult(formData.Tolerance)}";
 
-        if (result.ArgMinX.HasValue)
-            resultSummary += $", x* = {result.ArgMinX.Value.FormatResult(formData.Tolerance)}";
-        else if (result.ArgMinPoint is { Count: > 0 })
-            resultSummary += $", x* = ({string.Join(", ", result.ArgMinPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
+        if (result.ArgExtremumX.HasValue)
+            resultSummary += $", x* = {result.ArgExtremumX.Value.FormatResult(formData.Tolerance)}";
+        else if (result.ArgExtremumPoint is { Count: > 0 })
+            resultSummary += $", x* = ({string.Join(", ", result.ArgExtremumPoint.Select(v => v.FormatResult(formData.Tolerance)))})";
         
         return resultSummary;
     }

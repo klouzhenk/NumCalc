@@ -63,14 +63,14 @@
         <Header>
             @if (_mode is AnalysisMode.Single && Result is not null)
             {
-                <span>f(x*) = @Result!.MinimumValue.FormatResult(_input?.Tolerance) (@(_maximize ? "max" : "min"))</span>
-                @if (Result.ArgMinX.HasValue)
+                <span>f(x*) = @Result!.ExtremumValue.FormatResult(_input?.Tolerance) (@(_maximize ? "max" : "min"))</span>
+                @if (Result.ArgExtremumX.HasValue)
                 {
-                    <span>x* = @Result.ArgMinX.Value.FormatResult(_input?.Tolerance)</span>
+                    <span>x* = @Result.ArgExtremumX.Value.FormatResult(_input?.Tolerance)</span>
                 }
-                @if (Result.ArgMinPoint is { Count: > 0 })
+                @if (Result.ArgExtremumPoint is { Count: > 0 })
                 {
-                    <span>x* = (@string.Join(", ", Result.ArgMinPoint.Select(v => v.FormatResult(_input?.Tolerance))))</span>
+                    <span>x* = (@string.Join(", ", Result.ArgExtremumPoint.Select(v => v.FormatResult(_input?.Tolerance))))</span>
                 }
             }
             else
@@ -97,10 +97,10 @@
                     <ItemTemplate Context="item">
                         <span class="comparison-result__item-title">@Localizer[item.Method.ToString()]</span>
                         <div class="comparison-result__item-text">
-                            <span class="comparison-result__item-subtitle">f(x*)</span>: @(item.MinimumValue.HasValue ? item.MinimumValue.Value.FormatResult(_input?.Tolerance) : "—")
-                            @if (item.ArgMinX.HasValue)
+                            <span class="comparison-result__item-subtitle">f(x*)</span>: @(item.ExtremumValue.HasValue ? item.ExtremumValue.Value.FormatResult(_input?.Tolerance) : "—")
+                            @if (item.ArgExtremumX.HasValue)
                             {
-                                <span> &nbsp;|&nbsp; <span class="comparison-result__item-subtitle">x*</span>: @item.ArgMinX.Value.FormatResult(_input?.Tolerance)</span>
+                                <span> &nbsp;|&nbsp; <span class="comparison-result__item-subtitle">x*</span>: @item.ArgExtremumX.Value.FormatResult(_input?.Tolerance)</span>
                             }
                             &nbsp;|&nbsp;
                             <span class="comparison-result__item-subtitle">@Localizer["ExecutionTime"]</span>: @item.ExecutionTimeMs.FormatResult() @Localizer["ms"]

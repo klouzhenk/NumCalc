@@ -27,9 +27,9 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
             FiniteDiffVariant.Backward => solver.SolveFiniteDiffBackward(request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder),
             _                          => solver.SolveFiniteDiffCentral(request.FunctionExpression!, request.QueryPoint, request.StepSize, request.DerivativeOrder),
         };
+        stopwatch.Stop();
 
         var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
-        stopwatch.Stop();
 
         logger.LogInformation("FiniteDiff ({Variant}) completed: derivative={Value}, elapsed={ElapsedMs}ms",
             variant, result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -49,8 +49,9 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
             request.QueryPoint,
             request.Mode == DifferentiationInputMode.Function ? request.FunctionExpression : null,
             request.DerivativeOrder);
-        var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
         stopwatch.Stop();
+
+        var result = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
 
         logger.LogInformation("Lagrange completed: derivative={Value}, elapsed={ElapsedMs}ms",
             result.DerivativeValue, stopwatch.Elapsed.TotalMilliseconds);
@@ -85,8 +86,9 @@ public class DifferentiationService(IPythonEnvironment env, ILogger<Differentiat
                     _ => throw new ArgumentOutOfRangeException(nameof(method))
                 };
 
-                var data = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
                 stopwatch.Stop();
+
+                var data = jsonEnvelope.UnwrapOrThrow<DifferentiationData>();
 
                 item.DerivativeValue = data.DerivativeValue;
                 item.ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds;

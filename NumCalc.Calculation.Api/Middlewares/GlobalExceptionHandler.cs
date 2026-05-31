@@ -8,7 +8,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        var problemDetails = new ProblemDetails() { Instance = httpContext.Request.Path };
+        var problemDetails = new ProblemDetails { Instance = httpContext.Request.Path };
 
         if (exception is CustomException calculationException)
         {
@@ -21,11 +21,13 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             FillServerProblemDetails(problemDetails, exception);
         }
         
-        httpContext.Response.StatusCode = problemDetails?.Status ?? StatusCodes.Status500InternalServerError;
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
     }
+
+    #region Private methods
 
     private static ProblemDetails FillClientProblemDetails(ProblemDetails problemDetails, CustomException exception)
     {
@@ -45,4 +47,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
         return problemDetails;
     }
+
+    #endregion
 }
