@@ -19,6 +19,7 @@ public static class ServiceCollectionExtension
         services.AddLocalization();
         services.AddScoped<IUiStateService, UiStateService>();
         services.AddScoped<IPdfExportService, PdfExportService>();
+        PdfExportService.ConfigureQuestPdfLicense();
         services.AddCropper();
 
         return services;
