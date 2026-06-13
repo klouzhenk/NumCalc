@@ -16,7 +16,7 @@
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">Learning rate</label>
+                    <label class="input-group__label">@Localizer["LearningRate"]</label>
                     <input type="number" step="any" class="input-group__input" @bind="_learningRate" />
                 </div>
             </Content>
@@ -25,7 +25,7 @@
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">Tolerance</label>
+                    <label class="input-group__label">@Localizer["Tolerance"]</label>
                     <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
                 </div>
             </Content>
@@ -34,7 +34,7 @@
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">Max iterations</label>
+                    <label class="input-group__label">@Localizer["MaxIterations"]</label>
                     <input type="number" min="1" max="10000" class="input-group__input" @bind="_maxIterations" />
                 </div>
             </Content>
@@ -44,8 +44,8 @@
 
     <div class="node-table optimization-input__vars-table">
         <div class="node-table__header">
-            <span>Variable</span>
-            <span>Initial value</span>
+            <span>@Localizer["Variable"]</span>
+            <span>@Localizer["InitialValue"]</span>
             <button class="node-table__add-btn" type="button" @onclick="AddVariable">+</button>
         </div>
 
@@ -79,7 +79,7 @@ else
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">a (lower bound)</label>
+                    <label class="input-group__label">a (@Localizer["LowerBound"])</label>
                     <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
                 </div>
             </Content>
@@ -88,7 +88,7 @@ else
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">b (upper bound)</label>
+                    <label class="input-group__label">b (@Localizer["UpperBound"])</label>
                     <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
                 </div>
             </Content>
@@ -100,7 +100,7 @@ else
             <Tooltip>
                 <Content>
                     <div class="input-group">
-                        <label class="input-group__label">Number of points (n)</label>
+                        <label class="input-group__label">@Localizer["NumberOfPoints"] (n)</label>
                         <input type="number" min="2" max="10000" class="input-group__input" @bind="_points" />
                     </div>
                 </Content>
@@ -112,7 +112,7 @@ else
             <Tooltip>
                 <Content>
                     <div class="input-group">
-                        <label class="input-group__label">Tolerance</label>
+                        <label class="input-group__label">@Localizer["Tolerance"]</label>
                         <input type="number" step="any" class="input-group__input" @bind="_tolerance" />
                     </div>
                 </Content>

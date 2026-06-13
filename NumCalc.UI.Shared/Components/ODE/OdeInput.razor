@@ -4,11 +4,9 @@
 <div class="input-section__wrapper input-section__wrapper--ode-function">
     <Tooltip>
         <Content>
-            <MathInput Label="f(x, y) — right-hand side of y' = f(x, y)" @ref="_mathInput" />
+            <MathInput Label="@Localizer["OdeFunctionLabel"]" @ref="_mathInput" />
         </Content>
-        <Hint>
-            e.g. x + y, -2*x*y, x^2 - y
-        </Hint>
+        <Hint>@Localizer["Hint_OdeFunction"]</Hint>
     </Tooltip>
     
     <Tooltip>
@@ -35,7 +33,7 @@
     <Tooltip>
         <Content>
             <div class="input-group">
-                <label class="input-group__label">x target</label>
+                <label class="input-group__label">@Localizer["TargetX"]</label>
                 <input type="number" step="any" class="input-group__input" @bind="_targetX" />
             </div>
         </Content>
@@ -47,7 +45,7 @@
             <Content>
                 <Dropdown TItem="int"
                           CssClass="dropdown--picard-order"
-                          Label="Approximation order (k)"
+                          Label="@($"{Localizer["ApproximationOrder"]} (k)")"
                           Data="@(Enumerable.Range(1, 10))"
                           TextField="@(i => i.ToString())"
                           @bind-Value="_picardOrder" />
@@ -58,7 +56,7 @@
     <Tooltip>
         <Content>
             <div class="input-group">
-                <label class="input-group__label">Step size (h)</label>
+                <label class="input-group__label">@Localizer["StepSize"] (h)</label>
                 <input type="number" step="any" min="0.0001" class="input-group__input" @bind="_stepSize" />
             </div>
         </Content>

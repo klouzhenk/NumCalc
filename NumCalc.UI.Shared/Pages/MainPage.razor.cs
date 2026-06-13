@@ -6,25 +6,25 @@ public partial class MainPage : BasePage<MainPage>
 
     private static readonly List<CategoryCard> Categories =
     [
-        new("zero-function", "Roots", "RootsDesc", "/root-finding",
-            ["Bisection", "Newton-Raphson", "Secant", "Simple Iteration", "Combined (Brent)"]),
+        new("zero-function", "RootFinding", "RootFindingDesc", "/root-finding",
+            ["Dichotomy", "Newton", "SimpleIterations", "Secant", "Combined"]),
 
         new("equation-system", "EquationSystems", "EquationSystemsDesc", "/equation-systems",
-            ["Cramer's Rule", "Gaussian Elimination", "Fixed-point Iteration", "Gauss-Seidel"]),
+            ["Cramer", "Gauss", "FixedPoint", "Seidel"]),
 
         new("interpolation", "Interpolation", "InterpolationDesc", "/interpolation",
-            ["Newton Polynomial", "Lagrange Polynomial", "Cubic Spline"]),
+            ["Newton", "Lagrange", "Spline"]),
 
         new("differentiation", "Differentiation", "DifferentiationDesc", "/differentiation",
-            ["Forward / Backward / Central Differences", "Lagrange Derivative"]),
+            ["Forward", "Backward", "Central", "Lagrange"]),
 
         new("integration", "Integration", "IntegrationDesc", "/integration",
-            ["Rectangle Rule", "Trapezoid Rule", "Simpson's 1/3 Rule"]),
+            ["Rectangle", "Trapezoid", "Simpson"]),
 
         new("optimization", "Optimization", "OptimizationDesc", "/optimization",
-            ["Uniform Search", "Golden Section", "Gradient Descent"]),
+            ["UniformSearch", "GoldenSection", "GradientDescent"]),
 
         new("ode", "Ode", "OdeDesc", "/ode",
-            ["Euler", "Euler Improved (Heun)", "Runge-Kutta 2", "Runge-Kutta 4", "Picard"]),
+            ["Euler", "EulerImproved", "RungeKutta2", "RungeKutta4", "Picard"]),
     ];
 }

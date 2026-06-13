@@ -79,13 +79,16 @@
   <data name="FeatureCharts" xml:space="preserve">
     <value>Interactive charts</value>
   </data>
+  <data name="MainFooterContact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>My Dashboard</value>
   </data>
-  <data name="Roots" xml:space="preserve">
+  <data name="RootFinding" xml:space="preserve">
     <value>Root Finding</value>
   </data>
-  <data name="RootsDesc" xml:space="preserve">
+  <data name="RootFindingDesc" xml:space="preserve">
     <value>Find where f(x) = 0 using iterative numerical methods</value>
   </data>
   <data name="EquationSystems" xml:space="preserve">
@@ -243,6 +246,9 @@
   </data>
   <data name="SettingValueIsRequired" xml:space="preserve">
     <value>Please fill in all required fields</value>
+  </data>
+  <data name="DuplicateXNodes" xml:space="preserve">
+    <value>X-nodes must be unique — duplicate values are not allowed</value>
   </data>
   <data name="LowerMustBeLessThanUpper" xml:space="preserve">
     <value>Lower bound must be less than upper bound</value>
@@ -426,6 +432,18 @@
   </data>
   <data name="Intervals" xml:space="preserve">
     <value>Intervals</value>
+  </data>
+  <data name="NumberOfIntervals" xml:space="preserve">
+    <value>Number of intervals</value>
+  </data>
+  <data name="NumberOfPoints" xml:space="preserve">
+    <value>Number of points</value>
+  </data>
+  <data name="Variable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="InitialValue" xml:space="preserve">
+    <value>Initial value</value>
   </data>
   <data name="InitialX" xml:space="preserve">
     <value>Initial X</value>
@@ -649,6 +667,12 @@
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="UploadImage" xml:space="preserve">
+    <value>Upload image</value>
+  </data>
+  <data name="UploadImageWithYourEquation" xml:space="preserve">
+    <value>Upload image with your equation</value>
+  </data>
   <data name="Root" xml:space="preserve">
     <value>Root</value>
   </data>
@@ -660,6 +684,9 @@
   </data>
   <data name="SelectItems" xml:space="preserve">
     <value>Select items</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Select all</value>
   </data>
   <data name="ThereIsNoDescriptionToStep" xml:space="preserve">
     <value>No description for this step</value>
@@ -810,5 +837,26 @@
   </data>
   <data name="Theme" xml:space="preserve">
     <value>Theme</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Ukrainian" xml:space="preserve">
+    <value>Ukrainian</value>
+  </data>
+  <data name="ApproximationOrder" xml:space="preserve">
+    <value>Approximation order</value>
+  </data>
+  <data name="OdeFunctionLabel" xml:space="preserve">
+    <value>f(x, y) — right-hand side of y' = f(x, y)</value>
+  </data>
+  <data name="Hint_OdeFunction" xml:space="preserve">
+    <value>e.g. x + y, -2*x*y, x^2 - y</value>
   </data>
 </root>

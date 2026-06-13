@@ -157,6 +157,38 @@ section.main-how-it-works {
     }
 }
 
+section.main-footer {
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dimension-m);
+    flex-wrap: wrap;
+    padding: var(--dimension-l) 0 var(--dimension-xxl);
+    border-top: var(--default-border);
+}
+
+.main-footer {
+    display: flex;
+    gap: var(--dimension-l);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: var(--dimension-xl);
+    
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--dimension-xs);
+        color: var(--primary-color);
+        text-decoration: none;
+
+        & .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+    }
+}
+
 .method-card {
     display: flex;
     flex-direction: column;

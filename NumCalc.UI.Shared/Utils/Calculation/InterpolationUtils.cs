@@ -29,6 +29,9 @@ public static class InterpolationUtils
         if (formData.XNodes is not { Count: >= 2 })
             return (false, "SettingValueIsRequired");
 
+        if (formData.XNodes.Distinct().Count() != formData.XNodes.Count)
+            return (false, "DuplicateXNodes");
+
         return (true, null);
     }
 
@@ -172,26 +175,88 @@ public static class InterpolationUtils
     }
 
     public static Chart? CreateChartConfig(
-        this InterpolationFormData formData, 
+        this InterpolationFormData formData,
         InterpolationResponse? result,
         InterpolationMethod method,
         IStringLocalizer<Localization> localizer)
     {
-        if (result is null) 
+        if (result is null)
             return null;
-        
+
         var chartData = result.ChartData?
             .Where(p => p is { X: not null, Y: not null })
             .Select(p => new[] { p.X!.Value, p.Y!.Value })
             .ToList();
 
+        var series = new List<ChartSeries>();
+
+        if (formData.Mode is InterpolationInputMode.Function
+            && !string.IsNullOrWhiteSpace(formData.FunctionExpression))
+        {
+            series.Add(new ChartSeries
+            {
+                Name = "f(x)",
+                Expression = formData.FunctionExpression,
+                Color = ColorUtils.GetColor(Color.Secondary),
+                LineWidth = 2,
+                DashStyle = LineStyle.Dash,
+                IsVisible = true
+            });
+        }
+
+        series.Add(new ChartSeries
+        {
+            Name = localizer[method.ToString()],
+            Data = chartData,
+            Color = ColorUtils.GetColor(Color.Primary),
+            LineWidth = 2,
+            IsVisible = true
+        });
+
+        // TODO: also render node markers in Function mode — needs Python to return node Y values
+        if (formData.Mode is InterpolationInputMode.RawData
+            && formData.YValues is { Count: > 0 }
+            && formData.XNodes.Count == formData.YValues.Count)
+        {
+            series.Add(new ChartSeries
+            {
+                Name = localizer["XNodes"],
+                Type = ChartType.Scatter,
+                Data = formData.XNodes.Zip(formData.YValues, (x, y) => new[] { x, y }).ToList(),
+                Color = ColorUtils.GetColor(Color.Success),
+                IsVisible = true,
+                Marker = new ChartMarker { Radius = 5 }
+            });
+        }
+
+        series.Add(new ChartSeries
+        {
+            Name = "x*",
+            Type = ChartType.Scatter,
+            Data = [[formData.QueryPoint ?? 0, result.InterpolatedValue]],
+            Color = ColorUtils.GetColor(Color.Warning),
+            IsVisible = true,
+            Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
+        });
+
+        double? xMin = null, xMax = null;
+        if (formData.XNodes is { Count: > 0 })
+        {
+            var queryPoint = formData.QueryPoint ?? 0;
+            xMin = Math.Min(formData.XNodes.Min(), queryPoint);
+            xMax = Math.Max(formData.XNodes.Max(), queryPoint);
+        }
+
         return new Chart
         {
             ContainerId = ChartContainerId,
             Title = null,
+            ShowLegend = true,
             Decimals = MathUtils.DecimalsFromTolerance(null),
             XAxis = new ChartAxis
             {
+                Min = xMin,
+                Max = xMax,
                 Title = localizer["ArgumentX"],
                 PlotLines = [ChartUtils.CreateZeroLine()]
             },
@@ -200,26 +265,7 @@ public static class InterpolationUtils
                 Title = localizer["FunctionValue"],
                 PlotLines = [ChartUtils.CreateZeroLine()]
             },
-            Series =
-            [
-                new ChartSeries
-                {
-                    Name = method.ToString(),
-                    Data = chartData,
-                    Color = ColorUtils.GetColor(Color.Primary),
-                    LineWidth = 2,
-                    IsVisible = true
-                },
-                new ChartSeries
-                {
-                    Name = "x*",
-                    Type = ChartType.Scatter,
-                    Data = [[formData.QueryPoint ?? 0, result.InterpolatedValue]],
-                    Color = ColorUtils.GetColor(Color.PrimaryDark),
-                    IsVisible = true,
-                    Marker = new ChartMarker { Radius = 8, Symbol = ChartSymbolType.Diamond }
-                }
-            ]
+            Series = series
         };
     }
 }

@@ -23,9 +23,9 @@
                             {
                                 <li class="user-dashboard__item user-dashboard__item--grid">
                                     <span class="user-dashboard__item-name">@item.MethodName</span>
-                                    <span class="user-dashboard__item-meta">@item.Type</span>
+                                    <span class="user-dashboard__item-meta">@Localizer[item.Type.ToString()]</span>
                                     <span class="user-dashboard__item-meta">@item.ResultSummary</span>
-                                    <span class="user-dashboard__item-date">@($"{item.ExecutionTimeMs:F1} ms")</span>
+                                    <span class="user-dashboard__item-date">@($"{item.ExecutionTimeMs:F1} {Localizer["ms"]}")</span>
                                     <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
                                 </li>
                             }
@@ -58,7 +58,7 @@
                                         <span class="user-dashboard__item-name">@item.FileName</span>
                                         <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
                                     </div>
-                                    <span class="user-dashboard__item-meta">@item.Type · @item.MethodName</span>
+                                    <span class="user-dashboard__item-meta">@Localizer[item.Type.ToString()] · @item.MethodName</span>
                                 </li>
                             }
                         </ul>
@@ -87,7 +87,7 @@
                                         <span class="user-dashboard__item-name">@item.Name</span>
                                         <span class="user-dashboard__item-date">@item.CreatedAt.ToLocalTime().ToString("d MMM, HH:mm")</span>
                                     </div>
-                                    <span class="user-dashboard__item-meta">@item.Type</span>
+                                    <span class="user-dashboard__item-meta">@Localizer[item.Type.ToString()]</span>
                                 </li>
                             }
                         </ul>
@@ -96,7 +96,7 @@
                 else
                 {
                     <div class="center-container">
-                        <span class="user-dashboard__empty">@Localizer["NoData"]</span>    
+                        <span class="user-dashboard__empty">@Localizer["NoData"]</span>
                     </div>
                 }
             </div>

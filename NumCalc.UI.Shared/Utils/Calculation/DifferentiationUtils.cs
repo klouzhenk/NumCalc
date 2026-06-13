@@ -243,6 +243,9 @@ public static class DifferentiationUtils
                 IsVisible = true
             });
         }
+        // TODO: for DerivativeOrder == 2, draw the osculating parabola at x*:
+        //       y = f(x*) + f'(x*)(x - x*) + 0.5 * f''(x*)(x - x*)^2
+        //       Requires f'(x*) too — currently we only have f''(x*).
 
         series.Add(new ChartSeries
         {

@@ -29,6 +29,10 @@ export const MathHelper = {
             dotNetRef.invokeMethodAsync('UpdateValue', mathFieldElement.value);
         });
 
+        mathFieldElement.addEventListener('focus', () => {
+            window.mathVirtualKeyboard?.show();
+        });
+
         attachOutsideClickListener();
     },
 

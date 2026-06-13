@@ -60,10 +60,21 @@
                 <ul class="method-card__methods">
                     @foreach (var method in card.Methods)
                     {
-                        <li>@method</li>
+                        <li>@Localizer[method]</li>
                     }
                 </ul>
             </div>
         }
+    </section>
+
+    <section class="main-footer">
+        <a href="https://github.com/klouzhenk/NumCalc" target="_blank" rel="noopener noreferrer" class="main-footer__link link-underline">
+            <SvgIcon Name="github"/>
+            <span>GitHub</span>
+        </a>
+        <a href="mailto:yuliavydryk@gmail.com" class="main-footer__link link-underline">
+            <SvgIcon Name="mail"/>
+            <span>yuliavydryk@gmail.com</span>
+        </a>
     </section>
 </div>

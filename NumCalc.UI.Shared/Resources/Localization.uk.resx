@@ -73,13 +73,16 @@
   <data name="FeatureCharts" xml:space="preserve">
     <value>Інтерактивні графіки</value>
   </data>
+  <data name="MainFooterContact" xml:space="preserve">
+    <value>Контакти</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Мій кабінет</value>
   </data>
-  <data name="Roots" xml:space="preserve">
+  <data name="RootFinding" xml:space="preserve">
     <value>Корені рівнянь</value>
   </data>
-  <data name="RootsDesc" xml:space="preserve">
+  <data name="RootFindingDesc" xml:space="preserve">
     <value>Знаходження коренів f(x) = 0 ітераційними методами</value>
   </data>
   <data name="EquationSystems" xml:space="preserve">
@@ -237,6 +240,9 @@
   </data>
   <data name="SettingValueIsRequired" xml:space="preserve">
     <value>Будь ласка, заповніть усі обов'язкові поля</value>
+  </data>
+  <data name="DuplicateXNodes" xml:space="preserve">
+    <value>Вузли x мають бути унікальними — повторювані значення недопустимі</value>
   </data>
   <data name="LowerMustBeLessThanUpper" xml:space="preserve">
     <value>Нижня межа має бути менша за верхню</value>
@@ -420,6 +426,18 @@
   </data>
   <data name="Intervals" xml:space="preserve">
     <value>Інтервали</value>
+  </data>
+  <data name="NumberOfIntervals" xml:space="preserve">
+    <value>Кількість інтервалів</value>
+  </data>
+  <data name="NumberOfPoints" xml:space="preserve">
+    <value>Кількість точок</value>
+  </data>
+  <data name="Variable" xml:space="preserve">
+    <value>Змінна</value>
+  </data>
+  <data name="InitialValue" xml:space="preserve">
+    <value>Початкове значення</value>
   </data>
   <data name="InitialX" xml:space="preserve">
     <value>Початкове X</value>
@@ -649,6 +667,12 @@
   <data name="Reset" xml:space="preserve">
     <value>Скинути</value>
   </data>
+  <data name="UploadImage" xml:space="preserve">
+    <value>Завантажити зображення</value>
+  </data>
+  <data name="UploadImageWithYourEquation" xml:space="preserve">
+    <value>Завантажте зображення з рівнянням</value>
+  </data>
   <data name="Root" xml:space="preserve">
     <value>Корінь</value>
   </data>
@@ -660,6 +684,9 @@
   </data>
   <data name="SelectItems" xml:space="preserve">
     <value>Виберіть елементи</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Вибрати всі</value>
   </data>
   <data name="ThereIsNoDescriptionToStep" xml:space="preserve">
     <value>Немає опису для цього кроку</value>
@@ -810,5 +837,26 @@
   </data>
   <data name="Theme" xml:space="preserve">
     <value>Тема</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Світла</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Темна</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>Англійська</value>
+  </data>
+  <data name="Ukrainian" xml:space="preserve">
+    <value>Українська</value>
+  </data>
+  <data name="ApproximationOrder" xml:space="preserve">
+    <value>Порядок наближення</value>
+  </data>
+  <data name="OdeFunctionLabel" xml:space="preserve">
+    <value>f(x, y) — права частина y' = f(x, y)</value>
+  </data>
+  <data name="Hint_OdeFunction" xml:space="preserve">
+    <value>напр. x + y, -2*x*y, x^2 - y</value>
   </data>
 </root>

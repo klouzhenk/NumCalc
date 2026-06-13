@@ -34,7 +34,7 @@
             <Tooltip>
                 <Content>
                     <div class="input-group">
-                        <label class="input-group__label">Tolerance</label>
+                        <label class="input-group__label">@Localizer["Tolerance"]</label>
                         <input type="number" step="any" class="input-group__input"
                                @bind="Tolerance" />
                     </div>
@@ -45,12 +45,12 @@
             <Tooltip>
                 <Content>
                     <div class="input-group">
-                        <label class="input-group__label">Max iterations</label>
+                        <label class="input-group__label">@Localizer["MaxIterations"]</label>
                         <input type="number" class="input-group__input"
                                @bind="MaxIterations" />
                     </div>
                 </Content>
-                <Hint>Maximum number of iterations before stopping.</Hint>
+                <Hint>@Localizer["Hint_MaxIterations"]</Hint>
             </Tooltip>
         </div>
     </div>

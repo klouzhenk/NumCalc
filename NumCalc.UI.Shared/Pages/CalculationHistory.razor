@@ -33,10 +33,10 @@
                         @foreach (var record in Records)
                         {
                             <tr>
-                                <td>@record.Type</td>
+                                <td>@Localizer[record.Type.ToString()]</td>
                                 <td>@record.MethodName</td>
                                 <td>@record.ResultSummary</td>
-                                <td>@($"{record.ExecutionTimeMs:F1} ms")</td>
+                                <td>@($"{record.ExecutionTimeMs:F1} {Localizer["ms"]}")</td>
                                 <td>@record.CreatedAt.ToLocalTime().ToString("g")</td>
                                 <td class="data-table__actions">
                                     <button class="button button--icon" @onclick="() => DeleteAsync(record.Id)">

@@ -53,7 +53,7 @@
         <div class="integration__form">
             <IntegrationInput @ref="_input" />
             <div class="form-actions">
-                <button class="button button--primary" @onclick="Calculate">Calculate</button>
+                <button class="button button--primary" @onclick="Calculate">@Localizer["Calculate"]</button>
                 @if (_mode is AnalysisMode.Single && Result is not null)
                 {
                     <button class="button button--secondary" @onclick="ExportPdfAsync">@Localizer["ExportPdf"]</button>
@@ -83,7 +83,7 @@
         <ChartContent>
             <div class="chart__container">
                 <div class="chart" id="@IntegrationUtils.ChartContainerId" style="display: @(IsChartVisible ? "block" : "none");"></div>
-                <span class="remark" style="display: @(IsChartVisible ? "none" : "flex");">Click Calculate to view result</span>
+                <span class="remark" style="display: @(IsChartVisible ? "none" : "flex");">@Localizer["ClickCalculateToViewResult"]</span>
             </div>
         </ChartContent>
         <ResultContent>

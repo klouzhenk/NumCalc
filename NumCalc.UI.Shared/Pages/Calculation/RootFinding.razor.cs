@@ -32,7 +32,11 @@ public partial class RootFinding : CalculationPage<RootFinding>
     {
         try
         {
-            var (isValid, errorMessage) = await _formData.ValidateFormData(Mode, _benchmarkMethods, JsRuntime);
+            var asciiExpression = _formDataInput is not null
+                ? await _formDataInput.GetAsciiExpressionAsync()
+                : null;
+
+            var (isValid, errorMessage) = await _formData.ValidateFormData(Mode, _benchmarkMethods, JsRuntime, asciiExpression);
             if (!isValid)
             {
                 UiService.ShowError(Localizer[errorMessage ?? "SomethingWentWrong"]);

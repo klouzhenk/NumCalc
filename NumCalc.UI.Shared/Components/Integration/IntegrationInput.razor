@@ -11,7 +11,7 @@
     <Tooltip>
         <Content>
             <div class="input-group">
-                <label class="input-group__label">a (lower bound)</label>
+                <label class="input-group__label">a (@Localizer["LowerBound"])</label>
                 <input type="number" step="any" class="input-group__input" @bind="_lowerBound" />
             </div>
         </Content>
@@ -20,7 +20,7 @@
     <Tooltip>
         <Content>
             <div class="input-group">
-                <label class="input-group__label">b (upper bound)</label>
+                <label class="input-group__label">b (@Localizer["UpperBound"])</label>
                 <input type="number" step="any" class="input-group__input" @bind="_upperBound" />
             </div>
         </Content>
@@ -29,7 +29,7 @@
     <Tooltip>
         <Content>
             <div class="input-group">
-                <label class="input-group__label">Number of intervals (n)</label>
+                <label class="input-group__label">@Localizer["NumberOfIntervals"] (n)</label>
                 <input type="number" min="1" max="10000" class="input-group__input" @bind="_intervals" />
             </div>
         </Content>

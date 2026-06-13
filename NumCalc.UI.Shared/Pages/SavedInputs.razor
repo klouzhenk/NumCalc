@@ -31,7 +31,7 @@
                         {
                             <tr>
                                 <td><button class="link-underline" @onclick="() => OpenPreview(input)">@input.Name</button></td>
-                                <td>@input.Type</td>
+                                <td>@Localizer[input.Type.ToString()]</td>
                                 <td>@input.CreatedAt.ToLocalTime().ToString("g")</td>
                                 <td class="data-table__actions">
                                     <button class="button button--icon" @onclick="() => DeleteAsync(input.Id)">
@@ -50,7 +50,7 @@
     {
         <BaseModal @ref="_previewModal"
                    Title="@_previewItem.Name"
-                   Subtitle="@($"{_previewItem.Type} · {_previewItem.CreatedAt.ToLocalTime():g}")">
+                   Subtitle="@($"{Localizer[_previewItem.Type.ToString()]} · {_previewItem.CreatedAt.ToLocalTime():g}")">
             <BodyContent>
                 <div class="data-table__wrap">
                     <table class="data-table">

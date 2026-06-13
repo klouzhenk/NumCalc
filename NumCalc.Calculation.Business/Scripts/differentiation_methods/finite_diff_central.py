@@ -3,7 +3,7 @@ import sympy
 from dataclasses import asdict
 from shared.structures import DifferentiationResponseEnvelope, DifferentiationSuccessData, FailureData, Point, SolutionStep
 from shared.parsing import parse_expression
-from shared.functions import generate_points
+from shared.functions import generate_points, derivative_plot_range
 
 
 def solve(expression: str, x_point: float, h: float, order: int) -> str:
@@ -44,8 +44,8 @@ def solve(expression: str, x_point: float, h: float, order: int) -> str:
             value=f"{label}({x_point}) ≈ {float(value):.8f}"
         )]
 
-        padding = max(3.0, abs(x_point) * 0.5)
-        chart_pts = generate_points(f, x_point - padding, x_point + padding)
+        x_min, x_max = derivative_plot_range(x_point)
+        chart_pts = generate_points(f, x_min, x_max)
         chart_points = [Point(x=float(p[0]), y=float(p[1])) for p in chart_pts]
 
         return json.dumps(asdict(DifferentiationResponseEnvelope(

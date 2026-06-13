@@ -25,18 +25,20 @@ public static class RootFindingUtils
         this RootFindingFormData formData,
         AnalysisMode mode,
         List<RootFindingMethod> benchmarkMethods,
-        IJSRuntime jsRuntime)
+        IJSRuntime jsRuntime,
+        string? asciiExpression)
     {
-        if (!formData.StartPoint.HasValue 
-            || !formData.EndPoint.HasValue 
+        if (!formData.StartPoint.HasValue
+            || !formData.EndPoint.HasValue
             || !formData.Tolerance.HasValue)
             return (false, "SettingValueIsRequired");
-        
-        if (string.IsNullOrWhiteSpace(formData.FunctionExpression))
+
+        if (string.IsNullOrWhiteSpace(formData.FunctionExpression)
+            || string.IsNullOrWhiteSpace(asciiExpression))
             return (false, "ExpressionRequired");
 
         var result = await jsRuntime.InvokeAsync<ExpressionValidationResult>(
-            "NumCalc.validateExpression", formData.FunctionExpression);
+            "NumCalc.validateExpression", asciiExpression);
         
         if (!result.Valid)
             return (false, "ExpressionInvalid");

@@ -27,7 +27,7 @@
         <Tooltip>
             <Content>
                 <Dropdown TItem="int"
-                          Label="Derivative order"
+                          Label="@Localizer["DerivativeOrder"]"
                           Data="@(new[] { 1, 2 })"
                           @bind-Value="_derivativeOrder"
                           TextField="@(n => n == 1 ? "1st" : "2nd")" />
@@ -38,7 +38,7 @@
         <Tooltip>
             <Content>
                 <div class="input-group">
-                    <label class="input-group__label">Step size (h)</label>
+                    <label class="input-group__label">@Localizer["StepSize"] (h)</label>
                     <input type="number" step="any" class="input-group__input" @bind="_stepSize" />
                 </div>
             </Content>
@@ -62,7 +62,7 @@ else
         <Tooltip>
             <Content>
                 <Dropdown TItem="int"
-                          Label="Derivative order"
+                          Label="@Localizer["DerivativeOrder"]"
                           Data="@(new[] { 1, 2 })"
                           @bind-Value="_derivativeOrder"
                           TextField="@(n => n == 1 ? "1st" : "2nd")"/>

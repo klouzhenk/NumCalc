@@ -41,3 +41,8 @@ def generate_points(f: Callable[[Any], Any], a: float, b: float, steps: int = 10
         return list(zip(xs[valid_mask], ys[valid_mask]))
     except Exception:
         return []
+
+
+def derivative_plot_range(x_point: float) -> Tuple[float, float]:
+    padding = max(3.0, abs(x_point) * 0.5)
+    return x_point - padding, x_point + padding
