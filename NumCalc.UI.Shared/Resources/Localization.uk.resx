@@ -859,4 +859,7 @@
   <data name="Hint_OdeFunction" xml:space="preserve">
     <value>напр. x + y, -2*x*y, x^2 - y</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Щось пішло не так</value>
+  </data>
 </root>

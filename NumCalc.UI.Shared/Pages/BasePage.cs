@@ -71,7 +71,7 @@ public abstract class BasePage<TPageType> : ComponentBase, IDisposable
         catch (Exception ex)
         {
             Logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
-            UiService.ShowError("SomethingWentWrong");
+            UiService.ShowError(Localizer["SomethingWentWrong"]);
         }
         finally
         {

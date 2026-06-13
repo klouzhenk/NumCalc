@@ -123,6 +123,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Approximation order.
+        /// </summary>
+        public static string ApproximationOrder {
+            get {
+                return ResourceManager.GetString("ApproximationOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument x.
         /// </summary>
         public static string ArgumentX {
@@ -330,6 +339,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string Dark {
+            get {
+                return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Dashboard.
         /// </summary>
         public static string Dashboard {
@@ -465,6 +483,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to X-nodes must be unique — duplicate values are not allowed.
+        /// </summary>
+        public static string DuplicateXNodes {
+            get {
+                return ResourceManager.GetString("DuplicateXNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string Email {
@@ -497,6 +524,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string EndPoint {
             get {
                 return ResourceManager.GetString("EndPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string English {
+            get {
+                return ResourceManager.GetString("English", resourceCulture);
             }
         }
         
@@ -924,6 +960,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e.g. x + y, -2*x*y, x^2 - y.
+        /// </summary>
+        public static string Hint_OdeFunction {
+            get {
+                return ResourceManager.GetString("Hint_OdeFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Integration step h. Smaller h gives higher accuracy but more computation steps. Estimated steps:.
         /// </summary>
         public static string Hint_OdeStep {
@@ -1122,6 +1167,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial value.
+        /// </summary>
+        public static string InitialValue {
+            get {
+                return ResourceManager.GetString("InitialValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Initial X.
         /// </summary>
         public static string InitialX {
@@ -1275,6 +1329,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string Light {
+            get {
+                return ResourceManager.GetString("Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Linear.
         /// </summary>
         public static string Linear {
@@ -1325,6 +1388,24 @@ namespace NumCalc.UI.Shared.Resources {
         public static string LowerBound {
             get {
                 return ResourceManager.GetString("LowerBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lower bound must be less than upper bound.
+        /// </summary>
+        public static string LowerMustBeLessThanUpper {
+            get {
+                return ResourceManager.GetString("LowerMustBeLessThanUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact.
+        /// </summary>
+        public static string MainFooterContact {
+            get {
+                return ResourceManager.GetString("MainFooterContact", resourceCulture);
             }
         }
         
@@ -1689,6 +1770,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Benchmark mode has no chart — see the Steps tab for results.
+        /// </summary>
+        public static string NoChartForBenchmark {
+            get {
+                return ResourceManager.GetString("NoChartForBenchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No records yet.
         /// </summary>
         public static string NoData {
@@ -1734,6 +1824,24 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of intervals.
+        /// </summary>
+        public static string NumberOfIntervals {
+            get {
+                return ResourceManager.GetString("NumberOfIntervals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of points.
+        /// </summary>
+        public static string NumberOfPoints {
+            get {
+                return ResourceManager.GetString("NumberOfPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Differential Equations.
         /// </summary>
         public static string Ode {
@@ -1748,6 +1856,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string OdeDesc {
             get {
                 return ResourceManager.GetString("OdeDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to f(x, y) — right-hand side of y&apos; = f(x, y).
+        /// </summary>
+        public static string OdeFunctionLabel {
+            get {
+                return ResourceManager.GetString("OdeFunctionLabel", resourceCulture);
             }
         }
         
@@ -1997,18 +2114,18 @@ namespace NumCalc.UI.Shared.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Root Finding.
         /// </summary>
-        public static string Roots {
+        public static string RootFinding {
             get {
-                return ResourceManager.GetString("Roots", resourceCulture);
+                return ResourceManager.GetString("RootFinding", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Find where f(x) = 0 using iterative numerical methods.
         /// </summary>
-        public static string RootsDesc {
+        public static string RootFindingDesc {
             get {
-                return ResourceManager.GetString("RootsDesc", resourceCulture);
+                return ResourceManager.GetString("RootFindingDesc", resourceCulture);
             }
         }
         
@@ -2121,6 +2238,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select at least one method.
         /// </summary>
         public static string SelectAtLeastOneMethod {
@@ -2144,6 +2270,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string SendResetLink {
             get {
                 return ResourceManager.GetString("SendResetLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in all required fields.
+        /// </summary>
+        public static string SettingValueIsRequired {
+            get {
+                return ResourceManager.GetString("SettingValueIsRequired", resourceCulture);
             }
         }
         
@@ -2180,6 +2315,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong.
+        /// </summary>
+        public static string SomethingWentWrong {
+            get {
+                return ResourceManager.GetString("SomethingWentWrong", resourceCulture);
             }
         }
         
@@ -2310,6 +2454,15 @@ namespace NumCalc.UI.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ukrainian.
+        /// </summary>
+        public static string Ukrainian {
+            get {
+                return ResourceManager.GetString("Ukrainian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uniform Search.
         /// </summary>
         public static string UniformSearch {
@@ -2324,6 +2477,24 @@ namespace NumCalc.UI.Shared.Resources {
         public static string UnsavedChanges {
             get {
                 return ResourceManager.GetString("UnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload image.
+        /// </summary>
+        public static string UploadImage {
+            get {
+                return ResourceManager.GetString("UploadImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload image with your equation.
+        /// </summary>
+        public static string UploadImageWithYourEquation {
+            get {
+                return ResourceManager.GetString("UploadImageWithYourEquation", resourceCulture);
             }
         }
         
@@ -2360,6 +2531,15 @@ namespace NumCalc.UI.Shared.Resources {
         public static string UsernameRequired {
             get {
                 return ResourceManager.GetString("UsernameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable.
+        /// </summary>
+        public static string Variable {
+            get {
+                return ResourceManager.GetString("Variable", resourceCulture);
             }
         }
         
